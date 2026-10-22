@@ -7,8 +7,9 @@
   <rect width="512" height="512" rx="116" fill="url(#zemin)"/>
   <path d="M256 64 L400 112 V246 C400 340 338 404 256 440 C174 404 112 340 112 246 V112 Z" fill="url(#kalkan)"/>
   <path d="M256 64 L400 112 V246 C400 340 338 404 256 440 C174 404 112 340 112 246 V112 Z" fill="none" stroke="#C9B37A" stroke-width="8" stroke-linejoin="round" opacity=".9"/>
+  <g transform="translate(0,-30) scale(1.0)">
   <path d="M168 212 h62 l18 20 h96 a10 10 0 0 1 10 10 v104 a10 10 0 0 1 -10 10 h-176 a10 10 0 0 1 -10 -10 v-124 a10 10 0 0 1 10 -10 z" fill="url(#klasor)"/>
   <path d="M158 252 h196 v94 a10 10 0 0 1 -10 10 h-176 a10 10 0 0 1 -10 -10 z" fill="#FBF7EC"/>
   <rect x="226" y="286" width="60" height="12" rx="6" fill="#B79E62"/>
-  <polygon points="256.0,116.0 265.0,143.6 294.0,143.6 270.5,160.7 279.5,188.4 256.0,171.3 232.5,188.4 241.5,160.7 218.0,143.6 247.0,143.6" fill="#E2CB86" stroke="#F3E6B8" stroke-width="3" stroke-linejoin="round"/>
+  </g>
 </svg>
