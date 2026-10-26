@@ -1,15 +1,14 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
-    <linearGradient id="zemin" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EEF1E4"/><stop offset="1" stop-color="#D8E1E3"/></linearGradient>
-    <linearGradient id="kalkan" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#5C7038"/><stop offset="1" stop-color="#3F4F26"/></linearGradient>
-    <linearGradient id="klasor" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#F6F0DF"/><stop offset="1" stop-color="#E8DDC0"/></linearGradient>
+    <linearGradient id="lgz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EEF3F9"/><stop offset="1" stop-color="#D5E0EC"/></linearGradient>
+    <linearGradient id="lgo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6684A3"/><stop offset="1" stop-color="#43607E"/></linearGradient>
+    <linearGradient id="lga" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#8AA3BC"/><stop offset="1" stop-color="#6E89A6"/></linearGradient>
   </defs>
-  <rect width="512" height="512" rx="116" fill="url(#zemin)"/>
-  <path d="M256 64 L400 112 V246 C400 340 338 404 256 440 C174 404 112 340 112 246 V112 Z" fill="url(#kalkan)"/>
-  <path d="M256 64 L400 112 V246 C400 340 338 404 256 440 C174 404 112 340 112 246 V112 Z" fill="none" stroke="#C9B37A" stroke-width="8" stroke-linejoin="round" opacity=".9"/>
-  <g transform="translate(0,-30) scale(1.0)">
-  <path d="M168 212 h62 l18 20 h96 a10 10 0 0 1 10 10 v104 a10 10 0 0 1 -10 10 h-176 a10 10 0 0 1 -10 -10 v-124 a10 10 0 0 1 10 -10 z" fill="url(#klasor)"/>
-  <path d="M158 252 h196 v94 a10 10 0 0 1 -10 10 h-176 a10 10 0 0 1 -10 -10 z" fill="#FBF7EC"/>
-  <rect x="226" y="286" width="60" height="12" rx="6" fill="#B79E62"/>
-  </g>
+  <rect width="512" height="512" rx="116" fill="url(#lgz)"/>
+  <path d="M120 150 a22 22 0 0 1 22 -22 h86 a22 22 0 0 1 17 8 l20 24 h105 a22 22 0 0 1 22 22 v208 a22 22 0 0 1 -22 22 h-228 a22 22 0 0 1 -22 -22 z" fill="url(#lga)"/>
+  <rect x="150" y="140" width="212" height="150" rx="12" fill="#FFFFFF" transform="rotate(-4 256 215)"/>
+  <rect x="178" y="170" width="120" height="12" rx="6" fill="#D5DFEA" transform="rotate(-4 256 215)"/>
+  <rect x="178" y="196" width="156" height="12" rx="6" fill="#E3EAF2" transform="rotate(-4 256 215)"/>
+  <path d="M104 238 a22 22 0 0 1 22 -22 h260 a22 22 0 0 1 22 22 l-14 156 a22 22 0 0 1 -22 20 h-232 a22 22 0 0 1 -22 -20 z" fill="url(#lgo)"/>
+  <rect x="214" y="318" width="84" height="16" rx="8" fill="#EBDDB4"/>
 </svg>
