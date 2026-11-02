@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "232";
+  const SURUM = "233";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2073,26 +2073,28 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 <body>
 <div id="acilis" aria-hidden="true">
 <style>
-#acilis{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:radial-gradient(120% 80% at 50% 0%,#F7F9FB 0%,#EEF2F6 55%,#E6ECF2 100%);font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;color:#3E5670;transition:opacity .45s ease,transform .45s ease;overflow:hidden}
-#acilis.git{opacity:0;transform:scale(1.03);pointer-events:none}
-#acilis .ac-halka{position:absolute;border-radius:50%;border:1px solid rgba(110,137,166,.13)}
-#acilis .ac-h1{width:360px;height:360px;animation:acNefes 6s ease-in-out infinite}
-#acilis .ac-h2{width:560px;height:560px;border-color:rgba(110,137,166,.08);animation:acNefes 6s ease-in-out -2s infinite}
-#acilis .ac-logo{width:108px;height:108px;filter:drop-shadow(0 10px 24px rgba(67,96,126,.18));animation:acGel .7s cubic-bezier(.2,.8,.2,1) both}
-#acilis .ac-ad{margin-top:26px;font-size:21px;font-weight:600;letter-spacing:.34em;padding-left:.34em;animation:acGel .7s .12s cubic-bezier(.2,.8,.2,1) both}
-#acilis .ac-alt{margin-top:8px;font-size:12.5px;letter-spacing:.14em;color:#8A9AAB;animation:acGel .7s .22s cubic-bezier(.2,.8,.2,1) both}
-#acilis .ac-cubuk{margin-top:30px;width:132px;height:3px;border-radius:3px;background:#DCE4EC;overflow:hidden;animation:acGel .7s .3s both}
-#acilis .ac-cubuk i{display:block;width:40%;height:100%;border-radius:3px;background:linear-gradient(90deg,#D9C796,#C9B47C);animation:acKay 1.15s ease-in-out infinite}
-#acilis .ac-alt2{position:absolute;bottom:calc(34px + env(safe-area-inset-bottom));text-align:center;font-size:13px;color:#6E7F90;animation:acGel .7s .38s both}
-#acilis .ac-alt2 b{display:block;font-weight:600;color:#4F6680;margin-bottom:3px;font-size:14px}
-#acilis .ac-alt2 small{display:block;margin-top:10px;font-size:10.5px;letter-spacing:.12em;color:#A3B0BD}
+#acilis{position:fixed;inset:0;z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center;background:linear-gradient(160deg,#22344C 0%,#2C4361 48%,#1C2B40 100%);font-family:"Archivo",system-ui,-apple-system,"Segoe UI",sans-serif;color:#fff;transition:opacity .4s ease,transform .4s ease;overflow:hidden}
+#acilis.git{opacity:0;transform:scale(1.04);pointer-events:none}
+#acilis .ac-isik{position:absolute;border-radius:50%;filter:blur(60px);opacity:.55}
+#acilis .ac-i1{width:320px;height:320px;top:-90px;right:-80px;background:#5D86B5;animation:acSuz 9s ease-in-out infinite}
+#acilis .ac-i2{width:280px;height:280px;bottom:-70px;left:-90px;background:#C9B47C;opacity:.28;animation:acSuz 11s ease-in-out -4s infinite}
+#acilis .ac-desen{position:absolute;inset:0;background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1px);background-size:22px 22px;mask-image:radial-gradient(circle at 50% 45%,#000 0,transparent 70%);-webkit-mask-image:radial-gradient(circle at 50% 45%,#000 0,transparent 70%)}
+#acilis .ac-cam{position:relative;width:132px;height:132px;border-radius:38px;display:grid;place-items:center;background:linear-gradient(150deg,#FFFFFF,#E9EEF4);border:1px solid rgba(255,255,255,.6);box-shadow:0 22px 50px rgba(5,12,24,.5),inset 0 -2px 0 rgba(30,50,80,.06);backdrop-filter:blur(8px);-webkit-backdrop-filter:blur(8px);animation:acGel .7s cubic-bezier(.2,.8,.2,1) both}
+#acilis .ac-cam svg.ac-logo{width:104px;height:104px;filter:drop-shadow(0 6px 10px rgba(30,50,80,.18))}
+#acilis .ac-halka{position:absolute;inset:-12px;width:calc(100% + 24px);height:calc(100% + 24px);animation:acDon 1.4s linear infinite}
+#acilis .ac-halka circle{fill:none;stroke:#D9C796;stroke-width:2.2;stroke-linecap:round;stroke-dasharray:70 400;opacity:.9}
+#acilis .ac-ad{margin-top:34px;font-size:24px;font-weight:700;letter-spacing:.3em;padding-left:.3em;animation:acGel .7s .1s cubic-bezier(.2,.8,.2,1) both}
+#acilis .ac-cizgi{margin-top:12px;width:44px;height:3px;border-radius:3px;background:linear-gradient(90deg,#E4D3A2,#C9B47C);animation:acGel .7s .2s both}
+#acilis .ac-alt2{position:absolute;bottom:calc(36px + env(safe-area-inset-bottom));text-align:center;font-size:13px;color:rgba(255,255,255,.62);animation:acGel .7s .3s both}
+#acilis .ac-alt2 b{display:block;font-weight:600;color:#fff;margin-bottom:3px;font-size:15px}
+#acilis .ac-alt2 small{display:inline-block;margin-top:12px;font-size:10px;letter-spacing:.14em;color:rgba(255,255,255,.45);border:1px solid rgba(255,255,255,.14);border-radius:20px;padding:3px 10px}
 @keyframes acGel{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
-@keyframes acKay{0%{transform:translateX(-110%)}100%{transform:translateX(260%)}}
-@keyframes acNefes{0%,100%{transform:scale(1);opacity:.9}50%{transform:scale(1.06);opacity:.5}}
+@keyframes acDon{to{transform:rotate(360deg)}}
+@keyframes acSuz{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(-30px,25px) scale(1.12)}}
 @media (prefers-reduced-motion:reduce){#acilis *{animation:none!important}}
 </style>
-<span class="ac-halka ac-h2"></span><span class="ac-halka ac-h1"></span>
-<svg class="ac-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+<span class="ac-isik ac-i1"></span><span class="ac-isik ac-i2"></span><span class="ac-desen"></span>
+<div class="ac-cam"><svg class="ac-halka" viewBox="0 0 156 156"><circle cx="78" cy="78" r="76"/></svg><svg class="ac-logo" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
   <defs>
     <linearGradient id="lgz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EEF3F9"/><stop offset="1" stop-color="#D5E0EC"/></linearGradient>
     <linearGradient id="lgo" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#6684A3"/><stop offset="1" stop-color="#43607E"/></linearGradient>
@@ -2105,20 +2107,19 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
   <rect x="178" y="196" width="156" height="12" rx="6" fill="#E3EAF2" transform="rotate(-4 256 215)"/>
   <path d="M104 238 a22 22 0 0 1 22 -22 h260 a22 22 0 0 1 22 22 l-14 156 a22 22 0 0 1 -22 20 h-232 a22 22 0 0 1 -22 -20 z" fill="url(#lgo)"/>
   <rect x="214" y="318" width="84" height="16" rx="8" fill="#EBDDB4"/>
-</svg>
+</svg></div>
 <div class="ac-ad">TSK ARŞİV</div>
-<div class="ac-alt">BELGE · ÇİZELGE · DOSYA</div>
-<div class="ac-cubuk"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 232</small></div>
+<div class="ac-cizgi"></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><br><small>SÜRÜM 233</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
   try { document.getElementById("ac-tarih").textContent = n.toLocaleDateString("tr-TR", { day: "numeric", month: "long", year: "numeric", weekday: "long" }); } catch(e){}
   var bas = Date.now(), bitti = false;
-  function kapat(){ if(bitti) return; bitti = true; a.classList.add("git"); setTimeout(function(){ a.remove(); }, 480); }
-  function hazir(){ setTimeout(kapat, Math.max(0, 1150 - (Date.now() - bas))); }
+  function kapat(){ if(bitti) return; bitti = true; a.classList.add("git"); setTimeout(function(){ a.remove(); }, 420); }
+  function hazir(){ setTimeout(kapat, Math.max(0, 800 - (Date.now() - bas))); }
   if(document.readyState === "complete") hazir(); else addEventListener("load", hazir);
-  setTimeout(kapat, 4500); a.addEventListener("click", kapat);
+  setTimeout(kapat, 4000); a.addEventListener("click", kapat);
 })();
 </script>
 </div>
