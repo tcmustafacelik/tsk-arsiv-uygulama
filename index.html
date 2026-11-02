@@ -1598,17 +1598,24 @@ textarea.oto-boy{resize:none;min-height:0;max-height:none}
 .ag-kayar{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--line2);border-radius:13px;background:var(--panel)} .ag-kayar>small{font:700 10.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .ag-ksat{display:flex;align-items:center;gap:8px} .ag-ksat>span{flex:none;width:66px;line-height:1.2;font:600 11.5px var(--f-ui);color:var(--muted)} .ag-ksat .bs-seg button{height:34px;font-size:12px} .ag-kis{display:flex;gap:6px}
 .hz-duz{display:block;margin:8px auto 2px;border:0;background:transparent;font:600 12px var(--f-ui);color:var(--muted);padding:4px 8px} .hz{position:relative} .hz.hz-gizli{opacity:.4;filter:grayscale(.6)} .hz-tik{position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--rk);background:var(--panel);color:var(--rk);font:800 11px/17px var(--f-ui);text-align:center;font-style:normal}
-textarea.p-gorev{width:100%;min-height:34px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font:inherit;color:var(--fg);line-height:1.3}
+textarea.p-gorev{width:100%;min-height:34px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font:500 13px/1.35 var(--f-ui);color:var(--fg)}
 .hz-duz~* .hz,.akk .hz[data-hz-t]{padding-right:30px}
+#p-tablo .p-oz{display:none}
 @media (max-width:640px){
   #p-tablo thead{display:none!important} #p-tablo,#p-tablo tbody{display:block;width:100%} .tablo-kap:has(#p-tablo){overflow:visible;border:0;background:transparent;max-height:none}
-  #p-tablo tr{display:grid;grid-template-columns:28px 1fr 1fr;gap:7px 8px;padding:11px 11px 9px;margin-bottom:9px;border:1px solid var(--line2);border-radius:16px;background:var(--panel);box-shadow:0 1px 3px rgba(20,40,70,.05)}
-  #p-tablo td{display:flex;flex-direction:column;gap:2px;padding:0!important;border:0!important;min-width:0;background:transparent!important} #p-tablo td[data-et]::before{content:attr(data-et);font:600 10.5px var(--f-ui);color:var(--muted);text-align:left}
-  #p-tablo td input,#p-tablo td textarea{min-width:0!important;width:100%;min-height:38px;border:1px solid var(--line2)!important;border-radius:10px;background:var(--panel2)!important;padding:8px 10px!important;text-align:left!important;font:600 14px var(--f-ui)}
-  #p-tablo td.sn{grid-row:1 / span 4;align-items:center;padding-top:20px!important;font:800 13px var(--f-ui);color:var(--accent)}
-  #p-tablo td[data-et="Adı soyadı"]{order:1;grid-column:2 / -1} #p-tablo td[data-et="Rütbesi"]{order:2;grid-column:2 / -1} #p-tablo td[data-et="Sicili"]{order:3} #p-tablo td[data-et="Doğum"]{order:4} #p-tablo td[data-et="Görevi"]{order:5;grid-column:2 / -1} #p-tablo td.islem{order:6;grid-column:1 / -1;flex-direction:row;justify-content:flex-end;gap:6px}
-  #p-tablo td[data-et="Adı soyadı"] input{font-weight:800}
+  #p-tablo tr{display:grid;grid-template-columns:28px 1fr 1fr;gap:6px 8px;padding:6px 10px;margin-bottom:6px;border:1px solid var(--line2);border-radius:14px;background:var(--panel);align-items:center}
+  #p-tablo tr.acik{padding:8px 10px 10px;border-color:color-mix(in srgb,var(--accent) 35%,var(--line2));box-shadow:0 2px 10px rgba(20,40,70,.07)}
+  #p-tablo td{display:flex;flex-direction:column;gap:2px;padding:0!important;border:0!important;min-width:0;background:transparent!important}
+  #p-tablo tr:not(.acik)>td:not(.sn):not(.p-oz){display:none!important}
+  #p-tablo td.sn{font:800 12.5px var(--f-ui);color:var(--accent);align-items:center}
+  #p-tablo td.p-oz{display:flex;grid-column:2 / -1} #p-tablo .p-oz button{display:flex;align-items:center;gap:8px;width:100%;min-height:42px;border:0;background:transparent;padding:0;text-align:left;color:var(--fg)}
+  .p-oy{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .p-oy b{font:700 14px var(--f-ui)} .p-oy small{font:500 11.5px var(--f-ui);color:var(--muted);overflow-wrap:anywhere}
+  .p-ok{flex:none;width:24px;height:24px;border-radius:50%;background:var(--panel2);position:relative} .p-ok::after{content:"";position:absolute;left:8px;top:7px;width:6px;height:6px;border-right:2px solid var(--muted);border-bottom:2px solid var(--muted);transform:rotate(45deg)} #p-tablo tr.acik .p-ok::after{transform:rotate(-135deg);top:10px}
+  #p-tablo td[data-et]::before{content:attr(data-et);font:600 10.5px var(--f-ui);color:var(--muted);text-align:left}
+  #p-tablo td input,#p-tablo td textarea{min-width:0!important;width:100%;min-height:36px;border:1px solid var(--line2)!important;border-radius:9px;background:var(--panel2)!important;padding:7px 9px!important;text-align:left!important;font:600 13.5px var(--f-ui)}
+  #p-tablo td[data-et="Adı soyadı"]{order:1;grid-column:2 / -1} #p-tablo td[data-et="Rütbesi"]{order:2;grid-column:2 / -1} #p-tablo td[data-et="Sicili"]{order:3;grid-column:2} #p-tablo td[data-et="Doğum"]{order:4;grid-column:3} #p-tablo td[data-et="Görevi"]{order:5;grid-column:2 / -1} #p-tablo td.islem{order:6;grid-column:1 / -1;flex-direction:row;justify-content:flex-end;gap:6px}
 }
+
 
 .ag-arsiv{display:flex;align-items:center;gap:11px;width:100%;margin-top:8px;padding:11px 13px;border:1px dashed var(--line);border-radius:14px;background:var(--panel);text-align:left;color:var(--fg)} .ag-arsiv svg{flex:none;width:22px;height:22px;fill:none;stroke:var(--accent);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round} .ag-arsiv span{display:flex;flex-direction:column} .ag-arsiv b{font:700 13.5px var(--f-ui)} .ag-arsiv small{font:500 11px var(--f-ui);color:var(--muted)}
 .ar-bar{height:10px;border-radius:10px;background:var(--panel2);overflow:hidden;border:1px solid var(--line2)} .ar-bar i{display:block;height:100%;background:var(--accent);transition:width .2s}
@@ -2091,7 +2098,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · DOSYA</div>
 <div class="ac-cubuk"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 230</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 231</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3448,7 +3455,7 @@ function personelEsitle(kaynaklar = ["ilk"]){
 function personelCiz(){
   const tb = $("#p-tablo tbody"); const rows = S.personel.rows;
   if(!rows.length){ tb.innerHTML = `<tr><td colspan="7"><div class="bos"><strong>${S.yuklendi.personel ? "Personel listesi boş" : "Yükleniyor…"}</strong>“+ Personel ekle” ile girin.</div></td></tr>`; return; }
-  tb.innerHTML = rows.map((r, i) => `<tr data-id="${esc(r.id)}"><td class="sn">${i + 1}</td>
+  tb.innerHTML = rows.map((r, i) => `<tr data-id="${esc(r.id)}"${pAcik === r.id ? ' class="acik"' : ""}><td class="sn">${i + 1}</td><td class="p-oz"><button type="button" data-p-ac>${pOzet(r)}<i class="p-ok"></i></button></td>
     <td data-et="Rütbesi"><input id="p-${esc(r.id)}-rutbe" data-alan="rutbe" value="${esc(r.rutbe)}" aria-label="Rütbe" style="min-width:130px"></td>
     <td data-et="Adı soyadı"><input id="p-${esc(r.id)}-ad" data-alan="ad" value="${esc(r.ad)}" aria-label="Ad soyad" style="min-width:160px"></td>
     <td class="orta" data-et="Sicili"><input id="p-${esc(r.id)}-sicil" data-alan="sicil" value="${esc(r.sicil)}" aria-label="Sicil" style="min-width:100px"></td>
@@ -3457,7 +3464,11 @@ function personelCiz(){
     <td class="islem"><button class="mini" data-is="yukari" aria-label="Yukarı taşı">↑</button><button class="mini" data-is="asagi" aria-label="Aşağı taşı">↓</button><button class="mini sil" data-is="sil" aria-label="Sil">✕</button></td></tr>`).join("");
   otoBoyHepsi(tb);
 }
-$("#p-tablo").addEventListener("input", e => { const tr = e.target.closest("tr"); const r = S.personel.rows.find(x => x.id === tr?.dataset.id); if(!r) return; r[e.target.dataset.alan] = e.target.value; kaydetBt("personel"); });
+/* telefonda kişi kartı kapalı durur (ad, rütbe, sicil); dokununca düzenleme alanları açılır */
+let pAcik = null;
+const pOzet = r => `<span class="p-oy"><b>${esc(r.ad || "Yeni personel")}</b><small>${esc([r.rutbe, r.sicil, r.dogum].filter(Boolean).join(" · ") || "bilgi girilmedi")}</small></span>`;
+$("#p-tablo").addEventListener("click", e => { const b = e.target.closest("[data-p-ac]"); if(!b) return; const tr = b.closest("tr"), ac = !tr.classList.contains("acik"); document.querySelectorAll("#p-tablo tr.acik").forEach(x => x.classList.remove("acik")); if(ac){ tr.classList.add("acik"); pAcik = tr.dataset.id; otoBoyHepsi(tr); } else pAcik = null; });
+$("#p-tablo").addEventListener("input", e => { const tr = e.target.closest("tr"); const r = S.personel.rows.find(x => x.id === tr?.dataset.id); if(!r) return; r[e.target.dataset.alan] = e.target.value; kaydetBt("personel"); const oz = tr.querySelector(".p-oy"); if(oz) oz.outerHTML = pOzet(r); });
 $("#p-tablo").addEventListener("click", e => {
   const b = e.target.closest("button[data-is]"); if(!b) return; const rows = S.personel.rows; const i = rows.findIndex(x => x.id === b.closest("tr").dataset.id);
   if(b.dataset.is === "sil"){ const geri = anlik(rows); rows.splice(i, 1); geriAlinabilir("Satır silindi", () => { geri(); personelCiz(); kaydetBt("personel"); }); }
@@ -3466,7 +3477,7 @@ $("#p-tablo").addEventListener("click", e => {
   else return;
   personelCiz(); kaydetBt("personel");
 });
-$("#p-ekle").addEventListener("click", () => { const r = { id: yeniId(), rutbe:"", ad:"", sicil:"", gorev:"" }; S.personel.rows.push(r); personelCiz(); kaydetBt("personel"); document.getElementById(`p-${r.id}-rutbe`)?.focus(); });
+$("#p-ekle").addEventListener("click", () => { const r = { id: yeniId(), rutbe:"", ad:"", sicil:"", gorev:"" }; S.personel.rows.push(r); pAcik = r.id; personelCiz(); kaydetBt("personel"); document.getElementById(`p-${r.id}-rutbe`)?.focus(); });
 
 /* ================= İZİN ================= */
 const gunFark = (a, k) => { if(!a || !k) return ""; const d = (Date.parse(k) - Date.parse(a)) / 864e5; return isFinite(d) ? Math.round(d) : ""; };
