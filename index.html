@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "236";
+  const SURUM = "237";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1581,6 +1581,10 @@ input.tt-in[data-tt-e$=":sayi"]{font:500 12.5px ui-monospace,SFMono-Regular,Menl
 .tz-metin{width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:10px;padding:8px 10px;font:500 13.5px/1.45 var(--f-ui);background:transparent;color:var(--fg);resize:none;overflow:hidden;transition:height .12s}
 textarea.oto-boy{resize:none;min-height:0;max-height:none}
 #yapi-duzenle{display:none!important}
+.sil-ust{display:flex;align-items:center;gap:13px;padding:4px 2px} .sil-ik{flex:none;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:#F8E6E2;color:#A3412F} .sil-ik svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sil-ust>div{display:flex;flex-direction:column;gap:2px;min-width:0} .sil-ust b{font:700 15.5px var(--f-ui);overflow-wrap:anywhere} .sil-ust small{font:500 12.5px var(--f-ui);color:var(--muted)}
+.sil-not{margin:0;padding:10px 12px;border-radius:12px;background:var(--panel2);font:500 12.5px/1.45 var(--f-ui);color:var(--muted)}
+.sil-is{display:grid;grid-template-columns:1fr 1fr;gap:10px} .sil-is .btn{height:48px;border-radius:14px;font:700 14.5px var(--f-ui)} .sil-is .sil-evet{background:#B4472F!important;border-color:#B4472F!important;color:#fff!important}
 .izb-kenar-kap{display:flex;flex-direction:column;align-items:stretch!important;gap:7px;flex-basis:100%} .izb-kenar-kap>span{font:600 12px var(--f-ui);color:var(--muted)}
 .izb-harita{background:conic-gradient(#E57373,#FFD54F,#81C784,#4FC3F7,#9575CD,#F06292,#E57373)!important;position:relative} .izb-harita::after{content:"+";position:absolute;inset:0;display:grid;place-items:center;font:800 16px var(--f-ui);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
 .rs-alan{position:relative;border-radius:14px;overflow:hidden;touch-action:none;border:1px solid var(--line2)} .rs-alan canvas{display:block;width:100%;height:190px;touch-action:none;cursor:crosshair} .rs-imlec{position:absolute;width:22px;height:22px;margin:-11px 0 0 -11px;border-radius:50%;border:3px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.35),0 2px 6px rgba(0,0,0,.3);pointer-events:none}
@@ -2112,7 +2116,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 236</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 237</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3034,6 +3038,17 @@ async function arsivIndir(){ const K = S.yapi.klasorler, isler = [], tem = s => 
     bildir(`Arşiv indirildi · ${isler.length - hata.length} öğe${hata.length ? ` · ${hata.length} öğe hazırlanamadı (listesi ZIP içinde)` : ""}`); }
   catch(e){ P.kapat(); uyar("Arşiv hazırlanamadı: " + (e.message || e), true); } }
 document.addEventListener("click", e => { if(e.target.closest && e.target.closest("#arsiv-indir")) arsivIndir(); });
+/* ===== silmeden önce onay: sistemdeki bütün sil düğmeleri önce bu pencereyi açar ===== */
+const SIL_SEC = 'button.sil:not([data-bkm="elle"]), button.imz-sil:not([data-bkm="elle"]), .yk-ek-sil, .tz-sil-arka, .tt-sil, [data-ap-sil], [data-mz-sil], [data-is="sil"], #bl-kes, #bl-sifirla';
+function silAd(b){ const k = b.closest(".kart, .yk-k, tr, .kc-sat, .bs-k, .kp-b, .sp-cr, .ap-kart, .tb-k, li, .gi-blok, .akk"); if(!k) return "";
+  const a = k.querySelector(".ad, .p-oy b, .kc-sy b, .bkk-sy .ad, h3, b, strong"); const x = a ? (a.querySelector("input,textarea") ? a.querySelector("input,textarea").value : a.textContent) : ""; return String(x || "").trim().slice(0, 70); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(SIL_SEC); if(!b || b.disabled || b.__onayli) return; e.preventDefault(); e.stopImmediatePropagation();
+  const ad = silAd(b), ne = (b.getAttribute("aria-label") || b.title || b.textContent || "").replace(/[✕🗑]/g, "").trim();
+  altPencere("sil-perde", "SİLME ONAYI", "Silinsin mi?", () => `<div class="sil-ust"><span class="sil-ik"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/><path d="M10 11v5M14 11v5"/></svg></span>
+      <div>${ad ? `<b>${esc(ad)}</b>` : ""}<small>${esc(/sil|kes|temizle|sıfırla/i.test(ne) && ne.length < 40 && !/^sil$/i.test(ne) ? ne : ad ? "Bu kayıt silinecek" : "Bu öğe silinecek")}</small></div></div>
+      <p class="sil-not">Sildikten sonra birkaç saniye içinde altta çıkan <b>↶ Geri al</b> ile geri getirebilirsiniz.</p>
+      <div class="sil-is"><button type="button" class="btn" data-sil-c="0">Vazgeç</button><button type="button" class="btn sil-evet" data-sil-c="1">Sil</button></div>`,
+    (c, kapat) => { if(c.dataset.silC == null) return; kapat(); if(c.dataset.silC === "1"){ b.__onayli = true; b.dataset.onay = "1"; try { b.click(); } finally { setTimeout(() => { b.__onayli = false; }, 0); } } }, { z: "F8E6E2", r: "A3412F" }); }, true);
 const BKK_SIMGE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>`;
 const BKK_RENK = [["E5EDF6", "38597E"], ["E7F0E4", "4A6A40"], ["F6EEDC", "7D6025"], ["ECE8F5", "5A4E86"], ["F3E9E1", "7E5A43"], ["E2EFEE", "3C6866"], ["EEF0E2", "5D6534"], ["E9EDF2", "4E5D70"]];
 const bkRenk = tur => { let h = 0; for(const c of String(tur)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return BKK_RENK[h % BKK_RENK.length]; };
@@ -9161,7 +9176,7 @@ async function baskiExcel(kitaplar, Y, ilerle, hatalar){   // kitaplar: [{ ad, v
   for(const id of ["imz-perde", "bkm-perde", "prc-perde"]) KAT[id] ||= () => { const x = document.querySelector("#" + id + " .imz-x"); if(x) x.click(); else { const p = document.getElementById(id); if(p) p.hidden = true; } };   // geri tuşu: pencerenin kendi ✕ düğmesi
   KAT["sc-perde"] = () => window.secimPenceresi && secimPenceresi.kapat();
   KAT["agac"] = () => { agacKapali = true; agacCiz(); };
-  const SIRA = ["rs-perde", "dg-perde", "ar-perde", "be-perde", "ts-perde", "yb-perde", "tr-perde", "cs-perde", "lg-perde", "imz-perde", "bkm-perde", "prc-perde", "sc-perde", "tz-perde", "bs-perde", "gd-set-perde", "gc-perde", "bl-soru", "bl-pin", "bl-linkhazir", "bl-panel", "agac"];   // en üstteki önce kapanır
+  const SIRA = ["sil-perde", "rs-perde", "dg-perde", "ar-perde", "be-perde", "ts-perde", "yb-perde", "tr-perde", "cs-perde", "lg-perde", "imz-perde", "bkm-perde", "prc-perde", "sc-perde", "tz-perde", "bs-perde", "gd-set-perde", "gc-perde", "bl-soru", "bl-pin", "bl-linkhazir", "bl-panel", "agac"];   // en üstteki önce kapanır
   const sonra = []; let geri = 0, kuyruk = false, yukleniyor = false, bekleyen = null, kurulacak = null;
   const gor = id => !$("#v-" + id).hidden;
   const durum = () => { const v = gor("belge") ? "belge" : gor("ara") ? "ara" : gor("bolum") ? "bolum" : "ana"; const d = v === "belge" ? S.belgeler.find(x => x.id === SECIM.belge) : null;
