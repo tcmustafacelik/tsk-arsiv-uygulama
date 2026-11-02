@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "242";
+  const SURUM = "243";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -903,7 +903,7 @@ input.bul-isik,textarea.bul-isik,td.bul-isik input,td.bul-isik textarea,.bul-isi
 .ko-liste{display:flex;flex-direction:column;gap:6px}
 .ko-kat{border:1px solid var(--line2);border-radius:13px;background:var(--panel2)} .ko-kat.acik{background:var(--panel);border-color:#C7D6E5;box-shadow:0 4px 14px -8px rgba(18,32,52,.25)}
 .ko-bas{display:flex;align-items:center;gap:6px;width:100%;min-height:48px;padding:6px 8px 6px 12px;border:0;background:transparent;color:var(--fg);font:inherit;text-align:left;cursor:pointer}
-.ko-ad{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2} .ko-ad b{font:700 13.5px var(--f-ui)} .ko-ad small{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
+.ko-ad{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2} .ko-ad b{font:700 13.5px var(--f-ui)} .ko-ad small{font-size:11px;color:var(--muted);overflow-wrap:anywhere} .ko-p{white-space:nowrap}
 .ko-cip{flex:none;min-width:44px;text-align:center;font:700 11.5px var(--f-mono);padding:4px 6px;border-radius:8px;border:1px solid rgba(0,0,0,.06);color:#2F3B48} .ko-bas i{flex:none;width:14px;font-style:normal;color:var(--muted);font-size:12px;text-align:center}
 .ko-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 12px 12px} .ko-tam{grid-column:1/-1}
 .ko-al{display:flex;flex-direction:column;gap:3px;margin:0;min-width:0} .ko-al span{font-size:11px;color:var(--muted)}
@@ -2109,6 +2109,14 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 .ko-is .yk-kaydet{margin-right:auto;height:32px;padding:0 14px}
 .yk-kay{font:700 12px var(--f-ui);color:#7A5512;background:#FBEBD2;border-radius:8px;padding:5px 9px} .yk-kay-n{align-self:center;font-size:10.5px;color:var(--muted)} .yk-dn-ust{flex-wrap:wrap} .yk-tb:disabled{opacity:.75;cursor:default}
 .yk-top{display:flex;flex-wrap:wrap;gap:6px} .yk-top .btn{height:32px;font-size:12px}
+.yk-t2{display:flex!important;flex-direction:column;align-items:stretch!important;gap:6px!important}
+.yk-tust{display:flex;align-items:center;justify-content:space-between} .yk-tust>span{font-size:12px;color:var(--muted);font-weight:600}
+.yk-bugun{height:26px;padding:0 12px;border:1px solid #CFE0D4;border-radius:999px;background:#EEF6F0;color:#2F6B47;font:600 12px var(--f-ui);cursor:pointer}
+.yk-tbar{display:flex;align-items:stretch;height:42px;border:1px solid var(--line2);border-radius:14px;background:var(--panel);overflow:hidden}
+.yk-tbar .mini{flex:none;width:44px!important;height:auto!important;border:0!important;border-radius:0!important;background:transparent!important;font-size:20px!important;color:#3F6487}
+.yk-tbar .mini:first-child{border-right:1px solid var(--line2)!important} .yk-tbar .mini:last-child{border-left:1px solid var(--line2)!important}
+.yk-tbar input.yk-tb{flex:1;width:auto!important;min-width:0;height:auto!important;border:0!important;border-radius:0!important;background:transparent!important;text-align:center;justify-content:center}
+@media(max-width:860px){ .yk-top{display:grid;grid-template-columns:1fr 1fr} .yk-top .btn{height:auto!important;min-height:36px;white-space:normal;line-height:1.25;padding:6px 8px} }
 .yk-dn-is{display:flex;flex-wrap:wrap;gap:5px;align-items:center}
 .yk-gd,.yk-gz{height:28px;padding:0 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel);font:600 11.5px var(--f-ui);color:#3F6487;cursor:pointer} .yk-gd.tamam{background:#E3F1E4;border-color:#A9C9AD;color:#2F4A33}
 .yk-gz{color:var(--muted)} .yk-gz.acik{color:#2F4A33;background:#EEF3E8;border-color:#C9D7C2}
@@ -2163,7 +2171,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 242</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 243</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2224,7 +2232,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
       <section class="panel" id="v-belge" hidden role="dialog" aria-modal="true" aria-label="Belge düzenleyici">
         <div class="arac">
           <button class="btn kucuk" id="d-geri" aria-label="Belgeyi kapat">✕ Kapat</button>
-          <textarea id="d-ad" class="oto-boy" rows="1" aria-label="Belge adı" spellcheck="false" style="font-weight:700;font-size:15px;min-width:200px;flex:1;max-width:460px"></textarea>
+          <textarea id="d-ad" class="oto-boy" data-tek rows="1" aria-label="Belge adı" spellcheck="false" style="font-weight:700;font-size:15px;min-width:200px;flex:1;max-width:460px"></textarea>
           <span class="bosluk"></span>
           <button class="btn kucuk" id="d-bul" type="button" title="Belgede ara" aria-label="Belgede ara" aria-pressed="false">⌕ Bul</button>
           <button class="btn kucuk" id="d-gecmis" type="button" title="Bu belgenin önceki hâlleri">🕘 Geçmiş</button>
@@ -2890,7 +2898,7 @@ function dikkatListesi(){
    başlıkta açık renkli şerit, sağda yukarı/aşağı ok; kapalı kartların listesi tarayıcıda (localStorage) tutulur. */
 /* yazdıkça büyüyen metin kutusu: en az 2 satır, en çok 8 satır (sonrası kaydırılır), elle boyutlandırma yok */
 function otoBoy(el){ if(!el) return; el.style.height = "auto"; const cs = getComputedStyle(el), lh = parseFloat(cs.lineHeight) || 20, ek = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
-  const en = lh * 2 + ek, cok = lh * 8 + ek; el.style.height = Math.max(en, Math.min(cok, el.scrollHeight + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth))) + "px"; el.style.overflowY = el.scrollHeight > cok ? "auto" : "hidden"; }
+  const en = lh * (el.hasAttribute("data-tek") ? 1 : 2) + ek, cok = lh * 8 + ek; el.style.height = Math.max(en, Math.min(cok, el.scrollHeight + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth))) + "px"; el.style.overflowY = el.scrollHeight > cok ? "auto" : "hidden"; }
 const otoBoyHepsi = kok => (kok || document).querySelectorAll("textarea.oto-boy").forEach(otoBoy);
 /* tek satırlık uzun alanlar: textarea[data-tek] — yazı kesilmesin diye alt satıra kayar ama Enter satır açmaz */
 document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target.matches && e.target.matches("textarea[data-tek]")){ e.preventDefault(); e.target.blur(); } }, true);
@@ -3268,7 +3276,7 @@ $("#d-ayar").addEventListener("change", e => {
 const acikBelge = () => S.belgeler.find(d => d.id === SECIM.belge);
 function belgeAc(id){
   const d = S.belgeler.find(x => x.id === id); if(!d) return; if(SECIM.belge !== id) bulKapat(); SECIM.belge = id; if(SECIM.klasor && SECIM.bolum) sonEkle({ k: SECIM.klasor, b: SECIM.bolum, d: id }); goster("belge");
-  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
+  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
   $("#d-ayar").hidden = d.tur === "izinb" || d.tur === "tazminat" || d.tur === "kapak" || d.tur === "baslik" || d.tur === "teblig" || d.tur === "tebtut" || d.tur === "tarama"; $("#d-ayar").classList.toggle("sade", !!SABIT_YON[d.tur]); document.querySelector('[data-cikti="docx"]').hidden = d.tur === "izinb" || d.tur === "tarama"; document.querySelector('[data-cikti="xlsx"]').hidden = d.tur === "tarama";
   $("#d-sil").hidden = d.tur !== "grid";
   ayarCiz();
@@ -3690,7 +3698,7 @@ function ykBas(r, n, t){ const h = yoklamaHesap(r, t), [z, k] = YK_RENK[h.durum]
 function ykKartCiz(){ const el = $("#yk-kart"); if(!el) return; const Y = YS(), t = Y.tarih || bugun(), oz = yoklamaOzet(), top = s => oz.find(x => x[0] === s)?.slice(-1)[0] ?? 0;
   const tiles = [["Mevcut", top("GENEL MEVCUT"), "MEVCUT"], ["Hazır", top("ÜS BÖLGESİ HAZIR MEVCUT"), "MEVCUT"], ["İzinli", top("İZİNLİ"), "İZİN"], ["Raporlu", top("RAPORLU"), "RAPOR"], ["Görevli", top("GÖREVLİ"), "GÖREVLİ"], ["Kursta", top("KURSTA"), "KURS"]];
   const P = (S.personel.rows || []).filter(p => p.ad && !Y.rows.some(r => r.pid === p.id || pAd(r.ad) === pAd(p.ad)));
-  let h = `<div class="yk-tarih"><span>Yoklama tarihi</span><button type="button" class="mini" data-ykg="-1" aria-label="Önceki gün">‹</button><input type="date" class="yk-tb" id="yk-t" value="${t}" aria-label="Yoklama tarihi"><button type="button" class="mini" data-ykg="1" aria-label="Sonraki gün">›</button><button type="button" class="btn kucuk" data-ykg="0">Bugün</button></div>
+  let h = `<div class="yk-tarih yk-t2"><div class="yk-tust"><span>Yoklama tarihi</span><button type="button" class="yk-bugun" data-ykg="0">Bugün</button></div><div class="yk-tbar"><button type="button" class="mini" data-ykg="-1" aria-label="Önceki gün">‹</button><input type="date" class="yk-tb" id="yk-t" value="${t}" aria-label="Yoklama tarihi"><button type="button" class="mini" data-ykg="1" aria-label="Sonraki gün">›</button></div></div>
     <div class="yk-top"><button type="button" class="btn kucuk" data-yk-izin="1" title="Personel İzin Çizelgesindeki izinleri yoklamaya ekler">⇣ İzin Çizelgesinden al</button><button type="button" class="btn kucuk" data-yk-gdhg="1" title="Yoklamadaki rapor, görev ve kursları GDHG'ye ekler">→ Ayrılışları GDHG'ye aktar</button></div>
     <div class="yk-oz">${tiles.map(([a, n, d]) => `<div style="--z:${YK_RENK[d][0]};--k:${YK_RENK[d][1]}"><b>${n}</b><small>${a}</small></div>`).join("")}</div>`;
   for(const v of ["GÜNDÜZ", "GECE"]){ const L = Y.rows.filter(r => (r.vardiya || "GÜNDÜZ") === v);
@@ -7484,7 +7492,7 @@ const koKapali = kkKume("koKapali", ["ko-bas"]);
 let koAcik = null;
 const koKutu = (et, o, alt) => `<div class="ko-oz" style="--f:#${koRenk(o)}"><small>${et}</small><b>${koOranYaz(o)}</b><i><span style="width:${Math.min(100, o || 0)}%"></span></i><em>${alt}</em></div>`;
 const koOzetHtml = T => koKutu("K/1 Sefer · ADESTİM hariç", T.o1, `${T.m} / ${T.k1}`) + koKutu("K/2 Barış · ADESTİM hariç", T.o2, `${T.m} / ${T.k2}`) + koKutu("K/1 Sefer · ADESTİM dahil", T.od1, `${T.mA} / ${T.d1}`) + koKutu("K/2 Barış · ADESTİM dahil", T.od2, `${T.mA} / ${T.d2}`);
-const koBasHtml = (s, x, acik) => `<span class="ko-ad"><b>${esc(s.ad || "Adsız")}</b><small>Mevcut ${x.m}${x.mA !== x.m ? ` (Ade. dahil ${x.mA})` : ""} · K/1 ${x.k1} · K/2 ${x.k2}</small></span><span class="ko-cip" style="background:#${koRenk(x.o1)}">${koOranYaz(x.o1)}</span><span class="ko-cip" style="background:#${koRenk(x.o2)}">${koOranYaz(x.o2)}</span><i>${acik ? "▴" : "▾"}</i>`;
+const koBasHtml = (s, x, acik) => `<span class="ko-ad"><b>${esc(s.ad || "Adsız")}</b><small><span class="ko-p">Mevcut ${x.m}${x.mA !== x.m ? ` (Ade. dahil ${x.mA})` : ""}</span> <span class="ko-p">· K/1 ${x.k1}</span> <span class="ko-p">· K/2 ${x.k2}</span></small></span><span class="ko-cip" style="background:#${koRenk(x.o1)}">${koOranYaz(x.o1)}</span><span class="ko-cip" style="background:#${koRenk(x.o2)}">${koOranYaz(x.o2)}</span><i>${acik ? "▴" : "▾"}</i>`;
 function koCanli(d){ const v = koVeri(d), { R, T } = koHesap(v), oz = $("#ko-govde .ko-ozet"); if(oz) oz.innerHTML = koOzetHtml(T);
   v.satirlar.forEach((s, i) => { const b = document.querySelector(`#ko-govde [data-ko-ac="${s.id}"]`); if(b) b.innerHTML = koBasHtml(s, R[i], koAcik === s.id); }); }
 function karsilamaCiz(){ const d = acikBelge(); if(!d || d.tur !== "karsilama") return; const v = koVeri(d), { R, T } = koHesap(v);
@@ -8048,7 +8056,7 @@ function kadroCiz(){ const d = acikBelge(); if(!d || d.tur !== "kadro") return; 
   const al = (x, k, et, o = {}) => `<label class="ko-al${o.tam ? " ko-tam" : ""}"><span>${et}</span>${o.sec ? `<div class="kc-cips">${o.sec.map(s => `<button type="button" data-kc-cip="${x.id}:${k}:${esc(s)}" aria-pressed="${s === x[k]}">${esc(KC_KISA[s] || s)}</button>`).join("")}</div>` : o.cok ? `<textarea class="oto-boy" rows="1" data-kc="${x.id}:${k}">${esc(x[k] ?? "")}</textarea>` : `<input data-kc="${x.id}:${k}" value="${esc(x[k] ?? "")}"${o.say ? ' inputmode="numeric"' : ""}>`}</label>`;
   $("#kc-govde").innerHTML = `${kcOzetHtml(v)}
     <div class="kc-bloklar">${v.bloklar.map((b, bi) => { const acik = kcAcikBlok === b.id;
-      if(b.tur !== "par") return `<div class="kc-ara"><textarea class="oto-boy" rows="1" data-kcb="${b.id}:ad" aria-label="Ara başlık">${esc(b.ad)}</textarea><input data-kcb="${b.id}:tbs" value="${esc(b.tbs || "")}" class="kc-tbs" aria-label="Tbs No"></div>`;
+      if(b.tur !== "par") return `<div class="kc-ara"><textarea class="oto-boy" data-tek rows="1" data-kcb="${b.id}:ad" aria-label="Ara başlık">${esc(b.ad)}</textarea><input data-kcb="${b.id}:tbs" value="${esc(b.tbs || "")}" class="kc-tbs" aria-label="Tbs No"></div>`;
       const p = P[b.id];
       return `<div class="kc-blok${acik ? " acik" : ""}"><button type="button" class="kc-bb" data-kc-blok="${b.id}"><span class="kc-no">${esc(b.no ?? "")}</span><span class="kc-sy"><b>${esc(b.ad)}</b><small>${p.kadro} yer · sefer ${p.sefer} / barış ${p.baris} · ${p.mevcut} dolu</small></span><i>${acik ? "▴" : "▾"}</i></button>
         ${acik ? `<div class="kc-ic"><div class="kc-bas2">${al({ ...b, id: "B" + b.id }, "ad", "Kısım adı")}${al({ ...b, id: "B" + b.id }, "tbs", "Tbs No")}</div>
