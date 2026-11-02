@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "243";
+  const SURUM = "244";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1589,6 +1589,8 @@ input.tt-in[data-tt-e$=":sayi"]{font:500 12.5px ui-monospace,SFMono-Regular,Menl
 .tz-g-bas{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 4px 4px}
 .tz-metin{width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:10px;padding:8px 10px;font:500 13.5px/1.45 var(--f-ui);background:transparent;color:var(--fg);resize:none;overflow:hidden;transition:height .12s}
 textarea.oto-boy{resize:none;min-height:0;max-height:none}
+/* sayfa hiçbir zaman yana kaymasın: geniş tablolar kendi kutularında kayar */
+#v-belge,#v-bolum,#v-ana{overflow-x:hidden!important;overscroll-behavior-x:none}
 textarea.tek-satir{display:block;width:100%;box-sizing:border-box;min-height:38px;padding:8px 10px;line-height:1.35;font:inherit;font-size:14px;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 #yapi-duzenle{display:none!important}
 .gd-secici{display:none}
@@ -2171,7 +2173,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 243</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 244</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2899,6 +2901,7 @@ function dikkatListesi(){
 /* yazdıkça büyüyen metin kutusu: en az 2 satır, en çok 8 satır (sonrası kaydırılır), elle boyutlandırma yok */
 function otoBoy(el){ if(!el) return; el.style.height = "auto"; const cs = getComputedStyle(el), lh = parseFloat(cs.lineHeight) || 20, ek = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
   const en = lh * (el.hasAttribute("data-tek") ? 1 : 2) + ek, cok = lh * 8 + ek; el.style.height = Math.max(en, Math.min(cok, el.scrollHeight + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth))) + "px"; el.style.overflowY = el.scrollHeight > cok ? "auto" : "hidden"; }
+["#v-belge","#v-bolum","#v-ana"].forEach(q => { const v = document.querySelector(q); if(v) v.addEventListener("scroll", () => { if(v.scrollLeft) v.scrollLeft = 0; }, { passive: true }); });
 const otoBoyHepsi = kok => (kok || document).querySelectorAll("textarea.oto-boy").forEach(otoBoy);
 /* tek satırlık uzun alanlar: textarea[data-tek] — yazı kesilmesin diye alt satıra kayar ama Enter satır açmaz */
 document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target.matches && e.target.matches("textarea[data-tek]")){ e.preventDefault(); e.target.blur(); } }, true);
@@ -4306,7 +4309,7 @@ function gdBelgeCiz0(){
     <div class="arac gd-bolum g"><h3>Görev yerleri ve kalış süreleri <span class="gd-say">${k.gorevler.length}</span></h3><span class="bosluk"></span>
       ${(() => { const say = k.gorevler.filter(g => g.don && g.don !== "-"), ac = say.filter(gdArti).length, dur = !say.length ? "" : ac === say.length ? "acik" : ac ? "kismi" : "";
         return `<button class="gd-anahtar ${dur}" type="button" data-gd="arti-bir" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}" title="Bu personelin bütün satırlarına +1 ekler ya da kaldırır (gidiş ve dönüş günü dahil). Satırlardaki +1'ler tek tek de açılıp kapatılabilir."><span class="ga-sw"><i></i></span><span class="ga-y"><b>+1 gün</b><small>${dur === "acik" ? "tüm satırlarda açık" : dur === "kismi" ? `${ac} / ${say.length} satırda açık` : "gidiş-dönüş dahil"}</small></span></button>`; })()}${(() => { const say = k.gorevler.filter(g => g.don && g.don !== "-"), ac = say.filter(g => gdEksiYon(g)).length, dur = !say.length ? "" : ac === say.length ? "acik" : ac ? "kismi" : "";
-        return `<span class="gd-eksi-grup"><button class="gd-anahtar gd-an-eksi ${dur}" type="button" data-gd="eksi-bir" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}" title="Bütün satırlarda seçili yöndeki tarihi 1 gün kaydırır ya da geri getirir. Satırlardaki −1'ler tek tek de açılıp kapatılabilir."><span class="ga-sw"><i></i></span><span class="ga-y"><b>−1 gün</b><small>${dur === "acik" ? "tüm satırlarda açık" : dur === "kismi" ? `${ac} / ${say.length} satırda` : "kalıştan 1 gün düş"}</small></span></button><span class="gd-yon" role="group" aria-label="−1 hangi tarihe uygulansın"><button type="button" data-gd-yon="don" aria-pressed="${gdKYon(k) === "don"}">↩ Dönüş</button><button type="button" data-gd-yon="git" aria-pressed="${gdKYon(k) === "git"}">↪ Gidiş</button></span></span>`; })()}<button class="gd-anahtar${k.toplamArti ? " acik" : ""}" type="button" data-gd="toplam-arti"
+        return `<span class="gd-eksi-grup"><button class="gd-anahtar gd-an-eksi ${dur}" type="button" data-gd="eksi-bir" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}" title="Bütün satırlarda seçili yöndeki tarihi 1 gün kaydırır ya da geri getirir. Satırlardaki −1'ler tek tek de açılıp kapatılabilir."><span class="ga-sw"><i></i></span><span class="ga-y"><b>−1 gün</b><small>${dur === "acik" ? "tüm satırlarda açık" : dur === "kismi" ? `${ac} / ${say.length} satırda` : "kalıştan 1 gün düş"}</small></span></button><span class="gd-yon" role="group" aria-label="−1 hangi tarihe uygulansın"><button type="button" data-gd-yon="don" aria-pressed="${gdKYon(k) === "don"}">↩ Dönüş</button><button type="button" data-gd-yon="git" aria-pressed="${gdKYon(k) === "git"}">↪ Gidiş</button></span></span>`; })()}<button class="gd-anahtar${k.toplamArti ? " acik" : ""}" type="button" data-gd="toplam-arti" aria-pressed="${!!k.toplamArti}" title="Yalnız toplama 1 gün ekler / çıkarır"><span class="ga-sw"><i></i></span><span class="ga-y"><b>+1 toplam</b><small>${k.toplamArti ? "toplama eklendi" : "yalnız toplama"}</small></span></button>${k.gorevler.some(gdGorevBos) ? `<button class="btn kucuk gd-bos-sil" type="button" data-gd="gorev-bos-sil">🧹 Boş satırları sil</button>` : ""}
 </div>
     <div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>S.Nu</th><th>Görev yeri</th><th>Gidiş tarihi</th><th>Dönüş tarihi</th><th>Durum</th><th>Kalış süresi</th><th>Düşünceler</th><th></th></tr></thead><tbody>
       ${k.gorevler.map((g, i) => { const v = gdKalis(g); const devam = g.don === "-" && !g.son, tire = g.don === "-";
