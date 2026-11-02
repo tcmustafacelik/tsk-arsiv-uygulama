@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "241";
+  const SURUM = "242";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -903,7 +903,7 @@ input.bul-isik,textarea.bul-isik,td.bul-isik input,td.bul-isik textarea,.bul-isi
 .ko-liste{display:flex;flex-direction:column;gap:6px}
 .ko-kat{border:1px solid var(--line2);border-radius:13px;background:var(--panel2)} .ko-kat.acik{background:var(--panel);border-color:#C7D6E5;box-shadow:0 4px 14px -8px rgba(18,32,52,.25)}
 .ko-bas{display:flex;align-items:center;gap:6px;width:100%;min-height:48px;padding:6px 8px 6px 12px;border:0;background:transparent;color:var(--fg);font:inherit;text-align:left;cursor:pointer}
-.ko-ad{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2} .ko-ad b{font:700 13.5px var(--f-ui)} .ko-ad small{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ko-ad{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2} .ko-ad b{font:700 13.5px var(--f-ui)} .ko-ad small{font-size:11px;color:var(--muted);overflow-wrap:anywhere}
 .ko-cip{flex:none;min-width:44px;text-align:center;font:700 11.5px var(--f-mono);padding:4px 6px;border-radius:8px;border:1px solid rgba(0,0,0,.06);color:#2F3B48} .ko-bas i{flex:none;width:14px;font-style:normal;color:var(--muted);font-size:12px;text-align:center}
 .ko-form{display:grid;grid-template-columns:1fr 1fr;gap:8px;padding:4px 12px 12px} .ko-tam{grid-column:1/-1}
 .ko-al{display:flex;flex-direction:column;gap:3px;margin:0;min-width:0} .ko-al span{font-size:11px;color:var(--muted)}
@@ -957,7 +957,7 @@ input.bul-isik,textarea.bul-isik,td.bul-isik input,td.bul-isik textarea,.bul-isi
 .imz-tamam:active{transform:scale(.97)}
 html.imz-acik,html.imz-acik body{overflow:hidden}
 .prc-kart{width:min(560px,100%)}
-.y-imza{gap:6px;flex-wrap:wrap} .y-imza input{flex:1;min-width:110px;height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:var(--panel)}
+.y-imza{gap:6px;flex-wrap:wrap} .y-imza input[data-yimza]{max-width:none!important} .y-imza input[data-yimza="ad"]{flex-basis:100%} .y-imza input{flex:1 1 150px;min-width:110px;height:36px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:var(--panel)}
 #tr-perde{z-index:130!important} #sc-perde{z-index:130}
 #g-tablo td.bkm{cursor:pointer} #g-tablo td.bkm:hover{outline:2px solid #9FB6CC;outline-offset:-2px}
 .bkm-turler{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px}
@@ -1331,6 +1331,14 @@ table.liste td{border-color:var(--line2)}
 .gd-oto.elle{background:#FAF7EF;border-color:#ECE3CF}
 .gd-imzalar div{border-style:solid;border-color:var(--line2);border-radius:var(--r-s)}
 .gd-arti{border-radius:999px;font-weight:600}
+.gd-eksi{font-size:11px;padding:2px 6px;margin-left:4px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-weight:600;cursor:pointer} .gd-eksi.acik{background:#F6EADF;border-color:#DDBFA3;color:#8A4F24}
+.gd-an-eksi.acik .ga-sw{background:#C98F5E!important}
+.gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
+textarea#d-ad{font-family:var(--f-ui);line-height:1.25;resize:none;overflow:hidden;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);box-sizing:border-box;align-self:center;min-height:0;display:block}
+.gd-eksi-grup{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
+.gd-yon{display:inline-flex;padding:3px;gap:2px;border:1px solid #E9D6C4;border-radius:999px;background:#FBF4EC}
+.gd-yon button{height:28px;padding:0 10px;border:0;border-radius:999px;background:transparent;color:#8A6A50;font:600 12px var(--f-ui);cursor:pointer;white-space:nowrap}
+.gd-yon button[aria-pressed="true"]{background:#fff;color:#7A4520;box-shadow:0 1px 3px rgba(120,70,30,.18)}
 .gd-arti-ust.acik{background:var(--accent-soft);border-color:#C3D2E1;color:var(--accent-ink);font-weight:600}
 /* +1 anahtarı */
 .gd-anahtar{display:inline-flex;align-items:center;gap:10px;padding:6px 14px 6px 8px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--fg);cursor:pointer;font:inherit;text-align:left;-webkit-tap-highlight-color:transparent;transition:background .2s,border-color .2s}
@@ -1581,19 +1589,22 @@ input.tt-in[data-tt-e$=":sayi"]{font:500 12.5px ui-monospace,SFMono-Regular,Menl
 .tz-g-bas{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:12px 4px 4px}
 .tz-metin{width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:10px;padding:8px 10px;font:500 13.5px/1.45 var(--f-ui);background:transparent;color:var(--fg);resize:none;overflow:hidden;transition:height .12s}
 textarea.oto-boy{resize:none;min-height:0;max-height:none}
+textarea.tek-satir{display:block;width:100%;box-sizing:border-box;min-height:38px;padding:8px 10px;line-height:1.35;font:inherit;font-size:14px;color:var(--fg);background:var(--panel);border:1px solid var(--line);border-radius:10px;overflow:hidden}
 #yapi-duzenle{display:none!important}
 .gd-secici{display:none}
 @media (max-width:860px){
   #gd-kisiler{display:block!important;overflow:visible!important;padding:0!important} #gd-kisiler>.gd-kisi,#gd-kisiler>[data-gd="kisi-ekle"]{display:none!important}
-  .gd-secici{display:flex;align-items:stretch;gap:6px}
-  .gd-ok{flex:none;width:40px;border:1px solid var(--line2);border-radius:14px;background:var(--panel);font:600 22px var(--f-ui);color:var(--accent);padding:0} .gd-ok:disabled{opacity:.3}
-  .gd-sk{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:9px 11px;border:1px solid color-mix(in srgb,var(--accent) 30%,var(--line2));border-radius:16px;background:linear-gradient(135deg,#EEF3F9,var(--panel));text-align:left;color:var(--fg);position:relative}
-  .gd-sy{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .gd-sy b{font:700 14.5px var(--f-ui);overflow-wrap:anywhere} .gd-sy small{font:500 11.5px var(--f-ui);color:var(--muted)} .gd-sira{white-space:nowrap;display:inline-block;padding:0 6px;border-radius:8px;background:var(--line);font-weight:700;font-size:10.5px}
-  .gd-gn{flex:none;display:flex;flex-direction:column;align-items:center;font:800 18px var(--f-ui);color:#2F6B47;line-height:1} .gd-gn small{font:600 9.5px var(--f-ui);color:var(--muted);margin-top:2px}
-  .gd-ac{flex:none;width:24px;height:24px;border-radius:50%;display:grid;place-items:center;background:var(--panel);color:var(--muted);font-size:11px}
+  .gd-secici{display:flex;flex-direction:column;gap:7px}
+  .gd-bar{display:flex;align-items:stretch;min-height:62px;border:1px solid #D3DFEC;border-radius:18px;background:linear-gradient(135deg,#F1F6FB,var(--panel) 70%);overflow:hidden;box-shadow:0 1px 2px rgba(30,50,80,.05)}
+  .gd-ok{flex:none;width:36px;border:0;background:transparent;font:500 22px var(--f-ui);color:#3F6487;padding:0;cursor:pointer} .gd-ok:first-child{border-right:1px solid #E1E9F2} .gd-ok:last-child{border-left:1px solid #E1E9F2} .gd-ok:active{background:#E6EEF7} .gd-ok:disabled{color:#C3CFDB;cursor:default;background:transparent}
+  .gd-sk{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:8px 10px;border:0;background:transparent;text-align:left;color:var(--fg);position:relative;cursor:pointer} .gd-sk:active{background:#EAF1F8}
+  .gd-sk .gd-av{width:34px;height:34px;border-radius:50%;font-size:12px}
+  .gd-sy{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .gd-sy b{font:700 14px/1.2 var(--f-ui);overflow-wrap:break-word} .gd-sy small{font:500 11.5px var(--f-ui);color:var(--muted);overflow-wrap:anywhere}
+  .gd-gn{flex:none;min-width:36px;display:flex;flex-direction:column;align-items:center;font:800 19px var(--f-ui);color:#2F6B47;line-height:1;padding-left:9px;border-left:1px dashed #DCE5EE} .gd-gn small{font:600 10px var(--f-ui);color:var(--muted);margin-top:3px}
+  .gd-nok{display:flex;justify-content:center;align-items:center;gap:5px;min-height:8px} .gd-nok i{width:6px;height:6px;border-radius:50%;background:#D5DFEA;transition:all .2s} .gd-nok i.su{width:16px;border-radius:3px;background:#5E82A8} .gd-nok span{font:600 11px var(--f-ui);color:var(--muted)}
 }
 .gd-av{flex:none;width:38px;height:38px;border-radius:12px;display:grid;place-items:center;background:#E4ECF7;color:#3D5F8C;font:800 13px var(--f-ui)} .gd-av.sec{background:var(--accent);color:#fff}
-.gd-uy{font-style:normal;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#F7EEDA;color:#8A6420;font:800 11px var(--f-ui)} .gd-sk .gd-uy{position:absolute;top:6px;left:40px}
+.gd-uy{font-style:normal;display:inline-grid;place-items:center;width:18px;height:18px;border-radius:50%;background:#F7EEDA;color:#8A6420;font:800 11px var(--f-ui)} .gd-sk .gd-uy{position:absolute;top:5px;left:38px}
 
 #d-ayar{flex-shrink:0!important;min-height:auto!important;max-height:none!important} #d-ayar.acik{overflow:visible}
 #i-tablo .i-oz{display:none}
@@ -1979,7 +1990,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 .kk-sayi{background:var(--panel2);border:1px solid var(--line2);color:var(--muted)}
 /* karşılama kartı */
 .ana-bas h3{font-size:21px;font-weight:700;letter-spacing:-.01em;color:var(--fg)}
-.pano-donem{position:relative;overflow:hidden;border:0;border-radius:20px;padding:16px 18px;color:#fff;background:linear-gradient(135deg,#2C4A69 0%,#3F6487 55%,#6587A8 100%);box-shadow:var(--golge2)}
+.pano-donem{position:relative;overflow:clip;border:0;border-radius:20px;padding:16px 18px;color:#fff;background:linear-gradient(135deg,#2C4A69 0%,#3F6487 55%,#6587A8 100%);box-shadow:var(--golge2)}
 .pano-donem::after{content:"";position:absolute;right:-40px;top:-60px;width:180px;height:180px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.16),transparent 70%);pointer-events:none}
 .pano-donem .pd-ust b{font-size:16px;font-weight:700;color:#fff} .pano-donem .pd-ust span{color:#F3DDA8;font-weight:700}
 .pano-donem .pd-bar{height:7px;background:rgba(255,255,255,.2)} .pano-donem .pd-bar i{background:linear-gradient(90deg,#F2DDA6,#D9AE5C)}
@@ -2018,7 +2029,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 .kc-oz1 small{font-size:10px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .kc-oz1 b{font:800 18px var(--f-mono);color:var(--fg)} .kc-oz1 b i{font:600 11px var(--f-mono);font-style:normal;color:var(--muted);margin-left:3px} .kc-oz1 em{font:600 10px var(--f-mono);font-style:normal;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kc-aktar{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;font-size:11px;color:var(--muted)} .kc-aktar .btn{height:32px;padding:0 12px;font-size:12px}
 .kc-bloklar{display:flex;flex-direction:column;gap:6px}
-.kc-ara{display:flex;gap:6px;padding:6px 8px;border-radius:12px;background:#EEF2F6;border:1px dashed #C9D5E2} .kc-ara input{flex:1;min-width:0;height:32px;border:1px solid var(--line);border-radius:8px;padding:0 8px;font:700 12.5px var(--f-ui);background:var(--panel);color:var(--fg)} .kc-ara .kc-tbs{flex:0 0 120px;font-weight:500;font-size:12px}
+.kc-ara{display:flex;gap:6px;padding:6px 8px;border-radius:12px;background:#EEF2F6;border:1px dashed #C9D5E2} .kc-ara input{flex:1;min-width:0;height:32px;border:1px solid var(--line);border-radius:8px;padding:0 8px;font:700 12.5px var(--f-ui);background:var(--panel);color:var(--fg)} .kc-ara .kc-tbs{flex:0 0 120px;font-weight:500;font-size:12px} .kc-ara{align-items:flex-start} .kc-ara textarea{flex:1;min-width:0;min-height:32px;border:1px solid var(--line);border-radius:8px;padding:7px 8px;font:700 12.5px/1.3 var(--f-ui);background:var(--panel);color:var(--fg);box-sizing:border-box;resize:none}
 .kc-blok{border:1px solid var(--line2);border-radius:13px;background:var(--panel2)} .kc-blok.acik{background:var(--panel);border-color:#C7D6E5;box-shadow:0 4px 14px -8px rgba(18,32,52,.25)}
 .kc-bb,.kc-sb{display:flex;align-items:center;gap:8px;width:100%;min-height:46px;padding:6px 10px;border:0;background:transparent;color:var(--fg);font:inherit;text-align:left;cursor:pointer}
 .kc-bb i{flex:none;font-style:normal;color:var(--muted);font-size:12px}
@@ -2152,7 +2163,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 241</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 242</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2213,7 +2224,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
       <section class="panel" id="v-belge" hidden role="dialog" aria-modal="true" aria-label="Belge düzenleyici">
         <div class="arac">
           <button class="btn kucuk" id="d-geri" aria-label="Belgeyi kapat">✕ Kapat</button>
-          <input type="text" id="d-ad" aria-label="Belge adı" style="font-weight:700;font-size:15px;min-width:200px;flex:1;max-width:460px">
+          <textarea id="d-ad" class="oto-boy" rows="1" aria-label="Belge adı" spellcheck="false" style="font-weight:700;font-size:15px;min-width:200px;flex:1;max-width:460px"></textarea>
           <span class="bosluk"></span>
           <button class="btn kucuk" id="d-bul" type="button" title="Belgede ara" aria-label="Belgede ara" aria-pressed="false">⌕ Bul</button>
           <button class="btn kucuk" id="d-gecmis" type="button" title="Bu belgenin önceki hâlleri">🕘 Geçmiş</button>
@@ -2881,6 +2892,12 @@ function dikkatListesi(){
 function otoBoy(el){ if(!el) return; el.style.height = "auto"; const cs = getComputedStyle(el), lh = parseFloat(cs.lineHeight) || 20, ek = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
   const en = lh * 2 + ek, cok = lh * 8 + ek; el.style.height = Math.max(en, Math.min(cok, el.scrollHeight + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth))) + "px"; el.style.overflowY = el.scrollHeight > cok ? "auto" : "hidden"; }
 const otoBoyHepsi = kok => (kok || document).querySelectorAll("textarea.oto-boy").forEach(otoBoy);
+/* tek satırlık uzun alanlar: textarea[data-tek] — yazı kesilmesin diye alt satıra kayar ama Enter satır açmaz */
+document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target.matches && e.target.matches("textarea[data-tek]")){ e.preventDefault(); e.target.blur(); } }, true);
+document.addEventListener("input", e => { const el = e.target; if(el.matches && el.matches("textarea[data-tek]") && /\n/.test(el.value)) el.value = el.value.replace(/\s*\n\s*/g, " "); }, true);
+/* sonradan çizilen oto-boy alanları kendiliğinden boylansın */
+(() => { let bek = false; const q = new Set(); new MutationObserver(M => { for(const m of M) for(const n of m.addedNodes){ if(n.nodeType !== 1) continue; if(n.matches("textarea.oto-boy")) q.add(n); else if(n.firstElementChild) n.querySelectorAll("textarea.oto-boy").forEach(x => q.add(x)); }
+  if(q.size && !bek){ bek = true; requestAnimationFrame(() => { bek = false; q.forEach(x => { if(x.isConnected && x.offsetParent) otoBoy(x); }); q.clear(); }); } }).observe(document.documentElement, { childList: true, subtree: true }); })();
 document.addEventListener("input", e => { if(e.target.matches && e.target.matches("textarea.oto-boy")) otoBoy(e.target); });
 addEventListener("resize", () => otoBoyHepsi());
 const KK_OK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9l6 6 6-6"/></svg>';
@@ -3251,7 +3268,7 @@ $("#d-ayar").addEventListener("change", e => {
 const acikBelge = () => S.belgeler.find(d => d.id === SECIM.belge);
 function belgeAc(id){
   const d = S.belgeler.find(x => x.id === id); if(!d) return; if(SECIM.belge !== id) bulKapat(); SECIM.belge = id; if(SECIM.klasor && SECIM.bolum) sonEkle({ k: SECIM.klasor, b: SECIM.bolum, d: id }); goster("belge");
-  $("#d-ad").value = d.ad; ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
+  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
   $("#d-ayar").hidden = d.tur === "izinb" || d.tur === "tazminat" || d.tur === "kapak" || d.tur === "baslik" || d.tur === "teblig" || d.tur === "tebtut" || d.tur === "tarama"; $("#d-ayar").classList.toggle("sade", !!SABIT_YON[d.tur]); document.querySelector('[data-cikti="docx"]').hidden = d.tur === "izinb" || d.tur === "tarama"; document.querySelector('[data-cikti="xlsx"]').hidden = d.tur === "tarama";
   $("#d-sil").hidden = d.tur !== "grid";
   ayarCiz();
@@ -3262,7 +3279,9 @@ function belgeAc(id){
 $("#d-geri").addEventListener("click", belgeKapat);
 $("#perde").addEventListener("click", belgeKapat);
 document.addEventListener("keydown", e => { if(e.key === "Escape" && SECIM.belge && !e.target.closest("#g-tablo")) belgeKapat(); });
-$("#d-ad").addEventListener("input", e => { const d = acikBelge(); if(d){ d.ad = e.target.value; kaydetBelge(d); } });
+$("#d-ad").addEventListener("input", e => { const el = e.target; if(/\n/.test(el.value)){ el.value = el.value.replace(/\s*\n\s*/g, " "); otoBoy(el); } const d = acikBelge(); if(d){ d.ad = el.value; kaydetBelge(d); } });
+$("#d-ad").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); e.target.blur(); } });
+addEventListener("resize", () => { const el = $("#d-ad"); if(el && el.offsetParent) otoBoy(el); });
 $("#d-sil").addEventListener("click", async e => {
   const b = e.currentTarget, d = acikBelge(); if(!d) return;
   if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misiniz? Belgeyi sil"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Belgeyi sil"; }, 3500); return; }
@@ -3801,7 +3820,7 @@ function hedefAyarCiz(){
   const oneri = new Map(); S.hedef.rows.filter(r => !grupBul(r)).forEach(r => {
     if(r.mermi) oneri.set("mermi|" + r.mermi, { alan: "mermi", deger: r.mermi });
     const b = String(r.barut || "").replace(/^\d+\s*/, "").trim(); if(b) oneri.set("barut|" + b, { alan: "barut", deger: b }); });
-  $("#h-ayar").innerHTML = `<label class="lj-tam">Liste başlığı<input type="text" id="h-baslik" value="${esc(S.hedef.baslik)}"></label>` +
+  $("#h-ayar").innerHTML = `<label class="lj-tam">Liste başlığı<textarea id="h-baslik" class="oto-boy tek-satir" data-tek rows="1">${esc(S.hedef.baslik)}</textarea></label>` +
     G.map((g, i) => { const acik = hAcikGrup === g.id; return `<div class="lj-satir hg${acik ? " acik" : ""}" data-gid="${esc(g.id)}">
       <button class="lj-renk" data-pal="${esc(g.id)}" style="background:#${g.renk}" aria-label="${esc(g.ad)} rengini değiştir" aria-expanded="${acikPalet === g.id}" title="Rengi değiştir"></button>
       <button type="button" class="hg-bas" data-hg-ac="${esc(g.id)}" aria-expanded="${acik}"><span class="hg-yazi"><b>${esc(g.ad || "Adsız grup")}</b><small>${esc(ALAN_AD[g.alan] || g.alan)} içinde “${esc(g.deger)}”</small></span><span class="hg-say" data-say="${esc(g.id)}">${say[g.id] || 0}</span><i aria-hidden="true">${acik ? "▴" : "▾"}</i></button>
@@ -4021,6 +4040,12 @@ const gdDonemSonu = bas => { const m = /^(\d{4})-(\d{2}-\d{2})$/.exec(bas || "")
 const gdStdDonem = d => { const y = +d.slice(0, 4), md = d.slice(5); return md >= "03-16" && md <= "11-15" ? { bas: `${y}-03-16`, son: `${y}-11-15` } : md >= "11-16" ? { bas: `${y}-11-16`, son: `${y + 1}-03-15` } : { bas: `${y - 1}-11-16`, son: `${y}-03-15` }; };
 const gdDonem = k => { const bas = (k.donem && k.donem.bas) || S.gdhg.donem.bas || ""; return { bas, son: (k.donem && k.donem.son) || S.gdhg.donem.son || gdDonemSonu(bas) }; };
 const gunEkle = (iso, n) => new Date((gdGun(iso) + n) * 864e5).toISOString().slice(0, 10);
+/* −1 gün: g.eksi = "don" (dönüş 1 gün geri) ya da "git" (gidiş 1 gün ileri); eski kayıtlarda true = "don" */
+const gdEksiYon = g => !g || !g.eksi ? "" : g.eksi === "git" ? "git" : "don";
+const gdAslGit = g => gdEksiYon(g) === "git" && g.git ? gunEkle(g.git, -1) : g.git;
+const gdKYon = k => k && k.eksiYon === "git" ? "git" : "don";
+function gdEksiUygula(g, yon){ if(!g.git || !g.don || g.don === "-") return false; if(yon === "git") g.git = gunEkle(g.git, 1); else g.don = gunEkle(g.don, -1); g.eksi = yon; return true; }
+function gdEksiKaldir(g){ const y = gdEksiYon(g); if(!y) return; if(y === "git") g.git = gunEkle(g.git, -1); else if(g.don && g.don !== "-") g.don = gunEkle(g.don, 1); delete g.eksi; }
 const donemAd = d => d.bas && d.son ? `${trTarih(d.bas)} – ${trTarih(d.son)}` : "girilmemiş";
 /* Görev satırları = dönem içinde izin/rapor dışında kalan günler.
    Birbirini ara vermeden izleyen izin/raporlar (biri katılınca öbürü başlıyorsa) tek boşluk sayılır, araya satır girmez.
@@ -4040,8 +4065,10 @@ function gdGorevHesapla(k){
   if(sonu) rows.push({ yer: yerBul(bitis), git: bitis, don: "-", not: "Görev Sonu", son: true });
   else { const g = gunEkle(son, 1); rows.push({ yer: yerBul(g), git: g, don: "-", not: "Devam" }); }
   /* elle yazılan düşünceler korunsun */
-  rows.forEach(r => { const o = eski.find(g => g.git === r.git); if(o && o.arti !== undefined) r.arti = o.arti; else if(k.artiBir !== undefined && r.don !== "-") r.arti = !!k.artiBir; });
-  rows.forEach(r => { const o = eski.find(g => g.git === r.git); if(o && o.not && !["Devam","Görev Sonu"].includes(o.not) && !r.not) r.not = o.not; });
+  rows.forEach(r => { const o = eski.find(g => gdAslGit(g) === r.git); if(o && o.arti !== undefined) r.arti = o.arti; else if(k.artiBir !== undefined && r.don !== "-") r.arti = !!k.artiBir; });
+  rows.forEach(r => { const o = eski.find(g => gdAslGit(g) === r.git); if(o && o.not && !["Devam","Görev Sonu"].includes(o.not) && !r.not) r.not = o.not; });
+  /* −1: dönüş tarihi bir gün geri alınır; satır yeniden oluşunca da korunur */
+  rows.forEach(r => { if(!r.don || r.don === "-") return; const o = eski.find(g => gdAslGit(g) === r.git), y = o ? gdEksiYon(o) : k.eksiBir ? gdKYon(k) : ""; if(y) gdEksiUygula(r, y); });
   return { rows, ic, dis };
 }
 function gdOlustur(k){
@@ -4207,9 +4234,10 @@ function gdKisilerCiz(){
 const gdBas = ad => String(ad || "?").split(/\s+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("").toLocaleUpperCase("tr");
 const gdKisiGun = (x, soz) => { const hs = soz ? gdSozHesap(x) : null; return { gun: soz ? (hs.kalis === "" ? "—" : hs.kalis) : gdToplam(x), u: soz ? hs.uyari.length : gdUyarilar(x).length }; };
 function gdSecici(k, soz){ const L = gdGrupListe(), i = L.indexOf(k); if(!k) return ""; const { gun, u } = gdKisiGun(k, soz), o = L[i - 1], s = L[i + 1];
-  return `<div class="gd-secici"><button type="button" class="gd-ok"${o ? ` data-kisi="${esc(o.id)}"` : " disabled"} aria-label="Önceki kişi">‹</button>
-    <button type="button" class="gd-sk" data-gd-liste><span class="gd-av">${esc(gdBas(k.ad))}</span><span class="gd-sy"><b>${esc(k.ad || "(adsız)")}</b><small>${esc(k.rutbe || "")} <span class="gd-sira">${i + 1}/${L.length}</span></small></span><span class="gd-gn">${esc(gun)}<small>gün</small></span>${u ? `<i class="gd-uy" title="${u} uyarı">!</i>` : ""}<span class="gd-ac">▾</span></button>
-    <button type="button" class="gd-ok"${s ? ` data-kisi="${esc(s.id)}"` : " disabled"} aria-label="Sonraki kişi">›</button></div>`; }
+  const nok = L.length <= 12 ? L.map((x, j) => `<i${j === i ? ' class="su"' : ""}></i>`).join("") : `<span>${i + 1} / ${L.length}</span>`;
+  return `<div class="gd-secici"><div class="gd-bar"><button type="button" class="gd-ok"${o ? ` data-kisi="${esc(o.id)}"` : " disabled"} aria-label="Önceki kişi">‹</button>
+    <button type="button" class="gd-sk" data-gd-liste aria-label="Personel listesini aç"><span class="gd-av">${esc(gdBas(k.ad))}</span><span class="gd-sy"><b>${esc(k.ad || "(adsız)")}</b><small>${esc(k.rutbe || "")}</small></span><span class="gd-gn">${esc(gun)}<small>gün</small></span>${u ? `<i class="gd-uy" title="${u} uyarı">!</i>` : ""}</button>
+    <button type="button" class="gd-ok"${s ? ` data-kisi="${esc(s.id)}"` : " disabled"} aria-label="Sonraki kişi">›</button></div><div class="gd-nok" aria-label="${i + 1}. kişi / ${L.length}">${nok}</div></div>`; }
 document.addEventListener("click", e => { if(!e.target.closest || !e.target.closest("[data-gd-liste]")) return; const soz = gdSekme === "soz", k = gdKisi(), L = gdGrupListe();
   altPencere("gk-perde", "PERSONEL", `${L.length} kişi`, () => `<div class="ap-liste">${L.map((x, j) => { const { gun, u } = gdKisiGun(x, soz); return apSatir(`data-gk="${esc(x.id)}"`, `<span class="gd-av${x === k ? " sec" : ""}">${esc(gdBas(x.ad))}</span>`, esc(x.ad || "(adsız)") + (u ? ` <i class="gd-uy">!</i>` : ""), `<span class="ap-say">${esc(gun)} gün</span>`, { alt: esc(x.rutbe || "") + (x === k ? " · seçili" : "") }); }).join("")}</div>
       <button type="button" class="ag-yeni-kat" data-gk-ekle>＋ Personel ekle</button>`,
@@ -4250,7 +4278,7 @@ function gdBelgeCiz0(){
       <label>Adı ve soyadı${gdInp("gd-k-ad", "k", "ad", k.ad, { st: "font-weight:700" })}</label>
       <label>Sicil${gdInp("gd-k-sicil", "k", "sicil", k.sicil)}</label>
       <label>Düzenlendiği tarih${gdInp("gd-k-tarih", "k", "tarih", k.tarih || "", { tip: "date" })}<small>${k.tarih ? "Bu belgeye özel tarih" : "Boş bırakılırsa genel tarih: " + (trTarih(G.tarih) || "girilmemiş")}</small></label>
-      <label class="gd-genis">Görevi (kadro tam adı)${gdInp("gd-k-gorev", "k", "gorev", k.gorev)}</label>
+      <label class="gd-genis">Görevi (kadro tam adı)<textarea id="gd-k-gorev" class="oto-boy tek-satir" data-tek data-t="k" data-a="gorev" rows="1" aria-label="Görevi">${esc(k.gorev || "")}</textarea></label>
     </div>
     <div class="gd-donem">
       <div class="arac"><div><h3>Dönem ve otomatik oluşturma</h3><span class="uclar">Bu belgenin dönemi: <b>${esc(donemAd(gdDonem(k)))}</b>${k.donem && (k.donem.bas || k.donem.son) ? " (bu belgeye özel)" : " (genel dönem)"}</span></div><span class="bosluk"></span>
@@ -4269,7 +4297,8 @@ function gdBelgeCiz0(){
       : `<span><b>Otomatik:</b> görev satırları, dönem içinde izin/rapor dışında kalan günlerden kendiliğinden dolar. Tarih değiştirirsen elle kipe geçer.</span>`}</div>
     <div class="arac gd-bolum g"><h3>Görev yerleri ve kalış süreleri <span class="gd-say">${k.gorevler.length}</span></h3><span class="bosluk"></span>
       ${(() => { const say = k.gorevler.filter(g => g.don && g.don !== "-"), ac = say.filter(gdArti).length, dur = !say.length ? "" : ac === say.length ? "acik" : ac ? "kismi" : "";
-        return `<button class="gd-anahtar ${dur}" type="button" data-gd="arti-bir" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}" title="Bu personelin bütün satırlarına +1 ekler ya da kaldırır (gidiş ve dönüş günü dahil). Satırlardaki +1'ler tek tek de açılıp kapatılabilir."><span class="ga-sw"><i></i></span><span class="ga-y"><b>+1 gün</b><small>${dur === "acik" ? "tüm satırlarda açık" : dur === "kismi" ? `${ac} / ${say.length} satırda açık` : "gidiş-dönüş dahil"}</small></span></button>`; })()}<button class="gd-anahtar${k.toplamArti ? " acik" : ""}" type="button" data-gd="toplam-arti" aria-pressed="${!!k.toplamArti}" title="Yalnız toplama 1 gün ekler / çıkarır"><span class="ga-sw"><i></i></span><span class="ga-y"><b>+1 toplam</b><small>${k.toplamArti ? "toplama eklendi" : "yalnız toplama"}</small></span></button>${k.gorevler.some(gdGorevBos) ? `<button class="btn kucuk gd-bos-sil" type="button" data-gd="gorev-bos-sil">🧹 Boş satırları sil</button>` : ""}
+        return `<button class="gd-anahtar ${dur}" type="button" data-gd="arti-bir" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}" title="Bu personelin bütün satırlarına +1 ekler ya da kaldırır (gidiş ve dönüş günü dahil). Satırlardaki +1'ler tek tek de açılıp kapatılabilir."><span class="ga-sw"><i></i></span><span class="ga-y"><b>+1 gün</b><small>${dur === "acik" ? "tüm satırlarda açık" : dur === "kismi" ? `${ac} / ${say.length} satırda açık` : "gidiş-dönüş dahil"}</small></span></button>`; })()}${(() => { const say = k.gorevler.filter(g => g.don && g.don !== "-"), ac = say.filter(g => gdEksiYon(g)).length, dur = !say.length ? "" : ac === say.length ? "acik" : ac ? "kismi" : "";
+        return `<span class="gd-eksi-grup"><button class="gd-anahtar gd-an-eksi ${dur}" type="button" data-gd="eksi-bir" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}" title="Bütün satırlarda seçili yöndeki tarihi 1 gün kaydırır ya da geri getirir. Satırlardaki −1'ler tek tek de açılıp kapatılabilir."><span class="ga-sw"><i></i></span><span class="ga-y"><b>−1 gün</b><small>${dur === "acik" ? "tüm satırlarda açık" : dur === "kismi" ? `${ac} / ${say.length} satırda` : "kalıştan 1 gün düş"}</small></span></button><span class="gd-yon" role="group" aria-label="−1 hangi tarihe uygulansın"><button type="button" data-gd-yon="don" aria-pressed="${gdKYon(k) === "don"}">↩ Dönüş</button><button type="button" data-gd-yon="git" aria-pressed="${gdKYon(k) === "git"}">↪ Gidiş</button></span></span>`; })()}<button class="gd-anahtar${k.toplamArti ? " acik" : ""}" type="button" data-gd="toplam-arti"
 </div>
     <div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>S.Nu</th><th>Görev yeri</th><th>Gidiş tarihi</th><th>Dönüş tarihi</th><th>Durum</th><th>Kalış süresi</th><th>Düşünceler</th><th></th></tr></thead><tbody>
       ${k.gorevler.map((g, i) => { const v = gdKalis(g); const devam = g.don === "-" && !g.son, tire = g.don === "-";
@@ -4278,7 +4307,7 @@ function gdBelgeCiz0(){
           <td>${gdInp(`gd-g-${i}-git`, "g", "git", g.git, { i, tip: "date", ad: "Gidiş tarihi" })}</td>
           <td>${tire ? `<input disabled value="-" aria-label="Dönüş tarihi (devam)" style="text-align:center">` : gdInp(`gd-g-${i}-don`, "g", "don", g.don, { i, tip: "date", ad: "Dönüş tarihi" })}</td>
           <td class="devam"><select id="gd-g-${i}-durum" data-t="g" data-a="durum" data-i="${i}" aria-label="Görev durumu" class="gd-durum${devam ? " d-devam" : g.son ? " d-son" : ""}"><option value="">—</option><option value="devam"${devam ? " selected" : ""}>Devam</option><option value="son"${!devam && g.son ? " selected" : ""}>Görev Sonu</option></select></td>
-          <td class="hesap gd-kalis"${typeof v === "number" && v < 0 ? ' style="color:var(--danger)"' : ""}><span>${esc(v)}</span>${tire ? "" : `<button class="mini gd-arti${gdArti(g) ? " acik" : ""}" type="button" data-gd-arti="${i}" aria-pressed="${gdArti(g)}" title="Bu satırın kalış süresine 1 gün ekle / çıkar">+1</button>`}</td>
+          <td class="hesap gd-kalis"${typeof v === "number" && v < 0 ? ' style="color:var(--danger)"' : ""}><span>${esc(v)}</span>${tire ? "" : `<button class="mini gd-arti${gdArti(g) ? " acik" : ""}" type="button" data-gd-arti="${i}" aria-pressed="${gdArti(g)}" title="Bu satırın kalış süresine 1 gün ekle / çıkar">+1</button><button class="mini gd-eksi${g.eksi ? " acik" : ""}" type="button" data-gd-eksi="${i}" aria-pressed="${!!g.eksi}" title="${gdEksiYon(g) === "git" ? "Gidiş 1 gün ileri alındı · geri getir" : gdEksiYon(g) ? "Dönüş 1 gün geri alındı · geri getir" : gdKYon(k) === "git" ? "Gidiş tarihini 1 gün ileri al" : "Dönüş tarihini 1 gün geri al"}">−1${gdEksiYon(g) ? `<small>${gdEksiYon(g) === "git" ? "G" : "D"}</small>` : ""}</button>`}</td>
           <td>${gdInp(`gd-g-${i}-not`, "g", "not", g.not, { i, st: "min-width:100px", ad: "Düşünceler" })}</td>${gdIslem("g", i)}</tr>`; }).join("") ||
         `<tr><td colspan="8"><div class="bos" style="padding:10px">Görev yeri satırı yok</div></td></tr>`}
     </tbody><tfoot><tr><td colspan="5" style="text-align:right">TOPLAM</td><td class="hesap gd-kalis"><span>${T}</span><button class="mini gd-arti${k.toplamArti ? " acik" : ""}" type="button" data-gd="toplam-arti" aria-pressed="${!!k.toplamArti}" title="Toplama 1 gün ekle / çıkar">+1</button></td><td colspan="2"></td></tr></tfoot></table></div>
@@ -4396,8 +4425,8 @@ function gdAlan(el){
     if(a === "durum"){ const eski = ["Devam","Görev Sonu"].includes(g.not) || !g.not;
       if(v === "devam"){ g.don = "-"; g.son = false; if(eski) g.not = "Devam"; }
       else if(v === "son"){ g.don = "-"; g.son = true; if(eski) g.not = "Görev Sonu"; }
-      else { if(g.don === "-") g.don = ""; g.son = false; if(eski) g.not = ""; } }
-    else g[a] = v; }
+      else { if(g.don === "-") g.don = ""; g.son = false; if(eski) g.not = ""; } if(g.don === "-") delete g.eksi; }
+    else { g[a] = v; if((a === "don" && gdEksiYon(g) === "don") || (a === "git" && gdEksiYon(g) === "git")) delete g.eksi; } }
   else if(t === "a" && k && ["no","ay","gun"].includes(a)){ const x = k.ayri[i]; if(!x) return; const oto = a === "no" ? i + 1 : gdAyGunOto(x)[a === "ay" ? 0 : 1];
     const t2 = String(v).trim(); if(t2 === String(oto) && t2 !== "") delete x[a]; else x[a] = t2; kaydetBt("gdhg"); return; }
   else if(t === "a" && k){ const x = k.ayri[i]; if(!x) return; if(a === "sebep" && el.tagName === "SELECT"){ if(v === "__diger"){ x.elle = true; if(gdSebepler().includes(x.sebep)) x.sebep = ""; } else { x.sebep = v; delete x.elle; } } else x[a] = v; }
@@ -4459,6 +4488,15 @@ $("#e-gdhg").addEventListener("click", e => {
     bildir(`${r.satir} görev satırı oluştu · ${r.izin} izin/rapor işlendi${r.disari ? ` · ${r.disari} kayıt dönem dışında` : ""}`); return; }
   if(b.dataset.gd === "olustur-hepsi"){ if(!onay(`Emin misiniz? ${G.kisiler.length} kişinin görev satırları yeniden oluşacak`, "Tüm personel için oluştur")) return;
     let n = 0; for(const x of G.kisiler){ if(!gdOlustur(x).hata) n++; } kaydetBt("gdhg"); gdBelgeCiz(); bildir(`${n} kişinin görev satırları dönem ve izinlerden oluşturuldu`); return; }
+  if(b.dataset.gdEksi !== undefined){ const g = k.gorevler[+b.dataset.gdEksi]; if(!g || !g.don || g.don === "-") return; const y = gdEksiYon(g);
+    if(y) gdEksiKaldir(g); else gdEksiUygula(g, gdKYon(k)); kaydetBt("gdhg"); gdBelgeCiz();
+    bildir(y ? (y === "git" ? `Gidiş ${gdTr(g.git)} olarak geri geldi` : `Dönüş ${gdTr(g.don)} olarak geri geldi`) : (g.eksi === "git" ? `Gidiş ${gdTr(g.git)} yapıldı (1 gün ileri)` : `Dönüş ${gdTr(g.don)} yapıldı (1 gün geri)`)); return; }
+  if(b.dataset.gdYon){ const yeni = b.dataset.gdYon === "git" ? "git" : "don"; if(gdKYon(k) === yeni) return; k.eksiYon = yeni; if(yeni === "don") delete k.eksiYon;
+    let n = 0; k.gorevler.forEach(g => { if(gdEksiYon(g)){ gdEksiKaldir(g); gdEksiUygula(g, yeni); n++; } }); kaydetBt("gdhg"); gdBelgeCiz();
+    bildir(`−1 artık ${yeni === "git" ? "gidiş tarihini 1 gün ileri" : "dönüş tarihini 1 gün geri"} alır${n ? ` · ${n} satır güncellendi` : ""}`); return; }
+  if(b.dataset.gd === "eksi-bir"){ const say = k.gorevler.filter(g => g.git && g.don && g.don !== "-"); if(!say.length) return; const hepsi = say.every(g => gdEksiYon(g)), yon = gdKYon(k);
+    say.forEach(g => { if(hepsi) gdEksiKaldir(g); else if(!gdEksiYon(g)) gdEksiUygula(g, yon); }); k.eksiBir = !hepsi; if(!k.eksiBir) delete k.eksiBir; kaydetBt("gdhg"); gdBelgeCiz();
+    document.querySelectorAll("#e-gdhg .gd-kalis > span").forEach(x => x.classList.add("gd-zipla")); bildir(!hepsi ? (yon === "git" ? "Bütün gidiş tarihleri 1 gün ileri alındı" : "Bütün dönüş tarihleri 1 gün geri alındı") : "Tarihler eski haline getirildi"); return; }
   if(b.dataset.gdArti !== undefined){ const g = k.gorevler[+b.dataset.gdArti]; if(!g) return; g.arti = !gdArti(g); kaydetBt("gdhg"); gdBelgeCiz(); return; }
   if(b.dataset.gd === "yazi-bitisik" || b.dataset.gd === "yazi-ayrik"){ G.yaziAyrik = b.dataset.gd === "yazi-ayrik"; if(!G.yaziAyrik) delete G.yaziAyrik; kaydetBt("gdhg"); gdBelgeCiz(); return; }
   if(b.dataset.gd === "toplam-arti"){ k.toplamArti = !k.toplamArti; if(!k.toplamArti) delete k.toplamArti; kaydetBt("gdhg"); gdBelgeCiz(); document.querySelectorAll('#e-gdhg tfoot .gd-kalis > span').forEach(x => x.classList.add("gd-zipla")); const an = document.querySelector('#e-gdhg .gd-anahtar[data-gd="toplam-arti"]'); an && an.classList.add("degisti"); return; }
@@ -5500,12 +5538,12 @@ function beyanSonucCiz(){
 }
 function beyanAktar(k, R){
   let ekle = 0, gunc = 0;
-  for(const g of R.gorevler){ if(!g.al || !g.git) continue; const don = g.devam ? "-" : (g.don || "");
-    const v = k.gorevler.find(x => x.git === g.git);
+  for(const g of R.gorevler){ if(!g.al || !g.git) continue; const don0 = g.devam ? "-" : (g.don || "");
+    const v = k.gorevler.find(x => gdAslGit(x) === g.git), ey = v ? gdEksiYon(v) : k.eksiBir ? gdKYon(k) : "", eksi = ey === "don", don = eksi && don0 && don0 !== "-" ? gunEkle(don0, -1) : don0;
     if(v){ if(don && v.don !== don){ v.don = don; v.not = don === "-" ? (v.not || "Devam") : (v.not === "Devam" ? "" : v.not); gunc++; } if(g.yer && !v.yer) v.yer = g.yer; continue; }
     const bos = k.gorevler.find(x => !x.git);
-    if(bos){ bos.git = g.git; if(don) bos.don = don; if(bos.not === "Devam" && don !== "-") bos.not = ""; if(g.yer) bos.yer = g.yer; gunc++; continue; }
-    k.gorevler.push({ yer: g.yer || (k.gorevler[k.gorevler.length - 1] || {}).yer || GD_YER, git: g.git, don, not: don === "-" ? "Devam" : "" }); ekle++; }
+    if(bos){ bos.git = g.git; delete bos.eksi; if(don){ bos.don = don; if(ey && don !== "-"){ if(eksi) bos.eksi = "don"; else gdEksiUygula(bos, "git"); } } if(bos.not === "Devam" && don !== "-") bos.not = ""; if(g.yer) bos.yer = g.yer; gunc++; continue; }
+    { const yeni = { yer: g.yer || (k.gorevler[k.gorevler.length - 1] || {}).yer || GD_YER, git: g.git, don, not: don === "-" ? "Devam" : "" }; if(ey && don && don !== "-"){ if(eksi) yeni.eksi = "don"; else gdEksiUygula(yeni, "git"); } k.gorevler.push(yeni); } ekle++; }
   k.gorevler.sort((a, b) => (a.git || "9999") < (b.git || "9999") ? -1 : (a.git || "9999") > (b.git || "9999") ? 1 : 0);
   for(const x of R.ayri){ if(!x.al || (!x.ayr && !x.kat)) continue; if(k.ayri.some(y => y.ayr === x.ayr && y.kat === x.kat)) continue; k.ayri.push({ sebep: x.sebep, ayr: x.ayr, kat: x.kat }); ekle++; }
   k.ayri.sort((a, b) => (a.ayr || "9999") < (b.ayr || "9999") ? -1 : 1);
@@ -8010,7 +8048,7 @@ function kadroCiz(){ const d = acikBelge(); if(!d || d.tur !== "kadro") return; 
   const al = (x, k, et, o = {}) => `<label class="ko-al${o.tam ? " ko-tam" : ""}"><span>${et}</span>${o.sec ? `<div class="kc-cips">${o.sec.map(s => `<button type="button" data-kc-cip="${x.id}:${k}:${esc(s)}" aria-pressed="${s === x[k]}">${esc(KC_KISA[s] || s)}</button>`).join("")}</div>` : o.cok ? `<textarea class="oto-boy" rows="1" data-kc="${x.id}:${k}">${esc(x[k] ?? "")}</textarea>` : `<input data-kc="${x.id}:${k}" value="${esc(x[k] ?? "")}"${o.say ? ' inputmode="numeric"' : ""}>`}</label>`;
   $("#kc-govde").innerHTML = `${kcOzetHtml(v)}
     <div class="kc-bloklar">${v.bloklar.map((b, bi) => { const acik = kcAcikBlok === b.id;
-      if(b.tur !== "par") return `<div class="kc-ara"><input data-kcb="${b.id}:ad" value="${esc(b.ad)}" aria-label="Ara başlık"><input data-kcb="${b.id}:tbs" value="${esc(b.tbs || "")}" class="kc-tbs" aria-label="Tbs No"></div>`;
+      if(b.tur !== "par") return `<div class="kc-ara"><textarea class="oto-boy" rows="1" data-kcb="${b.id}:ad" aria-label="Ara başlık">${esc(b.ad)}</textarea><input data-kcb="${b.id}:tbs" value="${esc(b.tbs || "")}" class="kc-tbs" aria-label="Tbs No"></div>`;
       const p = P[b.id];
       return `<div class="kc-blok${acik ? " acik" : ""}"><button type="button" class="kc-bb" data-kc-blok="${b.id}"><span class="kc-no">${esc(b.no ?? "")}</span><span class="kc-sy"><b>${esc(b.ad)}</b><small>${p.kadro} yer · sefer ${p.sefer} / barış ${p.baris} · ${p.mevcut} dolu</small></span><i>${acik ? "▴" : "▾"}</i></button>
         ${acik ? `<div class="kc-ic"><div class="kc-bas2">${al({ ...b, id: "B" + b.id }, "ad", "Kısım adı")}${al({ ...b, id: "B" + b.id }, "tbs", "Tbs No")}</div>
@@ -8348,7 +8386,7 @@ function tebtutCiz(){ const d = acikBelge(); if(!d || d.tur !== "tebtut") return
         <label class="tt-f tt-tam"><span>Konusu</span><textarea class="oto-boy tt-in" data-tt-e="${i}:konu" rows="1" placeholder="Konusu" aria-label="${i + 1}. emrin konusu">${esc(e.konu)}</textarea></label></div>`).join("")}
       <button type="button" class="tt-ekle" data-tt-i="emir">＋ Emir ekle</button></div>
       <div class="tt-cizgi"></div>
-      <div class="kp-iki"><label class="gi-alan"><span>Tebliğ yeri</span><input data-tt="yer" value="${esc(k.yer)}"></label><label class="gi-alan"><span>Tebliğ tarihi</span><input type="date" data-tt="tarih" value="${esc(k.tarih)}"></label></div>
+      <div class="kp-iki"><label class="gi-alan"><span>Tebliğ yeri</span><textarea class="oto-boy tek-satir" data-tek data-tt="yer" rows="1">${esc(k.yer)}</textarea></label><label class="gi-alan"><span>Tebliğ tarihi</span><input type="date" data-tt="tarih" value="${esc(k.tarih)}"></label></div>
       <label class="kp-tik"><input type="checkbox" data-tt-tarihyaz${k.tarihYaz ? " checked" : ""}> Tarih sütununa tebliğ tarihini yaz</label></div>`, { kume: ttKapali })}
     ${kkKart("tt-kisi", "#E3EEF0", "Kişiler ve tebliğ eden", `${S.length} kişi · tebliğ eden ${eden ? esc(eden.ad) : "seçilmedi"}`, `<div class="kp-alanlar"><div class="kp-iki"><label class="gi-alan"><span>Tebliğ eden</span><select data-tt-eden>${tbPersonel().map(p => `<option value="${esc(p.id)}"${p.id === k.eden ? " selected" : ""}>${esc(p.rutbe + " " + p.ad)}</option>`).join("")}</select></label>
       <label class="gi-alan"><span>İmzada görevi</span><input data-tt="imzaGorev" value="${esc(k.imzaGorev)}" placeholder="${esc(ttKisaltma(eden) || "Bt.Sb.")}"></label></div></div>
