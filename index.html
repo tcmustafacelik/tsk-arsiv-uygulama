@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "__SURUM__";
+  const SURUM = "232";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -261,6 +261,17 @@
       .bl-kart details summary{cursor:pointer;font-weight:700;font-size:13px;color:var(--muted)} .bl-kart details[open]>*:not(summary){margin-top:8px}
       .bl-hata{color:var(--danger);font-weight:700;font-size:13.5px;line-height:1.45} .bl-hata:empty{display:none} .bl-hata.bilgi a{color:var(--accent);font-weight:700} .bl-hata.bilgi{color:var(--fg);font-weight:500;background:var(--panel2);border:1px solid var(--line2);padding:10px 12px;border-radius:12px}
       .bl-durumkart{display:flex;align-items:center;gap:12px;padding:14px;border-radius:16px;background:var(--panel2);border:1px solid var(--line2)}
+      .bl-durumkart{background:linear-gradient(135deg,color-mix(in srgb,#3C7A4E 8%,var(--panel)),var(--panel))!important}
+      .bl-dik{flex:none;width:44px;height:44px;border-radius:14px;display:grid;place-items:center;background:color-mix(in srgb,currentColor 13%,#fff);color:#3C7A4E} .bl-dik svg,.bl-ik svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+      .bl-liste{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:16px;overflow:hidden;background:var(--panel)}
+      .bl-sat,.bl-veri>summary{display:flex;align-items:center;gap:12px;width:100%;min-height:58px;padding:9px 13px;border:0;border-bottom:1px solid var(--line2);background:transparent;text-align:left;color:var(--fg);cursor:pointer;font:inherit} .bl-sat:last-child{border-bottom:0} .bl-sat:disabled{opacity:.55}
+      .bl-yz{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .bl-yz strong,.bl-kilitsat strong{font:700 14px var(--f-ui)} .bl-yz small{font:500 11.5px var(--f-ui);color:var(--muted)}
+      .bl-sat>i,.bl-veri>summary>i,.bl-kilitsat>i{flex:none;font-style:normal;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:var(--panel2);color:var(--muted)}
+      .bl-ik{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center} .bl-ik svg{width:21px;height:21px} .bl-ik.mavi{background:#E4ECF7;color:#3D5F8C} .bl-ik.mor{background:#ECE7F6;color:#5B4B8A} .bl-ik.yesil{background:#E2F1E7;color:#2F6B47} .bl-ik.amber{background:#F7EEDA;color:#8A6420}
+      .bl-veri>summary .bl-yz strong{color:var(--fg)} .bl-veri{border:1px solid var(--line2);border-radius:16px;background:var(--panel);overflow:hidden} .bl-veri>summary{list-style:none;border-bottom:0} .bl-veri>summary::-webkit-details-marker{display:none} .bl-veri[open]>summary{border-bottom:1px solid var(--line2)} .bl-veri[open]>summary>i{transform:rotate(90deg)} .bl-veri .arac{padding:10px 12px;display:flex;flex-wrap:wrap;gap:6px}
+      .bl-kilitsat{background:var(--panel)!important;border-color:var(--line2)!important} .bl-kilitsat>.bl-ik{width:40px;height:40px}
+      #bl-kes{border:0!important;background:transparent!important;color:#A3412F!important;font:600 13px var(--f-ui)!important;height:auto!important;padding:4px!important}
+      .bl-mod button[aria-checked="true"]{background:var(--accent)!important;color:#fff!important;box-shadow:none!important} .bl-mod button[aria-checked="true"]::before{content:""!important}
       .bl-durumkart .bl-r{font-size:26px;line-height:1} .bl-durumkart strong{display:block;font-size:15px} .bl-durumkart small{font-size:12.5px;color:var(--muted)}
       .bl-izgara{display:grid;grid-template-columns:1fr 1fr;gap:10px}
       .bl-tus{display:flex;flex-direction:column;align-items:center;gap:6px;padding:16px 8px;border-radius:16px;border:1px solid var(--line);background:var(--panel2);color:var(--fg);font:600 13px var(--f-ui);cursor:pointer}
@@ -296,7 +307,7 @@
     const ik = document.createElement("button"); ik.id = "bulut-ikon"; ik.type = "button"; ik.innerHTML = "<b>☁</b><span>bulut</span>"; durumEl.after(ik); durumEl.style.display = "none";
     const panel = document.createElement("div"); panel.className = "bl-perde"; panel.id = "bl-panel"; panel.hidden = true;
     panel.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true" aria-labelledby="bl-baslik">
-      <div class="bl-ust"><div class="bl-logo">☁</div><div style="flex:1;min-width:0"><h3>TSK ARŞİV · sürüm ${SURUM}</h3><h2 id="bl-baslik">Giriş</h2></div><button class="bl-x" type="button" id="bl-kapat" aria-label="Kapat">✕</button></div>
+      <div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M7 18h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 9.2 4.4 4.4 0 0 0 7 18z"/></svg></div><div style="flex:1;min-width:0"><h3>TSK ARŞİV · sürüm ${SURUM}</h3><h2 id="bl-baslik">Giriş</h2></div><button class="bl-x" type="button" id="bl-kapat" aria-label="Kapat">✕</button></div>
       <div id="bl-giris" class="bl-ac">
         <p class="bl-alt">Verilerin gizli GitHub deponda duruyor. Bağlanınca bu cihaza iner, her kayıtta otomatik yedeklenir.</p>
         <button class="bl-secenek ana" type="button" data-ac="bl-link-alan" aria-expanded="false"><b>🔗</b><span><strong>Hızlı bağlantı linkim var</strong><small>Linki yapıştır, 6 haneli PIN'ini gir. Anahtar yazmak yok.</small></span></button>
@@ -319,14 +330,14 @@
         <div class="bl-hata" id="bl-hata" role="alert"></div>
       </div>
       <div id="bl-bagli" class="bl-ac" hidden>
-        <div class="bl-durumkart"><span class="bl-r">●</span><div style="min-width:0"><strong id="bl-dbas"></strong><small id="bl-durum"></small></div></div>
-        <div class="bl-izgara"><button class="bl-tus" type="button" id="bl-simdi"><b>⟳</b>Şimdi eşitle</button><button class="bl-tus" type="button" id="bl-hizli"><b>📱</b>Başka cihaza bağlan</button></div>
+        <div class="bl-durumkart"><span class="bl-r bl-dik"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 9.2 4.4 4.4 0 0 0 7 18z"/><path d="M9.5 13.5l2 2 3.5-3.5"/></svg></span><div style="min-width:0"><strong id="bl-dbas"></strong><small id="bl-durum"></small></div></div>
+        <div class="bl-liste"><button class="bl-sat" type="button" id="bl-simdi"><span class="bl-ik mavi"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4.6L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.5 4.6L20 16"/><path d="M20 20v-4h-4"/></svg></span><span class="bl-yz"><strong>Şimdi eşitle</strong><small>değişiklikleri gönder, buluttakini al</small></span><i>›</i></button><button class="bl-sat" type="button" id="bl-hizli"><span class="bl-ik mor"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg></span><span class="bl-yz"><strong>Başka cihaza bağlan</strong><small>hızlı bağlantı linki</small></span><i>›</i></button></div>
         <div class="bl-modkap"><span class="bl-modbas">Otomatik eşitleme</span><div class="bl-mod" id="bl-mod" role="radiogroup" aria-label="Otomatik eşitleme">${Object.entries(MODLAR).map(([k, v]) => `<button type="button" role="radio" data-mod="${k}" aria-checked="false">${v.ad.replace("Dakikada bir", "Dakikada").replace("Saatte bir", "Saatte").replace("Günde bir", "Günde")}</button>`).join("")}</div></div>
-        <details><summary>Bu cihazdaki veriler</summary><div class="arac"><button class="btn kucuk" type="button" id="bl-yedek">Yedek al (.json)</button><button class="btn kucuk" type="button" id="bl-yukle">Yedekten yükle</button><input type="file" id="bl-dosya" accept=".json,application/json" hidden><button class="btn kucuk sil" type="button" id="bl-sifirla">Bu cihazı sıfırla</button></div></details>
+        <details class="bl-veri"><summary><span class="bl-ik yesil"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6"/><path d="M5 12v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8v-6"/></svg></span><span class="bl-yz"><strong>Bu cihazdaki veriler</strong><small>yedek al, yedekten yükle, sıfırla</small></span><i>›</i></summary><div class="arac"><button class="btn kucuk" type="button" id="bl-yedek">Yedek al (.json)</button><button class="btn kucuk" type="button" id="bl-yukle">Yedekten yükle</button><input type="file" id="bl-dosya" accept=".json,application/json" hidden><button class="btn kucuk sil" type="button" id="bl-sifirla">Bu cihazı sıfırla</button></div></details>
         <button class="btn sil genis" type="button" id="bl-kes">Bağlantıyı kes</button>
         <div class="bl-hata" id="bl-hata2" role="alert"></div>
       </div>
-      <button class="bl-secenek" type="button" id="bl-kilit"><b>🔒</b><span><strong>Uygulama kilidi</strong><small id="bl-kilit-alt"></small></span></button>
+      <button class="bl-secenek bl-kilitsat" type="button" id="bl-kilit"><span class="bl-ik amber"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span><strong>Uygulama kilidi</strong><small id="bl-kilit-alt"></small></span><i>›</i></button>
     </div>`;
     document.body.appendChild(panel);
     /* PIN penceresi */
@@ -2098,7 +2109,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · DOSYA</div>
 <div class="ac-cubuk"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 231</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 232</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
