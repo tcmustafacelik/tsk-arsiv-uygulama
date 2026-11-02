@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "237";
+  const SURUM = "238";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1581,6 +1581,11 @@ input.tt-in[data-tt-e$=":sayi"]{font:500 12.5px ui-monospace,SFMono-Regular,Menl
 .tz-metin{width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:10px;padding:8px 10px;font:500 13.5px/1.45 var(--f-ui);background:transparent;color:var(--fg);resize:none;overflow:hidden;transition:height .12s}
 textarea.oto-boy{resize:none;min-height:0;max-height:none}
 #yapi-duzenle{display:none!important}
+select.sec-gizli{display:none!important}
+.sec-cip{display:inline-flex;flex:1 1 auto;min-width:0;max-width:100%;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--panel)} .sec-cip button{flex:1 1 auto;min-width:0;height:36px;padding:0 10px;border:0;background:transparent;font:600 12.5px var(--f-ui);color:var(--fg);white-space:nowrap} .sec-cip button+button{border-left:1px solid var(--line)} .sec-cip button[aria-pressed="true"]{background:var(--accent);color:#fff}
+.sec-cip.cok{flex-wrap:wrap;border:0;background:transparent;gap:6px;overflow:visible} .sec-cip.cok button{flex:0 1 auto;height:34px;border:1px solid var(--line)!important;border-radius:20px;background:var(--panel);padding:0 12px} .sec-cip.cok button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)!important}
+#v-belge select:not(.sec-gizli):not([multiple]),.ap-kart select{-webkit-appearance:none;appearance:none;height:40px;padding:0 34px 0 12px;border:1px solid var(--line);border-radius:11px;background:var(--panel) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237A8696' stroke-width='2.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M7 10l5 5 5-5'/%3E%3C/svg%3E") no-repeat right 10px center/16px;font:600 13.5px var(--f-ui);color:var(--fg);max-width:100%}
+#v-belge table select:not(.sec-gizli){height:auto;min-height:30px;padding:0 26px 0 8px;background-position:right 6px center;background-size:13px;border-radius:8px;font-size:12.5px}
 .sil-ust{display:flex;align-items:center;gap:13px;padding:4px 2px} .sil-ik{flex:none;width:52px;height:52px;border-radius:16px;display:grid;place-items:center;background:#F8E6E2;color:#A3412F} .sil-ik svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 .sil-ust>div{display:flex;flex-direction:column;gap:2px;min-width:0} .sil-ust b{font:700 15.5px var(--f-ui);overflow-wrap:anywhere} .sil-ust small{font:500 12.5px var(--f-ui);color:var(--muted)}
 .sil-not{margin:0;padding:10px 12px;border-radius:12px;background:var(--panel2);font:500 12.5px/1.45 var(--f-ui);color:var(--muted)}
@@ -2116,7 +2121,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 237</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 238</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3049,6 +3054,17 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
       <p class="sil-not">Sildikten sonra birkaç saniye içinde altta çıkan <b>↶ Geri al</b> ile geri getirebilirsiniz.</p>
       <div class="sil-is"><button type="button" class="btn" data-sil-c="0">Vazgeç</button><button type="button" class="btn sil-evet" data-sil-c="1">Sil</button></div>`,
     (c, kapat) => { if(c.dataset.silC == null) return; kapat(); if(c.dataset.silC === "1"){ b.__onayli = true; b.dataset.onay = "1"; try { b.click(); } finally { setTimeout(() => { b.__onayli = false; }, 0); } } }, { z: "F8E6E2", r: "A3412F" }); }, true);
+/* ===== açılır kutular → seçim düğmeleri: az seçenekli kutular yan yana düğmeye dönüşür, kalanlar aynı tarzda kutu olur ===== */
+(() => { const cip = s => { const g = s.__cip; if(!g) return; g.innerHTML = [...s.options].map(o => `<button type="button" data-v="${esc(o.value)}" aria-pressed="${o.value === s.value}"${o.disabled ? " disabled" : ""}>${esc(o.text)}</button>`).join(""); };
+  const d = Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype, "value");
+  Object.defineProperty(HTMLSelectElement.prototype, "value", { configurable: true, get(){ return d.get.call(this); }, set(v){ d.set.call(this, v); if(this.__cip) cip(this); } });
+  const donustur = () => document.querySelectorAll("select:not([data-yerli]):not([hidden]):not(.sec-gizli)").forEach(s => {
+    if(s.multiple || s.closest("table, .izgara, #g-tablo, [data-yerli-kap]")) return; const O = [...s.options]; if(O.length < 2 || O.length > 5 || O.reduce((a, o) => a + o.text.length, 0) > 64 || O.some(o => o.text.length > 26)) return;
+    const g = document.createElement("div"); g.className = "sec-cip" + (O.length > 3 ? " cok" : ""); g.setAttribute("role", "radiogroup"); if(s.getAttribute("aria-label")) g.setAttribute("aria-label", s.getAttribute("aria-label"));
+    s.after(g); s.__cip = g; s.classList.add("sec-gizli"); cip(s);
+    g.addEventListener("click", e => { const b = e.target.closest("button"); if(!b || b.disabled) return; e.preventDefault(); if(s.value === b.dataset.v) return; s.value = b.dataset.v; s.dispatchEvent(new Event("input", { bubbles: true })); s.dispatchEvent(new Event("change", { bubbles: true })); cip(s); }); });
+  let bekle = 0; new MutationObserver(() => { if(bekle) return; bekle = requestAnimationFrame(() => { bekle = 0; donustur(); }); }).observe(document.body, { childList: true, subtree: true });
+  document.addEventListener("change", e => { if(e.target.__cip) cip(e.target); }, true); donustur(); })();
 const BKK_SIMGE = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>`;
 const BKK_RENK = [["E5EDF6", "38597E"], ["E7F0E4", "4A6A40"], ["F6EEDC", "7D6025"], ["ECE8F5", "5A4E86"], ["F3E9E1", "7E5A43"], ["E2EFEE", "3C6866"], ["EEF0E2", "5D6534"], ["E9EDF2", "4E5D70"]];
 const bkRenk = tur => { let h = 0; for(const c of String(tur)) h = (h * 31 + c.charCodeAt(0)) >>> 0; return BKK_RENK[h % BKK_RENK.length]; };
