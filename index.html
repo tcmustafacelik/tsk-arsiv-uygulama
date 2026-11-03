@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "251";
+  const SURUM = "252";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1409,6 +1409,11 @@ table.liste td{border-color:var(--line2)}
 input[type=date].tarih-bos:not(:focus){color:transparent!important;background-image:url("data:image/svg+xml,%3Csvg%20xmlns%3D%22http%3A//www.w3.org/2000/svg%22%20width%3D%2274%22%20height%3D%2216%22%3E%3Ctext%20x%3D%220%22%20y%3D%2212%22%20font-family%3D%22system-ui%2C-apple-system%2CSegoe%20UI%2Csans-serif%22%20font-size%3D%2213%22%20fill%3D%22%239AA6B2%22%3ETarih%20se%C3%A7%3C/text%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:12px center!important}
 table input[type=date].tarih-bos:not(:focus),.tt-tar input[type=date].tarih-bos:not(:focus),.yk-tbar input[type=date].tarih-bos:not(:focus){background-position:center!important}
 input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
+.by-hedef{display:flex;flex-direction:column;gap:6px;padding:9px 11px;border:1px solid #D3DFEC;border-radius:12px;background:#F3F7FB} .by-hedef>span{font:600 12px var(--f-ui);color:#3F6487}
+.by-hcip{display:flex;flex-wrap:wrap;gap:6px} .by-hcip button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);color:var(--fg);cursor:pointer;text-align:left;font:inherit}
+.by-hcip button b{font:700 12.5px var(--f-ui)} .by-hcip button small{font:500 10.5px var(--f-ui);color:var(--muted)}
+.by-hcip button[aria-pressed="true"]{background:#E2EBF5;border-color:#9FB6CC;box-shadow:inset 0 0 0 1px #9FB6CC} .by-hcip button[aria-pressed="true"] b::before{content:"✓ ";color:#3F6487}
+.by-hcip button:disabled{opacity:.5;cursor:default;background:#F4F5F7}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:140px!important;box-sizing:border-box} table input[type=date]{width:140px!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2253,7 +2258,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 251</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 252</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5665,6 +5670,14 @@ function beyanTemizle(v){
     gorevler: (Array.isArray(v.gorevler) ? v.gorevler : []).map(g => ({ al: true, yer: String(g.yer || ""), git: beyanTarih(g.git), don: beyanTarih(g.don), devam: !!g.devam })).filter(g => g.git || g.don),
     ayri: (Array.isArray(v.ayri) ? v.ayri : []).map(x => ({ sebep: gdSebepNorm(x.sebep), ayr: beyanTarih(x.ayr), kat: beyanTarih(x.kat) })).map(x => ({ ...x, esas: gdEsasMi(x.sebep), al: gdEsasMi(x.sebep) })).filter(x => x.ayr || x.kat) };
 }
+/* beyan hangi GDHG kayıtlarına aktarılsın: kişinin bulunduğu kayıtlar seçilebilir, olmayanlar kapalı */
+const byKayitlar = () => [{ id: S.gdhg.setId, ad: S.gdhg.setAd || "GDHG", veri: S.gdhg, aktif: true }, ...((S.gdhgSet && S.gdhgSet.liste) || [])];
+const byKayitKisi = (veri, k) => { if(!k) return null; if(veri === S.gdhg) return k; const L = veri.kisiler || []; return k.ad ? L.find(x => x.ad && pAd(x.ad) === pAd(k.ad)) || null : null; };   // kayıtlar arası eşleşme ada göre (pid kayıtlar arasında güvenilir değil)
+function byHedefHtml(R){ const k = S.gdhg.kisiler.find(x => x.id === R.kisiId), L = byKayitlar(); if(!R.hedefler) R.hedefler = [S.gdhg.setId];
+  if(R.kisiId === "yeni" || !k) return L.length > 1 ? `<div class="by-hedef"><span>Aktarılacak kayıt</span><div class="by-hcip"><button type="button" aria-pressed="true" disabled><b>${esc(L[0].ad)}</b><small>seçili kayıt</small></button></div></div>` : "";
+  if(L.length < 2) return "";
+  R.hedefler = R.hedefler.filter(id => { const st = L.find(x => x.id === id); return st && byKayitKisi(st.veri, k); }); if(!R.hedefler.length) R.hedefler = [S.gdhg.setId];
+  return `<div class="by-hedef"><span>Aktarılacak kayıt</span><div class="by-hcip">${L.map(st => { const var_ = !!byKayitKisi(st.veri, k), sec = R.hedefler.includes(st.id); return `<button type="button" data-by-hedef="${esc(st.id)}" aria-pressed="${sec}"${var_ ? "" : " disabled"}><b>${esc(st.ad)}</b><small>${var_ ? (st.aktif ? "açık kayıt" : "kişi var") : "bu kişi yok"}</small></button>`; }).join("")}</div></div>`; }
 function beyanSonucCiz(){
   const R = beyanSonuc, out = $("#by-sonuc"); if(!R) return;
   const sec = `<select id="by-kisi" aria-label="Personel"><option value="">— Personel seçin —</option>${S.gdhg.kisiler.map(k => `<option value="${esc(k.id)}"${k.id === R.kisiId ? " selected" : ""}>${esc(k.rutbe)} ${esc(k.ad)}</option>`).join("")}${R.kisiAd ? `<option value="yeni"${R.kisiId === "yeni" ? " selected" : ""}>Yeni personel olarak ekle: ${esc(R.kisiAd)}</option>` : ""}</select>`;
@@ -5674,6 +5687,7 @@ function beyanSonucCiz(){
     ${beyanToplam > 1 ? `<div class="by-sira"><b>Belge ${beyanSira} / ${beyanToplam}</b><span>${esc(beyanDosyaAd)}</span></div>` : ""}
     <div class="arac"><b>${esc(R.belge || "Okunan belge")}</b><span class="bosluk"></span><label class="kutu">Personel ${sec}</label></div>
     ${R.kisiOto && R.kisiId ? `<div class="by-kisi-ok">✓ Personel belgeden otomatik seçildi (ad-soyad ve rütbe uyuyor).</div>` : ""}
+    ${byHedefHtml(R)}
     ${!R.kisiId && R.kisiSoru ? `<div class="by-kisi-soru"><b>Bu belge kime ait?</b> ${esc(R.kisiSoru.neden || "")}${R.kisiSoru.belgeAd ? `<div class="uclar">Belgede okunan: ${esc(R.kisiSoru.belgeAd)}${R.kisiSoru.belgeRutbe ? " · " + esc(R.kisiSoru.belgeRutbe) : ""}</div>` : ""}
       ${(R.kisiSoru.adaylar || []).length ? `<div class="by-aday">${R.kisiSoru.adaylar.map(id => S.gdhg.kisiler.find(k => k.id === id)).filter(Boolean).map(k => `<button class="btn" type="button" data-by-aday="${esc(k.id)}">${esc(k.rutbe)} ${esc(k.ad)}</button>`).join("")}</div>` : ""}
       <div class="uclar">Doğru kişi burada yoksa yukarıdaki listeden seçin.</div></div>` : ""}
@@ -5725,15 +5739,20 @@ $("#b-beyan").addEventListener("click", e => {
   if(b.dataset.byAday && beyanSonuc){ beyanSonuc.kisiId = b.dataset.byAday; beyanSonuc.kisiOto = false; beyanSonuc.kisiSoru = null; beyanSonucCiz(); return; }
   if(b.id === "by-vazgec"){ beyanSonuc = null; $("#by-sonuc").innerHTML = ""; if(beyanToplam > 1 && beyanSiradaki()) bildir("Bu belge atlandı"); return; }
   if(b.id === "by-siradaki"){ beyanSiradaki(); return; }
+  if(b.dataset.byHedef && beyanSonuc){ const R = beyanSonuc, id = b.dataset.byHedef; R.hedefler ||= [S.gdhg.setId]; R.hedefler = R.hedefler.includes(id) ? R.hedefler.filter(x => x !== id) : [...R.hedefler, id]; if(!R.hedefler.length) R.hedefler = [id]; beyanSonucCiz(); return; }
   if(b.id === "by-aktar"){ const R = beyanSonuc; if(!R) return; const id = $("#by-kisi").value;
     if(!id){ const q = document.querySelector(".by-kisi-soru, #by-kisi"); if(q) q.scrollIntoView({ behavior: "smooth", block: "center" }); return uyar("Önce belgenin kime ait olduğunu seçin.", true); }
     let k = S.gdhg.kisiler.find(x => x.id === id);
     if(id === "yeni"){ k = { id: yeniId(), ad: R.kisiAd, rutbe: "", sicil: "", gorev: "", tarih: "", gorevler: [], ayri: [] }; S.gdhg.kisiler.push(k); }
     if(!k) return; const s = beyanAktar(k, R); let olus = ""; if(R.gorevler.some(g => g.al && g.git)) k.gorevOto = false; else if(k.gorevOto !== false && gdGorevHesapla(k)){ gdOto(k); olus = ` Görev satırları dönem (${donemAd(gdDonem(k))}) içinde izin dışında kalan günlerden dolduruldu.`; } kaydetBt("gdhg");
+    const anaAd = S.gdhg.setAd || "GDHG", ana = S.gdhg, digerler = [];
+    if(id !== "yeni") (R.hedefler || []).filter(h => h !== S.gdhg.setId).forEach(h => { const st = (S.gdhgSet.liste || []).find(x => x.id === h); if(!st) return; const kk = byKayitKisi(st.veri, k); if(!kk) return;
+      try { S.gdhg = st.veri; const s2 = beyanAktar(kk, R); if(R.gorevler.some(g => g.al && g.git)) kk.gorevOto = false; else if(kk.gorevOto !== false && gdGorevHesapla(kk)) gdOto(kk); const dd2 = gdDonem(kk), dis2 = dd2.bas && dd2.son ? R.ayri.filter(x => x.al && x.ayr && (x.ayr >= dd2.son || (x.kat || x.ayr) <= dd2.bas)).length : 0; digerler.push(`${st.ad}: toplam ${gdToplam(kk)} gün${dis2 ? ` (${dis2} satır bu kaydın dönemi dışında, hesaba girmedi)` : ""}`); } catch(err){ digerler.push(`${st.ad}: aktarılamadı (${err.message || err})`); } finally { S.gdhg = ana; } });
+    if(digerler.length) kaydetBt("gdhgSet");
     const alinan = R.ayri.filter(x => x.al && (x.ayr || x.kat)), icde = alinan.filter(x => k.ayri.some(y => y.ayr === x.ayr && y.kat === x.kat)).length, disari = alinan.length - icde;
     const dd = gdDonem(k), dn = donemAd(dd), donemYok = !dd.bas || !dd.son;
-    $("#by-sonuc").innerHTML = `<div class="mesaj${disari && !icde ? " hata" : ""}"><b>${esc(k.ad)}</b>: ${donemYok ? `${icde} izin/rapor satırı eklendi; dönem tarihi girilmediği için gün hesabı dönem girilince yapılır` : icde ? `${icde} izin/rapor satırı ${dn} dönemine eklendi` : "Döneme eklenen izin/rapor satırı yok"}${s.gunc ? `, ${s.gunc} görev satırı güncellendi` : ""}.
-      ${disari ? `<br>${disari} satır seçili dönemin (${esc(dn)}) dışında olduğu için hesaba girmedi; “dönem dışı kayıtlar” arasında saklandı. Doğru dönem başka ise onay belgesinde dönemi değiştirin.` : ""}${esc(olus)} Toplam artık ${gdToplam(k)} gün.
+    $("#by-sonuc").innerHTML = `<div class="mesaj${disari && !icde ? " hata" : ""}"><b>${esc(k.ad)}</b> · <b>${esc(anaAd)}</b>: ${donemYok ? `${icde} izin/rapor satırı eklendi; dönem tarihi girilmediği için gün hesabı dönem girilince yapılır` : icde ? `${icde} izin/rapor satırı ${dn} dönemine eklendi` : "Döneme eklenen izin/rapor satırı yok"}${s.gunc ? `, ${s.gunc} görev satırı güncellendi` : ""}.
+      ${disari ? `<br>${disari} satır seçili dönemin (${esc(dn)}) dışında olduğu için hesaba girmedi; “dönem dışı kayıtlar” arasında saklandı. Doğru dönem başka ise onay belgesinde dönemi değiştirin.` : ""}${esc(olus)} Toplam artık ${gdToplam(k)} gün.${digerler.length ? `<br>Diğer kayıtlar: ${digerler.map(esc).join(" · ")}` : ""}
       <div class="arac" style="margin-top:6px">${beyanKuyruk.length ? `<button class="btn kucuk ana" type="button" id="by-siradaki">Sıradaki belge → (${beyanKuyruk.length} kaldı)</button>` : ""}<button class="btn kucuk${beyanKuyruk.length ? "" : " ana"}" type="button" id="by-git" data-k="${esc(k.id)}">Onay belgesini aç</button></div></div>`;
     beyanSonuc = null; return; }
   if(b.id === "by-git"){ const d = S.belgeler.find(x => x.tur === "gdhg"); if(!d) return; gdSecili = b.dataset.k; const kk = S.gdhg.kisiler.find(x => x.id === gdSecili); gdSekme = kk && gdSozMu(kk) ? "soz" : "belge";
