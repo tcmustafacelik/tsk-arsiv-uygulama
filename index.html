@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "301";
+  const SURUM = "302";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2435,7 +2435,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 301</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 302</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8664,8 +8664,8 @@ function isaIcerik(d){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k) || 
     sol: v.alt.sol || "", sag: v.alt.sag || "", dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
 /* ölçüler (mm, sayfanın sol üstünden): kutu 10–197,6 · etiket 11,5 · iki nokta 58,7 · değer 60,8 · ikinci nüsha 137,7 mm aşağıda */
 const ISA_M = { BL: 10, BR: 197.6, X1: 11.5, XC: 58.7, XV: 60.8, ALT: 137.7, CIZ: 146.3, FY: 289.5, FS: 8,
-  T: [14.9, 18.5, 21.6], BT: 24.0, AY: 49.4, BB: 140.1,
-  Y: { ust: [[26.9], [32.6], [37.4, 40.7], [46.0]], orta: [[51.4], [57.4], [62.4, 63.4], [67.2], [73.2, 74.3]], alt: [[104.7], [109.7], [114.7], [120.4], [125.4], [130.7], [135.9]] } };
+  T: [14.9, 18.5, 21.6], BT: 24.0, AY: 48.0, BB: 140.1,
+  Y: { ust: [[26.9], [32.6], [37.4, 40.7], [45.6]], orta: [[52.6], [58.2], [63.2, 64.2], [68.0], [73.8, 74.9]], alt: [[104.7], [109.7], [114.7], [120.4], [125.4], [130.7], [135.9]] } };
 const ISA_BAS = ["T.C.", "SİLAHLI KUVVETLER", "PERSONELİNE AİT İZİN BELGESİ"];
 /* her iki çıktının (önizleme, PDF) çizim listesi */
 function isaCizim(I){ const M = ISA_M, L = [];
