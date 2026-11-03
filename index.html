@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "244";
+  const SURUM = "245";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1333,6 +1333,46 @@ table.liste td{border-color:var(--line2)}
 .gd-arti{border-radius:999px;font-weight:600}
 .gd-eksi{font-size:11px;padding:2px 6px;margin-left:4px;border:1px solid var(--line);border-radius:999px;background:var(--panel);color:var(--muted);font-weight:600;cursor:pointer} .gd-eksi.acik{background:#F6EADF;border-color:#DDBFA3;color:#8A4F24}
 .gd-an-eksi.acik .ga-sw{background:#C98F5E!important}
+.gd-ozk{border:1px solid var(--line2);border-radius:16px;background:var(--panel);margin:8px 0;overflow:hidden}
+.gd-ozk+.gd-ozk{margin-top:-2px} .gd-oto.elle{font-size:12px;padding:7px 10px;margin:6px 0} .gd-oto.elle .btn{height:28px;font-size:12px}
+.gd-ozb{display:flex;align-items:center;gap:11px;width:100%;padding:10px 12px;border:0;background:transparent;text-align:left;color:var(--fg);cursor:pointer;font:inherit}
+.gd-ozk-kim .gd-ozb{background:linear-gradient(135deg,#EFF4FA,var(--panel) 75%)} .gd-ozk-don .gd-ozb{background:linear-gradient(135deg,#F1F6EF,var(--panel) 75%)}
+.gd-ozi{flex:none;width:36px;height:36px;border-radius:11px;display:grid;place-items:center} .gd-ozi svg{width:20px;height:20px}
+.gd-ozk-kim .gd-ozi{background:#E2EBF5;color:#3F6487} .gd-ozk-don .gd-ozi{background:#E3EEDF;color:#3F6B45}
+.gd-ozy{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px} .gd-ozy b{font:700 14px/1.2 var(--f-ui)} .gd-ozy small{display:flex;flex-wrap:wrap;gap:3px 5px;font:500 11.5px/1.3 var(--f-ui);color:var(--muted)}
+.gd-ozy small span:not(:last-child)::after{content:" ·";color:#B5C0CC}
+.gd-ozr{flex:none;font:700 10.5px var(--f-ui);padding:3px 8px;border-radius:999px;letter-spacing:.02em} .gd-ozr.oto{background:#E3EEDF;color:#3F6B45} .gd-ozr.elle{background:#F6EEDC;color:#87652A}
+.gd-ozo{flex:none;font:600 11.5px var(--f-ui);color:#3F6487;padding:5px 10px;border-radius:999px;background:#EDF2F8}
+.gd-ozk.acik .gd-ozo{background:#F1F3F6;color:var(--muted)}
+.gd-ozg{display:none;padding:4px 12px 12px;border-top:1px solid var(--line2)} .gd-ozk.acik .gd-ozg{display:block}
+.gd-ozg .gd-donem{border:0;background:transparent;padding:6px 0 0}
+.gd-ayarlar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:8px 0 6px}
+.gd-ay{display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:9px 10px;border:1px solid var(--line2);border-radius:14px;background:var(--panel);text-align:left;cursor:pointer;color:var(--fg);font:inherit;min-width:0}
+.gd-ay>b{font:700 13.5px var(--f-ui);margin-top:2px}
+.gd-ay small{font:500 11px/1.25 var(--f-ui);color:var(--muted)}
+.gd-ay .ga-sw{position:relative;flex:none;width:30px;height:18px;border-radius:9px;background:#DDE3EA;transition:background .2s} .gd-ay .ga-sw i{position:absolute;top:2px;left:2px;width:14px;height:14px;border-radius:50%;background:#fff;box-shadow:0 1px 2px rgba(30,45,60,.25);transition:left .2s}
+.gd-ay.acik .ga-sw i{left:14px} .gd-ay.kismi .ga-sw i{left:8px}
+.gd-ay.ay-arti.acik{background:#EDF2F8;border-color:#C7D5E4} .gd-ay.ay-arti.acik .ga-sw{background:#6F8FB0}
+.gd-ay.ay-eksi.acik,.gd-ay.ay-eksi.kismi{background:#FBF2EA;border-color:#E9CFB8} .gd-ay.ay-eksi.acik .ga-sw,.gd-ay.ay-eksi.kismi .ga-sw{background:#C98F5E}
+.gd-ay.ay-top.acik{background:#EEF6F0;border-color:#C9DECF} .gd-ay.ay-top.acik .ga-sw{background:#5E9470}
+.gd-ay.ay-arti.kismi{background:#FAF6EC;border-color:#E9DEC4} .gd-ay.ay-arti.kismi .ga-sw{background:#D9C796}
+.gd-yon-sat{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin:0 0 8px;padding:5px 6px 5px 12px;border-radius:12px;background:#FBF6F0;border:1px dashed #EAD6C2} .gd-yon-sat>span:first-child{font:600 11.5px var(--f-ui);color:#8A6A50}
+.gd-ozg .gd-donem>.arac>div:first-child{display:none} .gd-ozg .gd-donem>.arac{display:grid!important;grid-template-columns:1fr 1fr;gap:6px} .gd-ozg .gd-donem>.arac .bosluk{display:none} .gd-ozg .gd-donem>.arac .btn{width:100%;height:auto;min-height:36px;white-space:normal;line-height:1.2;margin:0}
+.gd-ozg .gd-donem>div:first-child:not(.arac):not(.gd-kimlik){display:none}
+.gd-disi{font-size:12px;color:var(--muted)} .gd-disi summary{cursor:pointer;font-weight:600;color:#6A5A3C;list-style:none} .gd-disi summary::-webkit-details-marker{display:none} .gd-disi summary::before{content:"▸ "} .gd-disi[open] summary::before{content:"▾ "} .gd-disi p{margin:6px 0 0;line-height:1.5}
+.p-kisa{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;margin:2px 0 8px}
+.pk-b{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;min-height:52px;padding:6px 6px;border:1px solid var(--line2);border-radius:14px;background:var(--panel);font:600 11.5px/1.2 var(--f-ui);color:var(--fg);text-align:center;cursor:pointer}
+.pk-b span{font-size:16px;line-height:1} .pk-b:disabled{opacity:.42;cursor:default}
+.pk-rutbe{background:#EFF4FA;border-color:#D3DFEC;color:#36587C} .pk-don{background:#F1F6EF;border-color:#D3E3D0;color:#3F6B45} .pk-kilit{background:#FBF5EA;border-color:#EADCC0;color:#7A5A25} .pk-kilit.acik{background:#F6E9CF;border-color:#D9BE85}
+.y-imzalar{display:flex;flex-direction:column;gap:8px;margin-top:6px}
+.yi-bas{display:flex;align-items:baseline;gap:8px} .yi-bas b{font:700 13px var(--f-ui)} .yi-bas small{font:500 11.5px var(--f-ui);color:var(--muted)}
+.yi-kart{display:flex;flex-direction:column;gap:6px;padding:9px 10px 10px;border:1px solid var(--line2);border-radius:14px;background:linear-gradient(180deg,var(--yr),var(--panel) 52px)}
+.yi-ust{display:flex;align-items:center;gap:8px;min-height:26px} .yi-ust b{flex:1;min-width:0;font:700 12.5px var(--f-ui);color:#4A5868;overflow-wrap:anywhere}
+.yi-no{flex:none;width:22px;height:22px;border-radius:50%;display:grid;place-items:center;background:#fff;border:1px solid var(--line2);font:700 11px var(--f-ui);color:#4A5868}
+.yi-b{flex:none;width:30px;height:28px;border:1px solid var(--line2);border-radius:9px;background:var(--panel);color:#3F6487;font-size:13px;cursor:pointer} .yi-b.sil{color:#A0443A;border-color:#EBCFCA;background:#FBF0EE} .yi-b:disabled{opacity:.35}
+.yi-kart input{width:100%;box-sizing:border-box;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 11px;background:var(--panel);font:500 13.5px var(--f-ui);color:var(--fg);min-width:0} .yi-kart input.yi-ad{font-weight:700}
+.yi-iki{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.yi-ekle{height:40px;border:1px dashed #C9D5E2;border-radius:12px;background:transparent;color:#3F6487;font:600 13px var(--f-ui);cursor:pointer}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 textarea#d-ad{font-family:var(--f-ui);line-height:1.25;resize:none;overflow:hidden;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);box-sizing:border-box;align-self:center;min-height:0;display:block}
 .gd-eksi-grup{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
@@ -1511,7 +1551,7 @@ tr.gd-yeni td{animation:gdYeni 1.6s ease}
 .tt-kayit{display:grid;grid-template-columns:auto 1fr;column-gap:10px;width:100%;padding:9px 12px;border:0;border-bottom:1px solid var(--line2);background:transparent;cursor:pointer;text-align:left;color:var(--fg);font:inherit}
 .tt-kayit b{font:600 12px var(--f-ui);color:var(--muted);grid-row:span 2;align-self:center} .tt-kayit span{font:600 13px var(--f-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .tt-kayit small{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .tt-kayit.su{background:color-mix(in srgb,#DDEBD0 55%,transparent)}
 .kp-alanlar .kp-iki{gap:8px} .tt-emirler{display:flex;flex-direction:column;gap:10px}
-.tt-emir{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,150px);gap:9px 10px;padding:11px 12px 12px;border:1px solid var(--line2);border-radius:14px;background:linear-gradient(180deg,#FBF7EF,var(--panel) 60px)}
+.tt-emir{display:grid;grid-template-columns:minmax(0,1fr);gap:9px 10px;padding:11px 12px 12px;border:1px solid var(--line2);border-radius:14px;background:linear-gradient(180deg,#FBF7EF,var(--panel) 60px)}
 .tt-eb{grid-column:1 / -1;display:flex;align-items:center;gap:8px;min-height:26px} .tt-eb b{flex:1;font:700 12px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:#8A6A35}
 .tt-no{flex:none;width:22px;height:22px;border-radius:50%;background:#F1E3C6;color:#7A5A25;font:700 11px var(--f-ui);display:flex;align-items:center;justify-content:center}
 .tt-f{display:flex;flex-direction:column;gap:4px;min-width:0;margin:0} .tt-f>span{font:600 11px var(--f-ui);color:var(--muted);padding-left:2px} .tt-tam{grid-column:1 / -1}
@@ -1523,6 +1563,8 @@ input.tt-in[data-tt-e$=":sayi"]{font:500 12.5px ui-monospace,SFMono-Regular,Menl
 @media(max-width:520px){.tt-emir{grid-template-columns:minmax(0,1fr)} .tt-sayi,.tt-tar{grid-column:1 / -1}}
 .tt-ekle{height:40px;margin-top:10px;width:100%;border:1px dashed #D9C49A;border-radius:12px;background:transparent;color:#3F6487;font:600 13px var(--f-ui);cursor:pointer} .tt-ekle:active{background:var(--panel2)}
 .tt-cizgi{height:1px;background:var(--line2);margin:4px 0}
+.tt-teb{display:flex;flex-direction:column;gap:9px;padding:11px 12px 12px;border:1px solid var(--line2);border-radius:14px;background:linear-gradient(180deg,#F3F7FB,var(--panel) 60px)}
+.tt-tar{grid-column:1 / -1!important;flex-direction:row!important;align-items:center;justify-content:space-between;gap:10px} .tt-tar>span{flex:1} .tt-tar input.tt-in{flex:none;width:158px!important;text-align:center;font-weight:600}
 .tt-alt{display:flex;justify-content:center;padding:6px 0 4px} .tt-sil{color:#A0443A}
 #mz-govde textarea{width:100%;box-sizing:border-box;border:1px solid var(--line);border-radius:10px;padding:8px 10px;font:600 13px/1.4 var(--f-ui);color:var(--fg);background:var(--panel);resize:none}
 .cd-ust{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:2px 2px 0} .cd-ust b{font:700 13px var(--f-ui)}
@@ -2173,7 +2215,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 244</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 245</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2282,7 +2324,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 
         <!-- PERSONEL -->
         <div id="e-personel" hidden style="display:flex;flex-direction:column;gap:10px">
-          <div class="arac"><button class="btn ana" id="p-ekle">+ Personel ekle</button><span class="uclar">İzin çizelgesi bu listeden oluşur.</span></div>
+          <div class="arac"><button class="btn ana" id="p-ekle">+ Personel ekle</button><span class="uclar">İzin çizelgesi bu listeden oluşur.</span></div><div class="p-kisa" id="p-kisa"></div>
           <div class="tablo-kap"><table class="liste" id="p-tablo"><thead><tr><th style="width:52px">S.No</th><th>Rütbesi</th><th>Adı Soyadı</th><th>Sicil</th><th>Doğum</th><th>Görevi</th><th style="width:96px"></th></tr></thead><tbody></tbody></table></div>
         </div>
 
@@ -2299,7 +2341,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
         <div id="e-yoklama" hidden style="display:flex;flex-direction:column;gap:10px">
           <div id="yk-kart" class="yk-kart"></div>
           <div class="uclar">Kişiye dokunun: izin, rapor, görev ya da kurs için “＋ Ayrılış satırı ekle” ile türü ve ayrılış/katılış tarihini takvimden seçin; bir kişiye birden çok satır eklenebilir. Durum seçilen yoklama tarihine göre kendiliğinden hesaplanır; katılış günü MEVCUT sayılır. Yoklamada adı değiştirilen kişi isim listesini değiştirmez.</div>
-          <div class="arac y-imza"><span class="uclar">İmza (çıktının sağ altında)</span><input data-yimza="ad" placeholder="Adı Soyadı" aria-label="İmza: adı soyadı"><input data-yimza="rutbe" placeholder="Rütbesi" aria-label="İmza: rütbesi"><input data-yimza="gorev" placeholder="Görevi" aria-label="İmza: görevi" style="max-width:110px"></div>
+          <div class="y-imzalar" id="y-imzalar"></div>
         </div>
 
         <!-- HEDEF -->
@@ -2900,7 +2942,7 @@ function dikkatListesi(){
    başlıkta açık renkli şerit, sağda yukarı/aşağı ok; kapalı kartların listesi tarayıcıda (localStorage) tutulur. */
 /* yazdıkça büyüyen metin kutusu: en az 2 satır, en çok 8 satır (sonrası kaydırılır), elle boyutlandırma yok */
 function otoBoy(el){ if(!el) return; el.style.height = "auto"; const cs = getComputedStyle(el), lh = parseFloat(cs.lineHeight) || 20, ek = parseFloat(cs.paddingTop) + parseFloat(cs.paddingBottom) + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth);
-  const en = lh * (el.hasAttribute("data-tek") ? 1 : 2) + ek, cok = lh * 8 + ek; el.style.height = Math.max(en, Math.min(cok, el.scrollHeight + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth))) + "px"; el.style.overflowY = el.scrollHeight > cok ? "auto" : "hidden"; }
+  const en = lh * (el.hasAttribute("data-tek") || el.dataset.min === "1" ? 1 : 2) + ek, cok = lh * 8 + ek; el.style.height = Math.max(en, Math.min(cok, el.scrollHeight + parseFloat(cs.borderTopWidth) + parseFloat(cs.borderBottomWidth))) + "px"; el.style.overflowY = el.scrollHeight > cok ? "auto" : "hidden"; }
 ["#v-belge","#v-bolum","#v-ana"].forEach(q => { const v = document.querySelector(q); if(v) v.addEventListener("scroll", () => { if(v.scrollLeft) v.scrollLeft = 0; }, { passive: true }); });
 const otoBoyHepsi = kok => (kok || document).querySelectorAll("textarea.oto-boy").forEach(otoBoy);
 /* tek satırlık uzun alanlar: textarea[data-tek] — yazı kesilmesin diye alt satıra kayar ama Enter satır açmaz */
@@ -3103,7 +3145,7 @@ async function arsivIndir(){ const K = S.yapi.klasorler, isler = [], tem = s => 
   catch(e){ P.kapat(); uyar("Arşiv hazırlanamadı: " + (e.message || e), true); } }
 document.addEventListener("click", e => { if(e.target.closest && e.target.closest("#arsiv-indir")) arsivIndir(); });
 /* ===== silmeden önce onay: sistemdeki bütün sil düğmeleri önce bu pencereyi açar ===== */
-const SIL_SEC = 'button.sil:not([data-bkm="elle"]), button.imz-sil:not([data-bkm="elle"]), .yk-ek-sil, .tz-sil-arka, .tt-sil, [data-ap-sil], [data-mz-sil], [data-is="sil"], #bl-kes, #bl-sifirla';
+const SIL_SEC = '[data-yi-sil], button.sil:not([data-bkm="elle"]), button.imz-sil:not([data-bkm="elle"]), .yk-ek-sil, .tz-sil-arka, .tt-sil, [data-ap-sil], [data-mz-sil], [data-is="sil"], #bl-kes, #bl-sifirla';
 function silAd(b){ const k = b.closest(".kart, .yk-k, tr, .kc-sat, .bs-k, .kp-b, .sp-cr, .ap-kart, .tb-k, li, .gi-blok, .akk"); if(!k) return "";
   const a = k.querySelector(".ad, .p-oy b, .kc-sy b, .bkk-sy .ad, h3, b, strong"); const x = a ? (a.querySelector("input,textarea") ? a.querySelector("input,textarea").value : a.textContent) : ""; return String(x || "").trim().slice(0, 70); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(SIL_SEC); if(!b || b.disabled || b.__onayli) return; e.preventDefault(); e.stopImmediatePropagation();
@@ -3558,7 +3600,18 @@ function personelEsitle(kaynaklar = ["ilk"]){
 }
 
 /* ================= PERSONEL ================= */
-function personelCiz(){
+/* sıra kısayolları: rütbeye göre sırala, sırayı varsayılan yap ve kilitle, varsayılana dön */
+function pKisaCiz(){ const el = $("#p-kisa"); if(!el) return; const P = S.personel, var_ = (P.varsayilan || []).length, kilit = !!P.kilit;
+  const ayni = var_ && P.varsayilan.join() === P.rows.map(r => r.id).filter(id => P.varsayilan.includes(id)).join();
+  el.innerHTML = `<button type="button" class="pk-b pk-rutbe" data-pk="rutbe"${kilit ? " disabled" : ""}><span>⇅</span>Rütbeye göre sırala</button><button type="button" class="pk-b pk-don" data-pk="don"${!var_ || kilit || ayni ? " disabled" : ""}><span>↺</span>Varsayılana dön</button><button type="button" class="pk-b pk-kilit${kilit ? " acik" : ""}" data-pk="kilit" aria-pressed="${kilit}"><span>${kilit ? "🔒" : "🔓"}</span>${kilit ? "Sıra kilitli" : "Sırayı kilitle"}</button>`; }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-pk]"); if(!b) return; const P = S.personel, geri = anlik(P.rows), ilk = P.rows.map(r => r.id).join();
+  if(b.dataset.pk === "kilit"){ P.kilit = !P.kilit; if(P.kilit) P.varsayilan = P.rows.map(r => r.id); else delete P.kilit; kaydetBt("personel"); personelCiz(); return bildir(P.kilit ? "Bu sıra varsayılan olarak kaydedildi ve kilitlendi" : "Sıra kilidi açıldı · varsayılan sıra saklı"); }
+  if(P.kilit) return;
+  if(b.dataset.pk === "rutbe") P.rows.sort(cdKidem);
+  else if(b.dataset.pk === "don"){ const V = P.varsayilan || [], sira = id => { const i = V.indexOf(id); return i < 0 ? 1e6 : i; }; P.rows.sort((x, y) => sira(x.id) - sira(y.id)); }
+  if(P.rows.map(r => r.id).join() === ilk) return bildir(b.dataset.pk === "rutbe" ? "Liste zaten rütbe sırasında" : "Liste zaten varsayılan sırada");
+  kaydetBt("personel"); personelCiz(); geriAlinabilir(b.dataset.pk === "rutbe" ? "Rütbe ve kıdeme göre sıralandı" : "Varsayılan sıraya dönüldü", () => { geri(); personelCiz(); kaydetBt("personel"); }); });
+function personelCiz(){ pKisaCiz();
   const tb = $("#p-tablo tbody"); const rows = S.personel.rows;
   if(!rows.length){ tb.innerHTML = `<tr><td colspan="7"><div class="bos"><strong>${S.yuklendi.personel ? "Personel listesi boş" : "Yükleniyor…"}</strong>“+ Personel ekle” ile girin.</div></td></tr>`; return; }
   tb.innerHTML = rows.map((r, i) => `<tr data-id="${esc(r.id)}"${pAcik === r.id ? ' class="acik"' : ""}><td class="sn">${i + 1}</td><td class="p-oz"><button type="button" data-p-ac>${pOzet(r)}<i class="p-ok"></i></button></td>
@@ -3578,6 +3631,7 @@ $("#p-tablo").addEventListener("input", e => { const tr = e.target.closest("tr")
 $("#p-tablo").addEventListener("click", e => {
   const b = e.target.closest("button[data-is]"); if(!b) return; const rows = S.personel.rows; const i = rows.findIndex(x => x.id === b.closest("tr").dataset.id);
   if(b.dataset.is === "sil"){ const geri = anlik(rows); rows.splice(i, 1); geriAlinabilir("Satır silindi", () => { geri(); personelCiz(); kaydetBt("personel"); }); }
+  else if((b.dataset.is === "yukari" || b.dataset.is === "asagi") && S.personel.kilit) return bildir("Sıra kilitli · önce 🔒 kilidi açın");
   else if(b.dataset.is === "yukari" && i > 0) [rows[i - 1], rows[i]] = [rows[i], rows[i - 1]];
   else if(b.dataset.is === "asagi" && i < rows.length - 1) [rows[i + 1], rows[i]] = [rows[i], rows[i + 1]];
   else return;
@@ -3638,10 +3692,24 @@ function yoklamaOzet(){
 }
 function yoklamaCiz(){
   if(!YS().tarih) YS().tarih = bugun();
-  document.querySelectorAll("[data-yimza]").forEach(el => { if(el !== document.activeElement) el.value = (YS().imza || {})[el.dataset.yimza] || ""; });
-  ykKartCiz();
+  yImzaCiz(); ykKartCiz();
 }
-document.addEventListener("input", e => { const el = e.target.closest && e.target.closest("[data-yimza]"); if(!el) return; const Y = YS(); Y.imza = { ...(Y.imza || {}), [el.dataset.yimza]: el.value }; kaydetBt(YK); });
+/* yoklama imzaları: birden çok imza sahibi (çıktıda sağdan sola yan yana) */
+const yImzalar = () => { const Y = YS(); if(!Array.isArray(Y.imzalar)) Y.imzalar = [{ ad: "", rutbe: "", gorev: "", ...(Y.imza || {}) }]; if(!Y.imzalar.length) Y.imzalar.push({ ad: "", rutbe: "", gorev: "" }); return Y.imzalar; };
+const Y_IM_RENK = ["#EFF4FA", "#F1F6EF", "#FBF5EA", "#F3F0F8"];
+function yImzaCiz(){ const el = $("#y-imzalar"); if(!el) return; const L = yImzalar(), odak = document.activeElement && el.contains(document.activeElement) ? [document.activeElement.dataset.yi, document.activeElement.dataset.yimza] : null;
+  el.innerHTML = `<div class="yi-bas"><b>İmzalar</b><small>${L.length > 1 ? `${L.length} imza · çıktıda yan yana` : "çıktının sağ altında"}</small></div>
+    ${L.map((im, i) => `<div class="yi-kart" style="--yr:${Y_IM_RENK[i % Y_IM_RENK.length]}"><div class="yi-ust"><span class="yi-no">${i + 1}</span><b>${esc(im.ad || "İmza sahibi")}</b><button type="button" class="yi-b" data-yi-cog="${i}" title="Bu imzayı çoğalt"${L.length >= 4 ? " disabled" : ""}>⧉</button>${L.length > 1 ? `<button type="button" class="yi-b sil" data-yi-sil="${i}" title="Bu imzayı sil" aria-label="${i + 1}. imzayı sil">✕</button>` : ""}</div>
+      <input class="yi-ad" data-yi="${i}" data-yimza="ad" value="${esc(im.ad || "")}" placeholder="Adı Soyadı" aria-label="${i + 1}. imza: adı soyadı"><div class="yi-iki"><input data-yi="${i}" data-yimza="rutbe" value="${esc(im.rutbe || "")}" placeholder="Rütbesi" aria-label="${i + 1}. imza: rütbesi"><input data-yi="${i}" data-yimza="gorev" value="${esc(im.gorev || "")}" placeholder="Görevi" aria-label="${i + 1}. imza: görevi"></div></div>`).join("")}
+    ${L.length < 4 ? `<button type="button" class="yi-ekle" data-yi-ekle>＋ İmza ekle</button>` : ""}`;
+  if(odak){ const x = el.querySelector(`[data-yi="${odak[0]}"][data-yimza="${odak[1]}"]`); if(x) x.focus(); } }
+document.addEventListener("input", e => { const el = e.target.closest && e.target.closest("[data-yimza]"); if(!el) return; const L = yImzalar(), i = +el.dataset.yi || 0; L[i] = { ...(L[i] || {}), [el.dataset.yimza]: el.value }; YS().imza = L[0];
+  if(el.dataset.yimza === "ad"){ const b = el.closest(".yi-kart")?.querySelector(".yi-ust b"); if(b) b.textContent = el.value || "İmza sahibi"; } kaydetBt(YK); });
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-yi-ekle],[data-yi-cog],[data-yi-sil]"); if(!b) return; const L = yImzalar();
+  if(b.dataset.yiEkle !== undefined){ if(L.length >= 4) return; L.push({ ad: "", rutbe: "", gorev: "" }); }
+  else if(b.dataset.yiCog !== undefined){ if(L.length >= 4) return bildir("En çok 4 imza"); const i = +b.dataset.yiCog; L.splice(i + 1, 0, { ...L[i] }); bildir("İmza çoğaltıldı"); }
+  else { const i = +b.dataset.yiSil; if(L.length <= 1) return; const geri = anlik(L); L.splice(i, 1); geriAlinabilir("İmza silindi", () => { geri(); YS().imza = L[0]; kaydetBt(YK); yImzaCiz(); }); }
+  YS().imza = L[0]; kaydetBt(YK); yImzaCiz(); if(b.dataset.yiEkle !== undefined) $("#y-imzalar .yi-kart:last-of-type .yi-ad")?.focus(); });
 /* ===== Yoklama: telefonda kolay düzenleme (kişi kartları) =====
    Geniş tablo yerine her kişi bir satır; dokununca alanları açılır. Statü, vardiya, ayrılış türü ve yeri düğmeyle seçilir;
    tarihler GG.AA.YYYY yazılır (telefonun tarih seçicisi açılmaz). "+ Kişi ekle" boş kişi açar; "Listeden ekle" isim listesindeki
@@ -3778,8 +3846,8 @@ function tanimYoklama(){
     YS().rows.filter(r => (r.vardiya || "GÜNDÜZ") === v && r.ad).forEach(r => { n++; const h = yoklamaHesap(r, t);
       body.push([H(n),H(r.rutbe,{ sol:1 }),H(r.ad,{ sol:1 }),H(r.sicil),H(r.statu),H(r.gorev,{ sol:1 }),H(r.tel),H(h.durum,{ fill: h.durum === "MEVCUT" ? "E3F3EA" : "FBEBD2" }),H(h.yer),H(h.aciklama,{ sol:1 })]); }); }
   const oz = yoklamaOzet();
-  const im = YS().imza || {}, imza = [im.ad, im.rutbe, im.gorev].filter(x => x && String(x).trim());
-  return { imza: imza.length ? imza : null, dosya:`Gunluk_Personel_Yoklama${YK === "yoklama" ? "" : "_" + YK.replace("yoklama", "") + "_UB"}_${trTarih(t)}`, baslik:`${YS().baslik || BIRLIK} GÜNLÜK PERSONEL YOKLAMA ÇİZELGESİ`, sagUst: trTarih(t), oran:[5,13,15,10,6,20,10,8,8,17],
+  const imzalar = yImzalar().map(im => [im.ad, im.rutbe, im.gorev].filter(x => x && String(x).trim())).filter(x => x.length), imza = imzalar[0] || [];
+  return { imza: imza.length ? imza : null, imzalar: imzalar.length > 1 ? imzalar : null, dosya:`Gunluk_Personel_Yoklama${YK === "yoklama" ? "" : "_" + YK.replace("yoklama", "") + "_UB"}_${trTarih(t)}`, baslik:`${YS().baslik || BIRLIK} GÜNLÜK PERSONEL YOKLAMA ÇİZELGESİ`, sagUst: trTarih(t), oran:[5,13,15,10,6,20,10,8,8,17],
     xGenis: (() => { const g = [5,13,15,10,6,20,10,8,8,17].map(o => o / 112 * 190), uz = Math.max(0, ...body.flatMap(b => b.bant ? [] : String((b[9] || {}).t || "").split("\n").map(y => xlsGen(y, 12, true)))); g[9] = Math.min(64, Math.max(g[9], uz + 2)); return g; })(),   // Excel: açıklama sütunu en uzun satıra göre
     head:[["S.NO.","RÜTBESİ","ADI SOYADI","SİCİLİ","STATÜ","GÖREVİ","TELEFON","DURUMU","YERİ","AÇIKLAMALAR"].map(x => H(x))], body, satirH: 8,
     ek: { spans:[5,1,1,1,1,1], head:[H("MEVCUT DURUMU",{ sol:1 }),...["Sb.","Asb.","Uzm.Erb.","Söz.Er","TOPLAM"].map(x => H(x))],
@@ -4283,15 +4351,14 @@ function gdBelgeCiz0(){
       <textarea class="gd-alt" id="gd-ust-altBaslik" data-t="genel" data-a="altBaslik" rows="${Math.max(2, String(G.altBaslik || "").split("\n").length)}" aria-label="Alt başlık (satır atlamak için Enter)" spellcheck="false">${esc(G.altBaslik)}</textarea>
       <small class="gd-ust-ipucu">✎ Başlıklara dokunup değiştirebilirsin · alt başlıkta satır atlamak için Enter</small></div>
     ${u.length ? `<div class="mesaj hata gd-uyari"><b>Kontrol edin</b><ul>${u.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
-    <h3>Personelin kimliği</h3>
-    <div class="gd-kimlik">
+    ${gdOzKart("kim", "kim", "Personelin kimliği", [k.sicil ? "Sicil " + k.sicil : "sicil yok", trTarih(k.tarih || G.tarih) || "tarih yok", k.gorev ? "görevi yazılı" : "görevi boş"], `<div class="gd-kimlik">
       <label>Sınıf ve rütbesi${gdInp("gd-k-rutbe", "k", "rutbe", k.rutbe)}</label>
       <label>Adı ve soyadı${gdInp("gd-k-ad", "k", "ad", k.ad, { st: "font-weight:700" })}</label>
       <label>Sicil${gdInp("gd-k-sicil", "k", "sicil", k.sicil)}</label>
       <label>Düzenlendiği tarih${gdInp("gd-k-tarih", "k", "tarih", k.tarih || "", { tip: "date" })}<small>${k.tarih ? "Bu belgeye özel tarih" : "Boş bırakılırsa genel tarih: " + (trTarih(G.tarih) || "girilmemiş")}</small></label>
       <label class="gd-genis">Görevi (kadro tam adı)<textarea id="gd-k-gorev" class="oto-boy tek-satir" data-tek data-t="k" data-a="gorev" rows="1" aria-label="Görevi">${esc(k.gorev || "")}</textarea></label>
-    </div>
-    <div class="gd-donem">
+    </div>`, !k.ad)}
+    ${gdOzKart("don", "don", "Dönem", [donemAd(gdDonem(k)) + (k.donem && (k.donem.bas || k.donem.son) ? " · özel" : " · genel"), k.gelis ? "geliş " + trTarih(k.gelis) : "", k.gorevSonu ? "görev sonu " + trTarih(k.gorevSonu) : ""].filter(Boolean), `<div class="gd-donem">
       <div class="arac"><div><h3>Dönem ve otomatik oluşturma</h3><span class="uclar">Bu belgenin dönemi: <b>${esc(donemAd(gdDonem(k)))}</b>${k.donem && (k.donem.bas || k.donem.son) ? " (bu belgeye özel)" : " (genel dönem)"}</span></div><span class="bosluk"></span>
         <button class="btn ana kucuk" type="button" data-gd="olustur">Satırları dönem ve izinlerden oluştur</button><button class="btn kucuk" type="button" data-gd="olustur-hepsi">Tüm personel için oluştur</button></div>
       <div class="gd-kimlik">
@@ -4300,17 +4367,19 @@ function gdBelgeCiz0(){
         <label>Bölgeye geliş${gdInp("gd-k-gelis", "k", "gelis", k.gelis || "", { tip: "date" })}<small>Dönem başından sonra geldiyse</small></label>
         <label>Görev sonu${gdInp("gd-k-gorevSonu", "k", "gorevSonu", k.gorevSonu || "", { tip: "date" })}<small>Görevi dönem içinde bittiyse</small></label>
       </div>
-      ${(k.donemDisi || []).length ? `<div class="uclar"><b>Dönem dışındaki izin/raporlar (bu belgeye girmez):</b> ${k.donemDisi.map(x => `${esc(x.sebep)} ${esc(trTarih(x.ayr))}–${esc(trTarih(x.kat))}`).join(" · ")}</div>` : ""}
-    </div>
+      ${(k.donemDisi || []).length ? `<details class="gd-disi"><summary>Dönem dışında ${k.donemDisi.length} izin/rapor (bu belgeye girmez)</summary><p>${k.donemDisi.map(x => `${esc(x.sebep)} ${esc(trTarih(x.ayr))}–${esc(trTarih(x.kat))}`).join(" · ")}</p></details>` : ""}
+    </div>`, false, k.gorevOto === false ? ["Elle", "elle"] : ["Otomatik", "oto"])}
     ${(() => { const d = gdDonemOneri(k); return d ? `<div class="mesaj hata gd-uyari"><b>İzinler bu dönemde değil.</b> Seçili dönem ${esc(donemAd(gdDonem(k)))}, izin/raporlar ise ${esc(donemAd(d))} dönemine düşüyor; görev satırları bu yüzden oluşmuyor.<div class="arac" style="margin-top:6px"><button class="btn ana kucuk" type="button" data-gd="donem-oneri">Bu kişinin dönemini ${esc(donemAd(d))} yap</button></div></div>` : ""; })()}
     <div class="gd-oto ${k.gorevOto === false ? "elle" : ""}">${k.gorevOto === false
       ? `<span>Görev satırları <b>elle</b> düzenleniyor; izin eklenince değişmez.</span><button class="btn kucuk" type="button" data-gd="oto-ac">İzinlere göre otomatik doldur</button>`
-      : `<span><b>Otomatik:</b> görev satırları, dönem içinde izin/rapor dışında kalan günlerden kendiliğinden dolar. Tarih değiştirirsen elle kipe geçer.</span>`}</div>
-    <div class="arac gd-bolum g"><h3>Görev yerleri ve kalış süreleri <span class="gd-say">${k.gorevler.length}</span></h3><span class="bosluk"></span>
-      ${(() => { const say = k.gorevler.filter(g => g.don && g.don !== "-"), ac = say.filter(gdArti).length, dur = !say.length ? "" : ac === say.length ? "acik" : ac ? "kismi" : "";
-        return `<button class="gd-anahtar ${dur}" type="button" data-gd="arti-bir" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}" title="Bu personelin bütün satırlarına +1 ekler ya da kaldırır (gidiş ve dönüş günü dahil). Satırlardaki +1'ler tek tek de açılıp kapatılabilir."><span class="ga-sw"><i></i></span><span class="ga-y"><b>+1 gün</b><small>${dur === "acik" ? "tüm satırlarda açık" : dur === "kismi" ? `${ac} / ${say.length} satırda açık` : "gidiş-dönüş dahil"}</small></span></button>`; })()}${(() => { const say = k.gorevler.filter(g => g.don && g.don !== "-"), ac = say.filter(g => gdEksiYon(g)).length, dur = !say.length ? "" : ac === say.length ? "acik" : ac ? "kismi" : "";
-        return `<span class="gd-eksi-grup"><button class="gd-anahtar gd-an-eksi ${dur}" type="button" data-gd="eksi-bir" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}" title="Bütün satırlarda seçili yöndeki tarihi 1 gün kaydırır ya da geri getirir. Satırlardaki −1'ler tek tek de açılıp kapatılabilir."><span class="ga-sw"><i></i></span><span class="ga-y"><b>−1 gün</b><small>${dur === "acik" ? "tüm satırlarda açık" : dur === "kismi" ? `${ac} / ${say.length} satırda` : "kalıştan 1 gün düş"}</small></span></button><span class="gd-yon" role="group" aria-label="−1 hangi tarihe uygulansın"><button type="button" data-gd-yon="don" aria-pressed="${gdKYon(k) === "don"}">↩ Dönüş</button><button type="button" data-gd-yon="git" aria-pressed="${gdKYon(k) === "git"}">↪ Gidiş</button></span></span>`; })()}<button class="gd-anahtar${k.toplamArti ? " acik" : ""}" type="button" data-gd="toplam-arti" aria-pressed="${!!k.toplamArti}" title="Yalnız toplama 1 gün ekler / çıkarır"><span class="ga-sw"><i></i></span><span class="ga-y"><b>+1 toplam</b><small>${k.toplamArti ? "toplama eklendi" : "yalnız toplama"}</small></span></button>${k.gorevler.some(gdGorevBos) ? `<button class="btn kucuk gd-bos-sil" type="button" data-gd="gorev-bos-sil">🧹 Boş satırları sil</button>` : ""}
-</div>
+      : ""}</div>
+    <div class="arac gd-bolum g"><h3>Görev yerleri ve kalış süreleri <span class="gd-say">${k.gorevler.length}</span></h3><span class="bosluk"></span>${k.gorevler.some(gdGorevBos) ? `<button class="btn kucuk gd-bos-sil" type="button" data-gd="gorev-bos-sil">🧹 Boş satırları sil</button>` : ""}</div>
+    ${(() => { const say = k.gorevler.filter(g => g.don && g.don !== "-"), n = say.length, durum = f => { const ac = say.filter(f).length; return [!n ? "" : ac === n ? "acik" : ac ? "kismi" : "", ac]; };
+      const [d1, a1] = durum(gdArti), [d2, a2] = durum(g => gdEksiYon(g)), d3 = k.toplamArti ? "acik" : "", yon = gdKYon(k);
+      const tile = (gd, dur, ad, alt, ek, cls = "") => `<button class="gd-ay ${cls} ${dur}" type="button" data-gd="${gd}" aria-pressed="${dur === "acik" ? "true" : dur === "kismi" ? "mixed" : "false"}"><span class="ga-sw"><i></i></span><b>${ad}</b><small>${alt}</small>${ek || ""}</button>`;
+      const yaz = (dur, a) => dur === "acik" ? "tüm satırlarda" : dur === "kismi" ? `${a} / ${n} satırda` : "kapalı";
+      return `<div class="gd-ayarlar">${tile("arti-bir", d1, "+1 gün", yaz(d1, a1), "", "ay-arti")}${tile("eksi-bir", d2, "−1 gün", yaz(d2, a2), "", "ay-eksi")}${tile("toplam-arti", d3, "+1 toplam", d3 ? "toplama eklendi" : "kapalı", "", "ay-top")}</div>
+        <div class="gd-yon-sat"><span>−1 hangi tarihten düşsün?</span><span class="gd-yon" role="group" aria-label="−1 hangi tarihe uygulansın"><button type="button" data-gd-yon="don" aria-pressed="${yon === "don"}">↩ Dönüş</button><button type="button" data-gd-yon="git" aria-pressed="${yon === "git"}">↪ Gidiş</button></span></div>`; })()}
     <div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>S.Nu</th><th>Görev yeri</th><th>Gidiş tarihi</th><th>Dönüş tarihi</th><th>Durum</th><th>Kalış süresi</th><th>Düşünceler</th><th></th></tr></thead><tbody>
       ${k.gorevler.map((g, i) => { const v = gdKalis(g); const devam = g.don === "-" && !g.son, tire = g.don === "-";
         return `<tr><td class="sn">${i + 1}</td>
@@ -4473,6 +4542,15 @@ $("#e-gdhg").addEventListener("change", e => {
   if(!el.dataset.t || !gdTarihMi(el)) return; gdAlan(el);
   const akt = el.id; gdhgCiz(); if(akt) document.getElementById(akt)?.focus();
 });
+/* kimlik ve dönem: az değişen alanlar özet kartta durur, dokununca açılır */
+let gdOzAcik = {}; try { gdOzAcik = JSON.parse(localStorage.getItem("gdOzAcik") || "{}"); } catch(e){}
+const GD_OZ_IK = { kim: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg>', don: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>' };
+function gdOzKart(id, ik, baslik, ozet, govde, zorla, rozet){ const acik = zorla || !!gdOzAcik[id];
+  return `<div class="gd-ozk gd-ozk-${ik}${acik ? " acik" : ""}" data-gd-ozk="${id}"><button type="button" class="gd-ozb" data-gd-oz="${id}" aria-expanded="${acik}"><span class="gd-ozi">${GD_OZ_IK[ik] || ""}</span><span class="gd-ozy"><b>${esc(baslik)}</b><small>${ozet.map(x => `<span>${esc(x)}</span>`).join("")}</small></span>${rozet ? `<span class="gd-ozr ${rozet[1]}">${esc(rozet[0])}</span>` : ""}<span class="gd-ozo">${acik ? "Kapat" : "Düzenle"}</span></button><div class="gd-ozg">${govde}</div></div>`; }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-gd-oz]"); if(!b) return; const id = b.dataset.gdOz, k = b.closest(".gd-ozk"), ac = !k.classList.contains("acik");
+  k.classList.toggle("acik", ac); b.setAttribute("aria-expanded", ac); b.querySelector(".gd-ozo").textContent = ac ? "Kapat" : "Düzenle"; gdOzAcik[id] = ac; if(!ac) delete gdOzAcik[id]; try { localStorage.setItem("gdOzAcik", JSON.stringify(gdOzAcik)); } catch(e){}
+  if(ac) requestAnimationFrame(() => otoBoyHepsi(k)); });
+document.addEventListener("focusin", e => { const k = e.target.closest && e.target.closest(".gd-ozk:not(.acik)"); if(k && !e.target.matches("[data-gd-oz]")) k.querySelector("[data-gd-oz]").click(); });
 function gdVurgula(id){ const tr = document.getElementById(id)?.closest("tr"); if(!tr) return; tr.classList.add("gd-yeni"); tr.scrollIntoView({ block: "nearest", behavior: "smooth" }); setTimeout(() => tr.classList.remove("gd-yeni"), 1600); }
 $("#e-gdhg").addEventListener("click", e => {
   const imk = e.target.closest("[data-imz]"); if(imk){ const [t, i] = imk.dataset.imz.split(":"); imzPencere(t, +i); return; }
@@ -5754,14 +5832,13 @@ function gdSozCiz(){
   P.innerHTML = `
     <div class="gd-ust"><div class="gd-bas">SÖZLEŞMELİ PERSONEL HİZMET ÇİZELGESİ</div><div class="gd-alt">${esc(Z.baslik).replace(/\n/g, "<br>")}</div></div>
     ${h.uyari.length ? `<div class="mesaj hata gd-uyari"><b>Kontrol edin</b><ul>${h.uyari.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
-    <div class="gd-kimlik">
+    ${gdOzKart("skim", "kim", "Personelin kimliği", [k.sicil ? "Sicil " + k.sicil : "sicil yok", k.sozYer || GD_YER], `<div class="gd-kimlik">
       <label>Sınıf ve rütbesi${gdInp("gd-k-rutbe", "k", "rutbe", k.rutbe)}</label>
       <label>Adı soyadı${gdInp("gd-k-ad", "k", "ad", k.ad, { st: "font-weight:700" })}</label>
       <label>Sicil nu.${gdInp("gd-k-sicil", "k", "sicil", k.sicil)}</label>
       <label class="gd-genis">Görev yeri${gdInp("gd-k-sozYer", "k", "sozYer", k.sozYer || GD_YER)}</label>
-    </div>
-    <div class="gd-donem">
-      <div><h3>Dönem</h3><span class="uclar">${esc(donemAd(gdDonem(k)))}${k.donem && (k.donem.bas || k.donem.son) ? " (bu personele özel)" : " (genel dönem)"}</span></div>
+    </div>`, !k.ad)}
+    ${gdOzKart("sdon", "don", "Dönem", [donemAd(gdDonem(k)) + (k.donem && (k.donem.bas || k.donem.son) ? " · özel" : " · genel"), k.gelis ? "geliş " + trTarih(k.gelis) : "", k.gorevSonu ? "görev sonu " + trTarih(k.gorevSonu) : "", k.sozDevam ? "“Devam” yazılır" : ""].filter(Boolean), `<div class="gd-donem">
       <div class="gd-kimlik">
         <label>Bölgeye geliş${gdInp("gd-k-gelis", "k", "gelis", k.gelis || "", { tip: "date" })}<small>Dönem başından sonra geldiyse</small></label>
         <label>Görev sonu${gdInp("gd-k-gorevSonu", "k", "gorevSonu", k.gorevSonu || "", { tip: "date" })}<small>Görevi dönem içinde bittiyse</small></label>
@@ -5770,7 +5847,7 @@ function gdSozCiz(){
         <label style="justify-content:center"><span><input type="checkbox" id="gd-k-sozDevam" data-t="k" data-a="sozDevam"${k.sozDevam ? " checked" : ""}> Dönüş yerine “Devam” yaz</span></label>
         <label class="gd-genis">Düşüncelere ek not${gdInp("gd-k-sozNot", "k", "sozNot", k.sozNot || "")}</label>
       </div>
-    </div>
+    </div>`)}
     <div class="gd-sonuc"><span>Gidiş <b>${esc(trTarih(h.git))}</b></span><span>Dönüş <b>${esc(h.donYazi)}</b></span><span>Kalış <b>${h.kalis === "" ? "—" : h.kalis + " Gün"}</b></span><span class="uclar">${h.gun ? `${h.gun} gün − ${h.izinGun} gün izin/rapor` : ""}${h.disari ? ` · ${h.disari} kayıt dönem dışında` : ""}</span></div>
     <div class="arac"><h3>İzin / rapor (görevden ayrı kalma)</h3><span class="bosluk"></span><button class="btn kucuk" type="button" data-gd="ayri-ekle">+ Satır ekle</button></div>
     <div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>S.Nu</th><th>Ayrılış sebebi</th><th>Ayrılma</th><th>Katılma</th><th>Gün</th><th></th></tr></thead><tbody>
@@ -6190,7 +6267,10 @@ async function tabloPdfCiz(sp, a, parcalar, k){
     const Hp = doc.internal.pageSize.getHeight(), lh = 4.6; let y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : m.t + basH) + 12;
     if(y + sp.imza.length * lh > Hp - m.b){ doc.addPage(); baslikYaz(); y = m.t + basH + 6; }
     doc.setFont("LS", "bold"); doc.setFontSize(10); doc.setTextColor(34, 34, 34); const cx = m.l + uw * 0.84;
-    sp.imza.forEach((t, i) => doc.text(String(t), cx, y + i * lh, { align: "center" })); }
+    if(sp.imzalar && sp.imzalar.length > 1){ const n = sp.imzalar.length, en = Math.max(...sp.imzalar.map(x => x.length));
+      if(y + en * lh > Hp - m.b){ doc.addPage(); baslikYaz(); y = m.t + basH + 6; }
+      sp.imzalar.forEach((B, j) => { const x = m.l + uw * ((j + 0.5) / n); B.forEach((t, i) => doc.text(String(t), x, y + i * lh, { align: "center" })); }); }
+    else sp.imza.forEach((t, i) => doc.text(String(t), cx, y + i * lh, { align: "center" })); }
   return doc;
 }
 function altKutular(doc, sp, mx, uw, y, h){
@@ -6267,7 +6347,9 @@ async function tabloExcel(sp, a){
       ws.getRow(r).height = Math.max(20, ihtiyac); r++; };
     yazSatir(sp.ek.head, true); sp.ek.body.forEach(b => yazSatir(b, false));
   }
-  if(sp.imza && sp.imza.length){ r += 2; const c1 = Math.max(1, ncol - 2);
+  if(sp.imzalar && sp.imzalar.length > 1){ r += 2; const n = sp.imzalar.length, gen = Math.max(1, Math.floor(ncol / n)), en = Math.max(...sp.imzalar.map(x => x.length));
+    for(let i = 0; i < en; i++){ sp.imzalar.forEach((B, j) => { const c1 = 1 + j * gen, c2 = j === n - 1 ? ncol : c1 + gen - 1; if(c2 > c1) ws.mergeCells(r, c1, r, c2); const x = ws.getCell(r, c1); x.value = B[i] || ""; x.font = yazi(11); x.alignment = { horizontal: "center", vertical: "middle" }; }); ws.getRow(r).height = 16; r++; } }
+  else if(sp.imza && sp.imza.length){ r += 2; const c1 = Math.max(1, ncol - 2);
     sp.imza.forEach(t => { ws.mergeCells(r, c1, r, ncol); const x = ws.getCell(r, c1); x.value = t; x.font = yazi(11); x.alignment = { horizontal: "center", vertical: "middle" }; ws.getRow(r).height = 16; r++; }); }
   try { wb.description = JSON.stringify({ tskSayfa: Object.fromEntries(wb.worksheets.filter(w => w.rowBreaks && w.rowBreaks.length).map(w => [w.name, w.rowBreaks.map(b => b.id)])) }); } catch(e){}
   return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
@@ -6345,7 +6427,10 @@ async function tabloWord(sp, a){
   if(sp.ek){ const satir = (hs, bas) => { let c = 0; return `<w:tr><w:trPr><w:cantSplit/></w:trPr>` + hs.map((h, i) => { const nn = sp.ek.spans[i]; const gen = gw.slice(c, c + nn).reduce((x, y) => x + y, 0); c += nn;
         return tc({ ...h, fill: h.fill || (bas ? RENK.bas : null) }, gen, nn > 1 ? `<w:gridSpan w:val="${nn}"/>` : "", Math.min(sz, 16)); }).join("") + `</w:tr>`; };
     ek = `<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>${tabloAc}${satir(sp.ek.head, true)}${sp.ek.body.map(b => satir(b, false)).join("")}</w:tbl>`; }
-  if(sp.imza && sp.imza.length) ek += `<w:p><w:pPr><w:spacing w:before="360" w:after="0"/></w:pPr></w:p>` + sp.imza.map(t => `<w:p><w:pPr><w:ind w:left="${Math.round(sx.kullan * 0.68)}"/><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>${runXml(t, { sz: 20 })}</w:p>`).join("");
+  if(sp.imzalar && sp.imzalar.length > 1){ const n = sp.imzalar.length, en = Math.max(...sp.imzalar.map(x => x.length)), w = Math.floor(sx.kullan / n), yok = `<w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/>`;
+    ek += `<w:p><w:pPr><w:spacing w:before="360" w:after="0"/></w:pPr></w:p><w:tbl><w:tblPr><w:tblW w:w="${w * n}" w:type="dxa"/><w:tblBorders>${yok}</w:tblBorders><w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid>${sp.imzalar.map(() => `<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>`
+      + Array.from({ length: en }, (_, i) => `<w:tr>${sp.imzalar.map(B => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>${B[i] ? runXml(B[i], { sz: 20 }) : ""}</w:p></w:tc>`).join("")}</w:tr>`).join("") + `</w:tbl>`; }
+  else if(sp.imza && sp.imza.length) ek += `<w:p><w:pPr><w:spacing w:before="360" w:after="0"/></w:pPr></w:p>` + sp.imza.map(t => `<w:p><w:pPr><w:ind w:left="${Math.round(sx.kullan * 0.68)}"/><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>${runXml(t, { sz: 20 })}</w:p>`).join("");
   const tarihP = sp.sagUst ? `<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="40"/></w:pPr>${runXml(sp.sagUst, { sz: 20 })}</w:p>` : "";   // tarih en üst sağda, başlık altında
   const baslik = tarihP + `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="80"/></w:pPr>${runXml(sp.baslik, { sz: Math.min(24, Math.max(14, Math.floor(sx.kullan / Math.max(1, wGenis(sp.baslik, 1)) * 2))) })}</w:p>`;
   const sayfalar = parcalar.map((p, i) => (i ? baslik.replace("<w:pPr>", "<w:pPr><w:pageBreakBefore/>") : baslik) + tabloAc + basXml + govde(p) + altSatir + `</w:tbl>` + (i === parcalar.length - 1 ? ek : "") + (alt || `<w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:rPr><w:sz w:val="2"/></w:rPr></w:pPr></w:p>`));
@@ -8393,11 +8478,11 @@ function tebtutCiz(){ const d = acikBelge(); if(!d || d.tur !== "tebtut") return
         <label class="tt-f tt-tam"><span>Emri veren makam</span><input class="tt-in tt-makam" data-tt-e="${i}:makam" value="${esc(e.makam || "")}" placeholder="16'ncı Mknz.P.Tug.K.lığının" aria-label="${i + 1}. emri veren makam"></label>
         ${ttMakamlar(v, e.makam).length ? `<span class="tt-oneri">${ttMakamlar(v, e.makam).map(m => `<button type="button" data-tt-makam="${i}" data-m="${esc(m)}">${esc(m)}</button>`).join("")}</span>` : ""}
         <label class="tt-f tt-sayi"><span>Sayısı</span><input class="tt-in" data-tt-e="${i}:sayi" value="${esc(e.sayi)}" placeholder="E-67367014-…" aria-label="${i + 1}. emrin sayısı" autocapitalize="characters" spellcheck="false"></label>
-        <label class="tt-f tt-tar"><span>Tarihi</span><input class="tt-in" type="date" data-tt-e="${i}:tarih" value="${esc(e.tarih)}"></label>
-        <label class="tt-f tt-tam"><span>Konusu</span><textarea class="oto-boy tt-in" data-tt-e="${i}:konu" rows="1" placeholder="Konusu" aria-label="${i + 1}. emrin konusu">${esc(e.konu)}</textarea></label></div>`).join("")}
+        <label class="tt-f tt-tam"><span>Konusu</span><textarea class="oto-boy tt-in" data-min="1" data-tt-e="${i}:konu" rows="1" placeholder="Konusu" aria-label="${i + 1}. emrin konusu">${esc(e.konu)}</textarea></label>
+        <label class="tt-f tt-tar"><span>Emir tarihi</span><input class="tt-in" type="date" data-tt-e="${i}:tarih" value="${esc(e.tarih)}"></label></div>`).join("")}
       <button type="button" class="tt-ekle" data-tt-i="emir">＋ Emir ekle</button></div>
       <div class="tt-cizgi"></div>
-      <div class="kp-iki"><label class="gi-alan"><span>Tebliğ yeri</span><textarea class="oto-boy tek-satir" data-tek data-tt="yer" rows="1">${esc(k.yer)}</textarea></label><label class="gi-alan"><span>Tebliğ tarihi</span><input type="date" data-tt="tarih" value="${esc(k.tarih)}"></label></div>
+      <div class="tt-teb"><label class="tt-f"><span>Tebliğ yeri</span><textarea class="oto-boy tt-in" data-tek data-tt="yer" rows="1">${esc(k.yer)}</textarea></label><label class="tt-f tt-tar"><span>Tebliğ tarihi</span><input class="tt-in" type="date" data-tt="tarih" value="${esc(k.tarih)}"></label></div>
       <label class="kp-tik"><input type="checkbox" data-tt-tarihyaz${k.tarihYaz ? " checked" : ""}> Tarih sütununa tebliğ tarihini yaz</label></div>`, { kume: ttKapali })}
     ${kkKart("tt-kisi", "#E3EEF0", "Kişiler ve tebliğ eden", `${S.length} kişi · tebliğ eden ${eden ? esc(eden.ad) : "seçilmedi"}`, `<div class="kp-alanlar"><div class="kp-iki"><label class="gi-alan"><span>Tebliğ eden</span><select data-tt-eden>${tbPersonel().map(p => `<option value="${esc(p.id)}"${p.id === k.eden ? " selected" : ""}>${esc(p.rutbe + " " + p.ad)}</option>`).join("")}</select></label>
       <label class="gi-alan"><span>İmzada görevi</span><input data-tt="imzaGorev" value="${esc(k.imzaGorev)}" placeholder="${esc(ttKisaltma(eden) || "Bt.Sb.")}"></label></div></div>
