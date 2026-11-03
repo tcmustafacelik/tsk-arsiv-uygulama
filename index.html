@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "289";
+  const SURUM = "290";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1527,6 +1527,16 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 #lt-govde .lt-kform .ko-is{margin-top:10px}
 .yk-bas{display:flex;flex-direction:column;gap:5px;margin:0 0 10px} .yk-bas>span{display:flex;align-items:center;justify-content:space-between;font:600 11px var(--f-ui);color:var(--muted);letter-spacing:.03em;text-transform:uppercase} .yk-bas>span .yk-bugun{text-transform:none}
 .yk-bas textarea{width:100%;box-sizing:border-box;resize:none;overflow:hidden;min-height:38px;padding:8px 11px;border:1px solid var(--line2);border-radius:10px;background:var(--panel);font:700 12.5px/1.4 var(--f-ui);color:#22374F}
+.hd-say{font:600 11.5px var(--f-ui);color:var(--muted);padding:0 4px}
+.hd-liste{display:flex;flex-direction:column;gap:6px} .hk{border:1px solid var(--line2);border-radius:12px;background:var(--panel);overflow:hidden} .hk.acik{border-color:#A9BCCB;box-shadow:0 2px 10px rgba(40,60,80,.08)}
+.hk-s{display:flex;align-items:center;gap:8px;width:100%;padding:8px 10px;border:0;background:none;text-align:left;cursor:pointer;color:var(--fg)}
+.hk-sn{flex:none;min-width:20px;font:600 11px var(--f-ui);color:#8A94A0;text-align:center} .hk-no{flex:none;min-width:58px;padding:5px 7px;border-radius:8px;font:800 12.5px var(--f-ui);color:#22303D;text-align:center;overflow-wrap:anywhere}
+.hk-ic{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .hk-ic b{font:700 13px/1.3 var(--f-ui);overflow-wrap:anywhere} .hk-ic small{font:500 11px/1.35 ui-monospace,Menlo,Consolas,monospace;color:#5E6A76;overflow-wrap:anywhere} .hk-bos{font-style:normal;color:var(--muted);font-weight:500}
+.hk-et{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px} .hk-et em{font-style:normal;font:700 10.5px var(--f-ui);padding:2px 7px;border-radius:20px;background:#EEF1F4;color:#34495E}
+.hk-ok{flex:none;font-style:normal;color:#8A94A0;font-size:11px} .hk mark{background:#FFE9A8;color:inherit;border-radius:3px;padding:0 1px}
+.hk-form{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:4px 10px 12px;border-top:1px dashed var(--line2)} .hk-al{display:flex;flex-direction:column;gap:3px;min-width:0} .hk-al.tam{grid-column:1 / -1} .hk-al>span{font:600 10.5px var(--f-ui);color:var(--muted)}
+.hk-al input{height:34px;padding:4px 9px;border:1px solid var(--line2);border-radius:8px;background:#fff;font:600 13px var(--f-ui);color:#22303D;min-width:0;width:100%;box-sizing:border-box} .hk-al input.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
+.hk-is{grid-column:1 / -1;display:flex;justify-content:space-between;align-items:center;margin-top:4px}
 .lt-grp{display:flex;align-items:baseline;gap:8px;margin:10px 0 2px;padding:7px 10px;border-radius:9px;background:#F3F1EA} .lt-grp:first-of-type{margin-top:4px} .lt-grp b{font:800 13.5px var(--f-ui);color:#2C3E50;min-width:0;overflow-wrap:anywhere} .lt-grp span{font:500 11px var(--f-ui);color:#8A8574;flex:none} .lt-grp em{margin-left:auto;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums;flex:none}
 .kc-sat.lt-kf{margin-left:12px;border-left:2px solid #E6E1D3} .kc-sat.lt-kf.lt-tek{margin:8px 0 0;border-left:0;background:#FBFAF6;border-radius:9px} .lt-tek-ad{display:block;font:800 13.5px var(--f-ui)!important;color:#2C3E50!important;margin-bottom:3px} .kc-sat.lt-kf .kc-sb{padding-left:8px}
 .lt-kfu{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap} .lt-kfu b{font:700 12.5px ui-monospace,Menlo,Consolas,monospace!important;letter-spacing:.01em;color:#34495E;background:#EEF2F6;border-radius:5px;padding:1px 6px;overflow-wrap:anywhere} .lt-kfu i{font-style:normal;font:500 11px var(--f-ui);color:#8A94A0}
@@ -2399,7 +2409,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 289</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 290</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2533,9 +2543,8 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
           <section class="hd-kart"><div class="hd-bas"><b>Renk grupları</b><small>Dokununca liste o gruba süzülür</small></div><div class="ozet hd-gruplar" id="h-ozet"></div></section>
           <div class="hd-uclar" id="h-uclar"></div>
           <details class="hd-kart hd-ayar"><summary><span class="hd-bas"><b>Renkleri ve açıklama adlarını düzenle</b><small>Liste başlığı, grup renkleri, boyama kuralları</small></span><i aria-hidden="true">▾</i></summary><div class="lj-izgara" id="h-ayar"></div></details>
-          <div class="tablo-kap"><table class="liste" id="h-tablo"><thead><tr>
-            <th>S.Nu</th><th>Hedef Numarası</th><th>Koordinat</th><th>Rakım</th><th>Mesafe</th><th>Mermi</th><th>Barut Hakkı</th><th>İstikamet Açısı</th><th>Yükseliş</th><th>Uçuş Süresi</th><th>Mermi Tepe Yük.</th><th>Hedefin Tanımı</th><th></th>
-          </tr></thead><tbody></tbody></table></div>
+          <details class="lt-on hd-on" id="h-on"><summary><span>▦</span>Tablo görünümü<small>kâğıttaki hali</small></summary><div class="lt-on-kap" id="h-on-kap"></div></details>
+          <div class="hd-say" id="h-say"></div><div id="h-tablo" class="hd-liste"></div>
         </div>
 
         <!-- ŞEMA (teşkilat şeması: kutular ve bağlantı çizgileri) -->
@@ -4138,20 +4147,29 @@ function hedefOzet(){
     (say.__yok ? `<button class="chip" data-g="__yok" aria-pressed="${hFiltre === "__yok"}"><b style="background:#fff"></b><em>Renk grubu olmayan<small>${say.__yok} hedef</small></em></button>` : "");
   const u = istikametUclari(); $("#h-uclar").innerHTML = u ? `<div class="hd-uc"><small>En sol istikamet açısı</small><b>${u.sol.ist}</b><span>${esc(u.sol.no)}</span></div><div class="hd-uc"><small>En sağ istikamet açısı</small><b>${u.sag.ist}</b><span>${esc(u.sag.no)}</span></div>` : "";
 }
+/* hedef listesi: her hedef bir satır kartı (numara grup renginde); dokununca bütün alanlar düzenlenir. Değerler olduğu gibi saklanır, hesap yapılmaz. */
+let hAcik = null, hOnAcik = (() => { try { return localStorage.getItem("hOnAcik") === "1"; } catch(e){ return false; } })();
+const H_ETIKET = ["S.Nu", "Hedef numarası", "Koordinat", "Rakım", "Mesafe", "Mermi", "Barut hakkı", "İstikamet açısı", "Yükseliş", "Uçuş süresi", "Mermi tepe yük.", "Hedefin tanımı"];
+function hedefOnHtml(){ const W = H_ORAN.reduce((a, b) => a + b, 0), n = araNorm($("#h-ara").value || "");
+  let h = `<colgroup>${H_ORAN.map(w => `<col style="width:${(w / W * 100).toFixed(2)}%">`).join("")}</colgroup><tr>${H_BASLIK.map(t => `<td style="background:#DDE6EC;font-weight:700;font-size:8px;text-align:center;border:1px solid #BCC7D0;color:#24394A">${esc(t)}</td>`).join("")}</tr>`;
+  S.hedef.rows.forEach((r, i) => { const g = grupBul(r), z = i % 2 ? "#F6F8FA" : "#fff";
+    h += `<tr>${H_ALAN.map(a => { const v = String(r[a] ?? ""), isik = n && v && araNorm(v).includes(n), bg = (a === "no" || a === "barut") && g ? "#" + HR(g) : a === "ucus" ? "#" + HR("ucus") : z;
+      return `<td class="${isik ? "lt-isik" : ""}" style="background:${bg};border:1px solid #CBD3DA;font-size:9px;font-weight:700;text-align:${a === "tanim" ? "left" : "center"}">${esc(v)}</td>`; }).join("")}</tr>`; });
+  return `<table class="lt-on-t">${h}</table>`; }
 function hedefCiz(){
-  hedefOzet(); const tb = $("#h-tablo tbody"); const ara = araNorm($("#h-ara").value);
-  if(!S.hedef.rows.length){ tb.innerHTML = `<tr><td colspan="13"><div class="bos"><strong>${S.yuklendi.hedef ? "Hedef listesi boş" : "Yükleniyor…"}</strong>“Excel'den içe aktar” ya da “+ Hedef ekle”.</div></td></tr>`; return; }
+  hedefOzet(); const L = $("#h-tablo"); const ara = araNorm($("#h-ara").value);
+  const on = $("#h-on"); if(on){ on.open = hOnAcik; const k = $("#h-on-kap"); if(hOnAcik){ k.innerHTML = hedefOnHtml(); ltOnSigdir(k); } else k.innerHTML = ""; }
+  if(!S.hedef.rows.length){ $("#h-say").textContent = ""; L.innerHTML = `<div class="bos"><strong>${S.yuklendi.hedef ? "Hedef listesi boş" : "Yükleniyor…"}</strong>“Excel'den içe aktar” ya da “+ Hedef ekle”.</div>`; return; }
   const goster = S.hedef.rows.map((r, i) => ({ r, i })).filter(({ r }) => (!hFiltre || (hFiltre === "__yok" ? !grupBul(r) : grupBul(r) === hFiltre)) && (!ara || H_ALAN.some(a => araNorm(r[a] ?? "").includes(ara))));
-  if(!goster.length){ tb.innerHTML = `<tr><td colspan="13"><div class="bos"><strong>Eşleşen hedef yok</strong></div></td></tr>`; return; }
-  tb.innerHTML = goster.map(({ r, i }) => { const g = grupBul(r); const boya = g ? ` class="boya orta" style="background:#${HR(g)}"` : ` class="orta"`;
-    return `<tr data-i="${i}">` + H_ALAN.map(a => { const id = `h-${i}-${a}`, v = esc(r[a]);
-      if(a === "no" || a === "barut") return `<td${boya}><input id="${id}" data-alan="${a}" value="${v}" style="font-weight:700"></td>`;
-      if(a === "ucus") return `<td class="boya orta" style="background:#${HR("ucus")}"><input id="${id}" data-alan="${a}" value="${v}"></td>`;
-      if(a === "koor") return `<td class="mono orta"><input id="${id}" data-alan="${a}" value="${v}" style="min-width:190px"></td>`;
-      if(a === "tanim") return `<td><input id="${id}" data-alan="${a}" value="${v}" style="min-width:180px"></td>`;
-      if(a === "sn") return `<td class="orta"><input id="${id}" data-alan="${a}" value="${v}" style="width:46px"></td>`;
-      return `<td class="orta"><input id="${id}" data-alan="${a}" value="${v}" style="min-width:${a === "mermi" ? 78 : 58}px"></td>`; }).join("") +
-      `<td class="islem"><button class="mini sil" data-is="sil" aria-label="Hedefi sil">✕</button></td></tr>`; }).join("");
+  $("#h-say").textContent = goster.length === S.hedef.rows.length ? `${goster.length} hedef` : `${goster.length} / ${S.hedef.rows.length} hedef gösteriliyor`;
+  if(!goster.length){ L.innerHTML = `<div class="bos"><strong>Eşleşen hedef yok</strong></div>`; return; }
+  const isik = v => { const t = esc(v ?? ""); if(!ara) return t; const n = araNorm(v ?? ""); return n && n.includes(ara) ? `<mark>${t}</mark>` : t; };
+  L.innerHTML = goster.map(({ r, i }) => { const g = grupBul(r), ac = hAcik === i, renk = g ? HR(g) : "EEF1F4";
+    const alt = [r.koor, r.rakim && `Rakım ${r.rakim}`, r.mesafe && `Mesafe ${r.mesafe}`].filter(Boolean);
+    return `<div class="hk${ac ? " acik" : ""}" data-i="${i}"><button type="button" class="hk-s" data-h-ac="${i}"><span class="hk-sn">${esc(r.sn || i + 1)}</span><span class="hk-no" style="background:#${renk}">${isik(r.no) || "—"}</span>
+      <span class="hk-ic"><b>${isik(r.tanim) || '<i class="hk-bos">tanım yok</i>'}</b><small>${alt.map(isik).join(" · ")}</small>${r.mermi || r.barut ? `<span class="hk-et">${r.mermi ? `<em>${isik(r.mermi)}</em>` : ""}${r.barut ? `<em style="background:#${renk}">${isik(r.barut)}</em>` : ""}</span>` : ""}</span><i class="hk-ok">${ac ? "▴" : "▾"}</i></button>
+      ${ac ? `<div class="hk-form">${H_ALAN.map((a, k) => `<label class="hk-al${a === "koor" || a === "tanim" ? " tam" : ""}"><span>${H_ETIKET[k]}</span><input id="h-${i}-${a}" data-alan="${a}" value="${esc(r[a] ?? "")}"${a === "koor" ? ' class="mono"' : ""}${["sn","rakim","mesafe","ist","yuk","ucus","tepe"].includes(a) ? ' inputmode="decimal"' : ""}></label>`).join("")}
+        <div class="hk-is"><button type="button" class="btn ana kucuk" data-h-ac="${i}">✓ Tamam</button><button type="button" class="mini sil" data-is="sil">Sil</button></div></div>` : ""}</div>`; }).join("");
 }
 let acikPalet = null, hAcikGrup = null;   // renk paleti / düzenlenen renk grubu
 const ALAN_AD = { barut: "Barut hakkı", mermi: "Mermi" };
@@ -4202,16 +4220,18 @@ $("#h-ayar").addEventListener("input", e => {
   if(t.dataset.f !== "ad"){ hedefCiz(); const say = {}; S.hedef.rows.forEach(r => { const k = grupBul(r); if(k) say[k] = (say[k] || 0) + 1; }); document.querySelectorAll("#h-ayar [data-say]").forEach(x => x.textContent = say[x.dataset.say] || 0); }
 });
 $("#h-ayar").addEventListener("change", e => { if(e.target.dataset.f === "alan" || e.target.dataset.f === "deger") hedefAyarCiz(); });
-$("#h-tablo").addEventListener("input", e => { const tr = e.target.closest("tr"); const r = S.hedef.rows[+tr.dataset.i]; if(!r) return; r[e.target.dataset.alan] = e.target.value; kaydetBt("hedef");
-  if(["mermi","barut"].includes(e.target.dataset.alan)){ const g = grupBul(r); tr.querySelectorAll('input[data-alan="no"],input[data-alan="barut"]').forEach(x => { x.parentElement.style.background = g ? "#" + HR(g) : ""; }); }
+$("#h-tablo").addEventListener("input", e => { const tr = e.target.closest("[data-i]"); if(!tr || !e.target.dataset.alan) return; const r = S.hedef.rows[+tr.dataset.i]; if(!r) return; r[e.target.dataset.alan] = e.target.value; kaydetBt("hedef");
+  { const g = grupBul(r), renk = g ? HR(g) : "EEF1F4", no = tr.querySelector(".hk-no"); if(no){ no.style.background = "#" + renk; no.textContent = r.no || "—"; } const b = tr.querySelector(".hk-ic b"); if(b) b.textContent = r.tanim || "tanım yok"; }
   if(["ist","mermi","barut","no"].includes(e.target.dataset.alan)) hedefOzet(); });
-$("#h-tablo").addEventListener("click", e => { const b = e.target.closest("button[data-is=sil]"); if(!b) return;
-  const geri = anlik(S.hedef.rows); S.hedef.rows.splice(+b.closest("tr").dataset.i, 1); hedefCiz(); kaydetBt("hedef");
+$("#h-tablo").addEventListener("click", e => { const ac = e.target.closest("[data-h-ac]"); if(ac){ const i = +ac.dataset.hAc; hAcik = hAcik === i ? null : i; hedefCiz(); if(hAcik != null) document.querySelector(`#h-tablo [data-i="${i}"]`)?.scrollIntoView({ block: "nearest" }); return; }
+  const b = e.target.closest("button[data-is=sil]"); if(!b) return;
+  const geri = anlik(S.hedef.rows); S.hedef.rows.splice(+b.closest("[data-i]").dataset.i, 1); hAcik = null; hedefCiz(); kaydetBt("hedef");
   geriAlinabilir("Satır silindi", () => { geri(); hedefCiz(); kaydetBt("hedef"); }); });
 $("#h-ozet").addEventListener("click", e => { const c = e.target.closest(".chip"); if(!c) return; hFiltre = c.dataset.g || null; hedefCiz(); });
 $("#h-ara").addEventListener("input", () => hedefCiz());
 $("#h-ekle").addEventListener("click", () => { const sn = S.hedef.rows.length + 1; S.hedef.rows.push({ sn: String(sn), no:"", koor:"37 - SEA - ", rakim:"", mesafe:"", mermi:"", barut:"", ist:"", yuk:"", ucus:"", tepe:"", tanim:"" });
-  hFiltre = null; $("#h-ara").value = ""; hedefCiz(); kaydetBt("hedef"); const kap = $("#e-hedef .tablo-kap"); kap.scrollTop = kap.scrollHeight; document.getElementById(`h-${sn - 1}-no`)?.focus(); });
+  hFiltre = null; $("#h-ara").value = ""; hAcik = sn - 1; hedefCiz(); kaydetBt("hedef"); const yeni = document.getElementById(`h-${sn - 1}-no`); if(yeni){ yeni.scrollIntoView({ block: "center" }); yeni.focus(); } });
+document.addEventListener("toggle", e => { if(e.target.id !== "h-on") return; hOnAcik = e.target.open; try { localStorage.setItem("hOnAcik", hOnAcik ? "1" : "0"); } catch(_){} const k = $("#h-on-kap"); if(hOnAcik){ k.innerHTML = hedefOnHtml(); ltOnSigdir(k); } else k.innerHTML = ""; }, true);
 $("#h-ice").addEventListener("click", () => $("#h-dosya").click());
 let bekleyenIce = null;
 $("#h-sira").addEventListener("click", () => { S.hedef.rows.forEach((r, i) => r.sn = String(i + 1)); hedefCiz(); kaydetBt("hedef"); uyar("Sıra numaraları 1'den başlayarak yeniden verildi."); });
@@ -6522,10 +6542,12 @@ function tanimIzin(){
 function hedefSayfa(a){ const [kw, kh] = KAGIT[a.kagit] || KAGIT.A4, H = a.yon === "yatay" ? kw : kh, n0 = a.hsayfa || 1, L = S.hedef.rows.length || 1;
   const kullan = H - 12 - (a.delgec && a.yon === "yatay" ? PAY : 0) - 34, kap = Math.max(8, Math.floor(kullan / (3.7 / (a.yazi || 1))));   // satır başı en az ~3,7 mm
   const n = Math.max(n0, Math.ceil(L / kap)); return { n, istenen: n0, oto: !a.hsayfa, satir: Math.ceil(L / n) }; }
+const TEMA_HEDEF = { ana: "5F7A8C", bas: "DDE6EC", basYazi: "24394A", bant: "EDF2F5", bantYazi: "2F4B5E", serit: "F6F8FA", cizgi: "BCC8D1", soluk: "6A7884", vurgu: "E8F0E3", vurguYazi: "2F5A3A", topSut: "EEF3F6", ustBand: "F2F6F8" };
 function tanimHedef(a){
   const say = {}; S.hedef.rows.forEach(r => { const g = grupBul(r); if(g) say[g] = (say[g] || 0) + 1; }); const u = istikametUclari();
-  return { dosya:"Genel_Hedef_Listesi_Atis_Esaslari", baslik: S.hedef.baslik, oran:H_ORAN, head:[H_BASLIK.map(t => H(t))],
-    body: S.hedef.rows.map(r => { const g = grupBul(r); return H_ALAN.map(x => H(r[x], { fill: (x === "no" || x === "barut") && g ? HR(g) : x === "ucus" ? HR("ucus") : null, sol: x === "tanim" ? 1 : 0, sayi: ["sn","rakim","mesafe","ist","yuk","ucus","tepe"].includes(x) })); }),
+  const T = TEMA_HEDEF;
+  return { tema: T, dosya:"Genel_Hedef_Listesi_Atis_Esaslari", baslik: S.hedef.baslik, oran:H_ORAN, head:[H_BASLIK.map(t => H(t, { fill: T.bas, k: T.basYazi }))],
+    body: S.hedef.rows.map((r, i) => { const g = grupBul(r); return H_ALAN.map(x => H(r[x], { fill: (x === "no" || x === "barut") && g ? HR(g) : x === "ucus" ? HR("ucus") : i % 2 ? T.serit : null, ...(x === "sn" ? { k: T.soluk } : {}), sol: x === "tanim" ? 1 : 0, sayi: ["sn","rakim","mesafe","ist","yuk","ucus","tepe"].includes(x) })); }),
     sayfaBasina: hedefSayfa(a).satir,
     altSol: u ? [["EN SOL İST. AÇISI:", String(u.sol.ist), `(${u.sol.no})`],["EN SAĞ İST. AÇISI:", String(u.sag.ist), `(${u.sag.no})`]] : null,
     lejant: gruplar().filter(g => say[g.id]).map(g => ({ t: g.ad, alt: `${say[g.id]} HEDEF`, fill: g.renk })) };
