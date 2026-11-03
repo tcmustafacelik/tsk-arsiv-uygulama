@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "269";
+  const SURUM = "270";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1514,6 +1514,9 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
   #e-grid .g-gr .palet{display:flex;flex-wrap:wrap;gap:5px}
 }
 #b-birak{cursor:pointer} #b-birak .by-bos-y{display:none} #b-birak.bos-yer .by-bos-y{display:block;font:700 13px var(--f-ui);color:var(--fg);margin-bottom:3px}
+.lt-top-sat{display:flex;align-items:center;gap:10px;margin:2px 0 6px;padding:8px 12px;border-radius:12px;background:#F6F3EC;border:1px solid #EAE1CF} .lt-top-sat span{flex:1;font:700 11.5px var(--f-ui);letter-spacing:.05em;color:#7A6A4A} .lt-top-sat b{font:800 14px var(--f-ui);color:#5E4A22}
+.lt-alt-is{display:flex;gap:6px} .lt-alt-is .tt-ekle{flex:1} .lt-serit{flex:none;padding:0 12px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);color:#5B7088;font:600 12.5px var(--f-ui);cursor:pointer} .lt-serit.acik{background:#EEF3F8;border-color:#C7D5E4;color:#2C4A69}
+.bk-kart .alt .bk-diger{flex:1;color:#5B7088;font-weight:600}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:10.5em!important;box-sizing:border-box} table input[type=date]{width:10.5em!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2360,7 +2363,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 269</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 270</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3372,12 +3375,14 @@ function bolumKapakKart(k, b){ const d = kapakBelgesi(k.id); if(!d || b.sabit ||
   let P; try { P = kpSayfalar(kpVeri(d), k.id, b.id); } catch(e){ return ""; } if(!P.length) return "";
   return `<div class="kart belge bkk bk-kart" style="--bz:#E7EFE3;--br:#4F6B45"><div class="bkk-ust" data-bkac="${esc(b.id)}"><span class="bkk-ik bk-mini">${kpSvg(kpVeri(d), P[0].P)}</span><span class="bkk-sy"><span class="tur">BÖLÜM KAPAĞI</span><span class="ad">${esc(b.ad)}</span><span class="bilgi">${P.length > 1 ? P.length + " sayfa (ara ayraçlarla) · " : ""}Klasör Kapakları ile eşzamanlı${b.icHaric ? " · içindekilerde gizli" : ""}</span></span></div>
     <button class="bkk-kalem" type="button" data-bol-eylem="${esc(k.id)}|${esc(b.id)}" aria-label="Bölüm: ad, sıra, taşı, sil" title="Bölüm: ad, sıra, taşı, sil">⋮</button>
-    <div class="alt bkk-is bkk-cikti"><button class="btn ana" data-bkac="${esc(b.id)}">Düzenle</button><button class="btn" data-bkc="pdf">PDF</button><button class="btn" data-bkc="docx">Word</button><button class="btn" data-bkc="xlsx">Excel</button><button class="btn" data-bkc="png">Resim</button></div></div>`; }
+    <div class="alt bkk-is bkk-cikti"><button class="btn ana" data-bkac="${esc(b.id)}">Düzenle</button><button class="btn" data-bkc="pdf">PDF</button><button class="btn bk-diger" data-bk-diger>⋯ Word · Excel · Resim</button></div></div>`; }
 async function bolumKapakCikti(kId, bId, tur, btn){ const d = kapakBelgesi(kId); if(!d) return; const sec = await ciktiSec(d, kId, tur); if(!sec) return; const eski = btn.textContent; btn.disabled = true; btn.textContent = "…";
   try { const r = await ciktiUret(d, kId, tur, sec, { kpSadece: bId }); await dosyaVer(r.ad, r.blob); } catch(err){ uyar("Kapak hazırlanamadı: " + (err.message || err), true); } finally { btn.disabled = false; btn.textContent = eski; } }
 $("#b-belgeler").addEventListener("click", e => {
   const ka = !e.target.closest("input") && e.target.closest("[data-bkac]"); if(ka){ const d = kapakBelgesi(SECIM.klasor); if(!d) return; belgeAc(d.id); const i = kpSayfalar(kpVeri(d), SECIM.klasor).findIndex(x => x.key === ka.dataset.bkac); kpSayfaNo = Math.max(0, i); kapakCiz(); return; }
   const kc = e.target.closest("[data-bkc]"); if(kc) return bolumKapakCikti(SECIM.klasor, SECIM.bolum, kc.dataset.bkc, kc);
+  const dg = e.target.closest("[data-bk-diger]"); if(dg) return altPencere("bkd-perde", "BÖLÜM KAPAĞI", "Çıktı al", () => `<div class="ap-liste">${[["docx", "Word", "mavi", "düzenlenebilir belge"], ["xlsx", "Excel", "yesil", "tablo dosyası"], ["png", "Resim", "mor", "PNG / JPEG"]].map(([t, a, r, alt]) => apSatir(`data-bkdt="${t}"`, apSimge(a[0], r), a, "", { alt })).join("")}</div>`,
+    (x, kapat) => { if(!x.dataset.bkdt) return; kapat(); bolumKapakCikti(SECIM.klasor, SECIM.bolum, x.dataset.bkdt, dg); }, { z: "E7EFE3", r: "4F6B45" });
   const ba = e.target.closest("[data-bolum-ad]");
   if(ba){ /* bölüm adı = bölüm kapağı ve ayraç adı (menü, içindekiler ve kapaklar birlikte değişir) */
     const bl = bolumBul(SECIM.klasor, ba.dataset.bolumAd), el = ba.closest(".kart") && ba.closest(".kart").querySelector(".ad"); if(!bl || !el || el.querySelector("input")) return;
@@ -7893,7 +7898,7 @@ function ltGrid(d){ const v = ltVeri(d), W = v.w.length, I = { t: 1, b: 1, l: 1,
     if(bl.ad) yaz(bl.adStil?.h || 22, rr => { const c0 = Math.min(...bl.sutunlar.map(s => s.c)), c1 = Math.max(...bl.sutunlar.map(s => s.c + (s.cs || 1))); koy(rr, c0, c1 - c0, { v: bl.ad, a: "c", va: "m", s: bl.adStil?.s || 11, b: 1, fn: v.fn, f: bl.adStil?.f, k: bl.adStil?.k || "2F2F2F", br: I }); });
     if(Array.isArray(bl.bas)){ const r0 = r; bl.bas.forEach(bs => yaz(bs.h || 22, rr => bs.hucreler.forEach(x => { koy(rr, x.c, x.cs || 1, { v: x.v ?? "", a: x.a || "c", va: "m", s: x.s || bs.s || 9, b: x.b ?? 1, fn: v.fn, f: x.f ?? bs.f, k: x.k || bs.k || "2F2F2F", br: I }); if(x.rs > 1) g.m.push([rr, x.c, rr + x.rs - 1, x.c + (x.cs || 1) - 1]); }))); }
     else if(bl.bas !== false) yaz(bl.bas?.h || 22, rr => bl.sutunlar.forEach(s => koy(rr, s.c, s.cs || 1, hucre(bl, s, s.ad, { b: 1, f: bl.bas?.f, s: bl.bas?.s || s.s || 9, k: bl.bas?.k || "2F2F2F", ...(bl.bas?.a || s.a ? { a: bl.bas?.a || s.a } : {}), ...(s.rot ? { rot: 1 } : {}) }))));
-    const ilkVeri = r, rf = st => (bl.renk && bl.renk.harita[st.v[bl.renk.sutun]]) || st.f || bl.f;
+    const ilkVeri = r, rf = st => (bl.renk && bl.renk.harita[st.v[bl.renk.sutun]]) || st.f || (bl.serit && bl.satirlar.indexOf(st) % 2 ? bl.serit : bl.f);   // serit: her ikinci satır açık renk
     bl.satirlar.forEach((st, si) => yaz(st.h || bl.h || 20, rr => bl.sutunlar.forEach(s => { const ham = s.tip === "sira" ? si + 1 : st.v[s.id], val = (s.tip === "sayi" || s.tip === "yil") && ham !== "" && ham != null && isFinite(+ham) ? +ham : (ham ?? "");
       const yz = st.yz && s.tip !== "sira" && s.tip !== "metin0" && ham !== "" && ham != null && isFinite(+String(ham).replace(",", ".")) && s !== ltBaslikSut(bl);
       koy(rr, s.c, s.cs || 1, hucre(bl, s, yz ? +String(ham).replace(",", ".") : val, { ...(yz ? { yz: 1 } : {}), f: s.f || rf(st), k: (s.tip === "kisi" || s.tip === "rutbeKisi") && (!ham || ham === LT_BOS) ? "7A7A7A" : (s.k || "2F2F2F"), s: (s.tip === "kisi" || s.tip === "rutbeKisi") && ham === LT_BOS && s.bosS ? s.bosS : (s.s || bl.s || 9), b: (s.tip === "kisi" || s.tip === "rutbeKisi") && ham === LT_BOS ? 0 : s.b ? 1 : 0 })); })));
@@ -7937,10 +7942,13 @@ function listeCiz(){ const d = acikBelge(); if(!d || d.tur !== "liste") return; 
             return `<div class="kc-sat${sa ? " acik" : ""}"><button type="button" class="kc-sb" data-lt-satir="${st.id}"><span class="kc-sn">${i + 1}</span><span class="kc-sy"><b>${esc(o.bas)}</b><small>${esc(o.alt)}</small></span></button>
               ${sa ? `<div class="kc-form">${ltKisiSec(bl, st)}${bl.sutunlar.filter(s => !LT_HESAP.includes(s.tip)).map(s => `<label class="ko-al${["sayi", "sira", "yil"].includes(s.tip) ? "" : " ko-tam"}"><span>${esc(String(s.ad).replace(/\n/g, " "))}</span><textarea class="oto-boy" rows="1" data-lt-h="${bl.id}:${st.id}:${s.id}"${s.tip === "sayi" || s.tip === "yil" ? ' inputmode="decimal"' : ""}>${esc(st.v[s.id] ?? "")}</textarea></label>`).join("")}${bl.sutunlar.some(s => s.tip === "satirToplam") ? `<div class="uclar ko-tam lt-top">Bu satırın toplamı: <b>${ltSatirTop(bl, st)}</b> · Excel'de formülle hesaplanır</div>` : ""}
                 <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-lt-i="kapat">✓ Tamam</button><button type="button" class="mini" data-lt-t="${bl.id}:${st.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-lt-t="${bl.id}:${st.id}:1"${i < bl.satirlar.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini" data-lt-c="${bl.id}:${st.id}">⧉</button><button type="button" class="mini sil" data-lt-s="${bl.id}:${st.id}">Sil</button></div></div>` : ""}</div>`; }).join("")}
-          <button type="button" class="tt-ekle" data-lt-e="${bl.id}">＋ Satır ekle</button></div>` : ""}</div>`; }).join("")}
+          ${bl.toplam && bl.satirlar.length ? `<div class="lt-top-sat"><span>${esc(bl.toplam.etiket || "TOPLAM")}</span>${bl.sutunlar.filter(s => LT_SAYI.includes(s.tip)).map(s => { const t = bl.satirlar.reduce((a, st) => a + (parseFloat(String(st.v[s.id] ?? "").replace(",", ".")) || 0), 0); return `<b>${esc(String(t).replace(".", ","))}${s.ek ? " " + esc(s.ek) : ""}</b>`; }).join("")}</div>` : ""}
+          <div class="lt-alt-is"><button type="button" class="tt-ekle" data-lt-e="${bl.id}">＋ Satır ekle</button><button type="button" class="lt-serit${bl.serit ? " acik" : ""}" data-lt-serit="${bl.id}" aria-pressed="${!!bl.serit}" title="Her ikinci satırı açık renkle boya">▤ Şerit</button></div></div>` : ""}</div>`; }).join("")}
     ${v.not ? `<label class="ko-al ko-tam"><span>Alt not</span><textarea class="oto-boy" rows="1" data-lt-g="not">${esc(v.not.v || "")}</textarea></label>` : ""}`;
   otoBoyHepsi($("#lt-govde")); }
 const ltBlok = (v, id) => v.bloklar.find(b => b.id === id);
+/* başlık renginin çok açık tonu (şerit için): beyaza %70 yaklaştırılır */
+const ltAcikRenk = h => { const n = parseInt(String(h).replace("#", ""), 16); if(isNaN(n)) return "F6F7F9"; const k = x => Math.round(x + (255 - x) * .7).toString(16).padStart(2, "0"); return (k(n >> 16 & 255) + k(n >> 8 & 255) + k(n & 255)).toUpperCase(); };
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#lt-govde")) return; const d = acikBelge(); if(!d || d.tur !== "liste") return; const v = ltVeri(d);
   if(el.dataset.ltG){ v[el.dataset.ltG] ||= {}; v[el.dataset.ltG].v = el.value; }
   else if(el.dataset.ltB){ const bl = ltBlok(v, el.dataset.ltB); if(bl) bl.ad = el.value; }
@@ -7949,6 +7957,7 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
     const btn = document.querySelector(`#lt-govde [data-lt-satir="${s}"] .kc-sy`); if(btn){ const o = ltSatirOzet(bl, st); btn.innerHTML = `<b>${esc(o.bas)}</b><small>${esc(o.alt)}</small>`; } const tp = document.querySelector("#lt-govde .kc-sat.acik .lt-top b"); if(tp) tp.textContent = ltSatirTop(bl, st); }
   else return; kaydetBelge(d); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#lt-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "liste") return; const v = ltVeri(d), yaz = () => { kaydetBelge(d); listeCiz(); };
+  if(b.dataset.ltSerit){ const bl = ltBlok(v, b.dataset.ltSerit); if(!bl) return; if(bl.serit) delete bl.serit; else { bl.serit = "F4F6F9"; const ts = bl.toplam && bl.toplam.f || bl.bas && bl.bas.f; if(ts) bl.serit = ltAcikRenk(ts); } bl.satirlar.forEach(st => { if(st.f && /^F[A-F]F[0-9A-F]F[0-9A-F]$/i.test(st.f)) delete st.f; }); yaz(); return bildir(bl.serit ? "Satır şeridi açık · yeni satırlar da şeride uyar" : "Satır şeridi kapalı"); }
   if(b.dataset.ltBlok){ ltBlokAcik = ltBlokAcik === b.dataset.ltBlok ? null : b.dataset.ltBlok; ltAcik = null; return listeCiz(); }
   if(b.dataset.ltSatir){ ltAcik = ltAcik === b.dataset.ltSatir ? null : b.dataset.ltSatir; return listeCiz(); }
   if(b.dataset.ltI === "kapat"){ ltAcik = null; return yaz(); }
@@ -9667,7 +9676,7 @@ async function baskiExcel(kitaplar, Y, ilerle, hatalar){   // kitaplar: [{ ad, v
   for(const id of ["imz-perde", "bkm-perde", "prc-perde"]) KAT[id] ||= () => { const x = document.querySelector("#" + id + " .imz-x"); if(x) x.click(); else { const p = document.getElementById(id); if(p) p.hidden = true; } };   // geri tuşu: pencerenin kendi ✕ düğmesi
   KAT["sc-perde"] = () => window.secimPenceresi && secimPenceresi.kapat();
   KAT["agac"] = () => { agacKapali = true; agacCiz(); };
-  const SIRA = ["spb-perde", "sc-perde", "kd-perde", "gk-perde", "sil-perde", "rs-perde", "dg-perde", "ar-perde", "be-perde", "ts-perde", "yb-perde", "tr-perde", "cs-perde", "lg-perde", "imz-perde", "bkm-perde", "prc-perde", "sc-perde", "tz-perde", "bs-perde", "gd-set-perde", "gc-perde", "bl-soru", "bl-pin", "bl-linkhazir", "bl-panel", "agac"];   // en üstteki önce kapanır
+  const SIRA = ["bkd-perde", "spb-perde", "sc-perde", "kd-perde", "gk-perde", "sil-perde", "rs-perde", "dg-perde", "ar-perde", "be-perde", "ts-perde", "yb-perde", "tr-perde", "cs-perde", "lg-perde", "imz-perde", "bkm-perde", "prc-perde", "sc-perde", "tz-perde", "bs-perde", "gd-set-perde", "gc-perde", "bl-soru", "bl-pin", "bl-linkhazir", "bl-panel", "agac"];   // en üstteki önce kapanır
   const sonra = []; let geri = 0, kuyruk = false, yukleniyor = false, bekleyen = null, kurulacak = null;
   const gor = id => !$("#v-" + id).hidden;
   const durum = () => { const v = gor("belge") ? "belge" : gor("ara") ? "ara" : gor("bolum") ? "bolum" : "ana"; const d = v === "belge" ? S.belgeler.find(x => x.id === SECIM.belge) : null;
