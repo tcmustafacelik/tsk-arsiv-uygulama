@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "311";
+  const SURUM = "312";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2419,6 +2419,17 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 .ks-av.isa-tav{background:#E1EBF6;color:#3D5F8C} .ks-av.isa-tav.ek{background:#EEF0E2;color:#5B6330}
 .isa-tekle{display:flex;gap:6px;margin-top:10px} .isa-tekle input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:10px;padding:9px 11px;font:600 13.5px var(--f-ui);background:#fff;color:#22303D} .isa-tekle button{flex:none;border:0;border-radius:10px;background:#3D5F8C;color:#fff;padding:0 14px;font:700 13px var(--f-ui);cursor:pointer}
 #isa-govde .isa-adres{min-height:36px}
+
+#e-izinb{gap:12px!important} #e-izinb .izb-sekmeler{grid-template-columns:repeat(4,1fr)} #e-izinb .izb-sekmeler button{white-space:nowrap;font-size:11px;padding:7px 2px}
+#e-izinb .izb-ayar{border-top:1px solid var(--line2);padding:8px 12px;gap:0} .izb-ayar summary{padding:2px 0} .izb-ayar-ic{display:flex;flex-direction:column;gap:9px;padding-top:6px} .izb-ay-sat{display:flex;align-items:center;gap:8px} .izb-ay-sat>span{font:700 11px var(--f-ui);color:var(--muted)} .izb-kap{flex:1;grid-template-columns:1fr 1fr}
+.izb-ayar .izb-kenar-kap{display:flex;flex-direction:column;align-items:flex-start;gap:6px;border:0;padding:0;background:none} .izb-ayar .izb-kenar-kap>span{font:700 11px var(--f-ui);color:var(--muted)}
+.izb-yeni{display:flex;flex-direction:column;gap:12px} #izb-kisiler{display:flex;flex-direction:column;gap:8px}
+.izb-kisi{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px} .izb-kisi .ks-ad{display:flex;flex-direction:column;min-width:0} .izb-kisi .ks-ad b{font:700 14px var(--f-ui);color:var(--fg);overflow-wrap:anywhere} .izb-kisi .ks-ad small{font:500 11.5px var(--f-ui);color:var(--muted)}
+.izb-sure{display:flex;flex-direction:column;align-items:flex-end;font:700 12.5px var(--f-ui);color:#2D557E;font-variant-numeric:tabular-nums} .izb-sure small{font:600 10.5px var(--f-ui);color:var(--muted)}
+.izb-kalan2{display:grid;grid-template-columns:repeat(3,1fr);gap:5px} .izb-kalan2 span{display:flex;flex-direction:column;align-items:center;background:#F4F8F2;border:1px solid #DDE9D8;border-radius:9px;padding:4px 2px;font:600 10px var(--f-ui);color:var(--muted)} .izb-kalan2 b{font:800 14px var(--f-ui);color:#2F6B47}
+.izb-tur2,.izb-yol{grid-template-columns:1fr 1fr} .izb-hes{height:36px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px dashed var(--line2);border-radius:8px;background:#F7F9FB;padding:0 9px;font:700 13px var(--f-ui);color:#22303D;font-variant-numeric:tabular-nums} .izb-hes small{font:600 10px var(--f-ui);color:var(--muted)}
+.izb-3{grid-template-columns:repeat(3,1fr)} #izb-form .dl-al input[type=date]{min-width:0!important}
+#izb-form .izb-foto{display:flex;align-items:center;gap:10px} #izb-form .izb-foto>div{display:flex;gap:6px;flex-wrap:wrap}
 </style>
 
 </head>
@@ -2456,7 +2467,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 311</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 312</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2633,14 +2644,14 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
         <!-- İZİN BELGESİ (Uzman Erbaş · Sözleşmeli Erbaş/Er) -->
         <div id="e-izinb" hidden style="display:flex;flex-direction:column;gap:12px">
           <div class="dl-seg izt-sec"><button type="button" data-izt="izinb" aria-pressed="true">Uzman · Sözleşmeli</button><button type="button" data-izt="izinsa" aria-pressed="false">Subay · Astsubay</button></div>
-          <div class="arac">
-            <div class="grup" id="izb-sekme"><button class="btn" data-s="belge">Belge</button><button class="btn" data-s="durum">İzin durumu</button><button class="btn" data-s="tasvip">Tasvip eden</button><button class="btn" data-s="filigran">Filigran</button></div>
-            <span class="bosluk"></span>
-            <label class="kutu">Çıktı <select id="izb-kapsam"><option value="kisi">Seçili personel</option><option value="hepsi">Tüm personel</option></select></label>
-            <label class="kutu"><input type="checkbox" id="izb-arka"> Arka yüz dahil</label>
-            <div class="kutu izb-kenar-kap"><span>Kenarlık</span><select id="izb-kenar" aria-label="Kenarlık rengi" hidden></select><div id="izb-kenar-cips" class="izb-renkler" role="radiogroup" aria-label="Kenarlık rengi"></div></div>
-          </div>
-          <div id="izb-belge" class="gd-duzen"><div class="gd-kisiler" id="izb-kisiler"></div><div class="gd-kagit"><div id="izb-form" class="izb-form"></div><div id="izb-onizleme" class="izb-onizleme"></div></div></div>
+          <div class="dl-seg izb-sekmeler" id="izb-sekme"><button type="button" data-s="belge">Belge</button><button type="button" data-s="durum">İzin durumu</button><button type="button" data-s="tasvip">Tasvip eden</button><button type="button" data-s="filigran">Filigran</button></div>
+          <details class="dl-kart dl-bilgi izb-ayar"><summary><span>Çıktı ayarları</span><em class="dl-not" id="izb-ayar-oz"></em></summary>
+            <div class="izb-ayar-ic">
+              <div class="izb-ay-sat"><span>Çıktı</span><div class="dl-seg izb-kap"><button type="button" data-izb-kap="kisi">Seçili personel</button><button type="button" data-izb-kap="hepsi">Tüm personel</button></div><select id="izb-kapsam" hidden><option value="kisi">Seçili personel</option><option value="hepsi">Tüm personel</option></select></div>
+              <label class="kp-tik"><input type="checkbox" id="izb-arka"> Arka yüz dahil</label>
+              <div class="kutu izb-kenar-kap"><span>Kenarlık</span><select id="izb-kenar" aria-label="Kenarlık rengi" hidden></select><div id="izb-kenar-cips" class="izb-renkler" role="radiogroup" aria-label="Kenarlık rengi"></div></div>
+            </div></details>
+          <div id="izb-belge" class="izb-yeni"><div id="izb-kisiler"></div><div id="izb-form" class="izb-form"></div><div id="izb-onizleme" class="izb-onizleme kp-onizle"></div></div>
           <div id="izb-durum" hidden></div><div id="izb-tasvip" hidden></div><div id="izb-filigran" hidden></div>
         </div>
 
@@ -5326,45 +5337,48 @@ const izbSec = (a, v, liste, o = {}) => `<select data-izb="${a}"${o.i != null ? 
 function izbhCiz(){
   izbG(); const ks = $("#izb-kenar"); if(ks && !ks.options.length){ ks.innerHTML = IZB_KENAR_RENK.map(([v, t]) => `<option value="${v}">${t}</option>`).join(""); }
   if(ks && !IZB_KENAR_RENK.some(x => x[0] === izbKenar())) ks.insertAdjacentHTML("beforeend", `<option value="${izbKenar()}">Özel · #${izbKenar()}</option>`);
-  document.querySelectorAll("#izb-sekme .btn").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === izbSekme));
+  document.querySelectorAll("#izb-sekme button").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === izbSekme)); document.querySelectorAll("[data-izb-kap]").forEach(b => b.setAttribute("aria-pressed", b.dataset.izbKap === izbKapsam)); const oz = $("#izb-ayar-oz"); if(oz) oz.textContent = `${izbKapsam === "hepsi" ? "Tüm personel" : "Seçili personel"} · ${izbArka ? "ön + arka yüz" : "yalnız ön yüz"}`;
   $("#izb-kapsam").value = izbKapsam; $("#izb-arka").checked = izbArka; $("#izb-kenar").value = izbKenar(); izbKenarCiz();
   ["belge", "durum", "tasvip", "filigran"].forEach(s => $("#izb-" + s).hidden = s !== izbSekme);
   ({ belge: izbBelgeCiz, durum: izbDurumCiz, tasvip: izbTasvipCiz, filigran: izbFiligranPanelCiz })[izbSekme]();
 }
 function izbBelgeCiz(){
-  const G = izbG(), k = izbKisi();
-  $("#izb-kisiler").innerHTML = G.kisiler.map(x => { const h = izbHesap(x);
-    return `<button class="gd-kisi" type="button" data-izb-kisi="${esc(x.id)}" aria-current="${x === k}"><span class="gd-k-ad">${esc(x.ad || "(adsız)")}</span><span class="gd-k-alt">${esc(x.rutbe)} · ${esc(x.tur === "Yıllık İzin" ? "Yıllık" : "Mazeret")}</span><span class="gd-k-gun">${x.ayr ? izbTr(x.ayr).slice(0, 5) + "→" + izbTr(h.kat).slice(0, 5) : "—"}</span></button>`; }).join("")
-    + `<button class="btn kucuk" type="button" data-izb-is="kisi-ekle" style="flex:none">+ Personel ekle</button>`;
-  if(!k){ $("#izb-form").innerHTML = `<div class="bos"><strong>Personel yok</strong>“+ Personel ekle” ile başlayın.</div>`; $("#izb-onizleme").innerHTML = ""; return; }
-  const h = izbHesap(k), i = G.kisiler.indexOf(k);
-  const alan = (et, html, gen) => `<label${gen ? ' class="gd-genis"' : ""}>${et}${html}</label>`;
+  const G = izbG(), k = izbKisi(), mz = t => t !== "Yıllık İzin";
+  $("#izb-kisiler").innerHTML = `<div class="dl-ust"><span class="dl-ust-s isa-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z M8 9h8 M8 13h8 M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><b>İzin belgeleri</b><small>${G.kisiler.length}</small><button type="button" class="dl-yeni" data-izb-is="kisi-ekle"><span>＋</span>Yeni</button></div>
+    <div class="dl-liste">${G.kisiler.map(x => { const h = izbHesap(x); return `<button type="button" class="dl-sat${x === k ? " on" : ""}" data-izb-kisi="${esc(x.id)}"><span class="dl-tur ${mz(x.tur) ? "t-mazeret" : "t-izin"}">${mz(x.tur) ? "Mazeret" : "Yıllık"}</span><b class="gd-k-ad">${esc(x.ad || "(adsız)")}</b><small>${esc(x.rutbe || "")}${x.ayr ? " · " + izbTr(x.ayr) + " → " + izbTr(h.kat) : ""}</small></button>`; }).join("")}</div>`;
+  if(!k){ $("#izb-form").innerHTML = `<div class="bos"><strong>Personel yok</strong>“＋ Yeni” ile başlayın.</div>`; $("#izb-onizleme").innerHTML = ""; return; }
+  const h = izbHesap(k), al = (et, html, tam) => `<label class="dl-al${tam ? " tam" : ""}"><span>${et}</span>${html}</label>`;
   $("#izb-form").innerHTML = `
-    <div class="izb-ozet"><div><b>${esc(k.rutbe)} ${esc(k.ad)}</b><span>${esc(k.tur)} · ${izbTr(k.ayr) || "—"} → <b>${izbTr(h.kat) || "—"}</b> · süre ${esc(h.sure)}</span></div>
-      <div class="izb-kalan"><span>Kalan yıllık <b>${h.kalanYil}</b></span><span>Kalan mazeret <b>${h.kalanMaz}</b></span><span>Kalan yol <b>${h.kalanYol}</b></span></div></div>
-    <details class="izb-kutu" open><summary>İzin bilgileri</summary><div class="gd-form ayar-izgara">
-      ${alan("İzin türü", izbSec("tur", k.tur, IZB_TURLER, { ad: "İzin türü" }))}
-      ${alan("Ayrılış tarihi", izbInp("ayr", k.ayr, { tip: "date", ad: "Ayrılış tarihi" }))}
-      ${alan("Kullanacağı yıllık izin (gün)", izbInp("yilGun", k.yilGun, { tip: "number", min: 0 }))}
-      ${alan("Kullanacağı mazeret izni (gün)", izbInp("mazGun", k.mazGun, { tip: "number", min: 0 }))}
-      ${alan("Yol izni", izbSec("yol", k.yol ? "1" : "0", [["1", "✔ Yol izni var (2 gün)"], ["0", "✘ Yol izni yok"]], { ad: "Yol izni" }))}
-      ${alan("Katılış tarihi (hesaplanır)", `<input type="text" value="${izbTr(h.kat)}" disabled aria-label="Katılış tarihi">`)}
-      ${alan("Toplam yıllık izin hakkı", izbInp("topYil", k.topYil, { tip: "number", min: 0 }))}
-      ${alan("Toplam mazeret izni hakkı", izbInp("topMaz", k.topMaz, { tip: "number", min: 0 }))}
-      ${alan("Toplam yol izni hakkı", izbInp("topYol", k.topYol, { tip: "number", min: 0 }))}
-      ${alan("Şimdiye kadar aldığı izinler toplamı", izbInp("onceki", k.onceki, { ph: "boş bırakılabilir" }))}
-    </div></details>
-    <details class="izb-kutu" open><summary>Kimlik</summary><div class="gd-form ayar-izgara">
-      ${alan("Adı, Soyadı", izbInp("ad", k.ad))}${alan("Sınıf ve rütbesi", izbInp("rutbe", k.rutbe))}${alan("Sicil no", izbInp("sicil", k.sicil))}
-      ${alan("Kıtası", `<textarea data-izb="kita" rows="2" aria-label="Kıtası">${esc(k.kita)}</textarea>`, 1)}
-      <div class="izb-foto">${k.foto ? `<img src="/_blob/${esc(k.foto)}" alt="Fotoğraf">` : `<span>Fotoğraf yok</span>`}<div><button class="btn kucuk" type="button" data-izb-is="foto">${k.foto ? "Fotoğrafı değiştir" : "Fotoğraf ekle"}</button>${k.foto ? `<button class="btn kucuk sil" type="button" data-izb-is="foto-sil">Kaldır</button>` : ""}<input type="file" id="izb-foto-dosya" accept="image/*" hidden></div></div>
-    </div></details>
-    <details class="izb-kutu"><summary>İletişim ve diğer</summary><div class="gd-form ayar-izgara">
-      ${alan("Adres", `<textarea data-izb="adres" rows="2" aria-label="Adres">${esc(k.adres)}</textarea>`, 1)}
-      ${alan("Telefon numarası", izbInp("tel", k.tel))}${alan("Silah seri numarası", izbInp("silah", k.silah))}${alan("Kan grubu", izbInp("kan", k.kan))}
-      ${alan("Yakını adı soyadı", izbInp("yakinAd", k.yakinAd))}${alan("Yakını cep tel.", izbInp("yakinTel", k.yakinTel))}
-    </div></details>
-    <div class="arac"><span class="bosluk"></span><button class="btn kucuk sil" type="button" data-izb-is="kisi-sil">Bu personeli sil</button></div>`;
+    <section class="dl-kart">
+      <div class="izb-kisi"><span class="ks-av">${esc(ksBas(k.ad) || "?")}</span><span class="ks-ad"><b>${esc(k.ad || "(adsız)")}</b><small>${esc(k.rutbe || "")}</small></span><span class="izb-sure">${izbTr(k.ayr) ? `${izbTr(k.ayr).slice(0, 5)} → ${izbTr(h.kat).slice(0, 5)}` : "tarih yok"}<small>süre ${esc(h.sure)}</small></span></div>
+      <div class="izb-kalan2"><span>Kalan yıllık <b>${h.kalanYil}</b></span><span>Kalan mazeret <b>${h.kalanMaz}</b></span><span>Kalan yol <b>${h.kalanYol}</b></span></div>
+      <div class="dl-seg izb-tur2">${IZB_TURLER.map(t => `<button type="button" data-izb-tur="${esc(t)}" aria-pressed="${k.tur === t}">${t === "Yıllık İzin" ? "Yıllık İzin" : "Mazeret İzni"}</button>`).join("")}</div>
+      <div class="dl-alanlar">
+        ${al("Ayrılış tarihi", izbInp("ayr", k.ayr, { tip: "date", ad: "Ayrılış tarihi" }))}
+        ${al("Katılış tarihi", `<div class="izb-hes">${izbTr(h.kat) || "—"}<small>hesaplanır</small></div>`)}
+        ${al("Yıllık izin (gün)", izbInp("yilGun", k.yilGun, { tip: "number", min: 0, ad: "Kullanacağı yıllık izin" }))}
+        ${al("Mazeret izni (gün)", izbInp("mazGun", k.mazGun, { tip: "number", min: 0, ad: "Kullanacağı mazeret izni" }))}
+        ${al("Yol izni", `<div class="dl-seg izb-yol"><button type="button" data-izb-yol="1" aria-pressed="${!!k.yol}">Var (2 gün)</button><button type="button" data-izb-yol="0" aria-pressed="${!k.yol}">Yok</button></div>`, 1)}
+      </div></section>
+    <details class="dl-kart dl-bilgi"><summary><span>İzin hakları</span><em class="dl-not">yıllık ${esc(k.topYil)} · mazeret ${esc(k.topMaz)} · yol ${esc(k.topYol)}</em></summary>
+      <div class="dl-alanlar izb-3">
+        ${al("Yıllık hak", izbInp("topYil", k.topYil, { tip: "number", min: 0, ad: "Toplam yıllık izin hakkı" }))}${al("Mazeret hak", izbInp("topMaz", k.topMaz, { tip: "number", min: 0, ad: "Toplam mazeret izni hakkı" }))}${al("Yol hak", izbInp("topYol", k.topYol, { tip: "number", min: 0, ad: "Toplam yol izni hakkı" }))}
+        ${al("Şimdiye kadar aldığı izinler toplamı", izbInp("onceki", k.onceki, { ph: "boş bırakılabilir" }), 1)}
+      </div></details>
+    <details class="dl-kart dl-bilgi"><summary><span>Kimlik</span><em class="dl-not">${esc([k.sicil, k.foto ? "fotoğraflı" : "fotoğraf yok"].filter(Boolean).join(" · "))}</em></summary>
+      <div class="dl-alanlar">
+        ${al("Adı, Soyadı", izbInp("ad", k.ad), 1)}${al("Sınıf ve rütbesi", izbInp("rutbe", k.rutbe))}${al("Sicil no", izbInp("sicil", k.sicil))}
+        ${al("Kıtası", `<textarea class="oto-boy" data-izb="kita" rows="1" aria-label="Kıtası">${esc(k.kita)}</textarea>`, 1)}
+        <div class="izb-foto tam">${k.foto ? `<img src="/_blob/${esc(k.foto)}" alt="Fotoğraf">` : `<span>Fotoğraf yok</span>`}<div><button class="mini" type="button" data-izb-is="foto">${k.foto ? "Fotoğrafı değiştir" : "＋ Fotoğraf ekle"}</button>${k.foto ? `<button class="mini sil" type="button" data-izb-is="foto-sil">Kaldır</button>` : ""}<input type="file" id="izb-foto-dosya" accept="image/*" hidden></div></div>
+      </div></details>
+    <details class="dl-kart dl-bilgi"><summary><span>İletişim ve diğer</span><em class="dl-not">${esc(k.tel || "")}</em></summary>
+      <div class="dl-alanlar">
+        ${al("Adres", `<textarea class="oto-boy" data-izb="adres" rows="1" aria-label="Adres">${esc(k.adres)}</textarea>`, 1)}
+        ${al("Telefon", izbInp("tel", k.tel))}${al("Kan grubu", izbInp("kan", k.kan))}${al("Silah seri no", izbInp("silah", k.silah))}
+        ${al("Yakını adı soyadı", izbInp("yakinAd", k.yakinAd), 1)}${al("Yakını cep tel.", izbInp("yakinTel", k.yakinTel))}
+      </div></details>
+    <div class="dl-is"><button class="mini sil" type="button" data-izb-is="kisi-sil">Bu personeli sil</button></div>`;
+  window.otoBoyHepsi && otoBoyHepsi($("#izb-form"));
   izbOnizle(k);
 }
 let izbOnizZ = null;
@@ -5455,13 +5469,16 @@ $("#e-izinb").addEventListener("input", e => { const el = e.target; if(!el.datas
   if(izbSekme === "belge"){ izbOnizle(izbKisi()); if(["ad", "rutbe"].includes(el.dataset.izb)){ const b = document.querySelector(`[data-izb-kisi="${izbKisi().id}"] .gd-k-ad`); if(b && el.dataset.izb === "ad") b.textContent = el.value || "(adsız)"; } } });
 $("#e-izinb").addEventListener("change", e => { const el = e.target;
   if(el.id === "izb-kapsam"){ izbKapsam = el.value; try { localStorage.setItem("izbKapsam", izbKapsam); } catch(x){} return; }
-  if(el.id === "izb-arka"){ izbArka = el.checked; try { localStorage.setItem("izbArka", izbArka ? "1" : "0"); } catch(x){} if(izbSekme === "belge") izbOnizle(izbKisi()); return; }
+  if(el.id === "izb-arka"){ izbArka = el.checked; try { localStorage.setItem("izbArka", izbArka ? "1" : "0"); } catch(x){} const oz = $("#izb-ayar-oz"); if(oz) oz.textContent = `${izbKapsam === "hepsi" ? "Tüm personel" : "Seçili personel"} · ${izbArka ? "ön + arka yüz" : "yalnız ön yüz"}`; if(izbSekme === "belge") izbOnizle(izbKisi()); return; }
   if(el.id === "izb-kenar"){ izbG().kenar = el.value; kaydetBt("izinb"); if(izbSekme === "belge") izbOnizle(izbKisi()); bildir("Kenarlık rengi: " + (IZB_KENAR_RENK.find(x => x[0] === el.value) || [, el.value])[1]); return; }
   if(el.id === "izb-foto-dosya"){ const f = el.files[0]; el.value = ""; if(f) izbFotoYukle(f); return; }
   if(!el.dataset.izb) return; izbDegis(el);
   if(el.tagName === "SELECT" || el.type === "date" || el.type === "checkbox" || el.type === "number"){ const odak = el.dataset.izb + "|" + (el.dataset.i ?? ""); izbhCiz(); const n = [...document.querySelectorAll("#e-izinb [data-izb]")].find(x => x.dataset.izb + "|" + (x.dataset.i ?? "") === odak); if(n && el.type !== "checkbox") n.focus({ preventScroll: true }); } });
 $("#e-izinb").addEventListener("click", e => {
-  const s = e.target.closest("#izb-sekme .btn"); if(s){ izbSekme = s.dataset.s; izbhCiz(); return; }
+  const s = e.target.closest("#izb-sekme button"); if(s){ izbSekme = s.dataset.s; izbhCiz(); return; }
+  const kp = e.target.closest("[data-izb-kap]"); if(kp){ izbKapsam = kp.dataset.izbKap; try { localStorage.setItem("izbKapsam", izbKapsam); } catch(x){} izbhCiz(); return; }
+  const tb = e.target.closest("[data-izb-tur]"); if(tb){ const k = izbKisi(); if(k){ k.tur = tb.dataset.izbTur; kaydetBt("izinb"); izbBelgeCiz(); } return; }
+  const yb = e.target.closest("[data-izb-yol]"); if(yb){ const k = izbKisi(); if(k){ k.yol = yb.dataset.izbYol === "1"; kaydetBt("izinb"); izbBelgeCiz(); } return; }
   const kb = e.target.closest("[data-izb-kisi]"); if(kb){ izbSecili = kb.dataset.izbKisi; izbBelgeCiz(); return; }
   const hb = e.target.closest("[data-izb-harf]"); if(hb){ const G = izbG(); G.filigran.harf = hb.dataset.izbHarf; kaydetBt("izinb"); izbFiligranPanelCiz(); bildir(G.filigran.harf === "kucuk" ? "Filigran küçük harfle basılacak" : "Filigran büyük harfle basılacak"); return; }
   const b = e.target.closest("[data-izb-is]"); if(!b) return; const G = izbG(), is = b.dataset.izbIs;
