@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "287";
+  const SURUM = "288";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2398,7 +2398,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 287</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 288</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6338,7 +6338,7 @@ function gridTema(g){ const R = g.c.length, W = g.w.length, mg = (r, c) => (g.m 
     Object.assign(g.c[tr][c0], { k: T.yazi }); if((g.h[tr] || 0) < 30) g.h[tr] = 30;
     if(tr + 1 < R && hr === tr + 1){ g.h.splice(tr + 1, 0, 6); g.c.splice(tr + 1, 0, Array.from({ length: W }, () => ({}))); (g.m || []).forEach(m => { if(m[0] > tr){ m[0]++; m[2]++; } }); (g.sb || []).forEach((v, i, A) => { if(v > tr) A[i]++; }); hr++; } }
   for(let r = Math.max(0, hr); r < g.c.length; r++) (g.c[r] || []).forEach(x => { if(x && x.f && x.b && x.br && (!x.k || x.k === "2F2F2F" || x.k === "222222" || x.k === "1F1F1F")) x.k = T.yazi; });
-  if(hr >= 0){ let n = 0; for(let r = hr + 1; r < g.c.length; r++){ const L = (g.c[r] || []).filter(Boolean), dolu = L.some(x => x.v != null && x.v !== ""), duz = L.every(x => !x.f) && L.some(x => x.br);
+  if(hr >= 0){ let n = 0; for(let r = hr + 1; r < g.c.length; r++){ const L = (g.c[r] || []).filter(x => x && x.br), dolu = L.some(x => x.v != null && x.v !== ""), duz = L.length && L.every(x => !x.f);
       if(duz && dolu){ if(n % 2) L.forEach(x => { x.f = T.serit; }); n++; } else n = 0; } }
   g.tema = T; return g; }
 async function gridPdf(d, a){
@@ -7818,9 +7818,9 @@ function mzGrid(d){ const v = mzVeri(d), T = { l: 1, r: 1, t: 1, b: 1 }, g = { w
   return g; }
 async function mevziCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(mzGrid(d)) : mzGrid(d), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: 1, yazi: 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
-function mzOnHtml(d){ const g = mzGrid(d), kap = kapsananlar(g), TW = g.w.reduce((a, b) => a + b, 0); let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / TW * 100).toFixed(2)}%">`).join("")}</colgroup>`;
+function mzOnHtml(d){ const g = kurumsalMi(d) ? gridTema(mzGrid(d)) : mzGrid(d), GT = g.tema, kap = kapsananlar(g), TW = g.w.reduce((a, b) => a + b, 0); let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / TW * 100).toFixed(2)}%">`).join("")}</colgroup>`;
   g.c.forEach((row, r) => { h += `<tr style="height:${(g.h[r] * .085).toFixed(2)}cqw">`; for(let c = 0; c < 8; c++){ const kk = kap[r + ":" + c]; if(kk === 1) continue; const x = row[c] || {}, sp = Array.isArray(kk) ? ` colspan="${kk[3] - kk[1] + 1}"` : "", br = x.br || {};
-    h += `<td${sp} style="${x.f ? `background:#${x.f};` : ""}${["l", "r", "t", "b"].map(k => br[k] ? `border-${{ l: "left", r: "right", t: "top", b: "bottom" }[k]}:${br[k] === 2 ? .35 : .15}cqw solid #333;` : "").join("")}font-size:${((x.s || 11) * .13).toFixed(2)}cqw">${esc(x.v ?? "")}</td>`; } h += "</tr>"; });
+    h += `<td${sp} style="${x.f ? `background:#${x.f};` : ""}${["l", "r", "t", "b"].map(k => br[k] ? `border-${{ l: "left", r: "right", t: "top", b: "bottom" }[k]}:${br[k] === 3 ? .7 : br[k] === 2 ? .35 : .15}cqw solid #${br[k] === 3 && GT ? GT.ana : GT ? GT.cizgi : "333"};` : "").join("")}font-size:${((x.s || 11) * .13).toFixed(2)}cqw;${x.k ? `color:#${x.k}` : ""}">${esc(x.v ?? "")}</td>`; } h += "</tr>"; });
   return `<table class="mz-tablo">${h}</table>`; }
 function mevziCiz(){ const d = acikBelge(); if(!d || d.tur !== "mevzi") return; const v = mzVeri(d), P = tbPersonel();
   const alan = (s, k, et, o = {}) => `<label class="mz-al${o.gen ? " gen" : ""}"><span>${et}</span><input data-mz="${s.id}:${k}" value="${esc(s[k] || "")}" placeholder="${esc(o.ph || "")}"${o.say ? ' inputmode="numeric"' : ""}${o.buyuk ? ' autocapitalize="characters"' : ""} spellcheck="false"></label>`;
@@ -8060,10 +8060,10 @@ function ltBlokOzet(bl){ const gs = ltBaslikSut(bl), sayili = bl.sutunlar.some(s
 /* tablo görünümü telefonda yana kaymasın: kâğıttaki hali kutu genişliğine ölçeklenir (iki parmakla büyütülebilir) */
 function ltOnSigdir(k){ const t = k && k.querySelector(".lt-on-t"); if(!t) return; t.style.zoom = ""; k.scrollLeft = 0; const kw = k.clientWidth, tw = t.offsetWidth; if(kw && tw > kw + 1) t.style.zoom = String(Math.max(.4, kw / tw)); }
 addEventListener("resize", () => ltOnSigdir(document.querySelector("#lt-govde .lt-on-kap")));
-function ltOnHtml(d){ const g = ltGrid(d); try { hesapla(g); } catch(e){} const kap = kapsananlar(g), W = g.w.reduce((a, b) => a + b, 0), n = normMetin(ltAra);
+function ltOnHtml(d){ const g = kurumsalMi(d) ? gridTema(ltGrid(d)) : ltGrid(d), GT = g.tema; try { hesapla(g); } catch(e){} const kap = kapsananlar(g), W = g.w.reduce((a, b) => a + b, 0), n = normMetin(ltAra);
   let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / W * 100).toFixed(2)}%">`).join("")}</colgroup>`;
   g.c.forEach((row, r) => { h += `<tr style="height:${Math.round((g.h[r] || 18) * 1.1)}px">`; for(let c = 0; c < g.w.length; c++){ const kk = kap[r + ":" + c]; if(kk === 1) continue; const x = row[c] || {}, sp = Array.isArray(kk) ? ` rowspan="${kk[2] - kk[0] + 1}" colspan="${kk[3] - kk[1] + 1}"` : "", t = gosterDeger(x), isik = n && t && normMetin(t).includes(n);
-      h += `<td${sp} class="${isik ? "lt-isik" : ""}" style="${x.br ? "border:1px solid #9AA3AD;" : ""}${x.f ? `background:#${x.f};` : ""}${x.b ? "font-weight:700;" : ""}text-align:${x.a === "l" ? "left" : x.a === "r" ? "right" : "center"};font-size:${((x.s || 9) * 1.05).toFixed(1)}px;color:#${x.k || "2F2F2F"}${x.rot ? ";writing-mode:vertical-rl;transform:rotate(180deg)" : ""}">${esc(t).replace(/\n/g, "<br>")}</td>`; } h += "</tr>"; });
+      h += `<td${sp} class="${isik ? "lt-isik" : ""}" style="${x.br ? `border:1px solid #${GT ? GT.cizgi : "9AA3AD"};${x.br.l === 3 ? `border-left:5px solid #${GT.ana};` : ""}` : ""}${x.f ? `background:#${x.f};` : ""}${x.b ? "font-weight:700;" : ""}text-align:${x.a === "l" ? "left" : x.a === "r" ? "right" : "center"};font-size:${((x.s || 9) * 1.05).toFixed(1)}px;color:#${x.k || "2F2F2F"}${x.rot ? ";writing-mode:vertical-rl;transform:rotate(180deg)" : ""}">${esc(t).replace(/\n/g, "<br>")}</td>`; } h += "</tr>"; });
   return `<table class="lt-on-t">${h}</table>`; }
 function ltAraSonuc(v){ const n = normMetin(ltAra); if(!n) return ""; const R = []; v.bloklar.forEach((bl, bi) => { const gs = ltBaslikSut(bl); let grup = ""; bl.satirlar.forEach((st, si) => { if(st.v[gs.id]) grup = st.v[gs.id];
     const hepsi = [grup, ...bl.sutunlar.map(s => st.v[s.id])].filter(x => x != null && x !== "").join(" "); if(normMetin(hepsi).includes(n)) R.push({ bl, bi, st, si, o: ltSatirOzet(bl, st), grup }); }); });
