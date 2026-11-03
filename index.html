@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "263";
+  const SURUM = "264";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2332,7 +2332,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 263</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 264</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -7491,7 +7491,7 @@ async function kapakExcel(d, a, kId){ await yukle(CDN.exceljs); const v = kpVeri
   const wb = new ExcelJS.Workbook(); wb.creator = "TSK ARŞİV";
   for(let i = 0; i < S.length; i++){ const s = S[i], ad = (String(i + 1).padStart(2, "0") + " " + s.ad).replace(/[\\\/\?\*\[\]:]/g, " ").slice(0, 31);
     const ws = wb.addWorksheet(ad, { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, horizontalCentered: true, verticalCentered: true, margins: { left: .2, right: .2, top: .2, bottom: .2, header: 0, footer: 0 } } });
-    const cv = await kpTuval(v, s.P, 7), id = wb.addImage({ base64: cv.toDataURL("image/png").split(",")[1], extension: "png" }); ws.addImage(id, { tl: { col: 0, row: 0 }, ext: { width: 700, height: 700 * KP_H / KP_W } }); }
+    const cv = await kpTuval(v, s.P, 11), id = wb.addImage({ base64: cv.toDataURL("image/png").split(",")[1], extension: "png" }); ws.addImage(id, { tl: { col: 0, row: 0 }, ext: { width: 700, height: 700 * KP_H / KP_W } }); }
   return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }); }
 /* ---- Word: konumlu şekiller, yazı kutuları ve resimler; her sayfa ayrı ---- */
 async function kapakWord(d, a, kId){ const v = kpVeri(d), S = kpCikti(v, kId, a); if(!S.length) throw new Error("çıkacak sayfa seçilmedi");
