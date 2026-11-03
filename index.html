@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "273";
+  const SURUM = "274";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1520,6 +1520,10 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 #lt-govde .kc-sb{display:flex;align-items:center;gap:10px} #lt-govde .kc-sb .kc-sy{flex:1;min-width:0}
 .lt-stop{flex:none;min-width:40px;text-align:right;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums}
 .kc-sb.lt-dev .kc-sy b{font-weight:600;color:#7A8592;font-size:12.5px} .kc-sb.lt-dev .kc-sn{opacity:.55}
+.lt-grp{display:flex;align-items:baseline;gap:8px;margin:10px 0 2px;padding:7px 10px;border-radius:9px;background:#F3F1EA} .lt-grp:first-of-type{margin-top:4px} .lt-grp b{font:800 13.5px var(--f-ui);color:#2C3E50;min-width:0;overflow-wrap:anywhere} .lt-grp span{font:500 11px var(--f-ui);color:#8A8574;flex:none} .lt-grp em{margin-left:auto;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums;flex:none}
+.kc-sat.lt-kf{margin-left:12px;border-left:2px solid #E6E1D3} .kc-sat.lt-kf .kc-sb{padding-left:8px}
+.lt-kfu{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap} .lt-kfu b{font:700 12.5px ui-monospace,Menlo,Consolas,monospace!important;letter-spacing:.01em;color:#34495E;background:#EEF2F6;border-radius:5px;padding:1px 6px;overflow-wrap:anywhere} .lt-kfu i{font-style:normal;font:500 11px var(--f-ui);color:#8A94A0}
+.lt-boz>.lt-bk{font-size:11px;line-height:1.6;color:#8A94A0;font-weight:500} .lt-boz>span.lt-bk{padding-left:12px;font-family:ui-monospace,Menlo,Consolas,monospace} .lt-boz>span.lt-bk::before{content:"↳ "}
 .lt-boz-ac{display:block;margin-top:2px;font:500 11.5px var(--f-ui);color:var(--muted)}
 .lt-alt-is{display:flex;gap:6px} .lt-alt-is .tt-ekle{flex:1} .lt-serit{flex:none;padding:0 12px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);color:#5B7088;font:600 12.5px var(--f-ui);cursor:pointer} .lt-serit.acik{background:#EEF3F8;border-color:#C7D5E4;color:#2C4A69}
 .bk-kart .alt .bk-diger{flex:1;color:#5B7088;font-weight:600}
@@ -2381,7 +2385,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 273</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 274</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -7942,7 +7946,8 @@ const ltBaslikSut = bl => bl.sutunlar.find(s => s.tip === "metin" || s.tip === "
 const ltKisiSut = bl => bl.sutunlar.filter(s => s.tip === "kisi" || s.tip === "rutbeKisi");
 function ltSatirOzet(bl, st){ const b = ltBaslikSut(bl), k = ltKisiSut(bl).find(s => s !== b);
   if(bl.sutunlar.some(s => s.tip === "satirToplam")){ const L = bl.satirlar, i = L.indexOf(st); let j = i; while(j > 0 && !L[j].v[b.id]) j--; const yer = bl.sutunlar.filter(s => s.tip === "sayi" && +st.v[s.id]).map(s => `${String(s.ad).replace(/\n/g, " ")} ${st.v[s.id]}`);
-    return { bas: st.v[b.id] || (L[j] && L[j].v[b.id] ? "↳ " + L[j].v[b.id] : "—"), dev: !st.v[b.id] && j < i, alt: [bl.sutunlar.filter(s => s !== b && (s.tip === "metin") && st.v[s.id]).map(s => st.v[s.id]).join(" · "), ...yer].filter(Boolean).join(" · "), top: ltSatirTop(bl, st) }; }
+    const kaf = bl.sutunlar.filter(s => s !== b && s.tip === "metin" && st.v[s.id]).map(s => st.v[s.id]).join(" · "), ys = bl.sutunlar.find(s => s.tip === "yil"), yil = ys && st.v[ys.id] ? String(st.v[ys.id]) : "";
+    return { bas: st.v[b.id] || (L[j] && L[j].v[b.id] ? "↳ " + L[j].v[b.id] : "—"), grup: L[j] ? L[j].v[b.id] || "" : "", yeni: !!st.v[b.id] || i === 0, dev: !st.v[b.id] && j < i, kaf, yil, yer: yer.join(" · "), alt: [kaf, ...yer].filter(Boolean).join(" · "), top: ltSatirTop(bl, st) }; }
   const digr = bl.sutunlar.filter(s => s !== b && s !== k && st.v[s.id]).slice(0, 3);
   return { bas: st.v[b.id] || "—", alt: [k ? (st.v[k.id] ? (bl.sutunlar.find(s => s.tip === "rutbe") && st.v[bl.sutunlar.find(s => s.tip === "rutbe").id] ? st.v[bl.sutunlar.find(s => s.tip === "rutbe").id] + " " : "") + st.v[k.id] : LT_BOS) : "", ...digr.map(s => st.v[s.id] + (s.ek ? " " + s.ek : ""))].filter(Boolean).join(" · ") }; }
 /* kişi seçimi: isim listesi (rütbe + ad) */
@@ -7953,7 +7958,8 @@ function ltKisiSec(bl, st){ const P = (S.personel.rows || []).filter(p => p.ad),
 let ltAra = "", ltOnAcik = (() => { try { return localStorage.getItem("ltOnAcik") === "1"; } catch(e){ return false; } })();
 const ltSayiTop = (bl, st) => { const sT = bl.sutunlar.find(s => s.tip === "satirToplam"); return sT ? ltSatirTop(bl, st) : bl.sutunlar.filter(s => s.tip === "sayi").reduce((a, s) => a + (parseFloat(String(st.v[s.id] ?? "").replace(",", ".")) || 0), 0); };
 function ltBlokOzet(bl){ const gs = ltBaslikSut(bl), sayili = bl.sutunlar.some(s => s.tip === "sayi"), G = [];
-  bl.satirlar.forEach(st => { const ad = String(st.v[gs.id] ?? "").trim(); if(ad || !G.length) G.push({ ad: ad || "—", n: 0 }); G[G.length - 1].n += sayili ? ltSayiTop(bl, st) : 0; });
+  const ks = bl.sutunlar.find(s => s !== gs && s.tip === "metin");
+  bl.satirlar.forEach(st => { const ad = String(st.v[gs.id] ?? "").trim(); if(ad || !G.length) G.push({ ad: ad || "—", n: 0, K: [] }); const g = G[G.length - 1], x = sayili ? ltSayiTop(bl, st) : 0; g.n += x; g.K.push({ k: ks ? String(st.v[ks.id] ?? "").trim() || "—" : "—", n: x }); });
   const ek = (bl.sutunlar.find(s => s.ek) || {}).ek || "", top = G.reduce((a, g) => a + g.n, 0);
   return { G, sayili, parca: G.map(g => sayili ? `${g.ad} ${String(g.n).replace(".", ",")}` : g.ad), top: sayili ? String(top).replace(".", ",") + (ek ? " " + ek : "") : "" }; }
 function ltOnHtml(d){ const g = ltGrid(d); try { hesapla(g); } catch(e){} const kap = kapsananlar(g), W = g.w.reduce((a, b) => a + b, 0), n = normMetin(ltAra);
@@ -7975,13 +7981,14 @@ function listeCiz(){ const d = acikBelge(); if(!d || d.tur !== "liste") return; 
     <details class="lt-on"${ltOnAcik ? " open" : ""}><summary><span>▦</span>Tablo görünümü<small>kâğıttaki hali</small></summary><div class="lt-on-kap">${ltOnAcik ? ltOnHtml(d) : ""}</div></details>
     ${v.ustSag ? `<label class="ko-al ko-tam"><span>Sağ üst (tarih vb.)</span><input data-lt-g="ustSag" value="${esc(v.ustSag.v || "")}"></label>` : ""}
     ${v.bloklar.map((bl, bi) => { const ac = ltBlokAcik === bl.id || v.bloklar.length === 1;
-      return `<div class="kc-blok${ac ? " acik" : ""}">${v.bloklar.length > 1 ? `<button type="button" class="kc-bb" data-lt-blok="${bl.id}"><span class="kc-no" style="background:#${bl.adStil?.f || bl.bas?.f || "E6EEF6"}">${bi + 1}</span><span class="kc-sy">${(() => { const oz = ltBlokOzet(bl); return `<b>${esc(bl.ad || String((ltBaslikSut(bl) || {}).ad || "Tablo").replace(/\n/g, " "))}${oz.top ? `<em class="lt-btop">${esc(oz.top)}</em>` : ""}</b>${ac ? `<span class="lt-boz-ac">${oz.G.length} kalem · ${bl.satirlar.length} satır</span>` : `<span class="lt-boz${oz.sayili ? "" : " yazi"}">${oz.G.length ? oz.G.map(g => `<span>${esc(g.ad)}</span>${oz.sayili ? `<em>${esc(String(g.n).replace(".", ","))}</em>` : ""}`).join("") : `<span>${bl.satirlar.length} satır</span>`}</span>`}`; })()}</span><i>${ac ? "▴" : "▾"}</i></button>` : ""}
+      return `<div class="kc-blok${ac ? " acik" : ""}">${v.bloklar.length > 1 ? `<button type="button" class="kc-bb" data-lt-blok="${bl.id}"><span class="kc-no" style="background:#${bl.adStil?.f || bl.bas?.f || "E6EEF6"}">${bi + 1}</span><span class="kc-sy">${(() => { const oz = ltBlokOzet(bl); return `<b>${esc(bl.ad || String((ltBaslikSut(bl) || {}).ad || "Tablo").replace(/\n/g, " "))}${oz.top ? `<em class="lt-btop">${esc(oz.top)}</em>` : ""}</b>${ac ? `<span class="lt-boz-ac">${oz.G.length} kalem · ${bl.satirlar.length} satır</span>` : `<span class="lt-boz${oz.sayili ? "" : " yazi"}">${oz.G.length ? oz.G.map(g => `<span>${esc(g.ad)}</span>${oz.sayili ? `<em>${esc(String(g.n).replace(".", ","))}</em>` : ""}${oz.sayili && g.K.length > 1 ? g.K.map(x => `<span class="lt-bk">${esc(x.k)}</span><em class="lt-bk">${esc(String(x.n).replace(".", ","))}</em>`).join("") : ""}`).join("") : `<span>${bl.satirlar.length} satır</span>`}</span>`}`; })()}</span><i>${ac ? "▴" : "▾"}</i></button>` : ""}
         ${ac ? `<div class="kc-ic">${bl.ad != null ? `<label class="ko-al ko-tam"><span>Tablo başlığı</span><input data-lt-b="${bl.id}" value="${esc(bl.ad || "")}"></label>` : ""}
           ${Array.isArray(bl.bas) || bl.bas === false ? "" : `<details class="lt-sut"><summary>Sütun adları</summary><div class="lt-sut-ic">${bl.sutunlar.filter(s => s.tip !== "sira").map((s, j) => `<label><span>${j + 1}</span><textarea class="oto-boy" rows="1" data-lt-sad="${bl.id}:${s.id}">${esc(s.ad || "")}</textarea></label>`).join("")}</div></details>`}
-          ${bl.satirlar.map((st, i) => { const sa = ltAcik === st.id, o = ltSatirOzet(bl, st);
-            return `<div class="kc-sat${sa ? " acik" : ""}"><button type="button" class="kc-sb${o.dev ? " lt-dev" : ""}" data-lt-satir="${st.id}"><span class="kc-sn">${i + 1}</span><span class="kc-sy"><b>${esc(o.bas)}</b><small>${esc(o.alt)}</small></span>${o.top != null ? `<em class="lt-stop">${esc(String(o.top).replace(".", ","))}</em>` : ""}</button>
+          ${(() => { const oz = ltBlokOzet(bl); let gi = -1; return bl.satirlar.map((st, i) => { const sa = ltAcik === st.id, o = ltSatirOzet(bl, st), kf = o.kaf != null;
+            const gb = kf && o.yeni ? (gi++, oz.G[gi]) : null;
+            return `${gb ? `<div class="lt-grp"><b>${esc(gb.ad)}</b><span>${gb.K.length} kafile</span><em>${esc(String(gb.n).replace(".", ","))}</em></div>` : ""}<div class="kc-sat${sa ? " acik" : ""}${kf ? " lt-kf" : ""}"><button type="button" class="kc-sb" data-lt-satir="${st.id}"><span class="kc-sn">${i + 1}</span>${kf ? `<span class="kc-sy"><span class="lt-kfu"><b>${esc(o.kaf || "Kafile yok")}</b>${o.yil ? `<i>${esc(o.yil)}</i>` : ""}</span><small>${esc(o.yer || "Dağılım girilmedi")}</small></span>` : `<span class="kc-sy"><b>${esc(o.bas)}</b><small>${esc(o.alt)}</small></span>`}${o.top != null ? `<em class="lt-stop">${esc(String(o.top).replace(".", ","))}</em>` : ""}</button>
               ${sa ? `<div class="kc-form">${ltKisiSec(bl, st)}${bl.sutunlar.filter(s => !LT_HESAP.includes(s.tip)).map(s => `<label class="ko-al${["sayi", "sira", "yil"].includes(s.tip) ? "" : " ko-tam"}"><span>${esc(String(s.ad).replace(/\n/g, " "))}</span><textarea class="oto-boy" rows="1" data-lt-h="${bl.id}:${st.id}:${s.id}"${s.tip === "sayi" || s.tip === "yil" ? ' inputmode="decimal"' : ""}>${esc(st.v[s.id] ?? "")}</textarea></label>`).join("")}${bl.sutunlar.some(s => s.tip === "satirToplam") ? `<div class="uclar ko-tam lt-top">Bu satırın toplamı: <b>${ltSatirTop(bl, st)}</b> · Excel'de formülle hesaplanır</div>` : ""}
-                <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-lt-i="kapat">✓ Tamam</button><button type="button" class="mini" data-lt-t="${bl.id}:${st.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-lt-t="${bl.id}:${st.id}:1"${i < bl.satirlar.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini" data-lt-c="${bl.id}:${st.id}">⧉</button><button type="button" class="mini sil" data-lt-s="${bl.id}:${st.id}">Sil</button></div></div>` : ""}</div>`; }).join("")}
+                <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-lt-i="kapat">✓ Tamam</button><button type="button" class="mini" data-lt-t="${bl.id}:${st.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-lt-t="${bl.id}:${st.id}:1"${i < bl.satirlar.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini" data-lt-c="${bl.id}:${st.id}">⧉</button><button type="button" class="mini sil" data-lt-s="${bl.id}:${st.id}">Sil</button></div></div>` : ""}</div>`; }).join(""); })()}
           ${bl.toplam && bl.satirlar.length ? (() => { const ek = (bl.sutunlar.find(s => s.ek) || {}).ek || "", sayiS = bl.sutunlar.filter(s => s.tip === "sayi"), top = bl.satirlar.reduce((a, st) => a + ltSayiTop(bl, st), 0), yaz = n => String(Math.round(n * 100) / 100).replace(".", ",");
             const yer = sayiS.length > 1 ? sayiS.map(s => [String(s.ad).replace(/\n/g, " "), bl.satirlar.reduce((a, st) => a + (parseFloat(String(st.v[s.id] ?? "").replace(",", ".")) || 0), 0)]).filter(x => x[1]) : [];
             return `<div class="lt-top-sat"><div class="lt-top-ust"><span>${esc(bl.toplam.etiket || "TOPLAM")}</span><b>${yaz(top)}${ek ? " " + esc(ek) : ""}</b></div>${yer.length ? `<div class="lt-top-yer">${yer.map(([a, n]) => `<span>${esc(a)}</span><em>${yaz(n)}</em>`).join("")}</div>` : ""}</div>`; })() : ""}
