@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "290";
+  const SURUM = "291";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2409,7 +2409,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 290</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 291</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6395,7 +6395,9 @@ async function gridPdf(d, a){
         doc.setFont(x.fn === "s" ? "LA" : "LS", x.b ? "bold" : "normal"); doc.setTextColor(...rgb(x.k || "222222"));
         let fs = (x.s || 11) * s * a.yazi * 1.0; const pad = Math.min(0.8, Wc * 0.08);
         const dikey = !!x.rot; const genis = dikey ? Hc - 2 * pad : Wc - 2 * pad, yuksek = dikey ? Wc - 2 * pad : Hc - 2 * pad;
-        let sat; for(let deneme = 0; deneme < 30; deneme++){ doc.setFontSize(fs); sat = doc.splitTextToSize(t, Math.max(1, genis)); if(sat.length * fs * 0.3528 * 1.12 <= yuksek + 0.3 || fs < 3.5) break; fs *= 0.92; }
+        /* yazı küçültülür: hem yüksekliğe sığsın hem hiçbir kelime ortadan bölünmesin (en uzun kelime hücre genişliğine sığana kadar) */
+        const kelime = String(t).split(/[\s\n]+/).filter(Boolean);
+        let sat; for(let deneme = 0; deneme < 40; deneme++){ doc.setFontSize(fs); sat = doc.splitTextToSize(t, Math.max(1, genis)); const kw = Math.max(0, ...kelime.map(k => doc.getTextWidth(k))); if((sat.length * fs * 0.3528 * 1.12 <= yuksek + 0.3 && kw <= genis + 0.05) || fs < 3.5) break; fs *= 0.94; }
         const lh = fs * 0.3528 * 1.12, blok = sat.length * lh; const hz = { l: "left", r: "right" }[x.a] || (x.a ? "center" : (typeof x.v === "number" ? "right" : "left"));
         if(!dikey && (x.vr || x.u)){ pdfZengin(doc, x, t, X, Y, Wc, Hc, pad, (x.s || 11) * s * a.yazi, hz); }
         else if(dikey){ const bx = X + Wc / 2 - blok / 2 + lh * 0.78;   // jsPDF açılı yazıda "align" uygulamaz: ortalamayı elle yap; ilk satır solda (aşağıdan yukarı okunur)
@@ -6495,7 +6497,7 @@ async function gridWord(d, a){
       const mg = bul(r, c); let x = satir[c], span = 1, vm = "";
       if(mg){ const [r1, c1, r2, c2] = mg; if(c !== c1) continue; span = c2 - c1 + 1; if(r2 > r1) vm = r === r1 ? '<w:vMerge w:val="restart"/>' : "<w:vMerge/>"; if(r !== r1){ x = g.c[r1][c1]; } }
       const w = gw.slice(c, c + span).reduce((p, q) => p + q, 0); const devam = mg && r !== mg[0];
-      const br = (x && x.br) || {}; const bx = Object.entries({ top: "t", left: "l", bottom: "b", right: "r" }).map(([ad, k]) => `<w:${ad} w:val="${br[k] ? "single" : "nil"}" w:sz="${br[k] === 3 ? 36 : br[k] === 2 ? 12 : 4}" w:space="0" w:color="${br[k] === 3 && d.grid.tema ? d.grid.tema.ana : d.grid.tema ? d.grid.tema.cizgi : "444444"}"/>`).join("");
+      const br = (x && x.br) || {}; const bx = Object.entries({ top: "t", left: "l", bottom: "b", right: "r" }).map(([ad, k]) => `<w:${ad} w:val="${br[k] ? "single" : "nil"}" w:sz="${br[k] === 2 ? 12 : 4}" w:space="0" w:color="${d.grid.tema ? d.grid.tema.cizgi : "444444"}"/>`).join("");
       const tcPr = `<w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${span > 1 ? `<w:gridSpan w:val="${span}"/>` : ""}${vm}<w:tcBorders>${bx}</w:tcBorders>${x && x.f ? `<w:shd w:val="clear" w:color="auto" w:fill="${x.f}"/>` : ""}<w:vAlign w:val="${{ t: "top", b: "bottom" }[x && x.va] || "center"}"/>${x && x.rot ? '<w:textDirection w:val="btLr"/>' : ""}</w:tcPr>`;
       const t = devam ? "" : gosterDeger(x); const jc = { l: "left", r: "right", c: "center" }[x && x.a] || (x && typeof x.v === "number" ? "right" : "left");
       const ro = { sz: ((x && x.s) || 11) * 2 * olc, k: x && x.k, sans: x && x.fn === "s", u: !!(x && x.u) };
