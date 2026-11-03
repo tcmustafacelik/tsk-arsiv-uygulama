@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "250";
+  const SURUM = "251";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2253,7 +2253,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 250</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 251</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5686,7 +5686,7 @@ function beyanSonucCiz(){
     ${R.gorevler.length ? `<div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>Aktar</th><th>Görev yeri</th><th>Gidiş</th><th>Dönüş</th><th>Devam</th><th>Kalış</th></tr></thead><tbody>
       ${R.gorevler.map((g, i) => `<tr>${kutu("g", i, g.al)}<td><input data-by="g" data-i="${i}" data-a="yer" value="${esc(g.yer)}" placeholder="(boşsa mevcut görev yeri)" style="min-width:220px" aria-label="Görev yeri"></td>${tarih("g", i, "git", g.git)}${g.devam ? `<td><input disabled value="-" style="text-align:center"></td>` : tarih("g", i, "don", g.don)}<td class="devam"><input type="checkbox" data-by="g" data-i="${i}" data-a="devam"${g.devam ? " checked" : ""} aria-label="Devam"></td><td class="hesap">${esc(gdKalis({ git: g.git, don: g.devam ? "-" : g.don }))}</td></tr>`).join("")}
       </tbody></table></div>` : `<div class="uclar">Görev satırı yok; aktarınca görev satırları dönem ve izinlerden kendiliğinden oluşturulur.</div>`}
-    <div class="arac gd-bolum a"><h3>Görevden ayrı kaldığı süreler <span class="gd-say">${k.ayri.length}</span></h3><span class="bosluk"></span><button class="btn kucuk" type="button" data-by-ekle="a">+ İzin / rapor satırı</button></div>
+    <div class="arac gd-bolum a"><h3>Görevden ayrı kaldığı süreler <span class="gd-say">${R.ayri.length}</span></h3><span class="bosluk"></span><button class="btn kucuk" type="button" data-by-ekle="a">+ İzin / rapor satırı</button></div>
     ${R.ayri.length ? `<div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>Aktar</th><th>Ayrılış sebebi</th><th>Ayrılma</th><th>Katılma</th><th>Ay</th><th>Gün</th></tr></thead><tbody>
       ${R.ayri.map((x, i) => { const [ay, gun] = gdDatedif(x.ayr, x.kat); return `<tr>${kutu("a", i, x.al)}<td>${sebepSec(`data-by="a" data-i="${i}"`, `by-a-${i}-sebep`, x.sebep, x.elle)}${x.esas ? "" : `<div class="uclar" style="font-size:11px">“Dahil Edilecek Beyanlar”da işaretli değil; istersen yine de işaretle</div>`}</td>${tarih("a", i, "ayr", x.ayr)}${tarih("a", i, "kat", x.kat)}<td class="hesap">${ay}</td><td class="hesap">${gun}</td></tr>`; }).join("")}
       </tbody></table></div>` : `<div class="uclar">İzin/rapor satırı yok; “+ İzin / rapor satırı” ile ekleyebilirsiniz.</div>`}
