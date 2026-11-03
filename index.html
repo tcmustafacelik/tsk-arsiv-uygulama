@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "310";
+  const SURUM = "311";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2410,6 +2410,15 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 .isa-z .ks-ad{display:flex;flex-direction:column;min-width:0} .isa-z .ks-ad b{font:700 13px var(--f-ui);color:var(--fg);overflow-wrap:anywhere} .isa-z .ks-ad small{font:500 11px var(--f-ui);color:var(--muted)}
 .isa-z .ks-av{width:30px;height:30px;font-size:11px} .isa-z em{font-style:normal;font:800 13px var(--f-ui);color:#2F6B47;width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
 .isa-z.on{border-color:#7FA48A;background:#F1F7F2;box-shadow:0 0 0 2px #DCEBDF} .isa-z.on em{background:#2F6B47;color:#fff;font-size:11px}
+
+.isa-tsec{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;width:100%;text-align:left;padding:8px 12px;border:1px solid #CFDCEA;border-radius:12px;background:#F4F8FC;cursor:pointer}
+.isa-tsec-s{width:32px;height:32px;border-radius:10px;background:#E1EBF6;color:#3D5F8C;display:grid;place-items:center} .isa-tsec-s svg{width:17px;height:17px}
+.isa-tsec-y{display:flex;flex-direction:column;min-width:0} .isa-tsec-y small{font:600 10.5px var(--f-ui);color:var(--muted)} .isa-tsec-y b{font:700 14px var(--f-ui);color:#22303D}
+.isa-tsec i{font-style:normal;font:700 12px var(--f-ui);color:#3D5F8C}
+.isa-tsat{display:flex;align-items:stretch;gap:6px} .isa-tsat .ap-sat{flex:1;min-width:0} .isa-tsil{flex:none;width:40px;border:1px solid var(--line2);border-radius:10px;background:#FBF3F2;color:#9A4A42;font:700 13px var(--f-ui);cursor:pointer}
+.ks-av.isa-tav{background:#E1EBF6;color:#3D5F8C} .ks-av.isa-tav.ek{background:#EEF0E2;color:#5B6330}
+.isa-tekle{display:flex;gap:6px;margin-top:10px} .isa-tekle input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:10px;padding:9px 11px;font:600 13.5px var(--f-ui);background:#fff;color:#22303D} .isa-tekle button{flex:none;border:0;border-radius:10px;background:#3D5F8C;color:#fff;padding:0 14px;font:700 13px var(--f-ui);cursor:pointer}
+#isa-govde .isa-adres{min-height:36px}
 </style>
 
 </head>
@@ -2447,7 +2456,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 310</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 311</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8716,9 +8725,12 @@ async function dlExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Work
    PYBS “Silahlı Kuvvetler Personeline Ait İzin Belgesi” ön yüzü: A4'te iki özdeş nüsha, araları kesik çizgi.
    d.isa = { aktif, kayitlar: [{ id, pid, tur, kullan, gun, tel, adres, ayr, kat, tarih }], onay: { ad, rutbe, gorev }, alt: { sol, sag } }
    Alt satırdaki PYBS çıktı bilgisi (ekran adı, saat, basan personel) uygulama tarafından üretilmez; isteyen elle yazar. İmza/Mühür boş kalır. */
-const ISA_TUR = ["Yıllık İzin", "Yıllık Mazeret İzni", "Sağlık Raporu", "Refakat İzni"];
+const ISA_TUR = ["Yıllık İzin", "Yıllık Mazeret İzni"];   // sabit türler; diğerleri belgeye elle eklenir (d.isa.turler)
+const ISA_TUR_EK = ["Garnizon Terk İzni", "Evlilik İzni", "Ölüm İzni"];
+document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target && e.target.id === "isa-tyeni"){ e.preventDefault(); const b = document.querySelector("#ks-perde [data-tekle]"); b && b.click(); } });
+const isaTurAd = t => String(t || "").replace("Yıllık Mazeret İzni", "Mazeret İzni") || "Seçilmedi";
 let isaKisiAcik = false;
-const isaVeri = d => { d.isa ||= {}; const v = d.isa; v.onay ||= { ad: "", rutbe: "", gorev: "" }; v.alt ||= { sol: "", sag: "" }; v.kayitlar ||= [];
+const isaVeri = d => { d.isa ||= {}; const v = d.isa; v.turler ||= ISA_TUR_EK.slice(); v.onay ||= { ad: "", rutbe: "", gorev: "" }; v.alt ||= { sol: "", sag: "" }; v.kayitlar ||= [];
   if(!v.kayitlar.length){ const k = isaYeni(); v.kayitlar.push(k); v.aktif = k.id; } if(!v.kayitlar.some(k => k.id === v.aktif)) v.aktif = v.kayitlar[0].id; return v; };
 const isaYeni = (o = {}) => ({ id: "ik" + yeniId().slice(0, 8), pid: "", tur: "Yıllık İzin", kullan: "-", gun: "", tel: "", adres: "", ayr: "", kat: "", tarih: bugun(), ...o });
 const isaAktif = v => v.kayitlar.find(k => k.id === v.aktif) || v.kayitlar[0];
@@ -8753,14 +8765,13 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
   $("#isa-govde").innerHTML = `${iztSecHtml("izinsa")}
     <div class="dl-ust"><span class="dl-ust-s isa-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z M8 9h8 M8 13h8 M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><b>İzin belgeleri</b><small>${v.kayitlar.length}</small><button type="button" class="dl-yeni" data-isa="yeni"><span>＋</span>Yeni</button></div>
     <div class="dl-liste">${v.kayitlar.slice().reverse().map(x => { const q = isaKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-isa-sec="${x.id}"><span class="dl-tur t-izin">${esc(x.tur || "İzin")}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc([trTarih(x.ayr), trTarih(x.kat)].filter(Boolean).join(" → ") || trTarih(x.tarih))}</small></button>`; }).join("")}</div>
-    <section class="dl-kart"><div class="dl-bas">Kişi <small class="isa-not">subay ve astsubaylar</small></div>
-      ${ksSatir(p, 'data-isa="kisi"')}</section>
-    <section class="dl-kart"><div class="dl-bas">İzin</div>
-      <div class="kc-cips isa-tur">${[...ISA_TUR, "Diğer"].map(t => `<button type="button" data-isa-tur="${t}" aria-pressed="${t === "Diğer" ? !ISA_TUR.includes(k.tur) : k.tur === t}">${t.replace("Yıllık Mazeret İzni", "Mazeret İzni")}</button>`).join("")}</div>
-      <div class="dl-alanlar">${!ISA_TUR.includes(k.tur) ? `<label class="dl-al tam"><span>İzin türü</span><input data-isa-f="tur" value="${esc(k.tur)}"></label>` : ""}
+    <section class="dl-kart">
+      ${ksSatir(p, 'data-isa="kisi"', "Kişi seç (subay · astsubay)")}
+      <button type="button" class="isa-tsec" data-isa="tursec"><span class="isa-tsec-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v15H4z M4 10h16 M9 3v4 M15 3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><span class="isa-tsec-y"><small>İzin türü</small><b>${esc(isaTurAd(k.tur))}</b></span><i>Değiştir ›</i></button>
+      <div class="dl-alanlar">
         <label class="dl-al"><span>Ayrılış tarihi</span><input type="date" data-isa-f="ayr" value="${esc(k.ayr)}"></label><label class="dl-al"><span>Katılış tarihi</span><input type="date" data-isa-f="kat" value="${esc(k.kat)}"></label>
         <label class="dl-al"><span>Verilen izin süresi (gün)</span><input data-isa-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="${esc(isaGun({ ...k, gun: "" }) || "otomatik")}"></label><label class="dl-al"><span>Ne kadarını kullandığı</span><input data-isa-f="kullan" value="${esc(k.kullan ?? "")}"></label>
-        <label class="dl-al tam"><span>İzinli gideceği adres</span><textarea class="oto-boy" rows="1" data-isa-f="adres" placeholder="Mahalle, sokak, no, ilçe/il">${esc(k.adres)}</textarea></label>
+        <label class="dl-al tam"><span>İzinli gideceği adres</span><textarea class="oto-boy isa-adres" data-tek rows="1" data-isa-f="adres" placeholder="Mahalle, sokak, no, ilçe/il">${esc(k.adres)}</textarea></label>
         <label class="dl-al"><span>Telefon no</span><input data-isa-f="tel" inputmode="tel" value="${esc(k.tel)}" placeholder="${esc(isaTel(p))}"></label><label class="dl-al"><span>Belge tarihi</span><input type="date" data-isa-f="tarih" value="${esc(k.tarih)}"></label></div>
       <div class="dl-is"><button type="button" class="mini" data-isa="kopya">⧉ Kopyasını oluştur</button>${v.kayitlar.length > 1 ? '<button type="button" class="mini sil" data-isa="sil">Sil</button>' : ""}</div></section>
     <details class="dl-kart dl-bilgi"><summary><span>Onaylayan amir</span>${v.onay.ad ? `<em class="dl-tam">${esc(v.onay.ad)}</em>` : '<em class="dl-eksik">seçilmedi</em>'}</summary>
@@ -8780,6 +8791,12 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.isaSec){ v.aktif = b.dataset.isaSec; return yaz(); }
   if(b.dataset.isaP){ k.pid = k.pid === b.dataset.isaP ? "" : b.dataset.isaP; return yaz(); }
   if(b.dataset.isaTur){ k.tur = b.dataset.isaTur === "Diğer" ? "" : b.dataset.isaTur; return yaz(); }
+  if(b.dataset.isa === "tursec"){ const L = () => [...ISA_TUR, ...v.turler];
+    return altPencere("ks-perde", "İZİN TÜRÜ", "Hangi izin", () => `<div class="ap-liste">${L().map((t, i) => { const sabit = i < ISA_TUR.length; return `<div class="isa-tsat">${apSatir(`data-ks="${i}"`, `<span class="ks-av isa-tav${sabit ? "" : " ek"}">${esc(isaTurAd(t)[0])}</span>`, esc(isaTurAd(t)), t === k.tur ? '<em class="ks-tik">✓</em>' : "")}${sabit ? "" : `<button type="button" class="isa-tsil" data-tsil="${i - ISA_TUR.length}" aria-label="${esc(t)} türünü kaldır">✕</button>`}</div>`; }).join("")}</div>
+      <div class="isa-tekle"><input id="isa-tyeni" placeholder="Yeni izin türü yaz (ör. Doğum İzni)" enterkeyhint="done"><button type="button" data-tekle="1">＋ Ekle</button></div>`,
+      (b2, kapat, yenile) => { if(b2.dataset.ks){ kapat(); k.tur = L()[+b2.dataset.ks]; return yaz(); }
+        if(b2.dataset.tsil){ v.turler.splice(+b2.dataset.tsil, 1); kaydetBelge(d); return yenile(); }
+        if(b2.dataset.tekle){ const g = $("#isa-tyeni"), t = (g.value || "").trim().replace(/\s+/g, " "); if(!t) return g.focus(); const T = t.replace(/(^|\s)\S/g, x => x.toLocaleUpperCase("tr")); if(![...L()].some(x => x.toLocaleLowerCase("tr") === T.toLocaleLowerCase("tr"))) v.turler.push(T); k.tur = T; kapat(); return yaz(); } }, { z: "E6EEF7", r: "3D5F8C" }); }
   if(b.dataset.isaZ){ const Z = ((S.belgeler.find(x => x.tur === "sicil") || {}).sa || {}).zincir || [], z = Z.find(x => x.id === b.dataset.isaZ); if(z){ v.onay.ad = z.ad || ""; if(!v.onay.rutbe || !/\[/.test(v.onay.rutbe)) v.onay.rutbe = z.rutbe || ""; } return yaz(); }
   const is = b.dataset.isa;
   if(is === "kisi") return kisiSecAc("İzin belgesi kimin adına", P0(), k.pid, id => { k.pid = id; kaydetBelge(d); izinsaCiz(); });
