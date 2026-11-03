@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "285";
+  const SURUM = "286";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2398,7 +2398,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 285</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 286</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6322,6 +6322,25 @@ function pdfZengin(doc, x, t, X, Y, Wc, Hc, pad, fs0, hz){
       if(x.u) doc.line(cx, y + fs * 0.3528 * 0.15, cx + k.w, y + fs * 0.3528 * 0.15);
       cx += k.w; }); y += lh; });
 }
+/* ızgara belgelerine kurumsal görünüm: başlık bandı + sol vurgu şeridi, yumuşak çizgiler, şeritli satırlar.
+   Renkler belgenin kendi başlık renginden türetilir (her belge kendi renginde kalır); hücre içerikleri ve anlamlı renkler değişmez. */
+const KURUMSAL_GRID = new Set(["barut-pusu", "entegre", "g01", "g02", "g05", "g06", "spor-takip"]);
+const kurumsalMi = d => d && (d.kurumsal ?? KURUMSAL_GRID.has(d.id));
+function renkKar(a, b, t){ const A = rgb(a), B = rgb(b); return A.map((x, i) => Math.round(x + (B[i] - x) * t).toString(16).padStart(2, "0")).join("").toUpperCase(); }
+function gridTema(g){ const R = g.c.length, W = g.w.length, mg = (r, c) => (g.m || []).find(([r1, c1, r2, c2]) => r1 === r && c1 === c);
+  let tr = -1, ts = 0; for(let r = 0; r < Math.min(4, R); r++){ const c = (g.c[r] || []).findIndex(x => x && x.v != null && x.v !== ""); if(c < 0) continue; const x = g.c[r][c], m = mg(r, c); if(m && m[3] - m[1] + 1 >= W / 2 && (x.s || 11) > ts){ ts = x.s || 11; tr = r; } }
+  let hr = -1; for(let r = tr + 1; r < R; r++){ const L = (g.c[r] || []).filter(x => x && x.f && x.br && x.v != null && x.v !== ""); if(L.length >= 2){ hr = r; break; } }
+  const baz = hr >= 0 ? (g.c[hr].find(x => x && x.f && x.v != null && x.v !== "") || {}).f || "DCE5EF" : "DCE5EF";
+  const T = { ana: renkKar(renkKar(baz, "000000", .42), "6F7F90", .35), yazi: renkKar(baz, "000000", .72), cizgi: renkKar(renkKar(baz, "8A939C", .7), "FFFFFF", .25), band: renkKar(baz, "FFFFFF", .55), serit: renkKar(baz, "FFFFFF", .84) };
+  for(let r = 0; r < R; r++) for(let c = 0; c < W; c++){ const x = g.c[r] && g.c[r][c]; if(x && x.br){ x.br = { ...x.br }; for(const k of "tblr") if(x.br[k] === 2) x.br[k] = 1; } }
+  if(tr >= 0){ const c0 = g.c[tr].findIndex(x => x && x.v != null && x.v !== ""), m = mg(tr, c0), c1 = m ? m[3] : c0;
+    for(let c = c0; c <= c1; c++){ const x = g.c[tr][c] || (g.c[tr][c] = {}); x.f = T.band; x.br = { t: 1, b: 1, ...(c === c0 ? { l: 3 } : {}), ...(c === c1 ? { r: 1 } : {}) }; }
+    Object.assign(g.c[tr][c0], { k: T.yazi }); if((g.h[tr] || 0) < 30) g.h[tr] = 30;
+    if(tr + 1 < R && hr === tr + 1){ g.h.splice(tr + 1, 0, 6); g.c.splice(tr + 1, 0, Array.from({ length: W }, () => ({}))); (g.m || []).forEach(m => { if(m[0] > tr){ m[0]++; m[2]++; } }); (g.sb || []).forEach((v, i, A) => { if(v > tr) A[i]++; }); hr++; } }
+  for(let r = Math.max(0, hr); r < g.c.length; r++) (g.c[r] || []).forEach(x => { if(x && x.f && x.b && x.br && (!x.k || x.k === "2F2F2F" || x.k === "222222" || x.k === "1F1F1F")) x.k = T.yazi; });
+  if(hr >= 0){ let n = 0; for(let r = hr + 1; r < g.c.length; r++){ const L = (g.c[r] || []).filter(Boolean), dolu = L.some(x => x.v != null && x.v !== ""), duz = L.every(x => !x.f) && L.some(x => x.br);
+      if(duz && dolu){ if(n % 2) L.forEach(x => { x.f = T.serit; }); n++; } else n = 0; } }
+  g.tema = T; return g; }
 async function gridPdf(d, a){
   const g = kopya(d.grid); hesapla(g); const doc = await yeniPdf(a);
   const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(); const m = kenarlar(a);
@@ -6372,7 +6391,7 @@ async function gridPdf(d, a){
       const k = kap[r + ":" + c]; if(k === 1) continue; const r2 = Array.isArray(k) ? k[2] : r, c2 = Array.isArray(k) ? k[3] : c;
       const X = cx[c], Y = ry[r], X2 = cx[c2 + 1], Y2 = Y + yuk(r, r2);
       const kn = (rr, cc, yon) => (g.c[rr]?.[cc]?.br || {})[yon];
-      const ciz = (w, x1, y1, x2, y2) => { if(!w) return; doc.setDrawColor(68, 68, 68); doc.setLineWidth(w === 2 ? 0.5 : 0.2); doc.line(x1, y1, x2, y2); };
+      const ciz = (w, x1, y1, x2, y2) => { if(!w) return; if(w === 3 && g.tema){ doc.setDrawColor(...rgb(g.tema.ana)); doc.setLineWidth(1.6); doc.line(x1 + 0.8, y1, x2 + 0.8, y2); return; } doc.setDrawColor(...(g.tema ? rgb(g.tema.cizgi) : [68, 68, 68])); doc.setLineWidth(w === 2 ? 0.5 : g.tema ? 0.15 : 0.2); doc.line(x1, y1, x2, y2); };
       ciz(kn(r, c, "t"), X, Y, X2, Y); ciz(kn(r, c, "l"), X, Y, X, Y2); ciz(kn(r, c2, "r"), X2, Y, X2, Y2); ciz(kn(r2, c, "b"), X, Y2, X2, Y2);
     } });
   });
@@ -6395,7 +6414,7 @@ async function gridExcel(d, a){
   if(a.sigdir === "bol" && a.baslikSatir) ws.pageSetup.printTitlesRow = `1:${a.baslikSatir}`;
   if(a.altBilgi){ const e = t => String(t || "").replace(/&/g, "&&"); ws.pageSetup.margins.bottom = (a.kenarAlt || 14) / 25.4; ws.pageSetup.margins.footer = 0.15; ws.headerFooter = { ...(ws.headerFooter || {}), oddFooter: `&L&8&P / &N&C&"Times New Roman,Bold"&9${e(a.altBilgi.gizlilik)}&R&7${e(a.altBilgi.sag)}` }; }
   g.w.forEach((w, i) => ws.getColumn(i + 1).width = w);
-  const kenar = v => v ? { style: v === 2 ? "medium" : "thin", color: { argb: "FF444444" } } : undefined;
+  const GT = d.grid && d.grid.tema, kenar = v => v ? (v === 3 && GT ? { style: "thick", color: { argb: "FF" + GT.ana } } : { style: v === 2 ? "medium" : "thin", color: { argb: "FF" + (GT ? GT.cizgi : "444444") } }) : undefined;
   g.c.forEach((satir, r) => { ws.getRow(r + 1).height = g.h[r] * a.satir; satir.forEach((x, c) => { if(!x) return; const h = ws.getCell(r + 1, c + 1);
     if(x.fx) h.value = { formula: x.fx.slice(1), result: typeof x.v === "number" ? x.v : (x.v ?? "") }; else if(x.v !== undefined && x.v !== "") h.value = x.v;
     if(x.yz) h.numFmt = "%0"; if(x.nf === "tl") h.numFmt = "#,##0.00"; if(x.ek) h.numFmt = '0 "' + String(x.ek).replace(/"/g, "") + '"';   // % işareti başta: değer ×100 gösterilir (%67)
@@ -6455,7 +6474,7 @@ async function gridWord(d, a){
       const mg = bul(r, c); let x = satir[c], span = 1, vm = "";
       if(mg){ const [r1, c1, r2, c2] = mg; if(c !== c1) continue; span = c2 - c1 + 1; if(r2 > r1) vm = r === r1 ? '<w:vMerge w:val="restart"/>' : "<w:vMerge/>"; if(r !== r1){ x = g.c[r1][c1]; } }
       const w = gw.slice(c, c + span).reduce((p, q) => p + q, 0); const devam = mg && r !== mg[0];
-      const br = (x && x.br) || {}; const bx = Object.entries({ top: "t", left: "l", bottom: "b", right: "r" }).map(([ad, k]) => `<w:${ad} w:val="${br[k] ? "single" : "nil"}" w:sz="${br[k] === 2 ? 12 : 4}" w:space="0" w:color="444444"/>`).join("");
+      const br = (x && x.br) || {}; const bx = Object.entries({ top: "t", left: "l", bottom: "b", right: "r" }).map(([ad, k]) => `<w:${ad} w:val="${br[k] ? "single" : "nil"}" w:sz="${br[k] === 3 ? 36 : br[k] === 2 ? 12 : 4}" w:space="0" w:color="${br[k] === 3 && d.grid.tema ? d.grid.tema.ana : d.grid.tema ? d.grid.tema.cizgi : "444444"}"/>`).join("");
       const tcPr = `<w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${span > 1 ? `<w:gridSpan w:val="${span}"/>` : ""}${vm}<w:tcBorders>${bx}</w:tcBorders>${x && x.f ? `<w:shd w:val="clear" w:color="auto" w:fill="${x.f}"/>` : ""}<w:vAlign w:val="${{ t: "top", b: "bottom" }[x && x.va] || "center"}"/>${x && x.rot ? '<w:textDirection w:val="btLr"/>' : ""}</w:tcPr>`;
       const t = devam ? "" : gosterDeger(x); const jc = { l: "left", r: "right", c: "center" }[x && x.a] || (x && typeof x.v === "number" ? "right" : "left");
       const ro = { sz: ((x && x.s) || 11) * 2 * olc, k: x && x.k, sans: x && x.fn === "s", u: !!(x && x.u) };
@@ -7797,7 +7816,7 @@ function mzGrid(d){ const v = mzVeri(d), T = { l: 1, r: 1, t: 1, b: 1 }, g = { w
   const S = v.satirlar.length ? v.satirlar : [{}]; S.forEach((s, r) => { const f = MZ_RENK[r % MZ_RENK.length], son = r === S.length - 1;
     g.h.push(45.8); g.c.push([r + 1, s.obus || "", s.plaka || "", mzKomutan(s), s.grid || "", s.x || "", s.y || "", s.rakim || ""].map((t, i) => H(s.obus == null && i === 0 ? "" : t, { f, ...(i >= 4 && i <= 6 ? { s: 13 } : {}), br: { ...T, ...(r === 0 ? { t: 2 } : {}), ...(son ? { b: 2 } : {}), ...(i === 0 ? { l: 2 } : {}), ...(i === 7 ? { r: 2 } : {}) } }))); });
   return g; }
-async function mevziCikti(d, a, tur){ const g = mzGrid(d), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: 1, yazi: 1 }, sahte = { ...d, grid: g };
+async function mevziCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(mzGrid(d)) : mzGrid(d), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: 1, yazi: 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
 function mzOnHtml(d){ const g = mzGrid(d), kap = kapsananlar(g), TW = g.w.reduce((a, b) => a + b, 0); let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / TW * 100).toFixed(2)}%">`).join("")}</colgroup>`;
   g.c.forEach((row, r) => { h += `<tr style="height:${(g.h[r] * .085).toFixed(2)}cqw">`; for(let c = 0; c < 8; c++){ const kk = kap[r + ":" + c]; if(kk === 1) continue; const x = row[c] || {}, sp = Array.isArray(kk) ? ` colspan="${kk[3] - kk[1] + 1}"` : "", br = x.br || {};
@@ -8013,7 +8032,7 @@ function ltGrid(d){ const v = ltVeri(d), W = v.w.length, I = { t: 1, b: 1, l: 1,
   if(v.lejant){ satir(v.lejant.bosluk || 15); const r = satir(v.lejant.h || 15); v.lejant.hucreler.forEach(x => koy(r, x.c, x.cs || 1, { v: x.v, a: "c", va: "m", s: x.s || 8, b: 1, fn: v.fn, f: x.f, k: "2F2F2F", br: I })); }
   if(v.not && v.not.v){ satir(8); const r = satir(v.not.h || 18); koy(r, 0, W, { v: v.not.v, a: "l", va: "m", s: v.not.s || 8.5, fn: v.fn, k: "5A6470" }); }
   hesapla(g); return g; }
-async function listeCikti(d, a, tur){ const g = ltGrid(d), a2 = { ...a, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
+async function listeCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(ltGrid(d)) : ltGrid(d), a2 = { ...a, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
 /* ---- düzenleyici ---- */
 let ltAcik = null, ltBlokAcik = null, ltSecKisi = null;
@@ -8410,7 +8429,7 @@ function stGrid(d){ const v = stVeri(d), { T, L } = stTopla(d), n = T.length, W 
   if(n){ sat(8); const r = sat(17); koy(r, 0, 3, 1, C("Başarı oranı", { b: 1, a: "r", f: BAS })); T.forEach((t, j) => koy(r, 3 + j * 2, 2, 1, C(t.G.oran == null ? "—" : "%" + spSayiYaz(t.G.oran), { b: 1 })));
     const r3 = sat(17); koy(r3, 0, 3, 1, C("Genel ortalama", { b: 1, a: "r", f: BAS })); T.forEach((t, j) => koy(r3, 3 + j * 2, 2, 1, C(t.G.ort ?? "—", { b: 1 }))); }
   return g; }
-async function sportakipCikti(d, a, tur){ const g = stGrid(d), a2 = { ...a, yon: stTopla(d).T.length > 2 ? "yatay" : a.yon, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
+async function sportakipCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(stGrid(d)) : stGrid(d), a2 = { ...a, yon: stTopla(d).T.length > 2 ? "yatay" : a.yon, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
 let stAcik = null;
 function sportakipCiz(){ const d = acikBelge(); if(!d || d.tur !== "sportakip") return; const v = stVeri(d), { T, L } = stTopla(d), tum = S.belgeler.filter(x => x.tur === "spor" && !x.sablon);
