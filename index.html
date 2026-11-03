@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "298";
+  const SURUM = "299";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1537,21 +1537,28 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .hk-form{display:grid;grid-template-columns:1fr 1fr;gap:7px;padding:4px 10px 12px;border-top:1px dashed var(--line2)} .hk-al{display:flex;flex-direction:column;gap:3px;min-width:0} .hk-al.tam{grid-column:1 / -1} .hk-al>span{font:600 10.5px var(--f-ui);color:var(--muted)}
 .hk-al input{height:34px;padding:4px 9px;border:1px solid var(--line2);border-radius:8px;background:#fff;font:600 13px var(--f-ui);color:#22303D;min-width:0;width:100%;box-sizing:border-box} .hk-al input.mono{font-family:ui-monospace,Menlo,Consolas,monospace;font-size:12.5px}
 .hk-is{grid-column:1 / -1;display:flex;justify-content:space-between;align-items:center;margin-top:4px}
+@font-face{font-family:"TSK Serif";src:url("fonts/LiberationSerif-Regular.ttf") format("truetype");font-weight:400;font-display:swap} @font-face{font-family:"TSK Serif";src:url("fonts/LiberationSerif-Bold.ttf") format("truetype");font-weight:700;font-display:swap}
+.ks-sec{display:flex;align-items:center;gap:10px;width:100%;padding:8px 10px;border:1px solid var(--line2);border-radius:12px;background:#fff;text-align:left;cursor:pointer;color:var(--fg)} .ks-sec>i{margin-left:auto;font-style:normal;font:600 11.5px var(--f-ui);color:#3D5F8C;flex:none}
+.ks-av,.ks-sec .ks-av,.ap-sat .ks-av{flex:0 0 34px;width:34px;height:34px;min-height:0;line-height:1;align-self:center;padding:0;border-radius:50%;display:grid;place-items:center;background:#E2F1E7;color:#2F6B47;font:800 12px var(--f-ui)} .ks-av.bos{background:var(--panel2);color:var(--muted);font-size:16px}
+.ks-ad{display:flex;flex-direction:column;min-width:0} .ks-ad b{font:700 13.5px var(--f-ui);overflow-wrap:anywhere} .ks-ad small{font:500 11px var(--f-ui);color:var(--muted)} .ks-tik{font-style:normal;color:#2F6B47;font-weight:800;margin-left:auto}
+.dl-kagit,.dl-kagit *{font-family:"TSK Serif","Times New Roman",Tinos,serif!important}
 .dl-ust{display:flex;align-items:center;gap:8px} .dl-ust b{font:800 14px var(--f-ui)} .dl-ust small{font:700 11px var(--f-ui);color:var(--muted);background:var(--panel2);border-radius:10px;padding:1px 7px} .dl-ust .btn{margin-left:auto}
 .dl-liste{display:flex;flex-direction:column;gap:5px;max-height:180px;overflow:auto} .dl-sat{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:8px;align-items:center;text-align:left;padding:7px 10px;border:1px solid var(--line2);border-radius:10px;background:var(--panel);cursor:pointer}
 .dl-sat.on{border-color:#7FA48A;background:#F1F7F2;box-shadow:0 0 0 2px #DCEBDF} .dl-sat b{font:700 13px var(--f-ui);color:var(--fg)} .dl-sat small{grid-column:2;font:500 11px var(--f-ui);color:var(--muted)} .dl-tur{grid-row:1 / 3;font:700 10.5px var(--f-ui);padding:4px 8px;border-radius:8px;text-align:center;max-width:92px;line-height:1.2}
 .dl-tur.t-izin{background:#E3EEF8;color:#2D557E} .dl-tur.t-mazeret{background:#FBEFD8;color:#7E5716} .dl-tur.t-diger{background:#ECE8F4;color:#54477F}
-.dl-kart{border:1px solid var(--line2);border-radius:14px;background:var(--panel);padding:10px 12px;display:flex;flex-direction:column;gap:8px} .dl-bas{font:800 12px var(--f-ui);color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
+.dl-kart{border:1px solid var(--line2);border-radius:14px;background:var(--panel);padding:10px 12px;display:flex;flex-direction:column;gap:8px} .dl-sat{padding:6px 10px} .dl-liste{max-height:150px} .dl-bas{font:800 12px var(--f-ui);color:var(--muted);letter-spacing:.04em;text-transform:uppercase}
 .dl-kisiler{display:flex;flex-wrap:wrap;gap:6px} .dl-kisiler button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;padding:6px 10px;border-radius:10px} .dl-kisiler button b{font:700 12.5px var(--f-ui)} .dl-kisiler button small{font:500 10.5px var(--f-ui);opacity:.75}
 .dl-bilgi{border-top:1px dashed var(--line2);padding-top:6px} .dl-bilgi summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font:700 12.5px var(--f-ui);padding:4px 0} .dl-bilgi summary::-webkit-details-marker{display:none}
 .dl-eksik{font-style:normal;font:700 10.5px var(--f-ui);color:#9A5B18;background:#FBEFD8;border-radius:10px;padding:1px 8px} .dl-tam{font-style:normal;font:700 10.5px var(--f-ui);color:#2F6B47;background:#E2F1E7;border-radius:10px;padding:1px 8px}
 .dl-alanlar{display:grid;grid-template-columns:1fr 1fr;gap:7px} .dl-al{display:flex;flex-direction:column;gap:3px;min-width:0} .dl-al.tam,.dl-alanlar .tam{grid-column:1 / -1} .dl-al>span{font:600 10.5px var(--f-ui);color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap} .dl-al>span i{font-weight:500;font-style:normal;opacity:.8}
 .dl-al input,.dl-al textarea{width:100%;box-sizing:border-box;min-width:0;border:1px solid var(--line2);border-radius:8px;background:#fff;padding:7px 9px;font:600 13px/1.35 var(--f-ui);color:#22303D;resize:none} .dl-al input{height:36px} .dl-al.bos textarea{border-color:#E5C48E;background:#FFFBF3}
-.dl-metin{min-height:90px;font-weight:500!important;font-family:"Times New Roman",Tinos,serif!important;font-size:14px!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
-.dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:8px 4px;font:700 12px var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.dl-is{display:flex;gap:8px;justify-content:flex-end}
+.dl-metin{min-height:80px;font-weight:500!important;font-size:13px!important;line-height:1.45!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
+.dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:7px 4px;font:700 11.5px/1.2 var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
+.dl-is{display:flex;gap:8px;justify-content:flex-end} .dl-ozler{display:flex;flex-wrap:wrap;gap:5px} .dl-ozler button{padding:4px 9px;font:600 11px var(--f-ui);border-radius:14px}
 .dl-onz{padding:10px;background:#E9EDF1;border-radius:14px;display:block!important} .dl-onz .dl-kagit{width:100%} .dl-kagit{container-type:inline-size;aspect-ratio:210/297;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);box-sizing:border-box;font-family:"Times New Roman",Tinos,"Liberation Serif",serif;color:#111;font-size:2.02cqw;line-height:1.72;overflow:hidden}
 .dl-r{display:grid;line-height:1.2;margin-bottom:2.33cqw} .dl-r>b{font-weight:700;white-space:nowrap} .dl-r>span{overflow-wrap:anywhere} .dl-r .dl-tar{text-align:right} .dl-tc{position:relative;display:block} .dl-oz{position:absolute;top:0;white-space:nowrap} .dl-oz>b,.dl-oz>span{position:absolute;top:0} .dl-oz>b:first-child{left:0;position:static} .dl-on{text-align:center;font-weight:700;margin:.95cqw 0 4.2cqw} .dl-m{text-align:justify;line-height:1.3} .dl-bos{color:#aaa} .dl-im{display:flex;flex-direction:column;align-items:center;margin:7cqw 0 0 56%;line-height:1.35} .dl-im b{font-weight:700}
+.izt-sec{margin-bottom:2px} .isa-not{font:600 10px var(--f-ui);color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px}
+.isa-kagit{position:relative} .isa-kagit>span{position:absolute;font-size:1.344cqw;line-height:1;white-space:nowrap;color:#000} .isa-k{position:absolute;border:.13cqw solid #000;box-sizing:border-box} .isa-c{position:absolute;border-top:.12cqw solid #000} .isa-kes{position:absolute;border-top:.22cqw dashed #000}
 .lt-grp{display:flex;align-items:baseline;gap:8px;margin:10px 0 2px;padding:7px 10px;border-radius:9px;background:#F3F1EA} .lt-grp:first-of-type{margin-top:4px} .lt-grp b{font:800 13.5px var(--f-ui);color:#2C3E50;min-width:0;overflow-wrap:anywhere} .lt-grp span{font:500 11px var(--f-ui);color:#8A8574;flex:none} .lt-grp em{margin-left:auto;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums;flex:none}
 .kc-sat.lt-kf{margin-left:12px;border-left:2px solid #E6E1D3} .kc-sat.lt-kf.lt-tek{margin:8px 0 0;border-left:0;background:#FBFAF6;border-radius:9px} .lt-tek-ad{display:block;font:800 13.5px var(--f-ui)!important;color:#2C3E50!important;margin-bottom:3px} .kc-sat.lt-kf .kc-sb{padding-left:8px}
 .lt-kfu{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap} .lt-kfu b{font:700 12.5px ui-monospace,Menlo,Consolas,monospace!important;letter-spacing:.01em;color:#34495E;background:#EEF2F6;border-radius:5px;padding:1px 6px;overflow-wrap:anywhere} .lt-kfu i{font-style:normal;font:500 11px var(--f-ui);color:#8A94A0}
@@ -1895,7 +1902,7 @@ select.sec-gizli{display:none!important}
 .rs-son small{display:block;font:600 11px var(--f-ui);color:var(--muted);margin-bottom:6px} .rs-son div{display:flex;gap:8px;flex-wrap:wrap} .rs-son button{width:30px;height:30px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1px rgba(0,0,0,.15);padding:0}
 .izb-renkler{display:flex;flex-wrap:wrap;align-items:center;gap:8px} .izb-renk{width:32px;height:32px;border-radius:50%;padding:0;border:2px solid #fff;background:var(--r);box-shadow:0 0 0 1px rgba(0,0,0,.14)} .izb-renk[aria-pressed="true"]{box-shadow:0 0 0 2px var(--accent)}
 .izb-renk-ad{display:flex;align-items:center;gap:8px;flex-basis:100%;font:600 13px var(--f-ui)} .izb-renk-ad i{font-style:normal;font:700 10px var(--f-ui);color:#86672C;background:#F6EEDC;border-radius:20px;padding:1px 7px;margin-left:4px} .izb-kod{border:1px dashed var(--line);background:var(--panel);border-radius:8px;padding:3px 8px;font:600 12px var(--f-mono);color:var(--muted)} .izb-kod span{font-family:var(--f-ui)}
-#d-ayar[hidden]{display:none!important} @media (max-width:640px){ #v-belge>.arac>.grup{flex-basis:100%;order:9} }
+#d-ayar[hidden],#d-ayar[hidden].acik{display:none!important} @media (max-width:640px){ #v-belge>.arac>.grup{flex-basis:100%;order:9} }
 #v-belge>.arac>.etiket{display:none} #lt-govde,#sp-govde,#st-govde,#bs-govde,#sa-govde{display:flex;flex-direction:column;gap:12px}
 /* yazılar kesilmesin: kart alt yazıları ve kişi adları gerekirse alt satıra geçer */
 .kp-gez span b,.kp-gez span small,.kc-sy b,.kc-sy small,.kk-sy b,.kk-sy small,.mz-ozet small,.tz-s-alt,.tt-secili b,.tb-k b,.tb-k small,.ap-sat .ap-ad{white-space:normal!important;text-overflow:clip!important;overflow:visible!important;overflow-wrap:anywhere}
@@ -2428,7 +2435,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 298</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 299</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2588,6 +2595,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
         <div id="e-liste" hidden style="display:flex;flex-direction:column;gap:10px"><div id="lt-govde" class="kp-govde"></div></div>
         <div id="e-sicil" hidden style="display:flex;flex-direction:column;gap:10px"><div id="sa-govde" class="kp-govde"></div></div>
         <div id="e-dilekce" hidden style="display:flex;flex-direction:column;gap:10px"><div id="dl-govde" class="kp-govde"></div></div>
+        <div id="e-izinsa" hidden style="display:flex;flex-direction:column;gap:10px"><div id="isa-govde" class="kp-govde"></div></div>
         <div id="e-tebtut" hidden style="display:flex;flex-direction:column;gap:10px"><div id="tt-govde" class="kp-govde"></div></div>
         <div id="e-teblig" hidden style="display:flex;flex-direction:column;gap:10px"><div id="tb-govde" class="kp-govde"></div></div>
         <div id="e-kapak" hidden style="display:flex;flex-direction:column;gap:10px"><div id="kp-govde" class="kp-govde"></div></div>
@@ -2603,6 +2611,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 
         <!-- İZİN BELGESİ (Uzman Erbaş · Sözleşmeli Erbaş/Er) -->
         <div id="e-izinb" hidden style="display:flex;flex-direction:column;gap:12px">
+          <div class="dl-seg izt-sec"><button type="button" data-izt="izinb" aria-pressed="true">Uzman · Sözleşmeli</button><button type="button" data-izt="izinsa" aria-pressed="false">Subay · Astsubay</button></div>
           <div class="arac">
             <div class="grup" id="izb-sekme"><button class="btn" data-s="belge">Belge</button><button class="btn" data-s="durum">İzin durumu</button><button class="btn" data-s="tasvip">Tasvip eden</button><button class="btn" data-s="filigran">Filigran</button></div>
             <span class="bosluk"></span>
@@ -3235,6 +3244,7 @@ function belgeOzet(d, kId){ try { if(d.sablon) return "Boş şablon · ⧉ Çoğ
     if(d.tur === "spor"){ const v = spVeri(d), G = spGenel(v); return `${v.kisiler.length} kişi · ${v.branslar.map(b => b.ad).join(", ") || "branş yok"}${G.bas + G.bsz ? ` · %${spSayiYaz(G.oran)} başarı` : ""}`; }
     if(d.tur === "liste"){ const v = ltVeri(d), n = v.bloklar.reduce((a, b) => a + b.satirlar.length, 0); return `${v.bloklar.length > 1 ? v.bloklar.length + " tablo · " : ""}${n} satır`; }
     if(d.tur === "sicil"){ const v = saVeri(d); return `${v.kisiler.length} kişi · zincirde ${v.zincir.length} amir`; }
+    if(d.tur === "izinsa"){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k); return `${v.kayitlar.length} belge · son: ${p ? p.ad : "kişi seçilmedi"}`; }
     if(d.tur === "dilekce"){ const v = dlVeri(d), k = dlAktif(v), p = dlKisi(k); return `${v.kayitlar.length} dilekçe · son: ${p ? p.ad : "kişi seçilmedi"} · ${DL_TUR[k.tur].ad}`; }
     if(d.tur === "kadro"){ const { T } = kcHesap(kcVeri(d)); return `${kcVeri(d).bloklar.filter(b => b.tur === "par").length} kısım · sefer ${T.sefer} / barış ${T.baris} · ${T.mevcut} yer dolu`; }
     if(d.tur === "karsilama"){ const T = koHesap(koVeri(d)).T; return `K/1 ${koOranYaz(T.o1)} · K/2 ${koOranYaz(T.o2)} · mevcut ${T.m} / kadro ${T.k1}`; }
@@ -3571,12 +3581,12 @@ $("#d-ayar").addEventListener("change", e => {
 const acikBelge = () => S.belgeler.find(d => d.id === SECIM.belge);
 function belgeAc(id){
   const d = S.belgeler.find(x => x.id === id); if(!d) return; if(SECIM.belge !== id) bulKapat(); SECIM.belge = id; if(SECIM.klasor && SECIM.bolum) sonEkle({ k: SECIM.klasor, b: SECIM.bolum, d: id }); goster("belge");
-  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip","dilekce"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
-  $("#d-ayar").hidden = d.tur === "dilekce" || d.tur === "izinb" || d.tur === "tazminat" || d.tur === "kapak" || d.tur === "baslik" || d.tur === "teblig" || d.tur === "tebtut" || d.tur === "tarama"; $("#d-ayar").classList.toggle("sade", !!SABIT_YON[d.tur]); document.querySelector('[data-cikti="docx"]').hidden = d.tur === "izinb" || d.tur === "tarama"; document.querySelector('[data-cikti="xlsx"]').hidden = d.tur === "tarama";
+  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip","dilekce","izinsa"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
+  $("#d-ayar").hidden = d.tur === "dilekce" || d.tur === "izinsa" || d.tur === "izinb" || d.tur === "tazminat" || d.tur === "kapak" || d.tur === "baslik" || d.tur === "teblig" || d.tur === "tebtut" || d.tur === "tarama"; $("#d-ayar").classList.toggle("sade", !!SABIT_YON[d.tur]); document.querySelector('[data-cikti="docx"]').hidden = d.tur === "izinb" || d.tur === "tarama"; document.querySelector('[data-cikti="xlsx"]').hidden = d.tur === "tarama";
   $("#d-sil").hidden = d.tur !== "grid";
   ayarCiz();
   if(d.tur === "grid"){ secim = { r1: 0, c1: 0, r2: 0, c2: 0 }; gridCiz(); }
-  if(d.tur === "personel") personelCiz(); if(d.tur === "izin") izinCiz(); if(d.tur === "hedef"){ hedefCiz(); hedefAyarCiz(); } if(d.tur === "yoklama"){ YK = d.bt || "yoklama"; S[YK] ||= { tarih: "", rows: [] }; S[YK].rows ||= []; if(S[YK].tarih !== bugun()){ S[YK].tarih = bugun(); kaydetBt(YK); } ykAcik = null; yoklamaCiz(); } /* günlük yoklama: açılınca bugünün tarihi */ if(d.tur === "gdhg") gdhgCiz(); if(d.tur === "izinb") izbhCiz(); if(d.tur === "sema") semaCiz(); if(d.tur === "cevrim") cevrimCiz(); if(d.tur === "tazminat") tazminatCiz(); if(d.tur === "kapak"){ kpSayfaNo = 0; kapakCiz(); } if(d.tur === "teblig"){ tbNo = 0; tebligCiz(); } if(d.tur === "tebtut") tebtutCiz(); if(d.tur === "mevzi"){ mzAcik = null; mevziCiz(); } if(d.tur === "candostu") candostuCiz(); if(d.tur === "tarama") taramaCiz(); if(d.tur === "karsilama"){ koAcik = null; karsilamaCiz(); } if(d.tur === "kadro"){ kcAcikBlok = kcAcikSatir = null; kadroCiz(); } if(d.tur === "sicil"){ saAcik = null; sicilCiz(); } if(d.tur === "dilekce"){ dlAcik = null; dilekceCiz(); } if(d.tur === "liste"){ ltAcik = ltBlokAcik = null; listeCiz(); } if(d.tur === "spor"){ spAcik = spBransAcik = null; sporCiz(); } if(d.tur === "baslik"){ bsAcik = null; baslikCiz(); } if(d.tur === "sportakip"){ stAcik = null; sportakipCiz(); }
+  if(d.tur === "personel") personelCiz(); if(d.tur === "izin") izinCiz(); if(d.tur === "hedef"){ hedefCiz(); hedefAyarCiz(); } if(d.tur === "yoklama"){ YK = d.bt || "yoklama"; S[YK] ||= { tarih: "", rows: [] }; S[YK].rows ||= []; if(S[YK].tarih !== bugun()){ S[YK].tarih = bugun(); kaydetBt(YK); } ykAcik = null; yoklamaCiz(); } /* günlük yoklama: açılınca bugünün tarihi */ if(d.tur === "gdhg") gdhgCiz(); if(d.tur === "izinb") izbhCiz(); if(d.tur === "sema") semaCiz(); if(d.tur === "cevrim") cevrimCiz(); if(d.tur === "tazminat") tazminatCiz(); if(d.tur === "kapak"){ kpSayfaNo = 0; kapakCiz(); } if(d.tur === "teblig"){ tbNo = 0; tebligCiz(); } if(d.tur === "tebtut") tebtutCiz(); if(d.tur === "mevzi"){ mzAcik = null; mevziCiz(); } if(d.tur === "candostu") candostuCiz(); if(d.tur === "tarama") taramaCiz(); if(d.tur === "karsilama"){ koAcik = null; karsilamaCiz(); } if(d.tur === "kadro"){ kcAcikBlok = kcAcikSatir = null; kadroCiz(); } if(d.tur === "sicil"){ saAcik = null; sicilCiz(); } if(d.tur === "dilekce"){ dlAcik = null; dilekceCiz(); } if(d.tur === "izinsa") izinsaCiz(); if(d.tur === "liste"){ ltAcik = ltBlokAcik = null; listeCiz(); } if(d.tur === "spor"){ spAcik = spBransAcik = null; sporCiz(); } if(d.tur === "baslik"){ bsAcik = null; baslikCiz(); } if(d.tur === "sportakip"){ stAcik = null; sportakipCiz(); }
   $("#v-belge").scrollTop = 0;
 }
 $("#d-geri").addEventListener("click", belgeKapat);
@@ -8510,12 +8520,13 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
    d.dl = { garnizon, aktif, kayitlar: [{ id, pid, tur: "izin"|"mazeret"|"diger", tarih, bas, gun, sebep, ozu, metin, elle, imza }] }
    Kimlik bloğu personel kartından gelir (rütbe, ad, sicil, görev, doğum + dilekçe için eklenen baba adı, memleket, duhul, nasıp, T.C. kimlik nu.).
    Bu ek alanlar kişinin personel kaydına yazılır; bir kez girilince bütün dilekçelerde kullanılır. */
-const DL_TUR = { izin: { ad: "Yıllık İzin", ozu: "Yıllık İzin Hk." }, mazeret: { ad: "Yıllık Mazeret İzni", ozu: "Mazeret İzni Hk." }, diger: { ad: "Diğer", ozu: "" } };
+const DL_TUR = { diger: { ad: "Genel", ozu: "" }, izin: { ad: "Yıllık İzin", ozu: "Yıllık İzin Hk." }, mazeret: { ad: "Mazeret İzni", ozu: "Mazeret İzni Hk." } };   // genel: konu ve metin elle; izinler hazır şablon
+const DL_OZU = ["Rütbe Terfi Hk.", "Tayin Hk.", "Lojman Talebi Hk.", "Kurs Talebi Hk.", "Görevlendirme Hk.", "Nakil Hk."];
 const DL_AY = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 const DL_ALAN = [["kita", "Kıt'ası"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi"], ["duhul", "Duhulü"], ["nasip", "Nasbı"], ["sicil", "Sicili"], ["ems", "EMS no."], ["tc", "T.C. kimlik no."]];
 let dlAcik = null, dlKisiAcik = false;
 const dlVeri = d => { d.dl ||= {}; d.dl.garnizon ??= "DİYARBAKIR"; d.dl.kayitlar ||= []; if(!d.dl.kayitlar.length){ const k = dlYeniKayit(); d.dl.kayitlar.push(k); d.dl.aktif = k.id; } if(!d.dl.kayitlar.some(k => k.id === d.dl.aktif)) d.dl.aktif = d.dl.kayitlar[0].id; return d.dl; };
-const dlYeniKayit = (o = {}) => ({ id: "dk" + yeniId().slice(0, 8), pid: "", tur: "izin", tarih: bugun(), bas: "", gun: "", sebep: "", ozu: "", metin: "", elle: false, imza: false, ...o });
+const dlYeniKayit = (o = {}) => ({ id: "dk" + yeniId().slice(0, 8), pid: "", tur: "diger", tarih: bugun(), bas: "", gun: "", sebep: "", ozu: "", metin: "", elle: false, imza: false, ...o });
 const dlAktif = v => v.kayitlar.find(k => k.id === v.aktif) || v.kayitlar[0];
 const dlKisi = k => (S.personel.rows || []).find(p => p.id === k.pid) || null;
 const dlUzunTarih = t => { if(!t) return "……"; const [y, m, g] = t.split("-").map(Number); return `${g} ${DL_AY[m - 1]} ${y}`; };
@@ -8538,6 +8549,10 @@ function dlOnHtml(d){ const I = dlIcerik(d), e = t => esc(t || ""), mm = x => (x
   const son = I.sat.length - 1;
   return `<div class="dl-kagit"><div class="dl-pybs" style="padding:${mm(DLM.Y0 - 4.2)} ${mm(210 - DLM.R)} 0 ${mm(DLM.L)}">${I.sat.map(([a, b], i) => `<div class="dl-r" style="grid-template-columns:${mm(DLM.C - DLM.L)} ${mm(DLM.V - DLM.C)} ${i === 0 ? mm(DLM.KS - DLM.V) + " 1fr" : "1fr"}"><b>${a}</b><b class="dl-ik">:</b>${i === son && I.ozu ? `<span class="dl-tc"><span>${e(b)}</span><span class="dl-oz" style="left:${mm(DLM.OZ - DLM.V)}"><b>ÖZÜ</b><b style="left:${mm(DLM.OC - DLM.OZ)}">:</b><span style="left:${mm(DLM.OV - DLM.OZ)}">${e(I.ozu)}</span></span></span>` : `<span>${e(b)}</span>`}${i === 0 ? `<span class="dl-tar">${e(I.tarih)}</span>` : ""}</div>`).join("")}
     <div class="dl-on">KOMUTANLIK ÖNÜNE</div><div class="dl-m" style="text-indent:${mm(14.8)}">${e(I.metin).replace(/\n/g, "<br>") || '<i class="dl-bos">Dilekçe metni</i>'}</div>${I.imza ? `<div class="dl-im"><b>${e(I.imza[0])}</b><span>${e(I.imza[1])}</span></div>` : ""}</div></div>`; }
+/* kişi seçimi: tek satır, dokununca alttan liste (dilekçe ve izin belgesinde ortak) */
+const ksBas = ad => String(ad || "").split(/\s+/).filter(Boolean).map(x => x[0]).slice(0, 2).join("").toLocaleUpperCase("tr");
+const ksSatir = (p, veri, bosYazi = "Kişi seç") => `<button type="button" class="ks-sec" ${veri}>${p ? `<span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small></span><i>Değiştir ›</i>` : `<span class="ks-av bos">＋</span><span class="ks-ad"><b>${bosYazi}</b><small>personel listesinden</small></span><i>›</i>`}</button>`;
+function kisiSecAc(baslik, L, secili, cb){ altPencere("ks-perde", "KİŞİ SEÇ", baslik, () => `<div class="ap-liste">${L.map(p => apSatir(`data-ks="${esc(p.id)}"`, `<span class="ks-av">${esc(ksBas(p.ad))}</span>`, esc(p.ad), p.id === secili ? '<em class="ks-tik">✓</em>' : "", { alt: esc(p.rutbe || "") })).join("") || '<div class="yk-bos">Uygun personel yok</div>'}</div>`, (b, kapat) => { if(b.dataset.ks){ kapat(); cb(b.dataset.ks); } }, { z: "E2F1E7", r: "2F6B47" }); }
 function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") return; const v = dlVeri(d), k = dlAktif(v), p = dlKisi(k), P = (S.personel.rows || []).filter(x => x.ad);
   const eksik = p ? DL_ALAN.filter(([a]) => a !== "kita" && !String(p[a] || "").trim()).map(([, t]) => t) : [];
   const L = v.kayitlar.slice().reverse();
@@ -8545,7 +8560,7 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
     <div class="dl-ust"><b>Dilekçeler</b><small>${v.kayitlar.length}</small><button type="button" class="btn ana kucuk" data-dl="yeni">＋ Yeni dilekçe</button></div>
     <div class="dl-liste">${L.map(x => { const q = dlKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-dl-sec="${x.id}"><span class="dl-tur t-${x.tur}">${esc(DL_TUR[x.tur].ad)}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc(trTarih(x.tarih))}${x.tur === "diger" && x.ozu ? " · " + esc(x.ozu) : ""}</small></button>`; }).join("")}</div>
     <section class="dl-kart"><div class="dl-bas">Kişi</div>
-      <div class="kc-cips dl-kisiler">${P.map(x => `<button type="button" data-dl-p="${x.id}" aria-pressed="${x.id === k.pid}"><b>${esc(x.ad)}</b><small>${esc(x.rutbe || "")}</small></button>`).join("")}</div>
+      ${ksSatir(p, 'data-dl="kisi"')}
       ${p ? `<details class="dl-bilgi"${dlKisiAcik || eksik.length ? " open" : ""}><summary><span>Kimlik bilgileri</span>${eksik.length ? `<em class="dl-eksik">${eksik.length} eksik</em>` : '<em class="dl-tam">tamam</em>'}</summary>
         <div class="dl-alanlar">${DL_ALAN.map(([a, t]) => `<label class="dl-al${a === "kita" ? " tam" : ""}${a !== "kita" && !String(p[a] || "").trim() ? " bos" : ""}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-dl-k="${a}" placeholder="${a === "kita" ? esc(dlKita(v, { ...p, kita: "" })) : ["dogum", "duhul", "nasip"].includes(a) ? "gg.aa.yyyy" : ""}"${a === "tc" || a === "sicil" ? ' inputmode="numeric"' : ""}>${esc(a === "kita" ? (p.kita || "") : (p[a] || ""))}</textarea></label>`).join("")}
           <label class="dl-al tam"><span>Garnizon (kıt'a satırının sonu)</span><input data-dl-g="garnizon" value="${esc(v.garnizon)}"></label></div>
@@ -8555,7 +8570,7 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
       <div class="dl-alanlar">
         <label class="dl-al"><span>Dilekçe tarihi</span><input type="date" data-dl-f="tarih" value="${esc(k.tarih)}"></label>
         ${k.tur !== "diger" ? `<label class="dl-al"><span>İzin başlangıcı</span><input type="date" data-dl-f="bas" value="${esc(k.bas)}"></label>
-        <label class="dl-al"><span>Gün sayısı</span><input data-dl-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="ör. 3"></label>` : `<label class="dl-al tam"><span>Özü (konu)</span><textarea class="oto-boy" data-tek rows="1" data-dl-f="ozu" placeholder="ör. Tayin İsteği Hk.">${esc(k.ozu)}</textarea></label>`}
+        <label class="dl-al"><span>Gün sayısı</span><input data-dl-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="ör. 3"></label>` : `<label class="dl-al tam"><span>Özü (konu)</span><textarea class="oto-boy" data-tek rows="1" data-dl-f="ozu" placeholder="ör. Rütbe Terfi Hk.">${esc(k.ozu)}</textarea></label><div class="kc-cips dl-ozler tam">${DL_OZU.map(o => `<button type="button" data-dl-oz="${esc(o)}" aria-pressed="${k.ozu === o}">${esc(o)}</button>`).join("")}</div>`}
         ${k.tur === "mazeret" ? `<label class="dl-al tam"><span>Mazeret sebebi</span><textarea class="oto-boy" rows="1" data-dl-f="sebep" placeholder="ör. 19 Temmuz 2026 tarihinde Dikey Geçiş Sınavım">${esc(k.sebep)}</textarea></label>` : ""}
         <label class="dl-al tam"><span>Metin${k.tur !== "diger" ? (k.elle ? ' <button type="button" class="dl-sifir" data-dl="sablon">↺ Şablondan yeniden yaz</button>' : " <i>bilgilerden kendiliğinden yazılır, değiştirebilirsiniz</i>") : ""}</span><textarea class="oto-boy dl-metin" rows="4" data-dl-f="metin" placeholder="Dilekçe metni… Komutanlık emir ve tensiplerine maruzdur. Arz ederim.">${esc(dlMetin(k))}</textarea></label>
         <label class="kp-tik tam"><input type="checkbox" data-dl-f="imza"${k.imza ? " checked" : ""}> Altına imza bloğu koy (ad soyad, rütbe)</label></div>
@@ -8575,8 +8590,10 @@ document.addEventListener("toggle", e => { if(e.target.matches && e.target.match
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#dl-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "dilekce") return; const v = dlVeri(d), k = dlAktif(v), yaz = () => { kaydetBelge(d); dilekceCiz(); };
   if(b.dataset.dlSec){ v.aktif = b.dataset.dlSec; return yaz(); }
   if(b.dataset.dlP){ k.pid = k.pid === b.dataset.dlP ? "" : b.dataset.dlP; return yaz(); }
+  if(b.dataset.dlOz){ k.ozu = b.dataset.dlOz; return yaz(); }
   if(b.dataset.dlTur){ if(k.tur !== b.dataset.dlTur){ k.tur = b.dataset.dlTur; k.elle = false; if(k.tur === "diger") k.metin = ""; } return yaz(); }
   const is = b.dataset.dl;
+  if(is === "kisi") return kisiSecAc("Dilekçe kimin adına", (S.personel.rows || []).filter(x => x.ad), k.pid, id => { k.pid = id; kaydetBelge(d); dilekceCiz(); });
   if(is === "yeni"){ const y = dlYeniKayit({ pid: k.pid, tur: k.tur }); v.kayitlar.push(y); v.aktif = y.id; yaz(); return bildir("Yeni dilekçe"); }
   if(is === "kopya"){ const y = { ...kopya(k), id: "dk" + yeniId().slice(0, 8), tarih: bugun() }; v.kayitlar.push(y); v.aktif = y.id; yaz(); return bildir("Kopyası oluşturuldu"); }
   if(is === "sablon"){ k.elle = false; k.metin = ""; return yaz(); }
@@ -8622,6 +8639,113 @@ async function dlExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Work
   ws.mergeCells(r, 1, r, 6); c(r, 1, "          " + String(I.metin || "").replace(/\n/g, "\n          "), { a: "justify", w: 1 }); ws.getRow(r).height = Math.max(20, Math.ceil(String(I.metin || "").length / 80 + (String(I.metin || "").match(/\n/g) || []).length) * 17); r++;
   if(I.imza){ r += 2; ws.mergeCells(r, 4, r, 6); c(r, 4, I.imza[0], { a: "center", b: 1 }); r++; ws.mergeCells(r, 4, r, 6); c(r, 4, I.imza[1], { a: "center" }); }
   return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }); }
+/* ================= SUBAY / ASTSUBAY İZİN BELGESİ (tur: "izinsa") =================
+   PYBS “Silahlı Kuvvetler Personeline Ait İzin Belgesi” ön yüzü: A4'te iki özdeş nüsha, araları kesik çizgi.
+   d.isa = { aktif, kayitlar: [{ id, pid, tur, kullan, gun, tel, adres, ayr, kat, tarih }], onay: { ad, rutbe, gorev }, alt: { sol, sag } }
+   Alt satırdaki PYBS çıktı bilgisi (ekran adı, saat, basan personel) uygulama tarafından üretilmez; isteyen elle yazar. İmza/Mühür boş kalır. */
+const ISA_TUR = ["Yıllık İzin", "Yıllık Mazeret İzni", "Sağlık Raporu", "Refakat İzni"];
+let isaKisiAcik = false;
+const isaVeri = d => { d.isa ||= {}; const v = d.isa; v.onay ||= { ad: "", rutbe: "", gorev: "" }; v.alt ||= { sol: "", sag: "" }; v.kayitlar ||= [];
+  if(!v.kayitlar.length){ const k = isaYeni(); v.kayitlar.push(k); v.aktif = k.id; } if(!v.kayitlar.some(k => k.id === v.aktif)) v.aktif = v.kayitlar[0].id; return v; };
+const isaYeni = (o = {}) => ({ id: "ik" + yeniId().slice(0, 8), pid: "", tur: "Yıllık İzin", kullan: "-", gun: "", tel: "", adres: "", ayr: "", kat: "", tarih: bugun(), ...o });
+const isaAktif = v => v.kayitlar.find(k => k.id === v.aktif) || v.kayitlar[0];
+const isaKisi = k => (S.personel.rows || []).find(p => p.id === k.pid) || null;
+const isaSubayMi = p => p && !/Uzm\.|Söz\.|\bEr\b|Onb\./.test(p.rutbe || "");
+const isaGun = k => { if(String(k.gun || "").trim()) return k.gun; if(k.ayr && k.kat){ const g = Math.round((Date.parse(k.kat) - Date.parse(k.ayr)) / 864e5); if(g > 0) return String(g); } return ""; };
+const isaTel = p => { if(!p) return ""; if(p.tel) return p.tel; for(const Y of [S.yoklama, S.yoklama30]){ const r = ((Y || {}).rows || []).find(x => x.pid === p.id || pAd(x.ad) === pAd(p.ad)); if(r && r.tel) return r.tel; } return ""; };
+function isaIcerik(d){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k) || {}, dv = (S.belgeler.find(x => x.tur === "dilekce") || {}).dl || {}, gar = dv.garnizon ?? "DİYARBAKIR";
+  const gun = isaGun(k), ad = String(k.adres || "").trim(), ar = k.ayr || k.kat ? ` (${trTarih(k.ayr)} - ${trTarih(k.kat)})` : "";
+  return { ust: [["Adı Soyadı", p.ad || ""], ["Sınıf ve Rütbesi", p.rutbe || ""], ["Görevi", p.kita || (p.gorev ? p.gorev + (gar ? " \\" + String(gar).toLocaleUpperCase("tr") : "") : "")], ["Sicili", p.sicil || ""]],
+    orta: [["İzin Türü", k.tur || ""], ["İzinden Ne Kadarını Kullandığı", k.kullan ?? ""], ["Verilen İzin Süresi", gun ? gun + " Gün" : ""], ["Telefon No", k.tel || isaTel(p)], ["İzinli Gideceği Adres ve Tarih", ad + ar]],
+    alt: [["Ayrılış Tarihi", trTarih(k.ayr)], ["Katılış Tarihi", trTarih(k.kat)], ["Tarih", trTarih(k.tarih)], ["İmza / Mühür", ""], ["Adı Soyadı", v.onay.ad || ""], ["Sınıfı, Rütbesi, Sicili", v.onay.rutbe || ""], ["Görevi", v.onay.gorev || ""]],
+    sol: v.alt.sol || "", sag: v.alt.sag || "", dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
+/* ölçüler (mm, sayfanın sol üstünden): kutu 10–197,6 · etiket 11,5 · iki nokta 58,7 · değer 60,8 · ikinci nüsha 137,7 mm aşağıda */
+const ISA_M = { BL: 10, BR: 197.6, X1: 11.5, XC: 58.7, XV: 60.8, ALT: 137.7, CIZ: 146.3, FY: 289.5, FS: 8,
+  T: [14.9, 18.5, 21.6], BT: 24.0, AY: 49.4, BB: 140.1,
+  Y: { ust: [[26.9], [32.6], [37.4, 40.7], [46.0]], orta: [[51.4], [57.4], [62.4, 63.4], [67.2], [73.2, 74.3]], alt: [[104.7], [109.7], [114.7], [120.4], [125.4], [130.7], [135.9]] } };
+const ISA_BAS = ["T.C.", "SİLAHLI KUVVETLER", "PERSONELİNE AİT İZİN BELGESİ"];
+/* her iki çıktının (önizleme, PDF) çizim listesi */
+function isaCizim(I){ const M = ISA_M, L = [];
+  for(const dy of [0, M.ALT]){ ISA_BAS.forEach((t, i) => L.push({ t, x: (M.BL + M.BR) / 2, y: M.T[i] + dy, b: 1, al: "c" }));
+    L.push({ r: [M.BL, M.BT + dy, M.BR - M.BL, M.BB - M.BT] }, { l: [M.BL, M.AY + dy, M.BR, M.AY + dy] });
+    for(const g of ["ust", "orta", "alt"]) I[g].forEach(([a, b], i) => { const [y, yv] = M.Y[g][i]; L.push({ t: a, x: M.X1, y: y + dy, b: 1 }, { t: ":", x: M.XC, y: (yv || y) + dy }, { t: b, x: M.XV, y: (yv || y) + dy, w: M.BR - M.XV - 1.5 }); }); }
+  L.push({ k: [M.BL, M.CIZ, M.BR, M.CIZ] });
+  if(I.sol) L.push({ t: I.sol, x: M.BL, y: M.FY }); if(I.sag) L.push({ t: I.sag, x: M.BR, y: M.FY, al: "r" });
+  return L; }
+function isaOnHtml(d){ const L = isaCizim(isaIcerik(d)), mm = x => (x / 2.1).toFixed(3) + "cqw", fs = ISA_M.FS * .3528;
+  return `<div class="dl-kagit isa-kagit">${L.map(o => o.r ? `<i class="isa-k" style="left:${mm(o.r[0])};top:${mm(o.r[1])};width:${mm(o.r[2])};height:${mm(o.r[3])}"></i>` : o.l ? `<i class="isa-c" style="left:${mm(o.l[0])};top:${mm(o.l[1])};width:${mm(o.l[2] - o.l[0])}"></i>` : o.k ? `<i class="isa-kes" style="left:${mm(o.k[0])};top:${mm(o.k[1])};width:${mm(o.k[2] - o.k[0])}"></i>`
+    : `<span style="left:${mm(o.al === "c" ? o.x - 60 : o.al === "r" ? o.x - 120 : o.x)};top:${mm(o.y - fs * .82)};${o.al ? `width:${mm(o.al === "c" ? 120 : 120)};text-align:${o.al === "c" ? "center" : "right"};` : o.w ? `width:${mm(o.w)};` : ""}${o.b ? "font-weight:700;" : ""}">${esc(o.t || "")}</span>`).join("")}</div>`; }
+function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k), P = (S.personel.rows || []).filter(x => x.ad && isaSubayMi(x));
+  const Z = ((S.belgeler.find(x => x.tur === "sicil") || {}).sa || {}).zincir || [];
+  $("#isa-govde").innerHTML = `${iztSecHtml("izinsa")}
+    <div class="dl-ust"><b>İzin belgeleri</b><small>${v.kayitlar.length}</small><button type="button" class="btn ana kucuk" data-isa="yeni">＋ Yeni belge</button></div>
+    <div class="dl-liste">${v.kayitlar.slice().reverse().map(x => { const q = isaKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-isa-sec="${x.id}"><span class="dl-tur t-izin">${esc(x.tur || "İzin")}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc([trTarih(x.ayr), trTarih(x.kat)].filter(Boolean).join(" → ") || trTarih(x.tarih))}</small></button>`; }).join("")}</div>
+    <section class="dl-kart"><div class="dl-bas">Kişi <small class="isa-not">subay ve astsubaylar</small></div>
+      ${ksSatir(p, 'data-isa="kisi"')}</section>
+    <section class="dl-kart"><div class="dl-bas">İzin</div>
+      <div class="kc-cips">${[...ISA_TUR, "Diğer"].map(t => `<button type="button" data-isa-tur="${t}" aria-pressed="${t === "Diğer" ? !ISA_TUR.includes(k.tur) : k.tur === t}">${t}</button>`).join("")}</div>
+      <div class="dl-alanlar">${!ISA_TUR.includes(k.tur) ? `<label class="dl-al tam"><span>İzin türü</span><input data-isa-f="tur" value="${esc(k.tur)}"></label>` : ""}
+        <label class="dl-al"><span>Ayrılış tarihi</span><input type="date" data-isa-f="ayr" value="${esc(k.ayr)}"></label><label class="dl-al"><span>Katılış tarihi</span><input type="date" data-isa-f="kat" value="${esc(k.kat)}"></label>
+        <label class="dl-al"><span>Verilen izin süresi (gün)</span><input data-isa-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="${esc(isaGun({ ...k, gun: "" }) || "tarihlerden hesaplanır")}"></label><label class="dl-al"><span>Ne kadarını kullandığı</span><input data-isa-f="kullan" value="${esc(k.kullan ?? "")}"></label>
+        <label class="dl-al tam"><span>İzinli gideceği adres</span><textarea class="oto-boy" rows="1" data-isa-f="adres" placeholder="Mahalle, sokak, no, ilçe/il">${esc(k.adres)}</textarea></label>
+        <label class="dl-al"><span>Telefon no</span><input data-isa-f="tel" inputmode="tel" value="${esc(k.tel)}" placeholder="${esc(isaTel(p))}"></label><label class="dl-al"><span>Belge tarihi</span><input type="date" data-isa-f="tarih" value="${esc(k.tarih)}"></label></div>
+      <div class="dl-is"><button type="button" class="mini" data-isa="kopya">⧉ Kopyasını oluştur</button>${v.kayitlar.length > 1 ? '<button type="button" class="mini sil" data-isa="sil">Sil</button>' : ""}</div></section>
+    <details class="dl-kart dl-bilgi"><summary><span>Onaylayan amir</span>${v.onay.ad ? `<em class="dl-tam">${esc(v.onay.ad)}</em>` : '<em class="dl-eksik">seçilmedi</em>'}</summary>
+      ${Z.length ? `<div class="kc-cips">${Z.map(z => `<button type="button" data-isa-z="${z.id}" aria-pressed="${pAd(z.ad) === pAd(v.onay.ad)}"><b>${esc(z.ad)}</b><small>${esc(z.rutbe || "")}</small></button>`).join("")}</div>` : ""}
+      <div class="dl-alanlar"><label class="dl-al tam"><span>Adı soyadı</span><input data-isa-o="ad" value="${esc(v.onay.ad)}"></label><label class="dl-al tam"><span>Sınıfı, rütbesi, sicili</span><input data-isa-o="rutbe" value="${esc(v.onay.rutbe)}" placeholder="ör. P.Komd.Kur.Bnb. [2011-102]"></label><label class="dl-al tam"><span>Görevi</span><input data-isa-o="gorev" value="${esc(v.onay.gorev)}" placeholder="ör. Tabur Komutanı"></label></div></details>
+    <details class="dl-kart dl-bilgi"><summary><span>Sayfa altı yazıları</span><em class="dl-not">isteğe bağlı · elle</em></summary>
+      <div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt</span><input data-isa-a="sol" value="${esc(v.alt.sol)}"></label><label class="dl-al tam"><span>Sağ alt</span><input data-isa-a="sag" value="${esc(v.alt.sag)}"></label></div>
+      <small class="dl-not">PYBS çıktısındaki ekran adı, saat ve basan personel bilgisi uygulama tarafından üretilmez. Boş bırakılırsa basılmaz.</small></details>
+    <div class="kp-onizle dl-onz">${isaOnHtml(d)}</div>`;
+  otoBoyHepsi($("#isa-govde")); }
+const P0 = () => (S.personel.rows || []).filter(x => x.ad && isaSubayMi(x));
+const isaTazele = d => { const o = $("#isa-govde .dl-onz"); if(o) o.innerHTML = isaOnHtml(d); };
+document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#isa-govde")) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v);
+  if(el.dataset.isaF) k[el.dataset.isaF] = el.value; else if(el.dataset.isaO) v.onay[el.dataset.isaO] = el.value; else if(el.dataset.isaA) v.alt[el.dataset.isaA] = el.value; else return;
+  kaydetBelge(d); isaTazele(d); if(el.dataset.isaF === "ayr" || el.dataset.isaF === "kat"){ const g = $('#isa-govde [data-isa-f="gun"]'); if(g) g.placeholder = isaGun({ ...k, gun: "" }) || "tarihlerden hesaplanır"; } });
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#isa-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v), yaz = () => { kaydetBelge(d); izinsaCiz(); };
+  if(b.dataset.isaSec){ v.aktif = b.dataset.isaSec; return yaz(); }
+  if(b.dataset.isaP){ k.pid = k.pid === b.dataset.isaP ? "" : b.dataset.isaP; return yaz(); }
+  if(b.dataset.isaTur){ k.tur = b.dataset.isaTur === "Diğer" ? "" : b.dataset.isaTur; return yaz(); }
+  if(b.dataset.isaZ){ const Z = ((S.belgeler.find(x => x.tur === "sicil") || {}).sa || {}).zincir || [], z = Z.find(x => x.id === b.dataset.isaZ); if(z){ v.onay.ad = z.ad || ""; if(!v.onay.rutbe || !/\[/.test(v.onay.rutbe)) v.onay.rutbe = z.rutbe || ""; } return yaz(); }
+  const is = b.dataset.isa;
+  if(is === "kisi") return kisiSecAc("İzin belgesi kimin adına", P0(), k.pid, id => { k.pid = id; kaydetBelge(d); izinsaCiz(); });
+  if(is === "yeni"){ const y = isaYeni({ pid: k.pid }); v.kayitlar.push(y); v.aktif = y.id; return yaz(); }
+  if(is === "kopya"){ const y = { ...kopya(k), id: "ik" + yeniId().slice(0, 8), tarih: bugun() }; v.kayitlar.push(y); v.aktif = y.id; yaz(); return bildir("Kopyası oluşturuldu"); }
+  if(is === "sil"){ const i = v.kayitlar.indexOf(k); if(i < 0 || v.kayitlar.length < 2) return; const [x] = v.kayitlar.splice(i, 1); v.aktif = v.kayitlar[Math.max(0, i - 1)].id; yaz(); return geriAlinabilir("Belge silindi", () => { v.kayitlar.splice(i, 0, x); v.aktif = x.id; yaz(); }); } });
+/* izin belgeleri arasında ayrım: uzman/sözleşmeli ↔ subay/astsubay */
+const iztSecHtml = su => `<div class="dl-seg izt-sec">${[["izinb", "Uzman · Sözleşmeli"], ["izinsa", "Subay · Astsubay"]].map(([t, a]) => `<button type="button" data-izt="${t}" aria-pressed="${t === su}">${a}</button>`).join("")}</div>`;
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-izt]"); if(!b) return; const t = b.dataset.izt, d = acikBelge(); if(d && d.tur === t) return; const h = S.belgeler.find(x => x.tur === t); if(h) belgeAc(h.id); else bildir("Bu belge henüz yok"); });
+/* ---- çıktılar ---- */
+async function izinsaCikti(d, a, tur){ const I = isaIcerik(d); return tur === "pdf" ? isaPdf(I) : tur === "xlsx" ? isaExcel(I) : isaWord(I); }
+async function isaPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), L = isaCizim(I); doc.setTextColor(0, 0, 0); doc.setDrawColor(0, 0, 0); doc.setFontSize(ISA_M.FS);
+  L.forEach(o => { if(o.r){ doc.setLineWidth(.3); doc.rect(...o.r); } else if(o.l){ doc.setLineWidth(.25); doc.line(...o.l); } else if(o.k){ doc.setLineWidth(.5); doc.setLineDashPattern([2.2, 1.6], 0); doc.line(...o.k); doc.setLineDashPattern([], 0); }
+    else if(o.t){ doc.setFont("LS", o.b ? "bold" : "normal"); let t = String(o.t); if(o.w){ let f = ISA_M.FS; while(doc.getTextWidth(t) > o.w && f > 5.5){ f -= .25; doc.setFontSize(f); } } doc.text(t, o.x, o.y, o.al === "c" ? { align: "center" } : o.al === "r" ? { align: "right" } : undefined); doc.setFontSize(ISA_M.FS); } });
+  return new Blob([doc.output("arraybuffer")], { type: "application/pdf" }); }
+function isaWord(I){ const M = ISA_M, tw = x => Math.round(x * 56.7), R = (t, o = {}) => runXml(t, { sz: 16, b: false, k: "000000", ...o }), kn = (y = "single", w = 6) => `w:val="${y}" w:sz="${w}" w:space="0" w:color="000000"`;
+  const g1 = tw(M.XC - M.X1 + (M.X1 - M.BL)), g2 = tw(M.BR - M.XC);
+  const p = (ic, o = {}) => `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="auto"/>${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}${o.ind ? `<w:ind w:left="${o.ind}"/>` : ""}</w:pPr>${ic}</w:p>`;
+  const sat = (a, b, h, o = {}) => `<w:tr><w:trPr><w:trHeight w:val="${tw(h)}" w:hRule="exact"/></w:trPr><w:tc><w:tcPr><w:tcW w:w="${g1}" w:type="dxa"/><w:tcBorders><w:top w:val="nil"/><w:left ${kn()}/><w:bottom ${o.alt ? kn() : 'w:val="nil"'}/><w:right w:val="nil"/></w:tcBorders><w:vAlign w:val="${o.va || "bottom"}"/></w:tcPr>${p(R(a, { b: true }), { ind: tw(M.X1 - M.BL) })}</w:tc><w:tc><w:tcPr><w:tcW w:w="${g2}" w:type="dxa"/><w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom ${o.alt ? kn() : 'w:val="nil"'}/><w:right ${kn()}/></w:tcBorders><w:vAlign w:val="bottom"/></w:tcPr>${p(R(": ") + R(b))}</w:tc></w:tr>`;
+  const yuk = (Y, i, onceki) => (Y[i][1] || Y[i][0]) - onceki;
+  const nusha = () => { let h = ISA_BAS.map(t => p(R(t, { b: true }), { jc: "center" })).join("") + `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="${tw(M.BT - M.T[2] - 1)}" w:lineRule="exact"/></w:pPr></w:p>`;
+    let y = M.BT, rows = `<w:tr><w:trPr><w:trHeight w:val="20" w:hRule="exact"/></w:trPr><w:tc><w:tcPr><w:tcW w:w="${g1}" w:type="dxa"/><w:tcBorders><w:top ${kn()}/><w:left ${kn()}/></w:tcBorders></w:tcPr><w:p/></w:tc><w:tc><w:tcPr><w:tcW w:w="${g2}" w:type="dxa"/><w:tcBorders><w:top ${kn()}/><w:right ${kn()}/></w:tcBorders></w:tcPr><w:p/></w:tc></w:tr>`;
+    const grup = (g, son) => I[g].forEach(([a, b], i) => { const by = (M.Y[g][i][1] || M.Y[g][i][0]) + 1.2, h = Math.max(3.2, (son && i === I[g].length - 1 ? M.AY : by) - y); rows += sat(a, b, h, { alt: son && i === I[g].length - 1 }); y += h; });
+    grup("ust", true); y = M.AY; grup("orta"); const yA = M.Y.alt[0][0] - 3.6; rows += sat("", "", Math.max(1, yA - y)).replace(R(": ") + R(""), ""); y = yA; grup("alt"); rows += sat("", "", Math.max(1, M.BB - y), { alt: true }).replace(R(": ") + R(""), "");
+    return h + `<w:tbl><w:tblPr><w:tblW w:w="${g1 + g2}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${g1}"/><w:gridCol w:w="${g2}"/></w:tblGrid>${rows}</w:tbl>`; };
+  const kes = `<w:p><w:pPr><w:pBdr><w:bottom w:val="dashed" w:sz="12" w:space="1" w:color="000000"/></w:pBdr><w:spacing w:before="${tw(3)}" w:after="${tw(3.5)}"/></w:pPr></w:p>`;
+  const alt = I.sol || I.sag ? `<w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="${tw(M.BR - M.BL)}"/></w:tabs><w:spacing w:before="${tw(12)}" w:after="0"/></w:pPr>${R(I.sol)}<w:r><w:tab/></w:r>${R(I.sag)}</w:p>` : "";
+  return docxPaketle(nusha() + kes + nusha() + alt + `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.T[0] - 3)}" w:right="${tw(210 - M.BR)}" w:bottom="${tw(5)}" w:left="${tw(M.BL)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`); }
+async function isaExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Workbook(), ws = wb.addWorksheet("İzin Belgesi", { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, margins: { left: 0.39, right: 0.49, top: 0.4, bottom: 0.3, header: 0, footer: 0 } } });
+  ws.columns = [{ width: 33 }, { width: 2 }, { width: 98 }]; const f = (b = false) => ({ name: "Times New Roman", size: 8, bold: b }), ince = { style: "thin", color: { argb: "FF000000" } }; let r = 1;
+  const yaz = (rr, cc, v, o = {}) => { const x = ws.getCell(rr, cc); x.value = v; x.font = f(o.b); x.alignment = { horizontal: o.a || "left", vertical: "bottom" }; return x; };
+  const nusha = () => { ISA_BAS.forEach(t => { ws.mergeCells(r, 1, r, 3); yaz(r, 1, t, { a: "center", b: 1 }); ws.getRow(r).height = 11; r++; }); r++;
+    const ilk = r; const grup = (g, cizgi) => I[g].forEach(([a, b], i) => { yaz(r, 1, a, { b: 1 }); yaz(r, 2, ":"); yaz(r, 3, b); ws.getRow(r).height = g === "ust" && i === 2 ? 22 : 14.5; if(cizgi && i === I[g].length - 1) [1, 2, 3].forEach(c => ws.getCell(r, c).border = { ...(ws.getCell(r, c).border || {}), bottom: ince }); r++; });
+    grup("ust", true); grup("orta"); ws.getRow(r).height = 80; r++; grup("alt");
+    for(let rr = ilk; rr < r; rr++){ ws.getCell(rr, 1).border = { ...(ws.getCell(rr, 1).border || {}), left: ince, ...(rr === ilk ? { top: ince } : {}), ...(rr === r - 1 ? { bottom: ince } : {}) }; ws.getCell(rr, 3).border = { ...(ws.getCell(rr, 3).border || {}), right: ince, ...(rr === ilk ? { top: ince } : {}), ...(rr === r - 1 ? { bottom: ince } : {}) }; if(rr === ilk || rr === r - 1) ws.getCell(rr, 2).border = { ...(ws.getCell(rr, 2).border || {}), ...(rr === ilk ? { top: ince } : { bottom: ince }) }; } };
+  nusha(); r++; [1, 2, 3].forEach(c => ws.getCell(r, c).border = { bottom: { style: "dashed", color: { argb: "FF000000" } } }); r += 2; nusha();
+  if(I.sol || I.sag){ r += 2; yaz(r, 1, I.sol); yaz(r, 3, I.sag, { a: "right" }); }
+  return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }); }
+
 /* ================= SİCİL AMİRLERİ (tur: "sicil") =================
    d.sa = { baslik, zincir: [{ id, rutbe, ad }], kisiler: [{ id, pid, rutbe, ad, sicil, a: ["", "", ""] }] }
    Amir zincirinde en yakın amir en üstte durur. Kişinin 1./2./3. sicil amiri kendiliğinden
@@ -9235,6 +9359,7 @@ async function belgeCikti(d, kId, tur, ov, tumu){
   else if(d.tur === "spor"){ blob = await sporCikti(d, a, tur); ad = `${dosyaAdi(d.ad)}${spVeri(d).tarih ? "_" + spVeri(d).tarih : ""}_A4_Yatay.${tur}`; }
   else if(d.tur === "liste"){ blob = await listeCikti(d, a, tur); ad = `${dosyaAdi(d.ad)}_${a.kagit || "A4"}_${a.yon === "yatay" ? "Yatay" : "Dikey"}.${tur}`; }
   else if(d.tur === "dilekce"){ blob = await dilekceCikti(d, a, tur); ad = `${dlIcerik(d).dosya}.${tur}`; }
+  else if(d.tur === "izinsa"){ blob = await izinsaCikti(d, a, tur); ad = `${isaIcerik(d).dosya}.${tur}`; }
   else if(d.tur === "sicil"){ blob = await sicilCikti(d, a, tur); ad = `${dosyaAdi(d.ad)}_${a.kagit || "A4"}_${a.yon === "yatay" ? "Yatay" : "Dikey"}.${tur}`; }
   else if(d.tur === "kadro"){ blob = await kadroCikti(d, a, tur); ad = `${dosyaAdi(d.ad)}_${a.kagit || "A4"}_Dikey.${tur}`; }
   else if(d.tur === "tarama"){ blob = await taramaCikti(d, a, tur); ad = `${dosyaAdi(d.ad)}_${a.kagit || "A4"}.${tur}`; }
@@ -10007,7 +10132,7 @@ async function baskiExcel(kitaplar, Y, ilerle, hatalar){   // kitaplar: [{ ad, v
   for(const id of ["imz-perde", "bkm-perde", "prc-perde"]) KAT[id] ||= () => { const x = document.querySelector("#" + id + " .imz-x"); if(x) x.click(); else { const p = document.getElementById(id); if(p) p.hidden = true; } };   // geri tuşu: pencerenin kendi ✕ düğmesi
   KAT["sc-perde"] = () => window.secimPenceresi && secimPenceresi.kapat();
   KAT["agac"] = () => { agacKapali = true; agacCiz(); };
-  const SIRA = ["bkd-perde", "spb-perde", "sc-perde", "kd-perde", "gk-perde", "sil-perde", "rs-perde", "dg-perde", "ar-perde", "be-perde", "ts-perde", "yb-perde", "tr-perde", "cs-perde", "lg-perde", "imz-perde", "bkm-perde", "prc-perde", "sc-perde", "tz-perde", "bs-perde", "gd-set-perde", "gc-perde", "bl-soru", "bl-pin", "bl-linkhazir", "bl-panel", "agac"];   // en üstteki önce kapanır
+  const SIRA = ["ks-perde", "bkd-perde", "spb-perde", "sc-perde", "kd-perde", "gk-perde", "sil-perde", "rs-perde", "dg-perde", "ar-perde", "be-perde", "ts-perde", "yb-perde", "tr-perde", "cs-perde", "lg-perde", "imz-perde", "bkm-perde", "prc-perde", "sc-perde", "tz-perde", "bs-perde", "gd-set-perde", "gc-perde", "bl-soru", "bl-pin", "bl-linkhazir", "bl-panel", "agac"];   // en üstteki önce kapanır
   const sonra = []; let geri = 0, kuyruk = false, yukleniyor = false, bekleyen = null, kurulacak = null;
   const gor = id => !$("#v-" + id).hidden;
   const durum = () => { const v = gor("belge") ? "belge" : gor("ara") ? "ara" : gor("bolum") ? "bolum" : "ana"; const d = v === "belge" ? S.belgeler.find(x => x.id === SECIM.belge) : null;
