@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "254";
+  const SURUM = "255";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2273,7 +2273,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 254</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 255</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2855,7 +2855,7 @@ function yzKaydir(sar){ const t = sar && sar.querySelector(":scope > table"); if
         kt.querySelectorAll(".bul-isik,.bul-satir,.bul-aktif,.ara-vurgu").forEach(x => x.classList.remove("bul-isik", "bul-satir", "bul-aktif", "ara-vurgu"));
         pen.innerHTML = ""; pen.appendChild(kt); yb.hidden = false;
         const kr2 = kt.getBoundingClientRect(), a = kt.rows[i0].getBoundingClientRect().top - kr2.top, b = kt.rows[i1].getBoundingClientRect().bottom - kr2.top; pen._a = a; pen._h = b - a; }
-      yb.style.top = (ser.offsetHeight + (parseFloat(getComputedStyle(ser).top) || 0)) + "px";
+      yb.style.top = Math.round((ust - kr.top - kap.clientTop - (parseFloat(getComputedStyle(kap).paddingTop) || 0)) * 10) / 10 + "px";   // araç çubuğunun gerçek alt kenarı: telefonda yazı büyüklüğü farklı olsa da boşluk kalmaz
       const yr = yb.getBoundingClientRect(), sol = Math.max(sr.left, kr.left);
       Object.assign(pen.style, { left: (sol - yr.left) + "px", width: Math.min(sr.right, kr.right) - sol + "px", height: pen._h + "px" });
       const sl = sol - r.left; pen.firstChild.style.transform = `translate(${-sl}px,${-pen._a}px)`;
