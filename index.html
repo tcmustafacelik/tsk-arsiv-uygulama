@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "246";
+  const SURUM = "247";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2217,7 +2217,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 246</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 247</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4399,7 +4399,7 @@ function gdBelgeCiz0(){
       ${k.ayri.map((x, i) => { const [ay, gun] = gdAyGun(x); const no = gdAyriNo(k.ayri)[i];
         const kucuk = (a, v, ad) => `<input class="gd-elle${x[a] !== undefined ? " yazili" : ""}" id="gd-a-${i}-${a}" data-t="a" data-a="${a}" data-i="${i}" inputmode="numeric" value="${esc(v)}" aria-label="${ad}" title="${ad} · elle yazılabilir; boş bırakılırsa kâğıtta boş çıkar">`;
         return `<tr><td class="sn">${kucuk("no", no, "Sıra numarası")}</td>
-          <td>${sebepSec(`data-t="a" data-i="${i}"`, `gd-a-${i}-sebep`, x.sebep, x.elle)}<div class="yk-dn-b gd-belge">${(x.belge || []).map((b, bi) => belgeCip(b, `data-gdb-ac="${i}:${bi}"`, `data-gdb-sil="${i}:${bi}"`)).join("")}<button type="button" class="yk-ek-ekle" data-gdb-ekle="${i}">📎${(x.belge || []).length ? "" : " Beyan"}</button></div></td>
+          <td>${sebepSec(`data-t="a" data-i="${i}"`, `gd-a-${i}-sebep`, x.sebep, x.elle)}${(x.belge || []).length ? `<div class="yk-dn-b gd-belge">${x.belge.map((b, bi) => belgeCip(b, `data-gdb-ac="${i}:${bi}"`, `data-gdb-sil="${i}:${bi}"`)).join("")}</div>` : ""}</td>
           <td class="hesap">${kucuk("ay", ay, "Ay")}</td><td class="hesap">${kucuk("gun", gun, "Gün")}</td>
           <td>${gdInp(`gd-a-${i}-ayr`, "a", "ayr", x.ayr, { i, tip: "date", ad: "Ayrılma tarihi" })}</td>
           <td>${gdInp(`gd-a-${i}-kat`, "a", "kat", x.kat, { i, tip: "date", ad: "Katılma tarihi" })}</td>${gdIslem("a", i)}</tr>`; }).join("") ||
