@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "268";
+  const SURUM = "269";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1505,6 +1505,15 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .yk-gd-et{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;font:600 11px var(--f-ui);background:#F1F3F6;color:#7A8592} .yk-gd-et.tamam{background:#E3F1E7;color:#2E6B41}
 .sp-be-ac{display:flex;align-items:center;gap:10px;width:100%;margin-top:8px;padding:10px 12px;border:1px dashed #BFD8C6;border-radius:14px;background:#F4FAF5;color:#2F6B47;font:700 13.5px var(--f-ui);cursor:pointer;text-align:left}
 .sp-be-ac span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#E3EFE6;font-size:16px} .sp-be-ac small{margin-left:auto;font:500 11.5px var(--f-ui);color:var(--muted)}
+.g-sekme{display:none} .g-gr{display:contents}
+@media(max-width:860px){
+  .g-sekme{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:3px;border-radius:12px;background:#EEF2F6;border:1px solid var(--line2)}
+  .g-sekme button{height:32px;border:0;border-radius:9px;background:transparent;font:600 12.5px var(--f-ui);color:#5B7088;cursor:pointer} .g-sekme button[aria-pressed="true"]{background:#fff;color:#2C4A69;box-shadow:0 1px 3px rgba(30,50,80,.15)}
+  #e-grid .g-panel{display:contents!important} #e-grid .g-gr{display:none}
+  #e-grid[data-gs="yazi"] .g-gr[data-gs="yazi"],#e-grid[data-gs="dolgu"] .g-gr[data-gs="dolgu"],#e-grid[data-gs="kenar"] .g-gr[data-gs="kenar"],#e-grid[data-gs="satir"] .g-gr[data-gs="satir"],#e-grid[data-gs="sutun"] .g-gr[data-gs="sutun"]{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);margin-top:-4px}
+  #e-grid .g-gr .palet{display:flex;flex-wrap:wrap;gap:5px}
+}
+#b-birak{cursor:pointer} #b-birak .by-bos-y{display:none} #b-birak.bos-yer .by-bos-y{display:block;font:700 13px var(--f-ui);color:var(--fg);margin-bottom:3px}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:10.5em!important;box-sizing:border-box} table input[type=date]{width:10.5em!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2351,7 +2360,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 268</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 269</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2398,7 +2407,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
         <div class="b-bas"><h3>Belgeler</h3><span class="b-say" id="b-bsay"></span></div>
         <div class="kartlar" id="b-belgeler"></div>
         <div class="b-bas"><h3>Dosyalar</h3><span class="b-say" id="b-dsay"></span><span class="bosluk"></span><button class="btn kucuk" id="b-yukle">＋ Dosya yükle</button><input type="file" id="b-dosya" multiple hidden></div>
-        <div class="yukle" id="b-birak">Dosyaları bu bölüme eklemek için buraya sürükleyin · <span id="b-sinir">PDF ve resimler 20 MB'a, Excel ve Word 15 MB'a kadar</span></div>
+        <div class="yukle" id="b-birak" role="button" tabindex="0"><b class="by-bos-y">Bu bölümde henüz dosya yok</b>Dokunarak dosya seçin ya da buraya sürükleyin · <span id="b-sinir">PDF ve resimler 20 MB'a, Excel ve Word 15 MB'a kadar</span></div>
         <div class="kartlar" id="b-dosyalar"></div>
       </section>
 
@@ -2438,20 +2447,15 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 
         <!-- ızgara (tablo belgesi) -->
         <div id="e-grid" hidden style="display:flex;flex-direction:column;gap:10px">
-          <div class="arac" id="g-arac">
-            <button class="btn kucuk" id="g-kalin" title="Kalın"><b>K</b></button>
-            <div class="grup"><button class="btn kucuk" data-hiza="l" title="Sola yasla">Sol</button><button class="btn kucuk" data-hiza="c" title="Ortala">Orta</button><button class="btn kucuk" data-hiza="r" title="Sağa yasla">Sağ</button></div>
-            <div class="grup"><button class="btn kucuk" id="g-kucult" title="Yazıyı küçült">A−</button><button class="btn kucuk" id="g-buyut" title="Yazıyı büyüt">A+</button></div>
-            <span class="etiket">Dolgu</span><div class="palet" id="g-palet"></div>
-            <div class="grup"><button class="btn kucuk" id="g-cerceve" title="Seçime ince çerçeve">Çerçeve</button><button class="btn kucuk" id="g-kalin-cerceve" title="Seçimin dışına kalın çerçeve">Kalın dış</button><button class="btn kucuk" id="g-cerceve-yok" title="Çerçeveyi kaldır">Çerçeve yok</button></div>
-            <div class="grup"><button class="btn kucuk" id="g-birlestir">Birleştir</button><button class="btn kucuk" id="g-ayir">Ayır</button></div>
+          <div class="g-sekme" role="tablist" aria-label="Biçim araçları"><button type="button" data-gsk="yazi">Yazı</button><button type="button" data-gsk="dolgu">Dolgu</button><button type="button" data-gsk="kenar">Kenar</button><button type="button" data-gsk="satir">Satır</button><button type="button" data-gsk="sutun">Sütun</button></div>
+          <div class="arac g-panel" id="g-arac">
+            <div class="g-gr" data-gs="yazi"><button class="btn kucuk" id="g-kalin" title="Kalın"><b>K</b></button><div class="grup"><button class="btn kucuk" data-hiza="l" title="Sola yasla">Sol</button><button class="btn kucuk" data-hiza="c" title="Ortala">Orta</button><button class="btn kucuk" data-hiza="r" title="Sağa yasla">Sağ</button></div><div class="grup"><button class="btn kucuk" id="g-kucult" title="Yazıyı küçült">A−</button><button class="btn kucuk" id="g-buyut" title="Yazıyı büyüt">A+</button></div></div>
+            <div class="g-gr" data-gs="dolgu"><span class="etiket">Dolgu</span><div class="palet" id="g-palet"></div></div>
+            <div class="g-gr" data-gs="kenar"><div class="grup"><button class="btn kucuk" id="g-cerceve" title="Seçime ince çerçeve">Çerçeve</button><button class="btn kucuk" id="g-kalin-cerceve" title="Seçimin dışına kalın çerçeve">Kalın dış</button><button class="btn kucuk" id="g-cerceve-yok" title="Çerçeveyi kaldır">Çerçeve yok</button></div><div class="grup"><button class="btn kucuk" id="g-birlestir">Birleştir</button><button class="btn kucuk" id="g-ayir">Ayır</button></div></div>
           </div>
-          <div class="arac">
-            <span class="etiket">Satır</span><div class="grup"><button class="btn kucuk" id="g-s-ust">Üste ekle</button><button class="btn kucuk" id="g-s-alt">Alta ekle</button><button class="btn kucuk sil" id="g-s-sil">Sil</button></div>
-            <label class="kutu">Yükseklik <input type="number" id="g-s-yuk" min="4" max="300" step="1" style="width:64px"></label>
-            <span class="ayrac-dikey"></span>
-            <span class="etiket">Sütun</span><div class="grup"><button class="btn kucuk" id="g-k-sol">Sola ekle</button><button class="btn kucuk" id="g-k-sag">Sağa ekle</button><button class="btn kucuk sil" id="g-k-sil">Sil</button></div>
-            <label class="kutu">Genişlik <input type="number" id="g-k-gen" min="1" max="120" step="0.5" style="width:64px"></label>
+          <div class="arac g-panel">
+            <div class="g-gr" data-gs="satir"><span class="etiket">Satır</span><div class="grup"><button class="btn kucuk" id="g-s-ust">Üste ekle</button><button class="btn kucuk" id="g-s-alt">Alta ekle</button><button class="btn kucuk sil" id="g-s-sil">Sil</button></div><label class="kutu">Yükseklik <input type="number" id="g-s-yuk" min="4" max="300" step="1" style="width:64px"></label></div>
+            <div class="g-gr" data-gs="sutun"><span class="etiket">Sütun</span><div class="grup"><button class="btn kucuk" id="g-k-sol">Sola ekle</button><button class="btn kucuk" id="g-k-sag">Sağa ekle</button><button class="btn kucuk sil" id="g-k-sil">Sil</button></div><label class="kutu">Genişlik <input type="number" id="g-k-gen" min="1" max="120" step="0.5" style="width:64px"></label></div>
           </div>
           <div class="formul"><span class="hucre-ad" id="g-ad">—</span><input type="text" id="g-bar" placeholder="Hücre içeriği ya da =SUM(E5:M5) gibi formül" aria-label="Hücre içeriği"></div>
           <div class="izgara-kap" id="g-kap"><table class="izgara" id="g-tablo"></table></div>
@@ -3085,6 +3089,9 @@ function otoBoy(el){ if(!el) return; el.style.height = "auto"; const cs = getCom
   ["input", "change", "blur"].forEach(t => document.addEventListener(t, e => { if(e.target && e.target.type === "date") isle(e.target); }, true));
   let bek = false; new MutationObserver(() => { if(bek) return; bek = true; requestAnimationFrame(() => { bek = false; hepsi(); }); }).observe(document.documentElement, { childList: true, subtree: true });
   window.tarihBosIsle = hepsi; })();
+/* ızgara biçim araçları: telefonda sekmeli (tek grup açık), bilgisayarda hepsi görünür */
+(() => { let ac = ""; try { ac = localStorage.getItem("gSekme") || ""; } catch(e){} const uygula = () => { const k = $("#e-grid"); if(!k) return; k.dataset.gs = ac; k.querySelectorAll("[data-gsk]").forEach(b => b.setAttribute("aria-pressed", b.dataset.gsk === ac)); };
+  document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-gsk]"); if(!b) return; ac = ac === b.dataset.gsk ? "" : b.dataset.gsk; try { localStorage.setItem("gSekme", ac); } catch(_){} uygula(); }); uygula(); })();
 const otoBoyHepsi = kok => (kok || document).querySelectorAll("textarea.oto-boy").forEach(otoBoy);
 /* tek satırlık uzun alanlar: textarea[data-tek] — yazı kesilmesin diye alt satıra kayar ama Enter satır açmaz */
 document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target.matches && e.target.matches("textarea[data-tek]")){ e.preventDefault(); e.target.blur(); } }, true);
@@ -3357,7 +3364,7 @@ function bolumCiz(){
     return `<div class="kart bkk dsy" data-id="${esc(a.id)}"><div class="bkk-ust"${rs || uz === "PDF" ? ` data-dsy-gor="${esc(a.id)}"` : ""}><span class="bkk-ik dsy-ik d-${tk}">${rs ? `<img data-dsy-img="${esc(a.id)}" alt="">` : `<b>${esc(uz.slice(0, 4))}</b>`}</span><span class="bkk-sy"><span class="ad">${esc(a.ad)}</span><span class="bilgi">${boyut(a.boyut || 0)} · ${new Date(a.tarih).toLocaleDateString("tr-TR")}</span></span></div>
       <button class="bkk-kalem bkk-tasi" type="button" data-tasi="a:${esc(a.id)}" aria-label="Başka bölüme taşı" title="Başka bölüme taşı">⇄</button><button class="bkk-kalem" type="button" data-is="ad" aria-label="Adını değiştir" title="Adını değiştir">✎</button>
       <div class="alt bkk-is">${beyanBolum && (a.tur === "application/pdf" || /^image\//.test(a.tur)) ? `<button class="btn ana" data-is="oku">Oku ve aktar</button>` : ""}${/^image\//.test(a.tur || "") ? `<button class="btn" data-is="parcala" title="Büyük baskı için sayfalara böl">✂ Parçala</button>` : ""}${rs || uz === "PDF" ? `<button class="btn${beyanBolum ? "" : " ana"}" type="button" data-dsy-gor="${esc(a.id)}">Aç</button>` : ""}<button class="btn${beyanBolum || rs || uz === "PDF" ? "" : " ana"}" data-is="indir">İndir</button><button class="btn sil" data-is="sil">Sil</button></div></div>`; }).join("")
-    : `<div class="bos bkk-bos">${S.yuklendi.arsiv ? "Bu bölümde dosya yok" : "Dosyalar yükleniyor…"}</div>`; $("#b-dsay").textContent = dos.length || "";
+    : (S.yuklendi.arsiv ? "" : `<div class="bos bkk-bos">Dosyalar yükleniyor…</div>`); $("#b-dsay").textContent = dos.length || ""; $("#b-birak").classList.toggle("bos-yer", !dos.length && !!S.yuklendi.arsiv);   /* boşken tek kutu: bırakma alanı */
 }
 /* ===== bölüm kapağı: her bölümün başında, Klasör Kapakları belgesinden canlı üretilir (ayrı kopya yok, hep eşzamanlı) ===== */
 const kapakBelgesi = kId => S.belgeler.find(d => d.tur === "kapak" && (d.yerler || []).some(y => y.k === kId));
@@ -7914,7 +7921,7 @@ function ltSatirOzet(bl, st){ const b = ltBaslikSut(bl), k = ltKisiSut(bl).find(
   if(bl.sutunlar.some(s => s.tip === "satirToplam")){ const L = bl.satirlar, i = L.indexOf(st); let j = i; while(j > 0 && !L[j].v[b.id]) j--; const yer = bl.sutunlar.filter(s => s.tip === "sayi" && +st.v[s.id]).map(s => `${String(s.ad).replace(/\n/g, " ")} ${st.v[s.id]}`);
     return { bas: st.v[b.id] || (L[j] && L[j].v[b.id] ? "↳ " + L[j].v[b.id] : "—"), alt: [bl.sutunlar.filter(s => s !== b && (s.tip === "metin") && st.v[s.id]).map(s => st.v[s.id]).join(" · "), `Toplam ${ltSatirTop(bl, st)}`, ...yer].filter(Boolean).join(" · ") }; }
   const digr = bl.sutunlar.filter(s => s !== b && s !== k && st.v[s.id]).slice(0, 3);
-  return { bas: st.v[b.id] || "—", alt: [k ? (st.v[k.id] ? (bl.sutunlar.find(s => s.tip === "rutbe") && st.v[bl.sutunlar.find(s => s.tip === "rutbe").id] ? st.v[bl.sutunlar.find(s => s.tip === "rutbe").id] + " " : "") + st.v[k.id] : LT_BOS) : "", ...digr.map(s => st.v[s.id])].filter(Boolean).join(" · ") }; }
+  return { bas: st.v[b.id] || "—", alt: [k ? (st.v[k.id] ? (bl.sutunlar.find(s => s.tip === "rutbe") && st.v[bl.sutunlar.find(s => s.tip === "rutbe").id] ? st.v[bl.sutunlar.find(s => s.tip === "rutbe").id] + " " : "") + st.v[k.id] : LT_BOS) : "", ...digr.map(s => st.v[s.id] + (s.ek ? " " + s.ek : ""))].filter(Boolean).join(" · ") }; }
 /* kişi seçimi: isim listesi (rütbe + ad) */
 function ltKisiSec(bl, st){ const P = (S.personel.rows || []).filter(p => p.ad), ks = ltKisiSut(bl), rs = bl.sutunlar.find(s => s.tip === "rutbe"), k = ks[0]; if(!k) return "";
   const su = pAd(String(st.v[k.id] || ""));
@@ -7923,7 +7930,7 @@ function listeCiz(){ const d = acikBelge(); if(!d || d.tur !== "liste") return; 
   $("#lt-govde").innerHTML = `<label class="ko-al ko-tam"><span>Başlık</span><textarea class="oto-boy" rows="1" data-lt-g="baslik">${esc(v.baslik?.v || "")}</textarea></label>
     ${v.ustSag ? `<label class="ko-al ko-tam"><span>Sağ üst (tarih vb.)</span><input data-lt-g="ustSag" value="${esc(v.ustSag.v || "")}"></label>` : ""}
     ${v.bloklar.map((bl, bi) => { const ac = ltBlokAcik === bl.id || v.bloklar.length === 1;
-      return `<div class="kc-blok${ac ? " acik" : ""}">${v.bloklar.length > 1 ? `<button type="button" class="kc-bb" data-lt-blok="${bl.id}"><span class="kc-no" style="background:#${bl.adStil?.f || bl.bas?.f || "E6EEF6"}">${bi + 1}</span><span class="kc-sy"><b>${esc(bl.ad || bl.sutunlar.map(s => s.ad).join(" · "))}</b><small>${bl.satirlar.length} satır${bl.yan ? " · öncekinin yanında" : ""}</small></span><i>${ac ? "▴" : "▾"}</i></button>` : ""}
+      return `<div class="kc-blok${ac ? " acik" : ""}">${v.bloklar.length > 1 ? `<button type="button" class="kc-bb" data-lt-blok="${bl.id}"><span class="kc-no" style="background:#${bl.adStil?.f || bl.bas?.f || "E6EEF6"}">${bi + 1}</span><span class="kc-sy"><b>${esc(bl.ad || String((ltBaslikSut(bl) || {}).ad || "Tablo").replace(/\n/g, " "))}</b><small>${bl.satirlar.length} satır · ${bl.sutunlar.length} sütun${bl.yan ? " · öncekinin yanında" : ""}</small></span><i>${ac ? "▴" : "▾"}</i></button>` : ""}
         ${ac ? `<div class="kc-ic">${bl.ad != null ? `<label class="ko-al ko-tam"><span>Tablo başlığı</span><input data-lt-b="${bl.id}" value="${esc(bl.ad || "")}"></label>` : ""}
           ${Array.isArray(bl.bas) || bl.bas === false ? "" : `<details class="lt-sut"><summary>Sütun adları</summary><div class="lt-sut-ic">${bl.sutunlar.filter(s => s.tip !== "sira").map((s, j) => `<label><span>${j + 1}</span><textarea class="oto-boy" rows="1" data-lt-sad="${bl.id}:${s.id}">${esc(s.ad || "")}</textarea></label>`).join("")}</div></details>`}
           ${bl.satirlar.map((st, i) => { const sa = ltAcik === st.id, o = ltSatirOzet(bl, st);
@@ -9021,6 +9028,7 @@ const birak = $("#b-birak");
 ["dragenter","dragover"].forEach(t => birak.addEventListener(t, e => { e.preventDefault(); birak.classList.add("ust"); }));
 ["dragleave","drop"].forEach(t => birak.addEventListener(t, e => { e.preventDefault(); birak.classList.remove("ust"); }));
 birak.addEventListener("drop", e => dosyalariYukle([...e.dataTransfer.files]));
+birak.addEventListener("click", e => { if(e.target.closest("button,input,a")) return; $("#b-dosya").click(); });
 /* telefonun verdiği dosya adı bazen bozuk gelir (Türkçe harf yerine Çince benzeri karakter: “Enes DEM楻.jpg”).
    Böyle karakter varsa onu atıp okunur bir ad üret. */
 function dosyaAdDuzelt(ad, uz){ let a = String(ad || "").normalize("NFC");
