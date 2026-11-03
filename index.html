@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "278";
+  const SURUM = "279";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2395,7 +2395,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 278</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 279</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6556,7 +6556,7 @@ async function tabloPdfCiz(sp, a, parcalar, k){
     doc.setFont("LS", "bold"); doc.setTextColor(34, 34, 34); let b = 12.5; doc.setFontSize(b); while(doc.getTextWidth(sp.baslik) > uw && b > 6){ b -= 0.5; doc.setFontSize(b); } doc.text(sp.baslik, m.l + uw / 2, ty, { align: "center" }); };
   parcalar.forEach((p, i) => { if(i) doc.addPage();
     doc.autoTable({ startY: m.t + basH, margin: { left: m.l, right: m.r, top: m.t + basH, bottom: m.b + altH + 2 }, theme: "grid", head: headRows,
-      body: p.map(satir => satir.bant ? [{ content: satir.bant, colSpan: n, styles: { fillColor: rgb(satir.fill || "E9EEF3"), halign: "center", fontStyle: "bold", ...(satir.k ? { textColor: rgb(satir.k), fontSize: fs * 1.02 } : {}) } }] : satir.map(c => ({ content: c.t, _c: c, styles: { fillColor: c.etiket ? (c.zemin ? rgb(c.zemin) : [255,255,255]) : c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center", ...(c.k ? { textColor: rgb(c.k) } : {}) } }))),
+      body: p.map(satir => satir.bant ? [{ content: satir.bant, colSpan: n, styles: { fillColor: rgb(satir.fill || "E9EEF3"), halign: "center", fontStyle: "bold", ...(satir.k ? { textColor: rgb(satir.k), fontSize: fs * 1.02 } : {}) } }] : satir.map(c => ({ content: c.t, _c: c, styles: { fillColor: c.etiket ? (c.zemin ? rgb(c.zemin) : [255,255,255]) : c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center", ...(TM && c.sol ? { cellPadding: { top: 0.3, bottom: 0.3, left: 2.4, right: 1.2 } } : {}), ...(c.k ? { textColor: rgb(c.k) } : {}) } }))),
       didDrawCell: TM ? D => { const c = D.cell.raw && D.cell.raw._c; if(D.section !== "body" || !c || !c.etiket || !c.t) return; const x = D.cell.x, y = D.cell.y, w = D.cell.width, h = D.cell.height; doc.setFontSize(D.cell.styles.fontSize * 0.92); doc.setFont("LS", "bold"); const tw = doc.getTextWidth(c.t), pw = Math.min(w - 1.2, tw + 4), ph = Math.min(h - 1.2, D.cell.styles.fontSize * 0.3528 * 1.75);
         doc.setFillColor(...rgb(c.fill)); doc.roundedRect(x + (w - pw) / 2, y + (h - ph) / 2, pw, ph, ph / 2, ph / 2, "F"); doc.setTextColor(...rgb(c.k)); doc.text(c.t, x + w / 2, y + h / 2, { align: "center", baseline: "middle" }); } : undefined,
       styles: { font: "LS", fontStyle: "bold", fontSize: fs, textColor: TM ? [38,46,56] : [34,34,34], lineColor: CZ, lineWidth: TM ? 0.12 : 0.15, cellPadding: { top: 0.3, bottom: 0.3, left: 1, right: 1 }, valign: "middle", halign: "center", minCellHeight: rowH, overflow: "linebreak" },
@@ -6607,30 +6607,36 @@ function xlsSigdir(x, t, gen, fs0, b){ if(t == null || t === "") return 0; const
 async function tabloExcel(sp, a){
   await yukle(CDN.exceljs); const wb = new ExcelJS.Workbook(); wb.creator = "TSK ARŞİV";
   const ncol = sp.oran.length; const parca = sp.sayfaBasina ? Math.ceil(sp.body.length / sp.sayfaBasina) : 1;
-  const ws = wb.addWorksheet(sp.dosya.slice(0, 31).replace(/_/g, " "), { views: [{ showGridLines: false, state: "frozen", ySplit: 1 + (sp.sagUst ? 1 : 0) + sp.head.length }],
+  const TM = sp.tema;   // kurumsal tema: telefonda kaydırma takılmasın diye bölme dondurulmaz
+  const ws = wb.addWorksheet(sp.dosya.slice(0, 31).replace(/_/g, " "), { views: [TM ? { showGridLines: false } : { showGridLines: false, state: "frozen", ySplit: 1 + (sp.sagUst ? 1 : 0) + sp.head.length }],
     pageSetup: { paperSize: a.kagit === "A5" ? 11 : 9, orientation: a.yon === "yatay" ? "landscape" : "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: parca, horizontalCentered: true,
       margins: { left: a.delgec && a.yon !== "yatay" ? 0.95 : 0.28, right: 0.28, top: a.delgec && a.yon === "yatay" ? 0.95 : 0.3, bottom: 0.3, header: 0, footer: 0 } } });
   const tw = sp.oran.reduce((x, y) => x + y, 0); ws.columns = (sp.xGenis || sp.oran.map(o => Math.max(5, o / tw * 190))).map(w => ({ width: w }));
-  const ince = { style: "thin", color: { argb: "FF8A8A8A" } }, kalin = { style: "medium", color: { argb: "FF222222" } };
+  const ince = { style: "thin", color: { argb: "FF" + (TM ? TM.cizgi : "8A8A8A") } }, kalin = TM ? ince : { style: "medium", color: { argb: "FF222222" } };
   const dol = h => ({ type: "pattern", pattern: "solid", fgColor: { argb: "FF" + h }, bgColor: { indexed: 64 } });
-  const yazi = (sz, b = true) => ({ name: "Times New Roman", size: sz * a.yazi, bold: b, color: { argb: "FF222222" } });
-  const o = sp.sagUst ? 1 : 0;   // tarih: en üstte kendi satırında, sağa yaslı; başlık altında
+  const yazi = (sz, b = true) => ({ name: "Times New Roman", size: sz * a.yazi, bold: b, color: { argb: "FF" + (TM ? "262E38" : "222222") } });
+  const o = sp.sagUst && !TM ? 1 : 0;   // tarih: en üstte kendi satırında, sağa yaslı; başlık altında
   if(o){ ws.mergeCells(1, 1, 1, ncol); const d = ws.getCell(1, 1); d.value = sp.sagUst; d.font = yazi(11); d.alignment = { horizontal: "right", vertical: "middle" }; ws.getRow(1).height = 18; }
-  ws.mergeCells(1 + o, 1, 1 + o, ncol); const t = ws.getCell(1 + o, 1); t.value = sp.baslik; t.font = yazi(sp.xBaslikYazi || 16); t.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
+  if(TM){ const sonB = sp.sagUst ? ncol - 1 : ncol; ws.mergeCells(1, 1, 1, sonB); for(let q = 1; q <= ncol; q++){ const y = ws.getCell(1, q); y.fill = dol(TM.ustBand); y.border = { top: ince, bottom: ince, left: q === 1 ? { style: "thick", color: { argb: "FF" + TM.ana } } : undefined, right: q === ncol ? ince : undefined }; }
+    if(sp.sagUst){ const d = ws.getCell(1, ncol); d.value = { richText: [{ text: "TARİH\n", font: { name: "Times New Roman", size: 8 * a.yazi, color: { argb: "FF" + TM.soluk } } }, { text: sp.sagUst, font: { name: "Times New Roman", size: 12 * a.yazi, bold: true, color: { argb: "FF" + TM.basYazi } } }] }; d.alignment = { horizontal: "right", vertical: "middle", wrapText: true, indent: 1 }; } }
+  else ws.mergeCells(1 + o, 1, 1 + o, ncol);
+  const t = ws.getCell(1 + o, 1); t.value = sp.baslik; t.font = TM ? { ...yazi(sp.xBaslikYazi || 16), color: { argb: "FF" + TM.basYazi } } : yazi(sp.xBaslikYazi || 16); t.alignment = { horizontal: "center", vertical: "middle", wrapText: true };
   { const bsz = (sp.xBaslikYazi || 16) * a.yazi, top = (sp.xGenis || sp.oran.map(x => Math.max(5, x / tw * 190))).reduce((x, y) => x + y, 0);   // telefon görüntüleyicilerinde başlık iki satıra düşerse yarısı kesilmesin
-    const satir = Math.max(1, Math.ceil(String(sp.baslik).length * bsz / 11 * 1.25 / top / 0.65)); ws.getRow(1 + o).height = Math.max(32, satir * bsz * 1.45 + 6); }
-  const dolu = {}; sp.head.forEach((satir, ri) => { let c = 1; const r = 2 + o + ri;
+    const satir = Math.max(1, Math.ceil(String(sp.baslik).length * bsz / 11 * 1.25 / top / 0.65)); ws.getRow(1 + o).height = Math.max(TM ? 38 : 32, satir * bsz * 1.45 + 6); }
+  if(TM) ws.getRow(2).height = 8;   // başlık bandı ile tablo arasında boşluk
+  const o2 = o + (TM ? 1 : 0);
+  const dolu = {}; sp.head.forEach((satir, ri) => { let c = 1; const r = 2 + o2 + ri;
     satir.forEach(h => { while(dolu[r + ":" + c]) c++; const cs = h.cs || 1, rs = h.rs || 1;
       for(let p = 0; p < rs; p++) for(let q = 0; q < cs; q++) dolu[(r + p) + ":" + (c + q)] = 1;
       if(cs > 1 || rs > 1) ws.mergeCells(r, c, r + rs - 1, c + cs - 1);
       for(let p = 0; p < rs; p++) for(let q = 0; q < cs; q++){ const x = ws.getCell(r + p, c + q); x.fill = dol(h.fill || RENK.bas); x.border = { top: ince, left: ince, bottom: ince, right: ince }; }
       const x = ws.getCell(r, c); x.value = h.t; x.font = h.k ? { ...yazi(sp.xBasYazi || 11), color: { argb: "FF" + h.k } } : yazi(sp.xBasYazi || 11); x.alignment = { horizontal: "center", vertical: "middle", wrapText: true }; c += cs; });
     ws.getRow(r).height = 30; });
-  let r = 2 + o + sp.head.length; ws.pageSetup.printTitlesRow = `${2 + o}:${1 + o + sp.head.length}`;
+  let r = 2 + o2 + sp.head.length; ws.pageSetup.printTitlesRow = `${2 + o2}:${1 + o2 + sp.head.length}`;
   const parcalar = sp.sayfaBasina ? Array.from({ length: parca }, (_, k) => sp.body.slice(k * sp.sayfaBasina, (k + 1) * sp.sayfaBasina)) : [sp.body];
   parcalar.forEach((p, k) => {
     p.forEach(satir => { if(satir.bant){ ws.mergeCells(r, 1, r, ncol); const x = ws.getCell(r, 1); x.value = satir.bant; x.font = satir.k ? { ...yazi(11), color: { argb: "FF" + satir.k } } : yazi(11); x.alignment = { horizontal: "center", vertical: "middle" };
-        for(let q = 1; q <= ncol; q++){ ws.getCell(r, q).fill = dol(satir.fill || "E9EEF3"); ws.getCell(r, q).border = { top: ince, left: q === 1 ? kalin : ince, bottom: ince, right: q === ncol ? kalin : ince }; } ws.getRow(r).height = 18; r++; return; }
+        for(let q = 1; q <= ncol; q++){ ws.getCell(r, q).fill = dol(satir.fill || "E9EEF3"); ws.getCell(r, q).border = { top: ince, left: q === 1 ? kalin : ince, bottom: ince, right: q === ncol ? kalin : ince }; } ws.getRow(r).height = TM ? 22 : 18; r++; return; }
       let ihtiyac = 0; satir.forEach((h, ci) => { const x = ws.getCell(r, ci + 1);
         if(sp.izin && h.gun !== undefined){ const L = ws.getColumn(ci - 1).letter, K = ws.getColumn(ci).letter; x.value = { formula: `IF(OR(${L}${r}="",${K}${r}=""),"",${K}${r}-${L}${r})`, result: h.t === "" || h.t == null ? "" : +h.t }; x.numFmt = "0"; }
         else if(sp.izin && h.toplam){ const g = [7,10,13].map(c => ws.getColumn(c).letter + r).join(","); x.value = { formula: `IF(COUNT(${g})=0,"",SUM(${g}))`, result: h.t === "" || h.t == null ? "" : +h.t }; }
@@ -6638,8 +6644,8 @@ async function tabloExcel(sp, a){
         else if(h.sayi && h.t !== "" && isFinite(+h.t)) x.value = +h.t; else x.value = h.t;
         x.font = h.k ? { ...yazi(sp.xYazi || 12), color: { argb: "FF" + h.k } } : yazi(sp.xYazi || 12); x.alignment = { horizontal: h.sol ? "left" : "center", vertical: "middle", wrapText: !!sp.xSatir, indent: h.sol ? 1 : 0 };
         if(!(x.value && typeof x.value === "object")) ihtiyac = Math.max(ihtiyac, xlsSigdir(x, x.value, (ws.getColumn(ci + 1).width || 8) - (h.sol ? 2 : 1), (sp.xYazi || 12) * a.yazi, true));
-        if(h.fill) x.fill = dol(h.fill); x.border = { top: ince, left: ci ? ince : kalin, bottom: ince, right: ci === ncol - 1 ? kalin : ince }; });
-      ws.getRow(r).height = Math.max(sp.xSatir || (sp.izin ? 30 : 17), ihtiyac); r++; });
+        if(h.fill) x.fill = dol(h.fill); if(h.etiket) x.font = { ...x.font, size: (sp.xYazi || 12) * a.yazi * 0.92 }; x.border = { top: ince, left: ci ? ince : kalin, bottom: ince, right: ci === ncol - 1 ? kalin : ince }; });
+      ws.getRow(r).height = Math.max(sp.xSatir || (sp.izin ? 30 : TM ? 24 : 17), ihtiyac); r++; });
     if(sp.lejant || sp.altSol){ ws.getRow(r).height = 30; let c = 1;
       if(sp.altSol){ sp.altSol.forEach(([p1, p2, p3], i) => { const span = i ? 1 : 2; if(span > 1) ws.mergeCells(r, c, r, c + span - 1); const x = ws.getCell(r, c); x.value = `${p1} ${p2} ${p3}`; x.font = yazi(9); x.alignment = { horizontal: "center", vertical: "middle", wrapText: true }; for(let q = 0; q < span; q++){ ws.getCell(r, c + q).fill = dol("FAFAF8"); ws.getCell(r, c + q).border = { top: ince, left: ince, bottom: ince, right: ince }; } c += span; }); }
       if(sp.lejant){ const kalan = ncol - c + 1; const spans = sp.lejant.map((_, i) => Math.floor((kalan + i) / sp.lejant.length));
@@ -6651,7 +6657,7 @@ async function tabloExcel(sp, a){
   if(sp.ek){ r++;
     const yazSatir = (hucreler, bas) => { let c = 1, ihtiyac = 0; hucreler.forEach((h, i) => { const n = sp.ek.spans[i]; if(n > 1) ws.mergeCells(r, c, r, c + n - 1);
         for(let q = c; q < c + n; q++){ const y = ws.getCell(r, q); y.border = { top: ince, left: ince, bottom: ince, right: ince }; if(h.fill || bas) y.fill = dol(h.fill || RENK.bas); }
-        const x = ws.getCell(r, c); x.value = h.sayi && h.t !== "" && isFinite(+h.t) ? +h.t : h.t; x.font = yazi(11); x.alignment = { horizontal: h.sol ? "left" : "center", vertical: "middle", indent: h.sol ? 1 : 0 };
+        const x = ws.getCell(r, c); x.value = h.sayi && h.t !== "" && isFinite(+h.t) ? +h.t : h.t; x.font = h.k ? { ...yazi(11), color: { argb: "FF" + h.k } } : yazi(11); x.alignment = { horizontal: h.sol ? "left" : "center", vertical: "middle", indent: h.sol ? 1 : 0 };
         let gen = 0; for(let q = c; q < c + n; q++) gen += ws.getColumn(q).width || 8; ihtiyac = Math.max(ihtiyac, xlsSigdir(x, x.value, gen - (h.sol ? 2 : 1), 11 * a.yazi, true)); c += n; });
       ws.getRow(r).height = Math.max(20, ihtiyac); r++; };
     yazSatir(sp.ek.head, true); sp.ek.body.forEach(b => yazSatir(b, false));
@@ -6659,7 +6665,7 @@ async function tabloExcel(sp, a){
   if(sp.imzalar && sp.imzalar.length > 1){ r += 2; const n = sp.imzalar.length, gen = Math.max(1, Math.floor(ncol / n)), en = Math.max(...sp.imzalar.map(x => x.length));
     for(let i = 0; i < en; i++){ sp.imzalar.forEach((B, j) => { const c1 = 1 + j * gen, c2 = j === n - 1 ? ncol : c1 + gen - 1; if(c2 > c1) ws.mergeCells(r, c1, r, c2); const x = ws.getCell(r, c1); x.value = B[i] || ""; x.font = yazi(11); x.alignment = { horizontal: "center", vertical: "middle" }; }); ws.getRow(r).height = 16; r++; } }
   else if(sp.imza && sp.imza.length){ r += 2; const c1 = Math.max(1, ncol - 2);
-    sp.imza.forEach(t => { ws.mergeCells(r, c1, r, ncol); const x = ws.getCell(r, c1); x.value = t; x.font = yazi(11); x.alignment = { horizontal: "center", vertical: "middle" }; ws.getRow(r).height = 16; r++; }); }
+    sp.imza.forEach(t => { ws.mergeCells(r, c1, r, ncol); const x = ws.getCell(r, c1); x.value = t; x.font = TM ? { ...yazi(11), color: { argb: "FF" + TM.basYazi } } : yazi(11); x.alignment = { horizontal: "center", vertical: "middle" }; ws.getRow(r).height = 16; r++; }); }
   try { wb.description = JSON.stringify({ tskSayfa: Object.fromEntries(wb.worksheets.filter(w => w.rowBreaks && w.rowBreaks.length).map(w => [w.name, w.rowBreaks.map(b => b.id)])) }); } catch(e){}
   return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" });
 }
@@ -6674,7 +6680,7 @@ async function tabloWord(sp, a){
   const enCok = Math.max(1, ...parcalar.map(p => p.length));
   const P = Math.round(PAY * 56.7), ust = 340 + (a.delgec && a.yon === "yatay" ? P : 0), kullanH = sx.H - ust - 340;
   const altVar = !!(sp.altSol || sp.lejant), baslikH = 330 + (sp.sagUst ? 260 : 0), altH = altVar ? 340 : 0;
-  const PADX = 80;   // hücre iç boşluğu (sol+sağ, twip)
+  const TM = sp.tema; const PADX = 80;   // hücre iç boşluğu (sol+sağ, twip)
   /* başlık hücrelerini gerçek sütunlarına yerleştir */
   const izgara = sp.head.map(() => Array(n).fill(null));
   sp.head.forEach((satir, ri) => { let c = 0; satir.forEach(h => { while(c < n && izgara[ri][c]) c++; const cs = h.cs || 1, rs = h.rs || 1;
@@ -6721,27 +6727,33 @@ async function tabloWord(sp, a){
   pt = Math.max(3.5, Math.min(pt, (rowH - 40) / 20 / 1.18)); hpt = Math.max(3.5, Math.min(hpt, 8.5));
   const sz = Math.max(7, Math.round(pt * 2)), hsz = Math.max(7, Math.round(hpt * 2));
   const kural = sigar && (sp.sayfaBasina || rowH === Math.floor(govdeH / enCok)) ? "exact" : "atLeast";
-  const tc = (h, gen, ek = "", boyut = sz) => `<w:tc><w:tcPr><w:tcW w:w="${gen}" w:type="dxa"/>${ek}${h.fill ? `<w:shd w:val="clear" w:color="auto" w:fill="${h.fill}"/>` : ""}<w:vAlign w:val="center"/></w:tcPr>${paraXml(runXml(h.t, { sz: boyut }), h.sol ? "left" : "center")}</w:tc>`;
+  const tc = (h, gen, ek = "", boyut = sz) => `<w:tc><w:tcPr><w:tcW w:w="${gen}" w:type="dxa"/>${ek}${h.fill ? `<w:shd w:val="clear" w:color="auto" w:fill="${h.fill}"/>` : ""}${TM && h.sol ? '<w:tcMar><w:left w:w="130" w:type="dxa"/></w:tcMar>' : ""}<w:vAlign w:val="center"/></w:tcPr>${paraXml(runXml(h.t, { sz: h.etiket ? Math.round(boyut * 0.92) : boyut, k: h.k || (TM ? "262E38" : null) }), h.sol ? "left" : "center")}</w:tc>`;
   const basXml = izgara.map((satir, ri) => `<w:tr><w:trPr><w:tblHeader/><w:cantSplit/><w:trHeight w:val="${Math.round(basSatirH[ri])}" w:hRule="atLeast"/></w:trPr>` + satir.map((h, c) => { if(!h || h === "x") return "";
     const gen = gw.slice(c, c + h.cs).reduce((p, q) => p + q, 0); let ek = h.cs > 1 ? `<w:gridSpan w:val="${h.cs}"/>` : "";
     if((h.h.rs || 1) > 1) ek += h.devam ? `<w:vMerge/>` : `<w:vMerge w:val="restart"/>`;
     return h.devam ? `<w:tc><w:tcPr><w:tcW w:w="${gen}" w:type="dxa"/>${ek}<w:shd w:val="clear" w:color="auto" w:fill="${h.h.fill || RENK.bas}"/></w:tcPr><w:p/></w:tc>` : tc({ ...h.h, fill: h.h.fill || RENK.bas }, gen, ek, hsz); }).join("") + `</w:tr>`).join("");
   const trPr = `<w:trPr><w:cantSplit/><w:trHeight w:val="${Math.round(rowH)}" w:hRule="${kural}"/></w:trPr>`;
-  const govde = p => p.map(satir => satir.bant ? `<w:tr>${trPr}${tc({ t: satir.bant, fill: satir.fill || "E9EEF3" }, gw.reduce((x, y) => x + y, 0), `<w:gridSpan w:val="${n}"/>`)}</w:tr>`
+  const govde = p => p.map(satir => satir.bant ? `<w:tr>${trPr}${tc({ t: satir.bant, fill: satir.fill || "E9EEF3", k: satir.k }, gw.reduce((x, y) => x + y, 0), `<w:gridSpan w:val="${n}"/>`)}</w:tr>`
     : `<w:tr>${trPr}${satir.map((h, c) => tc(h, gw[c])).join("")}</w:tr>`).join("");
-  const kenarlik = `<w:tblBorders>${["top","left","bottom","right","insideH","insideV"].map(k => `<w:${k} w:val="single" w:sz="4" w:space="0" w:color="8A8A8A"/>`).join("")}</w:tblBorders>`;
+  const kenarlik = `<w:tblBorders>${["top","left","bottom","right","insideH","insideV"].map(k => `<w:${k} w:val="single" w:sz="4" w:space="0" w:color="${TM ? TM.cizgi : "8A8A8A"}"/>`).join("")}</w:tblBorders>`;
   const altSatir = altPlan ? `<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${Math.round(altYuk)}" w:hRule="exact"/></w:trPr>` + altPlan.map(h => tc({ t: h.t, fill: h.fill }, h.gen, h.span > 1 ? `<w:gridSpan w:val="${h.span}"/>` : "", h.f)).join("") + `</w:tr>` : "", alt = "";
   const tabloAc = `<w:tbl><w:tblPr><w:tblW w:w="${gw.reduce((x, y) => x + y, 0)}" w:type="dxa"/><w:jc w:val="center"/><w:tblLayout w:type="fixed"/>${kenarlik}<w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="40" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="40" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>${gw.map(x => `<w:gridCol w:w="${x}"/>`).join("")}</w:tblGrid>`;
   let ek = "";
-  if(sp.ek){ const satir = (hs, bas) => { let c = 0; return `<w:tr><w:trPr><w:cantSplit/></w:trPr>` + hs.map((h, i) => { const nn = sp.ek.spans[i]; const gen = gw.slice(c, c + nn).reduce((x, y) => x + y, 0); c += nn;
+  if(sp.ek){ const satir = (hs, bas) => { let c = 0; return `<w:tr><w:trPr><w:cantSplit/>${TM ? '<w:trHeight w:val="300" w:hRule="atLeast"/>' : ""}</w:trPr>` + hs.map((h, i) => { const nn = sp.ek.spans[i]; const gen = gw.slice(c, c + nn).reduce((x, y) => x + y, 0); c += nn;
         return tc({ ...h, fill: h.fill || (bas ? RENK.bas : null) }, gen, nn > 1 ? `<w:gridSpan w:val="${nn}"/>` : "", Math.min(sz, 16)); }).join("") + `</w:tr>`; };
     ek = `<w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr></w:p>${tabloAc}${satir(sp.ek.head, true)}${sp.ek.body.map(b => satir(b, false)).join("")}</w:tbl>`; }
   if(sp.imzalar && sp.imzalar.length > 1){ const n = sp.imzalar.length, en = Math.max(...sp.imzalar.map(x => x.length)), w = Math.floor(sx.kullan / n), yok = `<w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/>`;
     ek += `<w:p><w:pPr><w:spacing w:before="360" w:after="0"/></w:pPr></w:p><w:tbl><w:tblPr><w:tblW w:w="${w * n}" w:type="dxa"/><w:tblBorders>${yok}</w:tblBorders><w:tblLayout w:type="fixed"/></w:tblPr><w:tblGrid>${sp.imzalar.map(() => `<w:gridCol w:w="${w}"/>`).join("")}</w:tblGrid>`
-      + Array.from({ length: en }, (_, i) => `<w:tr>${sp.imzalar.map(B => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>${B[i] ? runXml(B[i], { sz: 20 }) : ""}</w:p></w:tc>`).join("")}</w:tr>`).join("") + `</w:tbl>`; }
-  else if(sp.imza && sp.imza.length) ek += `<w:p><w:pPr><w:spacing w:before="360" w:after="0"/></w:pPr></w:p>` + sp.imza.map(t => `<w:p><w:pPr><w:ind w:left="${Math.round(sx.kullan * 0.68)}"/><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>${runXml(t, { sz: 20 })}</w:p>`).join("");
+      + Array.from({ length: en }, (_, i) => `<w:tr>${sp.imzalar.map(B => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>${B[i] ? runXml(B[i], { sz: 20, k: TM ? TM.basYazi : null }) : ""}</w:p></w:tc>`).join("")}</w:tr>`).join("") + `</w:tbl>`; }
+  else if(sp.imza && sp.imza.length) ek += `<w:p><w:pPr><w:spacing w:before="360" w:after="0"/></w:pPr></w:p>` + sp.imza.map(t => `<w:p><w:pPr><w:ind w:left="${Math.round(sx.kullan * 0.68)}"/><w:jc w:val="center"/><w:spacing w:before="0" w:after="0"/></w:pPr>${runXml(t, { sz: 20, k: TM ? TM.basYazi : null })}</w:p>`).join("");
   const tarihP = sp.sagUst ? `<w:p><w:pPr><w:jc w:val="right"/><w:spacing w:before="0" w:after="40"/></w:pPr>${runXml(sp.sagUst, { sz: 20 })}</w:p>` : "";   // tarih en üst sağda, başlık altında
-  const baslik = tarihP + `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="80"/></w:pPr>${runXml(sp.baslik, { sz: Math.min(24, Math.max(14, Math.floor(sx.kullan / Math.max(1, wGenis(sp.baslik, 1)) * 2))) })}</w:p>`;
+  const bsz = Math.min(24, Math.max(14, Math.floor(sx.kullan / Math.max(1, wGenis(sp.baslik, 1)) * 2)));
+  const temaBas = TM ? (() => { const tg = sp.sagUst ? 1700 : 0, toplam = gw.reduce((x, y) => x + y, 0), bg = toplam - tg, kn = `<w:top w:val="single" w:sz="4" w:color="${TM.cizgi}"/><w:bottom w:val="single" w:sz="4" w:color="${TM.cizgi}"/>`;
+      return `<w:tbl><w:tblPr><w:tblW w:w="${toplam}" w:type="dxa"/><w:jc w:val="center"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="60" w:type="dxa"/><w:left w:w="120" w:type="dxa"/><w:bottom w:w="60" w:type="dxa"/><w:right w:w="140" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${bg}"/>${tg ? `<w:gridCol w:w="${tg}"/>` : ""}</w:tblGrid><w:tr><w:trPr><w:trHeight w:val="640" w:hRule="atLeast"/></w:trPr>`
+        + `<w:tc><w:tcPr><w:tcW w:w="${bg}" w:type="dxa"/><w:tcBorders>${kn}<w:left w:val="single" w:sz="36" w:color="${TM.ana}"/><w:right w:val="nil"/></w:tcBorders><w:shd w:val="clear" w:color="auto" w:fill="${TM.ustBand}"/><w:vAlign w:val="center"/></w:tcPr>${paraXml(runXml(sp.baslik, { sz: bsz, k: TM.basYazi }))}</w:tc>`
+        + (tg ? `<w:tc><w:tcPr><w:tcW w:w="${tg}" w:type="dxa"/><w:tcBorders>${kn}<w:left w:val="nil"/><w:right w:val="single" w:sz="4" w:color="${TM.cizgi}"/></w:tcBorders><w:shd w:val="clear" w:color="auto" w:fill="${TM.ustBand}"/><w:vAlign w:val="center"/></w:tcPr>${paraXml(runXml("TARİH", { sz: 12, b: false, k: TM.soluk }), "right")}${paraXml(runXml(sp.sagUst, { sz: 22, k: TM.basYazi }), "right")}</w:tc>` : "")
+        + `</w:tr></w:tbl><w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:rPr><w:sz w:val="14"/></w:rPr></w:pPr></w:p>`; })() : "";
+  const baslik = TM ? temaBas : tarihP + `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="80"/></w:pPr>${runXml(sp.baslik, { sz: Math.min(24, Math.max(14, Math.floor(sx.kullan / Math.max(1, wGenis(sp.baslik, 1)) * 2))) })}</w:p>`;
   const sayfalar = parcalar.map((p, i) => (i ? baslik.replace("<w:pPr>", "<w:pPr><w:pageBreakBefore/>") : baslik) + tabloAc + basXml + govde(p) + altSatir + `</w:tbl>` + (i === parcalar.length - 1 ? ek : "") + (alt || `<w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:rPr><w:sz w:val="2"/></w:rPr></w:pPr></w:p>`));
   return docxPaketle(sayfalar.join("") + sx.sect);
 }
