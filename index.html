@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "292";
+  const SURUM = "293";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1549,7 +1549,7 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .lt-s-b{font:700 10px var(--f-ui);letter-spacing:.05em;color:#8A6A35;text-transform:uppercase} .lt-sonuc b{font:700 13px var(--f-ui)} .lt-sonuc small{font:500 11.5px/1.35 var(--f-ui);color:var(--muted);overflow-wrap:anywhere}
 .lt-on{border:1px solid var(--line2);border-radius:14px;background:var(--panel);overflow:hidden} .lt-on summary{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;list-style:none;font:700 13px var(--f-ui)} .lt-on summary::-webkit-details-marker{display:none}
 .lt-on summary span{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:#EEF2F7;color:#4A5868} .lt-on summary small{margin-left:auto;white-space:nowrap;font:500 11px var(--f-ui);color:var(--muted)}
-.lt-on-kap{overflow:auto;max-height:70vh;border-top:1px solid var(--line2);background:#fff} .lt-on-t{border-collapse:collapse;width:max-content;min-width:100%;table-layout:auto;font-family:"Times New Roman",serif} .lt-on-t col{width:auto!important} .lt-on-t td{padding:3px 5px;white-space:nowrap;overflow-wrap:normal;word-break:normal;line-height:1.2}
+.lt-on-kap{overflow:auto;max-height:70vh;border-top:1px solid var(--line2);background:#fff} .lt-on-t{border-collapse:collapse;width:max-content;min-width:100%;table-layout:auto;font-family:"Times New Roman",serif} .lt-on-t col{width:auto!important} .lt-on-ic{position:relative;overflow:hidden} .lt-on-ic>.lt-on-t{transform-origin:0 0} .lt-on-t td{padding:3px 5px;white-space:nowrap;overflow-wrap:normal;word-break:normal;line-height:1.2}
 .lt-on-t td.lt-isik{background:#FFF1A8!important;box-shadow:inset 0 0 0 2px #E2B93B}
 .lt-boz{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 14px;margin-top:6px;padding-top:5px;border-top:1px dashed var(--line2)} .lt-boz.yazi{grid-template-columns:1fr}
 .lt-boz>span{font:500 12px/1.9 var(--f-ui);color:#4A5868;overflow-wrap:anywhere;min-width:0} .lt-boz>em{font-style:normal;font:700 12px/1.9 var(--f-ui);color:#2C3E50;text-align:right;font-variant-numeric:tabular-nums}
@@ -2409,7 +2409,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 292</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 293</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8085,7 +8085,10 @@ function ltBlokOzet(bl){ const gs = ltBaslikSut(bl), sayili = bl.sutunlar.some(s
 /* tablo görünümü telefonda yana kaymasın: kâğıttaki hali kutu genişliğine ölçeklenir (iki parmakla büyütülebilir) */
 /* aramada ilk eşleşen hücreye tablo görünümünün içinde kay (sayfayı oynatmadan) */
 function onIsikGit(k){ const x = k && k.querySelector(".lt-isik"); if(!x) return; const z = parseFloat((k.querySelector(".lt-on-t") || {}).style?.zoom) || 1, kr = k.getBoundingClientRect(), xr = x.getBoundingClientRect(); k.scrollTop += (xr.top - kr.top) - k.clientHeight / 3; k.scrollLeft += (xr.left - kr.left) - k.clientWidth / 4; }
-function ltOnSigdir(k){ const t = k && k.querySelector(".lt-on-t"); if(!t) return; t.style.zoom = ""; k.scrollLeft = 0; const kw = k.clientWidth, tw = t.offsetWidth; if(kw && tw > kw + 1) t.style.zoom = String(Math.max(.55, kw / tw)); }
+function ltOnSigdir(k){ const t = k && k.querySelector(".lt-on-t"); if(!t) return;   // zoom yerine transform: Android Chrome'da büyütünce hücre kaybolmasın
+  let w = t.parentElement; if(!w.classList.contains("lt-on-ic")){ w = document.createElement("div"); w.className = "lt-on-ic"; t.before(w); w.appendChild(t); }
+  t.style.transform = ""; w.style.width = w.style.height = ""; k.scrollLeft = 0; const kw = k.clientWidth, tw = t.offsetWidth, th = t.offsetHeight; const z = kw && tw > kw + 1 ? Math.max(.55, kw / tw) : 1;
+  t.dataset.z = z; if(z < 1){ t.style.transform = `scale(${z})`; w.style.width = Math.ceil(tw * z) + "px"; w.style.height = Math.ceil(th * z) + "px"; } }
 addEventListener("resize", () => ltOnSigdir(document.querySelector("#lt-govde .lt-on-kap")));
 function ltOnHtml(d){ const g = kurumsalMi(d) ? gridTema(ltGrid(d)) : ltGrid(d), GT = g.tema; try { hesapla(g); } catch(e){} const kap = kapsananlar(g), W = g.w.reduce((a, b) => a + b, 0), n = normMetin(ltAra);
   let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / W * 100).toFixed(2)}%">`).join("")}</colgroup>`;
