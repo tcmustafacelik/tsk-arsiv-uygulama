@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "253";
+  const SURUM = "254";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1414,6 +1414,21 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .by-hcip button b{font:700 12.5px var(--f-ui)} .by-hcip button small{font:500 10.5px var(--f-ui);color:var(--muted)}
 .by-hcip button[aria-pressed="true"]{background:#E2EBF5;border-color:#9FB6CC;box-shadow:inset 0 0 0 1px #9FB6CC} .by-hcip button[aria-pressed="true"] b::before{content:"✓ ";color:#3F6487}
 .by-hcip button:disabled{opacity:.5;cursor:default;background:#F4F5F7}
+.dahil-izgara:has(.dh-ust){display:flex!important;flex-direction:column;gap:10px}
+.dh-ust{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap} .dh-ust>span{font:500 12.5px var(--f-ui);color:var(--muted)} .dh-ust>span b{color:var(--fg);font-weight:700}
+.dh-hizli{display:inline-flex;padding:3px;gap:2px;border-radius:999px;background:#EEF2F6;border:1px solid var(--line2)}
+.dh-hizli button{height:28px;padding:0 12px;border:0;border-radius:999px;background:transparent;font:600 12px var(--f-ui);color:#5B7088;cursor:pointer} .dh-hizli button[aria-pressed="true"]{background:#fff;color:#2C4A69;box-shadow:0 1px 3px rgba(30,50,80,.15)}
+.dh-grup{display:flex;flex-direction:column;gap:6px;padding:9px 10px 10px;border-radius:14px;background:linear-gradient(180deg,color-mix(in srgb,var(--dz) 60%,var(--panel)),var(--panel));border:1px solid color-mix(in srgb,var(--dz) 80%,var(--line2))}
+.dh-gb{display:flex;align-items:baseline;justify-content:space-between} .dh-gb b{font:700 12px var(--f-ui);color:var(--dc);letter-spacing:.02em} .dh-gb small{font:600 11px var(--f-ui);color:var(--muted)}
+.dh-cipler{display:flex;flex-wrap:wrap;gap:6px}
+.dh-cip{display:inline-flex;align-items:stretch;border:1px solid var(--line2);border-radius:999px;background:var(--panel);overflow:hidden}
+.dh-cip button{border:0;background:transparent;cursor:pointer;font:600 12.5px var(--f-ui);color:#5B6573}
+.dh-cip [data-dahil-t]{display:inline-flex;align-items:center;gap:6px;min-height:32px;padding:0 12px 0 6px}
+.dh-cip i{font-style:normal;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:11px;background:#EEF1F4;color:#8A96A3}
+.dh-cip.acik{background:var(--dz);border-color:color-mix(in srgb,var(--dc) 35%,transparent)} .dh-cip.acik button{color:var(--dc)} .dh-cip.acik i{background:var(--dc);color:#fff}
+.dh-x{padding:0 10px 0 4px;color:#A0443A!important;font-size:11px!important}
+.dh-yeni{display:flex;gap:6px} .dh-yeni input{flex:1;min-width:0;height:38px;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:var(--panel);font:500 13px var(--f-ui);color:var(--fg)}
+.dh-yeni button{flex:none;height:38px;padding:0 14px;border:1px dashed #9FB6CC;border-radius:12px;background:#F3F7FB;color:#3F6487;font:600 13px var(--f-ui);cursor:pointer}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:140px!important;box-sizing:border-box} table input[type=date]{width:140px!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2258,7 +2273,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 253</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 254</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3814,7 +3829,7 @@ async function belgeleriYukle(dosyalar){ if(typeof assets === "undefined" || !as
 const dosyaSec = cb => { const inp = document.createElement("input"); inp.type = "file"; inp.multiple = true; inp.accept = "application/pdf,image/*"; inp.onchange = () => { if(inp.files.length) cb([...inp.files]); }; inp.click(); };
 const belgeCip = (x, ac, sil) => `<span class="yk-ek"><button type="button" ${ac} title="Belgeyi aç">${/pdf/.test(x.tur) ? "📄" : "🖼"} ${esc(x.ad)}</button><button type="button" class="yk-ek-sil" ${sil} aria-label="Belgeyi kaldır">✕</button></span>`;
 /* yoklama → GDHG: ayrılış türünün GDHG'deki sebebi */
-const YK_GD_SEBEP = { "İZİN": "Yıllık İzin", RAPOR: "Rapor", "GÖREVLİ": "Görev", KURS: "Kurs" };
+const YK_GD_SEBEP = { "İZİN": "Yıllık İzin", RAPOR: "Sağlık Raporu", "GÖREVLİ": "Görev", KURS: "Kurs" };
 function ykGdhgKisi(r){ const L = (S.gdhg && S.gdhg.kisiler) || []; return L.find(k => r.pid && k.pid === r.pid) || L.find(k => pAd(k.ad) === pAd(r.ad)) || null; }
 /* tek ayrılışı GDHG'ye yaz: aynı sebep ve tarihli satır varsa yalnız belgeler eklenir */
 function ykGdhgAktar(r, p){ const k = ykGdhgKisi(r); if(!k) return { hata: `${r.ad || "Kişi"} GDHG listesinde yok` }; if(!p.ayr) return { hata: "ayrılış tarihi yok" };
@@ -4070,7 +4085,7 @@ $("#h-dosya").addEventListener("change", async e => {
    toplam = kalış sürelerinin toplamı, ayrı kalınan süre AY/GÜN = DATEDIF(…,"m") / DATEDIF(…,"md"),
    toplam gün yazıyla, imzalar VERİ'den, kimlik PERSONEL LİSTESİ'nden gelir. */
 /* Ayrılış sebepleri: belgeden (beyan/izin raporu) yalnızca ESAS olanlar alınır; diğerleri elle seçmek için ek seçeneklerdir */
-const GD_ESAS = ["Rapor","Yıllık İzin","Yıllık Mazeret İzni"];
+const GD_ESAS = ["Sağlık Raporu","Yıllık İzin","Yıllık Mazeret İzni"];
 const GD_EK = ["Günlük İzin","Garnizon Terk","Evlilik İzni","Mehil İzni","Ölüm İzni","Görev","Geçici Görev","İstirahat Raporu","Nöbet İstirahati","Sağlık Raporu Yenileme","Afet İzni","Refakat İzni","Kurs"];
 const GD_SEBEP = [...GD_ESAS, ...GD_EK];
 /* kullanıcının eklediği özel sebepler de listelere girer */
@@ -4080,7 +4095,7 @@ const gdEsasMi = s => gdDahil().some(x => normMetin(x) === normMetin(s));
 function gdSebepNorm(s){
   const n = normMetin(s); if(!n) return ""; const tam = gdSebepler().find(x => normMetin(x) === n); if(tam) return tam;
   if(n.includes("YILLIK") && n.includes("MAZERET")) return "Yıllık Mazeret İzni"; if(n.includes("YILLIKIZIN")) return "Yıllık İzin";
-  if(n.includes("RAPOR") && n.includes("YENILEME")) return "Sağlık Raporu Yenileme"; if(n.includes("ISTIRAHAT") && n.includes("NOBET")) return "Nöbet İstirahati"; if(n.includes("ISTIRAHAT")) return "İstirahat Raporu"; if(n.includes("AFET")) return "Afet İzni"; if(n.includes("RAPOR")) return "Rapor";
+  if(n.includes("RAPOR") && n.includes("YENILEME")) return "Sağlık Raporu Yenileme"; if(n.includes("ISTIRAHAT") && n.includes("NOBET")) return "Nöbet İstirahati"; if(n.includes("ISTIRAHAT")) return "İstirahat Raporu"; if(n.includes("AFET")) return "Afet İzni"; if(n.includes("RAPOR")) return "Sağlık Raporu";
   if(n.includes("GARNIZON")) return "Garnizon Terk"; if(n.includes("GUNLUK")) return "Günlük İzin"; if(n.includes("EVLILIK")) return "Evlilik İzni"; if(n.includes("MEHIL")) return "Mehil İzni";
   if(n.includes("GECICI")) return "Geçici Görev"; return String(s).trim();
 }
@@ -4130,7 +4145,10 @@ const GD_W = [5, 33, 11, 11, 15, 14], GD_WT = GD_W.reduce((a, b) => a + b, 0);
 var GD_YER = "";
 const gdVarsayilan = () => ({ baslik: "GDHG ONAY BELGESİ", altBaslik: "",
   tarih: "", donem: { bas: "", son: "" }, onayBaslik: "ONAY", imza: GD_IMZA_YER.map(() => ({ grup: "", gorev: "", ad: "", rutbe: "" })), kisiler: [] });
-function gdDuzelt(){
+/* "Rapor" sebebi kaldırıldı: eski satırlar "Sağlık Raporu" olur; Sağlık Raporu artık sistemin kendi sebebi */
+function gdRaporTasi(G){ if(!G) return; (G.kisiler || []).forEach(k => (k.ayri || []).concat(k.donemDisi || []).forEach(x => { if(x && x.sebep === "Rapor"){ x.sebep = "Sağlık Raporu"; delete x.elle; } }));
+  if(Array.isArray(G.dahil)) G.dahil = [...new Set(G.dahil.map(x => x === "Rapor" ? "Sağlık Raporu" : x))]; if(Array.isArray(G.ozelSebep)) G.ozelSebep = G.ozelSebep.filter(x => x !== "Sağlık Raporu" && x !== "Rapor"); }
+function gdDuzelt(){ gdRaporTasi(S.gdhg); ((S.gdhgSet && S.gdhgSet.liste) || []).forEach(x => gdRaporTasi(x.veri));
   const v = gdVarsayilan(); S.gdhg = { ...v, ...(S.gdhg || {}) };
   S.gdhg.imza = (Array.isArray(S.gdhg.imza) && S.gdhg.imza.length >= 2 ? S.gdhg.imza : GD_IMZA_YER.map((_, i) => (S.gdhg.imza || [])[i] || {})).map(x => ({ ...imzBos(), ...(x || {}) }));
   S.gdhg.kisiler = (S.gdhg.kisiler || []).map(k => ({ id: k.id || yeniId(), ad: "", rutbe: "", sicil: "", gorev: "", tarih: "", gelis: "", gorevSonu: "", ...k, gorevler: k.gorevler || [], ayri: k.ayri || [], donemDisi: k.donemDisi || [] }));
@@ -5389,14 +5407,17 @@ function beyanPanelCiz(){
       <div id="by-dahil" class="dahil-izgara"></div></details>
     <div id="by-sonuc"></div></div>`;
 }
+const DAHIL_GRUP = [["İzinler", "#E2EBF5", "#36587C", ["Yıllık İzin","Yıllık Mazeret İzni","Günlük İzin","Garnizon Terk","Evlilik İzni","Mehil İzni","Ölüm İzni","Afet İzni","Refakat İzni"]],
+  ["Raporlar", "#F6E7E3", "#8A4234", ["Sağlık Raporu","Sağlık Raporu Yenileme","İstirahat Raporu","Nöbet İstirahati"]], ["Görev ve kurs", "#E3EEDF", "#3F6B45", ["Görev","Geçici Görev","Kurs"]]];
 function beyanDahilCiz(){
-  const el = $("#by-dahil"); if(!el) return; const D = gdDahil();
-  const oz = (S.gdhg.ozelSebep || []);
-  const tumu = gdSebepler().every(x => D.includes(x));
-  el.innerHTML = `<div class="dahil-ust"><span>${D.length} / ${gdSebepler().length} seçili</span><span class="bosluk"></span><button class="btn kucuk" type="button" data-dahil-hepsi="tum"${tumu ? " disabled" : ""}>Hepsini seç</button><button class="btn kucuk" type="button" data-dahil-hepsi="yok"${D.length ? "" : " disabled"}>Temizle</button></div>`
-    + gdSebepler().map(x => `<label class="dahil-sec${D.includes(x) ? " acik" : ""}"><input type="checkbox" data-dahil="${esc(x)}"${D.includes(x) ? " checked" : ""}> ${esc(x)}${oz.includes(x) ? ` <button class="mini sil" type="button" data-sebep-sil="${esc(x)}" aria-label="${esc(x)} sebebini sil" style="padding:0 4px">✕</button>` : ""}</label>`).join("")
-    + `<div class="dahil-yeni"><input type="text" id="by-yeni-sebep" placeholder="Listede olmayan sebep (ör. Sınav İzni)" aria-label="Yeni sebep"><button class="btn kucuk" type="button" id="by-sebep-ekle">+ Sebep ekle</button></div>`
-    + `<button class="mini" type="button" data-dahil-hepsi="esas" style="grid-column:1/-1;justify-self:start;text-decoration:underline">Varsayılana dön (Rapor, Yıllık İzin, Yıllık Mazeret İzni)</button>`;
+  const el = $("#by-dahil"); if(!el) return; const D = gdDahil(), T = gdSebepler(), oz = (S.gdhg.ozelSebep || []).filter(x => T.includes(x));
+  const kullanilan = new Set(DAHIL_GRUP.flatMap(g => g[3])), diger = T.filter(x => !kullanilan.has(x) && !oz.includes(x));
+  const cip = (x, sil) => `<span class="dh-cip${D.includes(x) ? " acik" : ""}"><button type="button" data-dahil-t="${esc(x)}" aria-pressed="${D.includes(x)}"><i>${D.includes(x) ? "✓" : "+"}</i>${esc(x)}</button>${sil ? `<button type="button" class="dh-x" data-sebep-sil="${esc(x)}" aria-label="${esc(x)} sebebini sil">✕</button>` : ""}</span>`;
+  const grup = (ad, z, c, L, sil) => L.length ? `<div class="dh-grup" style="--dz:${z};--dc:${c}"><div class="dh-gb"><b>${esc(ad)}</b><small>${L.filter(x => D.includes(x)).length} / ${L.length}</small></div><div class="dh-cipler">${L.map(x => cip(x, sil)).join("")}</div></div>` : "";
+  const esasMi = D.length === GD_ESAS.length && GD_ESAS.every(x => D.includes(x));
+  el.innerHTML = `<div class="dh-ust"><span><b>${D.length}</b> / ${T.length} seçili</span><div class="dh-hizli"><button type="button" data-dahil-hepsi="tum" aria-pressed="${D.length === T.length}">Hepsi</button><button type="button" data-dahil-hepsi="esas" aria-pressed="${esasMi}" title="${esc(GD_ESAS.join(", "))}">Varsayılan</button><button type="button" data-dahil-hepsi="yok" aria-pressed="${!D.length}">Hiçbiri</button></div></div>`
+    + DAHIL_GRUP.map(([ad, z, c, L]) => grup(ad, z, c, L.filter(x => T.includes(x)))).join("") + grup("Diğer", "#EEF0F2", "#4A5868", diger) + grup("Eklediklerin", "#F3EFE2", "#7A5A25", oz, true)
+    + `<div class="dh-yeni"><input type="text" id="by-yeni-sebep" placeholder="Yeni sebep (ör. Sınav İzni)" aria-label="Yeni sebep"><button type="button" id="by-sebep-ekle">＋ Ekle</button></div>`;
   $("#by-dahil-say").textContent = D.length ? D.join(", ") : "hiçbiri";
 }
 function dahilDegisti(){
@@ -5510,7 +5531,7 @@ function bySebep(satir){
   if(bas.length >= 5){ let iyi = null, iyi2 = null; for(const x of gdSebepler()){ const h = byNorm(x).replace(/[^A-Z]/g, ""); if(!h) continue; const o = byMesafe(bas, h, true) / Math.max(bas.length, h.length);
       if(o <= 0.4){ if(!iyi || o < iyi[1]){ iyi2 = iyi; iyi = [x, o]; } else if(!iyi2 || o < iyi2[1]) iyi2 = [x, o]; } }
     if(iyi && (!iyi2 || iyi2[1] - iyi[1] >= 0.1)){ bySebep.tahmin = true; return iyi[0]; } }
-  const s = gdSebepNorm(satir); return gdSebepler().includes(s) ? s : (/(RAPOR|ISTIRAHAT)/.test(n) ? (n.includes("ISTIRAHAT") ? "İstirahat Raporu" : "Rapor") : "");
+  const s = gdSebepNorm(satir); return gdSebepler().includes(s) ? s : (/(RAPOR|ISTIRAHAT)/.test(n) ? (n.includes("ISTIRAHAT") ? "İstirahat Raporu" : "Sağlık Raporu") : "");
 }
 /* belgedeki ad-soyad, rütbe ve sicilden personeli bul. kesin: ad-soyad ve rütbe (ya da sicil) uyuyor ve başka aday yok */
 const byNorm = v => String(v || "").toLocaleUpperCase("tr").replace(/[ÇĞİÖŞÜ]/g, c => ({ Ç:"C", Ğ:"G", İ:"I", Ö:"O", Ş:"S", Ü:"U" }[c])).replace(/[^A-Z0-9]+/g, " ").trim();
@@ -5741,6 +5762,7 @@ $("#b-beyan").addEventListener("click", e => {
     if(gdSebepler().some(x => normMetin(x) === normMetin(v))) return uyar(`“${v}” zaten listede.`, true);
     S.gdhg.ozelSebep = [...(S.gdhg.ozelSebep || []), v]; S.gdhg.dahil = [...gdDahil(), v]; dahilDegisti(); bildir(`“${v}” eklendi ve dahil edildi`); return; }
   if(b.dataset.sebepSil){ e.preventDefault(); const v = b.dataset.sebepSil; S.gdhg.ozelSebep = (S.gdhg.ozelSebep || []).filter(x => x !== v); S.gdhg.dahil = gdDahil().filter(x => x !== v); dahilDegisti(); return; }
+  if(b.dataset.dahilT){ const v = b.dataset.dahilT, D = new Set(gdDahil()); D.has(v) ? D.delete(v) : D.add(v); S.gdhg.dahil = gdSebepler().filter(x => D.has(x)); dahilDegisti(); return; }
   if(b.dataset.dahilHepsi){ const t = b.dataset.dahilHepsi; S.gdhg.dahil = t === "tum" ? [...gdSebepler()] : t === "yok" ? [] : [...GD_ESAS]; dahilDegisti(); return; }
   if(b.dataset.byAday && beyanSonuc){ beyanSonuc.kisiId = b.dataset.byAday; beyanSonuc.kisiOto = false; beyanSonuc.kisiSoru = null; beyanSonucCiz(); return; }
   if(b.id === "by-vazgec"){ beyanSonuc = null; $("#by-sonuc").innerHTML = ""; if(beyanToplam > 1 && beyanSiradaki()) bildir("Bu belge atlandı"); return; }
