@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "264";
+  const SURUM = "265";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1486,6 +1486,9 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .kd-k small{font:500 11.5px/1.3 var(--f-ui);color:var(--muted);overflow-wrap:anywhere;min-height:1.3em}
 .gd-ozk-bas .gd-ozb{background:linear-gradient(135deg,#F3F0F8,var(--panel) 75%)} .gd-ozk-bas .gd-ozi{background:#E9E4F2;color:#5B4A80}
 .gd-ozk-bas .gd-ozg .gd-ust{border:0;background:transparent;padding:6px 0 0}
+.dg-olc{font:700 12px var(--f-ui);color:#cfd8e2;min-width:44px;text-align:center}
+.dg-alan:has(.dg-sayfalar){overflow:auto} .dg-sayfalar{transition:none}
+.cs-not{font:500 11.5px/1.4 var(--f-ui);color:var(--muted);margin:-2px 0 4px}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:10.5em!important;box-sizing:border-box} table input[type=date]{width:10.5em!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2332,7 +2335,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 264</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 265</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3223,24 +3226,36 @@ async function resimTuval(u, enAz = 2400){ const im = new Image(); im.decoding =
 async function dosyaGor(a, hedefSayfa = 0){ let el = $("#dg-perde"); if(!el){ el = document.createElement("div"); el.id = "dg-perde"; document.body.appendChild(el); }
   const pdf = dosyaTip(a) === "application/pdf", kok = a.ad.replace(/\.[^.]+$/, ""); let olcek = 1;
   el.innerHTML = `<div class="dg-ust"><b>${esc(a.ad)}</b><button type="button" data-dg="x" aria-label="Kapat">✕</button></div><div class="dg-alan"><div class="dg-yuk">Açılıyor…</div></div>
-    <div class="dg-alt">${pdf ? `<span class="bosluk"></span><button type="button" data-dg="pdfpng">Resim (PNG)</button>` : `<button type="button" data-dg="-" aria-label="Küçült">−</button><button type="button" data-dg="+" aria-label="Büyüt">＋</button><span class="bosluk"></span><button type="button" data-dg="png">PNG</button><button type="button" data-dg="pdf">PDF</button>`}<button type="button" class="ana" data-dg="indir">İndir</button></div>`;
+    <div class="dg-alt">${pdf ? `<button type="button" data-dg="-" aria-label="Küçült">−</button><button type="button" data-dg="+" aria-label="Büyüt">＋</button><span class="dg-olc" hidden></span><span class="bosluk"></span><button type="button" data-dg="pdfpng">Resim (PNG)</button>` : `<button type="button" data-dg="-" aria-label="Küçült">−</button><button type="button" data-dg="+" aria-label="Büyüt">＋</button><span class="bosluk"></span><button type="button" data-dg="png">PNG</button><button type="button" data-dg="pdf">PDF</button>`}<button type="button" class="ana" data-dg="indir">İndir</button></div>`;
   el.hidden = false; document.documentElement.classList.add("imz-acik"); const kapat = () => { el.hidden = true; el.innerHTML = ""; document.documentElement.classList.remove("imz-acik"); }; (window.TSK_KATMAN = window.TSK_KATMAN || {})["dg-perde"] = kapat;
   let u; try { u = await dosyaUrl(a); } catch(e){ el.querySelector(".dg-yuk").textContent = "Dosya açılamadı: " + (e.message || e); return; }
   const alan = el.querySelector(".dg-alan");
   if(pdf){ /* telefon tarayıcıları PDF'i sayfa içinde gösteremez: sayfalar pdf.js ile tuvale çizilir */
     alan.innerHTML = `<div class="dg-sayfalar"><div class="dg-yuk">Sayfalar hazırlanıyor…</div></div>`; alan.style.alignItems = "flex-start";
     (async () => { try { await yukle(PDFJS); const lib = window.pdfjsLib; lib.GlobalWorkerOptions.workerSrc = PDFJS_W; const bl = await arsivBlob(a), doc = await lib.getDocument({ data: new Uint8Array(await bl.arrayBuffer()) }).promise, kap = alan.querySelector(".dg-sayfalar"); kap.innerHTML = "";
-      const gen = Math.min(900, alan.clientWidth - 20) * Math.min(2.5, (devicePixelRatio || 1) * 1.25);
+      const taban = Math.min(900, alan.clientWidth - 20), dpr = Math.min(3, devicePixelRatio || 1);
       const C = [];   /* önce bütün sayfaların yeri açılır, dokunulan sayfaya gidilir; çizim o sayfadan başlar */
-      for(let i = 1; i <= doc.numPages; i++){ const pg = await doc.getPage(i), v0 = pg.getViewport({ scale: 1 }), v = pg.getViewport({ scale: gen / v0.width }), c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height); kap.appendChild(c); C.push({ pg, v, c }); }
+      for(let i = 1; i <= doc.numPages; i++){ const pg = await doc.getPage(i), v0 = pg.getViewport({ scale: 1 }), c = document.createElement("canvas"); const sk = taban * dpr * 1.25 / v0.width; c.width = Math.round(v0.width * sk); c.height = Math.round(v0.height * sk); c.dataset.s = i; kap.appendChild(c); C.push({ pg, v0, c, ol: 0 }); }
+      /* sayfa çizimi: ekranda görünen sayfa yakınlaştırmaya göre yüksek çözünürlükte (en çok ~24 MP), görünmeyen sayfa hafif çözünürlükte tutulur */
+      const ciz = async (o, kat) => { const hedef = Math.max(1.25, kat), sk = Math.min(taban * dpr * hedef / o.v0.width, Math.sqrt(24e6 / (o.v0.width * o.v0.height))); if(Math.abs(sk - o.ol) < .01 || o.cizim) return; o.cizim = true;
+        try { const v = o.pg.getViewport({ scale: sk }), t = document.createElement("canvas"); t.width = Math.round(v.width); t.height = Math.round(v.height); const x = t.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, t.width, t.height); await o.pg.render({ canvasContext: x, viewport: v }).promise;
+          t.dataset.s = o.c.dataset.s; t.style.cssText = o.c.style.cssText; o.c.replaceWith(t); o.c.width = o.c.height = 0; o.c = t; o.ol = sk; gozlem && gozlem.observe(t); } catch(e){} finally { o.cizim = false; } };
+      const gorunen = new Set(); let gozlem = null; const yenile = () => C.forEach(o => ciz(o, gorunen.has(o) ? olcekPdf() : 1));
+      const olcekPdf = () => +(kap.dataset.olcek || 1) * 1.25;
+      gozlem = new IntersectionObserver(G => { G.forEach(g => { const o = C.find(x => x.c === g.target); if(!o) return; if(g.isIntersecting) gorunen.add(o); else gorunen.delete(o); }); clearTimeout(kap._t); kap._t = setTimeout(yenile, 200); }, { root: alan, rootMargin: "200px" });
+      kap._yenile = () => { clearTimeout(kap._t); kap._t = setTimeout(yenile, 250); };
       const h = Math.max(1, Math.min(C.length, hedefSayfa || 1)); if(hedefSayfa > 1) C[h - 1].c.scrollIntoView({ block: "start" });
-      for(const o of [C[h - 1], ...C.filter((_, j) => j !== h - 1)]){ if(el.hidden) return; const x = o.c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, o.c.width, o.c.height); await o.pg.render({ canvasContext: x, viewport: o.v }).promise; }
+      for(const o of [C[h - 1], ...C.filter((_, j) => j !== h - 1)]){ if(el.hidden) return; await ciz(o, 1); }
+      C.forEach(o => gozlem.observe(o.c));
     } catch(e){ alan.innerHTML = `<div class="dg-yuk">PDF gösterilemedi: ${esc(e.message || e)} · "İndir" ile açabilirsiniz</div>`; } })(); }
   else alan.innerHTML = `<img src="${u}" alt="${esc(a.ad)}">`;
   el.onclick = async e => { const b = e.target.closest("[data-dg]"); if(!b) return; const k = b.dataset.dg, im = alan.querySelector("img");
-    if(k === "x") return kapat(); if(k === "+" || k === "-"){ olcek = Math.max(.5, Math.min(6, olcek * (k === "+" ? 1.4 : 1 / 1.4))); if(im){ im.style.width = (olcek * 100) + "%"; im.style.maxWidth = olcek > 1 ? "none" : "100%"; } return; }
+    if(k === "x") return kapat(); if(k === "+" || k === "-"){ olcek = Math.max(.5, Math.min(6, olcek * (k === "+" ? 1.4 : 1 / 1.4))); if(im){ im.style.width = (olcek * 100) + "%"; im.style.maxWidth = olcek > 1 ? "none" : "100%"; }
+      const kp = alan.querySelector(".dg-sayfalar"); if(kp){ const ust = alan.scrollTop / Math.max(1, alan.scrollHeight), sol = (alan.scrollLeft + alan.clientWidth / 2) / Math.max(1, alan.scrollWidth); kp.dataset.olcek = olcek; kp.style.width = kp.style.minWidth = olcek > 1 ? (olcek * 100) + "%" : "100%"; kp.style.flexShrink = "0"; kp.querySelectorAll("canvas").forEach(c => { c.style.maxWidth = olcek > 1 ? "none" : (900 * olcek) + "px"; });
+        alan.scrollTop = ust * alan.scrollHeight; alan.scrollLeft = sol * alan.scrollWidth - alan.clientWidth / 2; const ol = el.querySelector(".dg-olc"); if(ol){ ol.hidden = false; ol.textContent = "%" + Math.round(olcek * 100); } kp._yenile && kp._yenile(); }
+      return; }
     if(k === "indir") return dosyaVer(a.ad, await arsivBlob(a));
-    if(k === "pdfpng"){ const eski = b.textContent; b.disabled = true; b.textContent = "…"; try { const r = await pdfResim(await arsivBlob(a), a.ad, "png"); await dosyaVer(r.ad, r.blob); } catch(err){ uyar("Resme çevrilemedi: " + (err.message || err), true); } finally { b.disabled = false; b.textContent = eski; } return; }
+    if(k === "pdfpng"){ const eski = b.textContent; b.disabled = true; b.textContent = "…"; try { const r = await pdfResim(await arsivBlob(a), a.ad, "png", 1, csAyar.rk || "yuksek"); await dosyaVer(r.ad, r.blob); } catch(err){ uyar("Resme çevrilemedi: " + (err.message || err), true); } finally { b.disabled = false; b.textContent = eski; } return; }
     const eski = b.textContent; b.disabled = true; b.textContent = "…";
     try { const c = await resimTuval(u);
       if(k === "png") await dosyaVer(kok + ".png", await new Promise(ok => c.toBlob(ok, "image/png")));
@@ -8037,7 +8052,7 @@ document.addEventListener("click", async e => { const b = e.target.closest && e.
   if(ds.bsT){ const [id, y] = ds.bsT.split(":"), i = L.findIndex(x => x.id === id), j = i + +y; if(i < 0 || j < 0 || j >= L.length) return; [L[i], L[j]] = [L[j], L[i]]; return yaz(); }
   if(ds.bsS){ const i = L.findIndex(x => x.id === ds.bsS); if(i < 0) return; const [x] = L.splice(i, 1); yaz(); return geriAlinabilir("Başlık silindi", () => { L.splice(i, 0, x); yaz(); }); }
   if(ds.bsC){ const [id, tur] = ds.bsC.split(":"), o = bul(id); if(!o) return; const eski = b.textContent; b.disabled = true; b.textContent = "…";
-    try { const r = await ciktiUret(d, SECIM.klasor, tur, { n: 1, rf: csAyar.rf || "png" }, { bsSadece: id }); await dosyaVer(r.ad.replace(/^[^_]*/, dosyaAdi(String(o.metin || "Baslik").split("\n")[0])), r.blob); } catch(err){ uyar("Başlık hazırlanamadı: " + (err.message || err), true); } finally { b.disabled = false; b.textContent = eski; } } });
+    try { const r = await ciktiUret(d, SECIM.klasor, tur, { n: 1, rf: csAyar.rf || "png", rk: csAyar.rk || "yuksek" }, { bsSadece: id }); await dosyaVer(r.ad.replace(/^[^_]*/, dosyaAdi(String(o.metin || "Baslik").split("\n")[0])), r.blob); } catch(err){ uyar("Başlık hazırlanamadı: " + (err.message || err), true); } finally { b.disabled = false; b.textContent = eski; } } });
 
 /* ================= SPOR TESTİ (tur: "spor") =================
    d.sp = { ust, baslik, tarih: "yyyy-mm-dd", esik: 50, branslar: [{ id, ad, birim: "tekrar"|"sure"|"mesafe", cetvel: [{ id, yas: "17-25"|"", deger, puan }] }],
@@ -8858,7 +8873,7 @@ function csMini(n, kyon, sayfaYatay, buyuk){ const { yt, c, r } = csIzgara(n, ky
 const CS_DELGEC = new Set(["kapak", "baslik"]);   // sayfa ayarı paneli olmayan, delgeç payı çıktı penceresinden seçilen belgeler
 function ciktiSec(d, kId, tur){ return new Promise(bitir => {
   const a = etkinAyar(d, kId), sayfaYatay = (d.tur === "mevzi" || d.tur === "candostu") ? true : a.yon === "yatay";
-  const s = { n: tur === "docx" ? ((a.yerlesim || 1) > 1 ? 2 : 1) : (a.yerlesim || 1), kyon: csAyar.kyon || "oto", kesme: a.kesme !== false, cogalt: !!a.cogalt, hep: false, rf: csAyar.rf || "png", delgec: !!a.delgec }, dgSor = CS_DELGEC.has(d.tur);
+  const s = { n: tur === "docx" ? ((a.yerlesim || 1) > 1 ? 2 : 1) : (a.yerlesim || 1), kyon: csAyar.kyon || "oto", kesme: a.kesme !== false, cogalt: !!a.cogalt, hep: false, rf: csAyar.rf || "png", rk: csAyar.rk || "yuksek", delgec: !!a.delgec }, dgSor = CS_DELGEC.has(d.tur);
   if(!CS_SEC.some(x => x.n === s.n)) s.n = 1;
   let p = $("#cs-perde"); if(!p){ p = document.createElement("div"); p.id = "cs-perde"; p.className = "imz-perde"; document.body.appendChild(p); }
   const k = klasorBul(kId) || {}, varsay = a.yerlesim || 1;
@@ -8874,7 +8889,9 @@ function ciktiSec(d, kId, tur){ return new Promise(bitir => {
       <div class="cs-seg">${[["oto", "Otomatik"], ["dikey", "Dikey"], ["yatay", "Yatay"]].map(([v, t]) => `<button type="button" data-cs="kyon:${v}" aria-pressed="${s.kyon === v}">${t}</button>`).join("")}</div>
       <div class="cs-kutu"><label><input type="checkbox" data-cs-k="kesme"${s.kesme ? " checked" : ""}><span>Kesme çizgisi</span></label><label><input type="checkbox" data-cs-k="cogalt"${s.cogalt ? " checked" : ""}><span>Aynı sayfayı kâğıt dolusu çoğalt</span></label></div>` : ""}
       ${dgSor ? `<div class="cs-et">Delgeç payı</div><div class="cs-seg">${[[false, "Yok"], [true, "Solda 20 mm"]].map(([v, t]) => `<button type="button" data-cs="dg:${v ? 1 : 0}" aria-pressed="${s.delgec === v}">${t}</button>`).join("")}</div>` : ""}
-      ${tur === "png" ? `<div class="cs-et">Resim biçimi</div><div class="cs-seg">${[["png", "PNG · en net"], ["jpg", "JPEG · küçük dosya"]].map(([v, t]) => `<button type="button" data-cs="rf:${v}" aria-pressed="${s.rf === v}">${t}</button>`).join("")}</div>` : ""}
+      ${tur === "png" ? `<div class="cs-et">Resim biçimi</div><div class="cs-seg">${[["png", "PNG · en net"], ["jpg", "JPEG · küçük dosya"]].map(([v, t]) => `<button type="button" data-cs="rf:${v}" aria-pressed="${s.rf === v}">${t}</button>`).join("")}</div>
+        <div class="cs-et">Çözünürlük</div><div class="cs-seg">${[["normal", "Normal"], ["yuksek", "Yüksek"], ["pankart", "Pankart · en net"]].map(([v, t]) => `<button type="button" data-cs="rk:${v}" aria-pressed="${s.rk === v}">${t}</button>`).join("")}</div>
+        <div class="cs-not">${{ normal: "Telefonda bakmak ve paylaşmak için yeterli, dosya küçük.", yuksek: "Yaklaştırınca da net; çoğu iş için önerilen.", pankart: "En yüksek çözünürlük: çok yaklaştırma ve büyük baskı için. Dosya büyük olur, hazırlanması birkaç saniye sürebilir." }[s.rk]}</div>` : ""}
       ${tur !== "docx" && s.n !== varsay ? `<label class="cs-hep"><input type="checkbox" data-cs-k="hep"${s.hep ? " checked" : ""}><span>Bu belge bu klasörde hep böyle çıksın</span></label>` : ""}
       <div class="imz-alt"><span class="cs-not">Varsayılan: ${esc((CS_SEC.find(x => x.n === varsay) || CS_SEC[0]).ad)}</span><button class="imz-tamam" type="button" data-cs="tamam">${esc(CS_TUR[tur])} indir</button></div></div>`; };
   const kapat = v => { p.classList.add("git"); document.documentElement.classList.remove("imz-acik"); setTimeout(() => { p.hidden = true; p.classList.remove("git"); }, 200); p.onclick = p.onchange = null; bitir(v); };
@@ -8882,20 +8899,27 @@ function ciktiSec(d, kId, tur){ return new Promise(bitir => {
   (window.TSK_KATMAN = window.TSK_KATMAN || {})["cs-perde"] = () => kapat(null);
   p.onclick = e => { if(e.target === p) return kapat(null); const b = e.target.closest("[data-cs]"); if(!b) return; const [k2, v] = b.dataset.cs.split(":");
     if(k2 === "kapat") return kapat(null);
-    if(k2 === "tamam"){ if(s.hep && s.n !== varsay){ ayarYaz(d, kId, "yerlesim", s.n); ayarYaz(d, kId, "kesme", s.kesme); ayarYaz(d, kId, "cogalt", s.cogalt); kaydetBelge(d); try { ayarCiz(); } catch(_){} } return kapat({ n: s.n, kyon: s.kyon, kesme: s.kesme, cogalt: s.cogalt, rf: s.rf, ...(dgSor ? { delgec: s.delgec } : {}) }); }
-    if(k2 === "n") s.n = +v; if(k2 === "kyon"){ s.kyon = v; csAyar.kyon = v; csSakla(); } if(k2 === "rf"){ s.rf = v; csAyar.rf = v; csSakla(); } if(k2 === "dg"){ s.delgec = v === "1"; ayarYaz(d, kId, "delgec", s.delgec); kaydetBelge(d); } ciz(); };
+    if(k2 === "tamam"){ if(s.hep && s.n !== varsay){ ayarYaz(d, kId, "yerlesim", s.n); ayarYaz(d, kId, "kesme", s.kesme); ayarYaz(d, kId, "cogalt", s.cogalt); kaydetBelge(d); try { ayarCiz(); } catch(_){} } return kapat({ n: s.n, kyon: s.kyon, kesme: s.kesme, cogalt: s.cogalt, rf: s.rf, rk: s.rk, ...(dgSor ? { delgec: s.delgec } : {}) }); }
+    if(k2 === "n") s.n = +v; if(k2 === "kyon"){ s.kyon = v; csAyar.kyon = v; csSakla(); } if(k2 === "rf"){ s.rf = v; csAyar.rf = v; csSakla(); } if(k2 === "rk"){ s.rk = v; csAyar.rk = v; csSakla(); } if(k2 === "dg"){ s.delgec = v === "1"; ayarYaz(d, kId, "delgec", s.delgec); kaydetBelge(d); } ciz(); };
   p.onchange = e => { const k2 = e.target.dataset.csK; if(k2){ s[k2] = e.target.checked; ciz(); } };
 }); }
 /* seçime göre çıktıyı üret: A5/A6'da belge A5 kâğıda dizilir, sonra A4'e yerleşir */
 /* PDF → resim: her sayfa ~200 dpi PNG ya da JPEG; çok sayfalıysa tek ZIP içinde */
-async function pdfResim(blob, ad, rf = "png", adet = 1){ await yukle(PDFJS); const lib = window.pdfjsLib; if(!lib) throw new Error("PDF okuyucu yüklenemedi"); lib.GlobalWorkerOptions.workerSrc = PDFJS_W;
+/* resim kalitesi: normal 250 dpi · yüksek 400 dpi · pankart 600 dpi; çoklu yerleşimde küçük sayfalar için dpi artar.
+   Telefonun tuval sınırına takılırsa ölçek kendiliğinden küçültülüp yeniden denenir. */
+const RESIM_KALITE = { normal: [250, 16e6], yuksek: [400, 26e6], pankart: [600, 42e6] };
+async function pdfSayfaResim(pg, dpi, alan, tip){ const v0 = pg.getViewport({ scale: 1 }); let sk = Math.min(dpi / 72, Math.sqrt(alan / (v0.width * v0.height)), 16000 / Math.max(v0.width, v0.height));
+  for(let deneme = 0; deneme < 5; deneme++, sk *= .72){ const v = pg.getViewport({ scale: sk }), c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height);
+    try { const x = c.getContext("2d"); if(!x) throw 0; x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); await pg.render({ canvasContext: x, viewport: v }).promise;
+      const bl = await new Promise(ok => c.toBlob(ok, tip, .93)); c.width = c.height = 0; if(bl && bl.size > 1000) return bl; } catch(e){ c.width = c.height = 0; } }
+  throw new Error("telefon bu büyüklükte resim üretemedi; daha düşük kalite seçin"); }
+async function pdfResim(blob, ad, rf = "png", adet = 1, kalite = "yuksek"){ await yukle(PDFJS); const lib = window.pdfjsLib; if(!lib) throw new Error("PDF okuyucu yüklenemedi"); lib.GlobalWorkerOptions.workerSrc = PDFJS_W;
   const pdf = await lib.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise, L = [], tip = rf === "jpg" ? "image/jpeg" : "image/png", uz = rf === "jpg" ? "jpg" : "png", kok = ad.replace(/\.pdf$/i, "");
-  for(let i = 1; i <= pdf.numPages; i++){ const pg = await pdf.getPage(i), v0 = pg.getViewport({ scale: 1 }), dpi = 250 * (adet >= 6 ? 2 : adet >= 3 ? 1.7 : adet >= 2 ? 1.4 : 1), sk = Math.min(dpi / 72, Math.sqrt(16e6 / (v0.width * v0.height))), v = pg.getViewport({ scale: sk }), c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height);   /* çoklu yerleşimde küçük sayfalar da net çıksın (en çok ~16 MP) */
-    const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); await pg.render({ canvasContext: x, viewport: v }).promise;
-    L.push({ ad: pdf.numPages > 1 ? `${kok}_s${i}.${uz}` : `${kok}.${uz}`, blob: await new Promise(ok => c.toBlob(ok, tip, .92)) }); c.width = c.height = 0; }
+  const [taban, alan] = RESIM_KALITE[kalite] || RESIM_KALITE.yuksek, dpi = taban * (adet >= 6 ? 2 : adet >= 3 ? 1.7 : adet >= 2 ? 1.4 : 1);
+  for(let i = 1; i <= pdf.numPages; i++){ const pg = await pdf.getPage(i); L.push({ ad: pdf.numPages > 1 ? `${kok}_s${i}.${uz}` : `${kok}.${uz}`, blob: await pdfSayfaResim(pg, dpi, alan, tip) }); }
   if(L.length === 1) return { ad: L[0].ad, blob: L[0].blob };
   await yukle(CDN.jszip); const z = new JSZip(); L.forEach(o => z.file(o.ad, o.blob)); return { ad: `${kok}_${uz.toUpperCase()}.zip`, blob: await z.generateAsync({ type: "blob" }) }; }
-async function ciktiUret(d, kId, tur, s, ov){ if(tur === "png"){ const r = await ciktiUret(d, kId, "pdf", s, ov); return { ...r, ...(await pdfResim(r.blob, r.ad, s && s.rf, s && s.n || 1)) }; } const n = s && s.n || 1, o = { ...(ov || {}) };
+async function ciktiUret(d, kId, tur, s, ov){ if(tur === "png"){ const r = await ciktiUret(d, kId, "pdf", s, ov); return { ...r, ...(await pdfResim(r.blob, r.ad, s && s.rf, s && s.n || 1, s && s.rk || "yuksek")) }; } const n = s && s.n || 1, o = { ...(ov || {}) };
   if(s && s.delgec != null && n === 1) o.delgec = s.delgec;
   if(n > 1 && (tur === "docx" || n === 2 || n === 4) && !o.kagit) o.kagit = "A5";
   let { blob, ad, a } = await belgeCikti(d, kId, tur, o);
