@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "248";
+  const SURUM = "249";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1376,6 +1376,17 @@ table.liste td{border-color:var(--line2)}
 .yardim{margin:6px 0;font-size:12px;color:var(--muted)} .yardim summary{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid var(--line2);border-radius:999px;background:var(--panel);font:600 11.5px var(--f-ui);color:#5B7088;cursor:pointer;list-style:none} .yardim summary::-webkit-details-marker{display:none}
 .yardim[open] summary{background:#EDF2F8} .yardim>div{margin-top:6px;padding:9px 11px;border-radius:12px;background:#F5F8FB;border:1px solid #E2E9F1;line-height:1.5}
 @media(max-width:860px){ .gd-cikti-sat{flex-wrap:nowrap!important} .gd-ice-btn span{display:none} .gd-ice-btn{flex:none;width:40px;height:36px;padding:0!important;justify-content:center} }
+/* GDHG tabloları: ince satırlar, ortalı tarihler */
+#gd-kagit table.gd-tablo tbody td{padding:4px 5px!important;vertical-align:middle;height:auto}
+#gd-kagit table.gd-tablo tbody td select{height:34px!important;min-height:34px!important;padding:0 26px 0 10px!important;font:600 13px var(--f-ui)!important;border-radius:10px!important;border:1px solid var(--line2)!important;background-color:var(--panel2,#F6F8FA)!important}
+#gd-kagit table.gd-tablo tbody td input{height:34px!important;min-height:34px!important;border-radius:10px!important;border:1px solid var(--line2)!important;background:var(--panel2,#F6F8FA)!important;font-size:13px!important}
+#gd-kagit table.gd-tablo tbody td input[type=date]{width:136px!important;min-width:136px!important;margin:0 auto;display:block;text-align:center;padding:0 6px!important;font-weight:600}
+#gd-kagit table.gd-tablo tbody td input[type=date]::-webkit-date-and-time-value{text-align:center}
+#gd-kagit table.gd-tablo tbody td input[type=date]::-webkit-datetime-edit{display:inline-flex;justify-content:center;width:100%}
+#gd-kagit table.gd-tablo tbody td:has(input[type=date]){text-align:center}
+#gd-kagit table.gd-tablo tbody tr:nth-child(even) td{background:#FAFBFD}
+#gd-kagit table.gd-tablo tbody td.sn{color:var(--muted);font-weight:600}
+#gd-kagit table.gd-tablo tbody td input.gd-elle{border-color:transparent!important;background:transparent!important;text-align:center;font-weight:600!important;box-shadow:none} #gd-kagit table.gd-tablo tbody td input.gd-elle:focus{border-color:#9FB6CC!important;background:var(--panel)!important}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:140px!important;box-sizing:border-box} table input[type=date]{width:140px!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2220,7 +2231,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 248</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 249</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
