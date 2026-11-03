@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "256";
+  const SURUM = "257";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1430,6 +1430,19 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dh-x{padding:0 10px 0 4px;color:#A0443A!important;font-size:11px!important}
 .dh-yeni{display:flex;gap:6px} .dh-yeni input{flex:1;min-width:0;height:38px;border:1px solid var(--line);border-radius:12px;padding:0 12px;background:var(--panel);font:500 13px var(--f-ui);color:var(--fg)}
 .dh-yeni button{flex:none;height:38px;padding:0 14px;border:1px dashed #9FB6CC;border-radius:12px;background:#F3F7FB;color:#3F6487;font:600 13px var(--f-ui);cursor:pointer}
+.by-kisa{display:none}
+@media(max-width:860px){ .beyan-sonuc .by-masa{display:none!important} .by-kisa{display:flex;flex-direction:column;gap:6px} }
+.byk{border:1px solid var(--line2);border-radius:14px;background:var(--panel);overflow:hidden} .byk.al{border-color:#C9D7E6} .byk:not(.al){opacity:.7}
+.byk-s{display:flex;align-items:center;gap:8px;padding:7px 8px}
+.byk-al{flex:none;width:26px;height:26px;border-radius:8px;border:1.5px solid var(--line);background:var(--panel);color:#fff;font:700 14px var(--f-ui);display:grid;place-items:center;cursor:pointer} .byk-al[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)}
+.byk-y{flex:1;min-width:0;display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:0;background:transparent;padding:0;text-align:left;cursor:pointer;color:var(--fg);font:inherit}
+.byk-y b{font:700 13px/1.2 var(--f-ui);overflow-wrap:anywhere} .byk-y small{font:600 11.5px var(--f-ui);color:var(--muted);font-variant-numeric:tabular-nums}
+.byk-g{flex:none;font:700 11.5px var(--f-ui);padding:3px 8px;border-radius:999px;background:#EEF3F8;color:#3F6487;white-space:nowrap}
+.byk-ac{flex:none;width:30px;height:30px;border-radius:9px;border:1px solid var(--line2);background:var(--panel);color:#5B7088;cursor:pointer}
+.byk.acik{border-color:#9FB6CC;box-shadow:0 2px 8px rgba(30,50,80,.08)} .byk.acik .byk-s{background:#F3F7FB}
+.byk-d{display:flex;flex-direction:column;gap:7px;padding:9px 10px 10px;border-top:1px solid var(--line2)} .byk-d select{width:100%;min-height:38px;border-radius:10px}
+.byk-t{display:flex;align-items:center;gap:8px;margin:0} .byk-t span{flex:none;width:64px;font:600 11px var(--f-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.04em} .byk-t input{flex:1;min-width:0!important;width:auto!important;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:var(--panel);font:600 14px var(--f-ui)}
+.byk-sil{align-self:flex-end;width:auto!important;padding:0 12px!important;height:30px;border-radius:9px;font-size:12px!important;color:#A0443A}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:10.5em!important;box-sizing:border-box} table input[type=date]{width:10.5em!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2276,7 +2289,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 256</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 257</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5709,6 +5722,15 @@ function byHedefHtml(R){ const dis = byDisEslesme(R);
   if(L.length < 2) return "";
   R.hedefler = R.hedefler.filter(id => { const st = L.find(x => x.id === id); return st && byKayitKisi(st.veri, k); }); if(!R.hedefler.length) R.hedefler = [S.gdhg.setId];
   return `<div class="by-hedef">${byHedefBas(L.filter(st => byKayitKisi(st.veri, k)).map(st => st.id), R)}<div class="by-hcip">${L.map(st => { const var_ = !!byKayitKisi(st.veri, k), sec = R.hedefler.includes(st.id); return `<button type="button" data-by-hedef="${esc(st.id)}" aria-pressed="${sec}"${var_ ? "" : " disabled"}><b>${esc(st.ad)}</b><small>${var_ ? (st.aktif ? "açık kayıt" : "kişi var") : "bu kişi yok"}</small></button>`; }).join("")}</div></div>`; }
+/* telefonda izin/rapor satırları: tek satırlık özet, dokununca düzenleme açılır */
+let byAcik = null;
+function byKisaListe(R){ if(byAcik != null && byAcik >= R.ayri.length) byAcik = null; return `<div class="by-kisa">${R.ayri.map((x, i) => { const [ay, gun] = gdDatedif(x.ayr, x.kat), ac = byAcik === i;
+  const sure = gun === "" && ay === "" ? "—" : `${ay && +ay ? ay + " ay " : ""}${gun === "" ? "" : gun + " gün"}`;
+  return `<div class="byk${x.al ? " al" : ""}${ac ? " acik" : ""}"><div class="byk-s"><button type="button" class="byk-al" data-by-al="${i}" aria-pressed="${!!x.al}" aria-label="Aktarılsın">${x.al ? "✓" : ""}</button>
+    <button type="button" class="byk-y" data-by-ac="${i}"><b>${esc(x.sebep || "Sebep seçin")}</b><small>${esc(trTarih(x.ayr) || "—")} → ${esc(trTarih(x.kat) || "—")}</small></button><span class="byk-g">${esc(sure)}</span><button type="button" class="byk-ac" data-by-ac="${i}" aria-label="Düzenle">${ac ? "▴" : "✎"}</button></div>
+    ${ac ? `<div class="byk-d">${sebepSec(`data-by="a" data-i="${i}"`, `by-am-${i}-sebep`, x.sebep, x.elle)}${x.esas ? "" : `<div class="uclar" style="font-size:11px">“Dahil Edilecek Beyanlar”da işaretli değil</div>`}
+      <label class="byk-t"><span>Ayrılma</span><input type="date" data-by="a" data-i="${i}" data-a="ayr" value="${esc(x.ayr)}"></label><label class="byk-t"><span>Katılma</span><input type="date" data-by="a" data-i="${i}" data-a="kat" value="${esc(x.kat)}"></label>
+      <button class="mini sil byk-sil" type="button" data-by-sil="a" data-i="${i}">✕ Satırı sil</button></div>` : ""}</div>`; }).join("")}</div>`; }
 function beyanSonucCiz(){
   const R = beyanSonuc, out = $("#by-sonuc"); if(!R) return; if(R.kisiId === "yeni" && byDisEslesme(R)) R.kisiId = "";
   const sec = `<select id="by-kisi" aria-label="Personel"><option value="">— Personel seçin —</option>${S.gdhg.kisiler.map(k => `<option value="${esc(k.id)}"${k.id === R.kisiId ? " selected" : ""}>${esc(k.rutbe)} ${esc(k.ad)}</option>`).join("")}${R.kisiAd ? `<option value="yeni"${R.kisiId === "yeni" ? " selected" : ""}>Yeni personel olarak ekle: ${esc(R.kisiAd)}</option>` : ""}</select>`;
@@ -5732,7 +5754,8 @@ function beyanSonucCiz(){
       ${R.gorevler.map((g, i) => `<tr>${kutu("g", i, g.al)}<td><input data-by="g" data-i="${i}" data-a="yer" value="${esc(g.yer)}" placeholder="(boşsa mevcut görev yeri)" style="min-width:220px" aria-label="Görev yeri"></td>${tarih("g", i, "git", g.git)}${g.devam ? `<td><input disabled value="-" style="text-align:center"></td>` : tarih("g", i, "don", g.don)}<td class="devam"><input type="checkbox" data-by="g" data-i="${i}" data-a="devam"${g.devam ? " checked" : ""} aria-label="Devam"></td><td class="hesap">${esc(gdKalis({ git: g.git, don: g.devam ? "-" : g.don }))}</td></tr>`).join("")}
       </tbody></table></div>` : `<div class="uclar">Görev satırı yok; aktarınca görev satırları dönem ve izinlerden kendiliğinden oluşturulur.</div>`}
     <div class="arac gd-bolum a"><h3>Görevden ayrı kaldığı süreler <span class="gd-say">${R.ayri.length}</span></h3><span class="bosluk"></span><button class="btn kucuk" type="button" data-by-ekle="a">+ İzin / rapor satırı</button></div>
-    ${R.ayri.length ? `<div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>Aktar</th><th>Ayrılış sebebi</th><th>Ayrılma</th><th>Katılma</th><th>Ay</th><th>Gün</th></tr></thead><tbody>
+    ${R.ayri.length ? byKisaListe(R) : ""}
+    ${R.ayri.length ? `<div class="tablo-kap by-masa"><table class="liste gd-tablo"><thead><tr><th>Aktar</th><th>Ayrılış sebebi</th><th>Ayrılma</th><th>Katılma</th><th>Ay</th><th>Gün</th></tr></thead><tbody>
       ${R.ayri.map((x, i) => { const [ay, gun] = gdDatedif(x.ayr, x.kat); return `<tr>${kutu("a", i, x.al)}<td>${sebepSec(`data-by="a" data-i="${i}"`, `by-a-${i}-sebep`, x.sebep, x.elle)}${x.esas ? "" : `<div class="uclar" style="font-size:11px">“Dahil Edilecek Beyanlar”da işaretli değil; istersen yine de işaretle</div>`}</td>${tarih("a", i, "ayr", x.ayr)}${tarih("a", i, "kat", x.kat)}<td class="hesap">${ay}</td><td class="hesap">${gun}</td></tr>`; }).join("")}
       </tbody></table></div>` : `<div class="uclar">İzin/rapor satırı yok; “+ İzin / rapor satırı” ile ekleyebilirsiniz.</div>`}
     <div class="arac"><button class="btn ana" type="button" id="by-aktar"${R.gorevler.length || R.ayri.length ? "" : " disabled"}>GDHG'ye aktar</button><button class="btn" type="button" id="by-vazgec">${beyanKuyruk.length ? "Atla" : "Vazgeç"}</button><span class="uclar">Tarihleri belgeyle karşılaştırın; yanlışsa buradan düzeltip aktarın.</span></div>
@@ -5771,6 +5794,8 @@ $("#b-beyan").addEventListener("click", e => {
   if(b.dataset.byAday && beyanSonuc){ beyanSonuc.kisiId = b.dataset.byAday; beyanSonuc.kisiOto = false; beyanSonuc.kisiSoru = null; beyanSonucCiz(); return; }
   if(b.id === "by-vazgec"){ beyanSonuc = null; $("#by-sonuc").innerHTML = ""; if(beyanToplam > 1 && beyanSiradaki()) bildir("Bu belge atlandı"); return; }
   if(b.id === "by-siradaki"){ beyanSiradaki(); return; }
+  if(b.dataset.byAl != null && beyanSonuc){ const x = beyanSonuc.ayri[+b.dataset.byAl]; if(x){ x.al = !x.al; beyanSonucCiz(); } return; }
+  if(b.dataset.byAc != null && beyanSonuc){ const i = +b.dataset.byAc; byAcik = byAcik === i ? null : i; beyanSonucCiz(); return; }
   if(b.dataset.byHedefHepsi && beyanSonuc){ beyanSonuc.hedefler = b.dataset.byHedefHepsi.split("|"); beyanSonucCiz(); return; }
   if(b.dataset.byHedef && beyanSonuc){ const R = beyanSonuc, id = b.dataset.byHedef; R.hedefler ||= [S.gdhg.setId]; R.hedefler = R.hedefler.includes(id) ? R.hedefler.filter(x => x !== id) : [...R.hedefler, id]; if(!R.hedefler.length) R.hedefler = [id]; beyanSonucCiz(); return; }
   if(b.id === "by-aktar" && beyanSonuc && !$("#by-kisi").value && byDisEslesme(beyanSonuc)){ const R = beyanSonuc, dis = byDisEslesme(R), ana = S.gdhg, sonuc = [];
