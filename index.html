@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "267";
+  const SURUM = "268";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1503,6 +1503,8 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .byk-yer{width:100%;box-sizing:border-box;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:var(--panel);font:600 13.5px var(--f-ui)}
 .byk-dv{display:flex;align-items:center;gap:8px;font:500 12.5px var(--f-ui);color:var(--muted);margin:0}
 .yk-gd-et{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:999px;font:600 11px var(--f-ui);background:#F1F3F6;color:#7A8592} .yk-gd-et.tamam{background:#E3F1E7;color:#2E6B41}
+.sp-be-ac{display:flex;align-items:center;gap:10px;width:100%;margin-top:8px;padding:10px 12px;border:1px dashed #BFD8C6;border-radius:14px;background:#F4FAF5;color:#2F6B47;font:700 13.5px var(--f-ui);cursor:pointer;text-align:left}
+.sp-be-ac span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#E3EFE6;font-size:16px} .sp-be-ac small{margin-left:auto;font:500 11.5px var(--f-ui);color:var(--muted)}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:10.5em!important;box-sizing:border-box} table input[type=date]{width:10.5em!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2349,7 +2351,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 267</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 268</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8105,6 +8107,12 @@ document.addEventListener("click", async e => { const b = e.target.closest && e.
    o yaş grubundaki en yüksek puan); cetvel yoksa ya da elle puan yazılmışsa o kullanılır. Ortalama = girilen puanların ortalaması; eşik ve üstü BAŞARILI. */
 const SP_YAS = ["17-25", "26-30", "31-35", "36-40", "41-45", "46+"];
 const SP_BIRIM = { tekrar: "Tekrar", sure: "Süre", mesafe: "Mesafe" };
+/* branş ekleme: hazır branşlar alttan açılan pencerede */
+const SP_BIRIM_AD = { tekrar: "tekrar", sure: "süre", mesafe: "mesafe" };
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-sp-be-ac]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d);
+  const L = SP_ONERI.filter(([a]) => !v.branslar.some(x => x.ad === a));
+  altPencere("spb-perde", "BRANŞ EKLE", `${L.length} hazır branş`, () => `<div class="ap-liste">${L.map(([a, br]) => apSatir(`data-spb="${esc(a)}|${br}"`, apSimge("＋", "yesil"), esc(a), `<span class="ap-say">${esc(SP_BIRIM_AD[br] || br)}</span>`)).join("")}${apSatir(`data-spb="|tekrar"`, apSimge("✎", "mavi"), "Başka branş", "", { alt: "listede olmayan bir branş yaz" })}</div>`,
+    (x, kapat) => { if(x.dataset.spb == null) return; kapat(); const t = document.createElement("button"); t.type = "button"; t.hidden = true; t.dataset.spBe = x.dataset.spb; $("#sp-govde").appendChild(t); t.click(); t.remove(); }, { z: "E3EFE6", r: "2F6B47" }); });
 const SP_ONERI = [["ŞINAV", "tekrar"], ["MEKİK", "tekrar"], ["BARFİKS", "tekrar"], ["3200 M KOŞU", "sure"], ["2400 M KOŞU", "sure"], ["400 M KOŞU", "sure"], ["100 M KOŞU", "sure"], ["MEKİK KOŞUSU", "sure"], ["YÜZME", "sure"], ["DURARAK UZUN ATLAMA", "mesafe"], ["PLANK", "sure"], ["İP ATLAMA", "tekrar"]];
 const spVeri = d => { d.sp ||= { ust: "", baslik: "FİZİKİ YETERLİLİK VE SPOR TESTİ DEĞERLENDİRME ÇİZELGESİ", tarih: "", esik: 50, branslar: [], kisiler: [] };
   const v = d.sp; v.branslar ||= []; v.kisiler ||= []; v.branslar.forEach(b => b.cetvel ||= []); v.kisiler.forEach(k => k.s ||= {}); if(v.esik == null) v.esik = 50; return v; };
@@ -8180,7 +8188,7 @@ function sporCiz(){ const d = acikBelge(); if(!d || d.tur !== "spor") return; co
             <div class="ko-al ko-tam"><span>Ölçü</span><div class="kc-cips">${Object.entries(SP_BIRIM).map(([k2, t]) => `<button type="button" data-sp-bb="${b.id}:${k2}" aria-pressed="${(b.birim || "tekrar") === k2}">${t}${k2 === "sure" ? " (dk:sn)" : ""}</button>`).join("")}</div></div>
             <div class="ko-al ko-tam"><span>Puan cetveli · ${b.birim === "sure" ? "bu süre ya da daha iyisi" : "en az bu kadar"} → puan${b.ornek ? ` <em class="sp-ornek">örnek değerler</em>` : ""}</span>${spCetvelHtml(b)}</div>
             <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-sp="bkapat">✓ Tamam</button><button type="button" class="mini" data-sp-bi="${b.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-sp-bi="${b.id}:1"${i < v.branslar.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini sil" data-sp-bs="${b.id}">Sil</button></div></div>` : ""}</div>`; }).join("") || `<div class="yk-bos">Branş yok</div>`}
-      <div class="ko-al ko-tam"><span>Branş ekle</span><div class="kc-cips">${SP_ONERI.filter(([a]) => !v.branslar.some(b => b.ad === a)).map(([a, br]) => `<button type="button" data-sp-be="${esc(a)}|${br}">＋ ${esc(a)}</button>`).join("")}<button type="button" data-sp-be="|tekrar">＋ Başka branş</button></div></div></div>
+      <button type="button" class="sp-be-ac" data-sp-be-ac><span>＋</span>Branş ekle<small>${SP_ONERI.filter(([a]) => !v.branslar.some(b => b.ad === a)).length} hazır branş</small></button></div>
     <div class="sa-blok"><div class="yk-gbas"><b>Personel</b><small>${v.kisiler.length} kişi</small><button type="button" class="btn kucuk" data-sp="ekle">＋ Kişi ekle</button></div>
       ${v.kisiler.map((k, i) => { const ac = spAcik === k.id, h = G.H[i];
         return `<div class="yk-k${ac ? " acik" : ""}"><button type="button" class="yk-s" data-sp-ac="${k.id}"><span class="yk-n">${i + 1}</span><span class="kc-sy"><b>${esc(k.ad || "Yeni kişi")}</b><small>${esc([k.rutbe, spYasGrup(v, k) && spYasGrup(v, k) + " yaş"].filter(Boolean).join(" · "))}</small></span><span class="sp-oz" data-sp-oz="${k.id}">${spRozet(h)}</span></button>
@@ -9651,7 +9659,7 @@ async function baskiExcel(kitaplar, Y, ilerle, hatalar){   // kitaplar: [{ ad, v
   for(const id of ["imz-perde", "bkm-perde", "prc-perde"]) KAT[id] ||= () => { const x = document.querySelector("#" + id + " .imz-x"); if(x) x.click(); else { const p = document.getElementById(id); if(p) p.hidden = true; } };   // geri tuşu: pencerenin kendi ✕ düğmesi
   KAT["sc-perde"] = () => window.secimPenceresi && secimPenceresi.kapat();
   KAT["agac"] = () => { agacKapali = true; agacCiz(); };
-  const SIRA = ["sc-perde", "kd-perde", "gk-perde", "sil-perde", "rs-perde", "dg-perde", "ar-perde", "be-perde", "ts-perde", "yb-perde", "tr-perde", "cs-perde", "lg-perde", "imz-perde", "bkm-perde", "prc-perde", "sc-perde", "tz-perde", "bs-perde", "gd-set-perde", "gc-perde", "bl-soru", "bl-pin", "bl-linkhazir", "bl-panel", "agac"];   // en üstteki önce kapanır
+  const SIRA = ["spb-perde", "sc-perde", "kd-perde", "gk-perde", "sil-perde", "rs-perde", "dg-perde", "ar-perde", "be-perde", "ts-perde", "yb-perde", "tr-perde", "cs-perde", "lg-perde", "imz-perde", "bkm-perde", "prc-perde", "sc-perde", "tz-perde", "bs-perde", "gd-set-perde", "gc-perde", "bl-soru", "bl-pin", "bl-linkhazir", "bl-panel", "agac"];   // en üstteki önce kapanır
   const sonra = []; let geri = 0, kuyruk = false, yukleniyor = false, bekleyen = null, kurulacak = null;
   const gor = id => !$("#v-" + id).hidden;
   const durum = () => { const v = gor("belge") ? "belge" : gor("ara") ? "ara" : gor("bolum") ? "bolum" : "ana"; const d = v === "belge" ? S.belgeler.find(x => x.id === SECIM.belge) : null;
