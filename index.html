@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "299";
+  const SURUM = "300";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1556,7 +1556,7 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:7px 4px;font:700 11.5px/1.2 var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .dl-is{display:flex;gap:8px;justify-content:flex-end} .dl-ozler{display:flex;flex-wrap:wrap;gap:5px} .dl-ozler button{padding:4px 9px;font:600 11px var(--f-ui);border-radius:14px}
 .dl-onz{padding:10px;background:#E9EDF1;border-radius:14px;display:block!important} .dl-onz .dl-kagit{width:100%} .dl-kagit{container-type:inline-size;aspect-ratio:210/297;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);box-sizing:border-box;font-family:"Times New Roman",Tinos,"Liberation Serif",serif;color:#111;font-size:2.02cqw;line-height:1.72;overflow:hidden}
-.dl-r{display:grid;line-height:1.2;margin-bottom:2.33cqw} .dl-r>b{font-weight:700;white-space:nowrap} .dl-r>span{overflow-wrap:anywhere} .dl-r .dl-tar{text-align:right} .dl-tc{position:relative;display:block} .dl-oz{position:absolute;top:0;white-space:nowrap} .dl-oz>b,.dl-oz>span{position:absolute;top:0} .dl-oz>b:first-child{left:0;position:static} .dl-on{text-align:center;font-weight:700;margin:.95cqw 0 4.2cqw} .dl-m{text-align:justify;line-height:1.3} .dl-bos{color:#aaa} .dl-im{display:flex;flex-direction:column;align-items:center;margin:7cqw 0 0 56%;line-height:1.35} .dl-im b{font-weight:700}
+.dl-r{display:grid;line-height:1.2;margin-bottom:2.33cqw} .dl-r>b{font-weight:700;white-space:nowrap;overflow:hidden;min-width:0} .dl-r>span{overflow-wrap:anywhere} .dl-r .dl-tar{text-align:right;white-space:nowrap} .dl-tc{position:relative;display:block} .dl-oz{position:absolute;top:0;white-space:nowrap} .dl-oz>b,.dl-oz>span{position:absolute;top:0} .dl-oz>b:first-child{left:0;position:static} .dl-on{text-align:center;font-weight:700;margin:.95cqw 0 4.2cqw} .dl-m{text-align:justify;line-height:1.3} .dl-bos{color:#aaa} .dl-im{display:flex;flex-direction:column;align-items:center;margin:7cqw 0 0 56%;line-height:1.35} .dl-im b{font-weight:700}
 .izt-sec{margin-bottom:2px} .isa-not{font:600 10px var(--f-ui);color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px}
 .isa-kagit{position:relative} .isa-kagit>span{position:absolute;font-size:1.344cqw;line-height:1;white-space:nowrap;color:#000} .isa-k{position:absolute;border:.13cqw solid #000;box-sizing:border-box} .isa-c{position:absolute;border-top:.12cqw solid #000} .isa-kes{position:absolute;border-top:.22cqw dashed #000}
 .lt-grp{display:flex;align-items:baseline;gap:8px;margin:10px 0 2px;padding:7px 10px;border-radius:9px;background:#F3F1EA} .lt-grp:first-of-type{margin-top:4px} .lt-grp b{font:800 13.5px var(--f-ui);color:#2C3E50;min-width:0;overflow-wrap:anywhere} .lt-grp span{font:500 11px var(--f-ui);color:#8A8574;flex:none} .lt-grp em{margin-left:auto;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums;flex:none}
@@ -2435,7 +2435,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 299</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 300</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3092,7 +3092,7 @@ function goster(v){
 }
 function belgeKapat(){ SECIM.belge = null; if($("#ara").value.trim().length >= 2){ goster("ara"); araYap(); return; } goster(SECIM.bolum ? "bolum" : "ana"); if(SECIM.bolum) bolumCiz(); }
 /* ana sayfa: sade kategori kartları (sayı ve kâğıt bilgisi yok) */
-const PANO_SIMGE = { baslik: `<path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/>`, spor: `<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/><path d="M6 6c2.5 2 3.6 3.8 3.6 6S8.5 16 6 18M18 6c-2.5 2-3.6 3.8-3.6 6s1.1 4 3.6 6"/>`,
+const PANO_SIMGE = { dilekce: `<path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10.5a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5z"/><path d="M9 11h6M9 14.5h6M9 18h3.5"/>`, baslik: `<path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/>`, spor: `<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/><path d="M6 6c2.5 2 3.6 3.8 3.6 6S8.5 16 6 18M18 6c-2.5 2-3.6 3.8-3.6 6s1.1 4 3.6 6"/>`,
   personel: '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A4.5 4.5 0 0 1 21 18.5"/>',
   izin: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14h4m-4 3h7"/>',
   yoklama: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="m8.5 11 1.6 1.6 3-3M8.5 16.5h7"/>',
@@ -3101,7 +3101,7 @@ const PANO_SIMGE = { baslik: `<path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d
   hedef: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8" fill="currentColor"/>',
   sema: '<rect x="9" y="3" width="6" height="4" rx="1"/><rect x="3" y="15" width="6" height="4" rx="1"/><rect x="15" y="15" width="6" height="4" rx="1"/><path d="M12 7v4M6 15v-2h12v2"/>'
 };
-const PANO_TEMA = { personel: ["#E6EAF3", "#4A5F86"], izin: ["#F3EBDA", "#86672C"], yoklama: ["#E3EEF0", "#2E6A62"], gdhg: ["#E1EAF4", "#3F6587"], izinb: ["#ECE7F3", "#5E5487"], hedef: ["#F1E6DE", "#8A5A3A"], sema: ["#ECEAE5", "#6A6255"], baslik: ["#EAE8F3", "#4F4A7A"], spor: ["#E3F0E7", "#3A6B4A"] };
+const PANO_TEMA = { dilekce: ["#E2F1E7", "#2F6B47"], personel: ["#E6EAF3", "#4A5F86"], izin: ["#F3EBDA", "#86672C"], yoklama: ["#E3EEF0", "#2E6A62"], gdhg: ["#E1EAF4", "#3F6587"], izinb: ["#ECE7F3", "#5E5487"], hedef: ["#F1E6DE", "#8A5A3A"], sema: ["#ECEAE5", "#6A6255"], baslik: ["#EAE8F3", "#4F4A7A"], spor: ["#E3F0E7", "#3A6B4A"] };
 const ANA_SIMGE = {
   klasor: '<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h4l2 2h7A2.5 2.5 0 0 1 21 9.5v7a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5z"/><path d="M3 10h18"/>',
   onay: '<path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="m9 14 2 2 4-4"/>',
@@ -3201,11 +3201,11 @@ function anaCiz(){
       <span class="pd-bar"><i style="width:${Math.round(gec / top * 100)}%"></i></span><span class="pd-alt"><span>${esc(trTarih(bas))}</span><span>${Math.round(gec / top * 100)}%</span><span>${esc(trTarih(son))}</span></span></button>`; }
   /* konu kutuları: doğrudan belgeye */
   const izinde = (S.personel.rows || []).filter(p => ((S.izin.kayit || {})[p.id]?.i || []).some(i => i.a && i.k && i.a <= bugun && bugun < i.k)).length;
-  const say = { personel: () => `${(S.personel.rows || []).filter(x => x.ad).length} personel`, izin: () => izinde ? `${izinde} kişi izinde` : "İzinde kimse yok",
+  const say = { dilekce: d => { try { const v = dlVeri(d); return `${v.kayitlar.length} dilekçe`; } catch(e){ return "Dilekçe yaz"; } }, personel: () => `${(S.personel.rows || []).filter(x => x.ad).length} personel`, izin: () => izinde ? `${izinde} kişi izinde` : "İzinde kimse yok",
     yoklama: () => `${(S.yoklama.rows || []).length} kişi`, gdhg: () => `${(S.gdhg?.kisiler || []).filter(k => k.ad).length} kişi · ${1 + ((S.gdhgSet?.liste || []).length)} kayıt`,
     izinb: () => `${(S.izinb?.kisiler || []).filter(k => k.ad).length} belge`, hedef: () => `${(S.hedef.rows || []).length} hedef`, sema: d => `${((d && d.sema && d.sema.kutular) || []).length} kutu`, baslik: d => `${((d && d.bs && d.bs.sayfalar) || []).length} başlık`, spor: d => { const G = spGenel(spVeri(d)); return G.bas + G.bsz ? `%${spSayiYaz(G.oran)} başarı` : `${spVeri(d).kisiler.length} kişi`; } };
-  const AD = { personel: "Personel", izin: "İzin çizelgesi", yoklama: "Yoklama", gdhg: "GDHG onay", izinb: "İzin belgeleri", hedef: "Hedefler", sema: "Teşkilat", baslik: "Başlık yap", spor: "Spor testi" };
-  const hzGiz = hzGizli(), turHep = ["personel", "izin", "gdhg", "izinb", "hedef", "yoklama", "sema", "spor", "baslik"].map(t => ({ t, d: S.belgeler.find(x => x.tur === t) })).filter(o => o.d), turler = hzDuzen ? turHep : turHep.filter(o => !hzGiz.includes(o.t));
+  const AD = { dilekce: "Dilekçe", personel: "Personel", izin: "İzin çizelgesi", yoklama: "Yoklama", gdhg: "GDHG onay", izinb: "İzin belgeleri", hedef: "Hedefler", sema: "Teşkilat", baslik: "Başlık yap", spor: "Spor testi" };
+  const hzGiz = hzGizli(), turHep = ["personel", "izin", "gdhg", "izinb", "dilekce", "hedef", "yoklama", "sema", "spor", "baslik"].map(t => ({ t, d: S.belgeler.find(x => x.tur === t) })).filter(o => o.d), turler = hzDuzen ? turHep : turHep.filter(o => !hzGiz.includes(o.t));
   $("#ana-pano").innerHTML = donem + (turler.length ? kkKart("hizli", "#E3ECF5", "Hızlı erişim", "", `<div class="hz-izgara">${turler.map(({ t, d }) => { const [z, rk] = PANO_TEMA[t];
     return `<button type="button" class="hz${hzDuzen && hzGiz.includes(t) ? " hz-gizli" : ""}" ${hzDuzen ? `data-hz-t="${t}" aria-pressed="${!hzGiz.includes(t)}"` : `data-pano-d="${esc(d.id)}"`} style="--z:${z};--rk:${rk}">${hzDuzen ? `<i class="hz-tik">${hzGiz.includes(t) ? "" : "✓"}</i>` : ""}<span class="hz-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PANO_SIMGE[t]}</svg></span><span class="hz-y"><b>${esc(AD[t])}</b><small>${esc(say[t](d))}</small></span></button>`; }).join("")}</div><button type="button" class="hz-duz" data-hz-duz>${hzDuzen ? "✓ Bitti · seçtikleriniz ana sayfada kalır" : "⚙ Kutuları seç"}</button>`, { sayi: turler.length }) : "");
   /* uyarılar (dönem şeridinde gösterilen dönem uyarısı tekrar edilmez) */
@@ -8576,8 +8576,11 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
         <label class="kp-tik tam"><input type="checkbox" data-dl-f="imza"${k.imza ? " checked" : ""}> Altına imza bloğu koy (ad soyad, rütbe)</label></div>
       <div class="dl-is"><button type="button" class="mini" data-dl="kopya">⧉ Kopyasını oluştur</button>${v.kayitlar.length > 1 ? '<button type="button" class="mini sil" data-dl="sil">Sil</button>' : ""}</div></section>
     <div class="kp-onizle dl-onz">${dlOnHtml(d)}</div>`;
-  otoBoyHepsi($("#dl-govde")); }
-const dlOnizleTazele = d => { const o = $("#dl-govde .dl-onz"); if(o) o.innerHTML = dlOnHtml(d); };
+  otoBoyHepsi($("#dl-govde")); dlSigdir(); if(document.fonts) document.fonts.load('700 12px "TSK Serif"').then(dlSigdir).catch(() => {}); }
+/* önizleme: etiket kendi sütununa sığmazsa (telefon başka yazı tipi koyarsa) o etiketin yazısı küçülür; iki nokta hep görünür */
+function dlSigdir(){ document.querySelectorAll(".dl-r>b:first-child").forEach(b => { b.style.fontSize = ""; let k = 1; while(b.scrollWidth > b.clientWidth + .5 && k > .7){ k -= .03; b.style.fontSize = k + "em"; } }); }
+document.fonts && document.fonts.ready.then(dlSigdir);
+const dlOnizleTazele = d => { const o = $("#dl-govde .dl-onz"); if(o){ o.innerHTML = dlOnHtml(d); dlSigdir(); } };
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#dl-govde")) return; const d = acikBelge(); if(!d || d.tur !== "dilekce") return; const v = dlVeri(d), k = dlAktif(v);
   if(el.dataset.dlK){ const p = dlKisi(k); if(!p) return; const a = el.dataset.dlK, val = el.value.replace(/\s*\n\s*/g, " "); if(val.trim()) p[a] = val; else delete p[a]; el.closest(".dl-al")?.classList.toggle("bos", a !== "kita" && !val.trim()); kaydetBt("personel"); }
   else if(el.dataset.dlG){ v[el.dataset.dlG] = el.value; }
