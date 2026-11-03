@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "309";
+  const SURUM = "310";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2399,11 +2399,17 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 .sa-ok{flex:none;font-style:normal;color:var(--muted);font-size:12px}
 #sa-govde .kc-cips button{height:auto;min-height:30px;padding:4px 10px;display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1.15;text-align:left} #sa-govde .kc-cips button small{font-size:10px;font-weight:500;color:var(--muted)}
 
-#dl-govde{gap:12px!important} #dl-govde .dl-ust{display:flex;align-items:center;gap:8px;padding:2px 2px 0} #dl-govde .dl-ust-s{width:28px;height:28px;border-radius:9px;background:#E9F2EC;color:#3E7354;display:grid;place-items:center} .dl-ust-s svg{width:16px;height:16px}
-#dl-govde .dl-yeni{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1px solid #BCD6C5;background:#F1F8F3;color:#2F6B47;border-radius:18px;padding:5px 12px 5px 9px;font:700 12px var(--f-ui);cursor:pointer} .dl-yeni span{display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#2F6B47;color:#fff;font-size:12px;line-height:1}
-#dl-govde .dl-liste{gap:6px} #dl-govde .dl-kart{gap:10px}
+#dl-govde,#isa-govde{gap:12px!important} :is(#dl-govde,#isa-govde) .dl-ust{display:flex;align-items:center;gap:8px;padding:2px 2px 0} .dl-ust .dl-ust-s{width:28px;height:28px;border-radius:9px;background:#E9F2EC;color:#3E7354;display:grid;place-items:center} .dl-ust-s svg{width:16px;height:16px}
+.dl-ust .dl-yeni{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1px solid #BCD6C5;background:#F1F8F3;color:#2F6B47;border-radius:18px;padding:5px 12px 5px 9px;font:700 12px var(--f-ui);cursor:pointer} .dl-yeni span{display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#2F6B47;color:#fff;font-size:12px;line-height:1}
+:is(#dl-govde,#isa-govde) .dl-liste{gap:6px} :is(#dl-govde,#isa-govde) .dl-kart{gap:10px} .dl-ust .isa-s{background:#E6EEF7;color:#3D5F8C}
 .dl-ozu{display:flex;gap:6px;align-items:stretch} .dl-ozu textarea{flex:1} .dl-hazir{flex:none;display:inline-flex;align-items:center;gap:5px;border:1px solid #D5CDE6;background:#F4F1FA;color:#54477F;border-radius:8px;padding:0 11px;font:700 12px var(--f-ui);cursor:pointer;min-height:36px} .dl-hazir svg{width:15px;height:15px}
 .ks-av.dl-ko{background:#ECE8F4;color:#54477F}
+
+.isa-zb{font:700 10.5px var(--f-ui);color:var(--muted);letter-spacing:.02em;margin-top:2px} .isa-zin{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+.isa-z{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;text-align:left;padding:7px 10px;border:1px solid var(--line2);border-radius:11px;background:var(--panel);cursor:pointer;min-width:0}
+.isa-z .ks-ad{display:flex;flex-direction:column;min-width:0} .isa-z .ks-ad b{font:700 13px var(--f-ui);color:var(--fg);overflow-wrap:anywhere} .isa-z .ks-ad small{font:500 11px var(--f-ui);color:var(--muted)}
+.isa-z .ks-av{width:30px;height:30px;font-size:11px} .isa-z em{font-style:normal;font:800 13px var(--f-ui);color:#2F6B47;width:22px;height:22px;border-radius:50%;display:grid;place-items:center}
+.isa-z.on{border-color:#7FA48A;background:#F1F7F2;box-shadow:0 0 0 2px #DCEBDF} .isa-z.on em{background:#2F6B47;color:#fff;font-size:11px}
 </style>
 
 </head>
@@ -2441,7 +2447,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 309</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 310</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8745,7 +8751,7 @@ function isaOnHtml(d){ const L = isaCizim(isaIcerik(d)), mm = x => (x / 2.1).toF
 function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k), P = (S.personel.rows || []).filter(x => x.ad && isaSubayMi(x));
   const Z = ((S.belgeler.find(x => x.tur === "sicil") || {}).sa || {}).zincir || [];
   $("#isa-govde").innerHTML = `${iztSecHtml("izinsa")}
-    <div class="dl-ust"><b>İzin belgeleri</b><small>${v.kayitlar.length}</small><button type="button" class="btn ana kucuk" data-isa="yeni">＋ Yeni belge</button></div>
+    <div class="dl-ust"><span class="dl-ust-s isa-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z M8 9h8 M8 13h8 M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><b>İzin belgeleri</b><small>${v.kayitlar.length}</small><button type="button" class="dl-yeni" data-isa="yeni"><span>＋</span>Yeni</button></div>
     <div class="dl-liste">${v.kayitlar.slice().reverse().map(x => { const q = isaKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-isa-sec="${x.id}"><span class="dl-tur t-izin">${esc(x.tur || "İzin")}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc([trTarih(x.ayr), trTarih(x.kat)].filter(Boolean).join(" → ") || trTarih(x.tarih))}</small></button>`; }).join("")}</div>
     <section class="dl-kart"><div class="dl-bas">Kişi <small class="isa-not">subay ve astsubaylar</small></div>
       ${ksSatir(p, 'data-isa="kisi"')}</section>
@@ -8758,7 +8764,7 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
         <label class="dl-al"><span>Telefon no</span><input data-isa-f="tel" inputmode="tel" value="${esc(k.tel)}" placeholder="${esc(isaTel(p))}"></label><label class="dl-al"><span>Belge tarihi</span><input type="date" data-isa-f="tarih" value="${esc(k.tarih)}"></label></div>
       <div class="dl-is"><button type="button" class="mini" data-isa="kopya">⧉ Kopyasını oluştur</button>${v.kayitlar.length > 1 ? '<button type="button" class="mini sil" data-isa="sil">Sil</button>' : ""}</div></section>
     <details class="dl-kart dl-bilgi"><summary><span>Onaylayan amir</span>${v.onay.ad ? `<em class="dl-tam">${esc(v.onay.ad)}</em>` : '<em class="dl-eksik">seçilmedi</em>'}</summary>
-      ${Z.length ? `<div class="kc-cips">${Z.map(z => `<button type="button" data-isa-z="${z.id}" aria-pressed="${pAd(z.ad) === pAd(v.onay.ad)}"><b>${esc(z.ad)}</b><small>${esc(z.rutbe || "")}</small></button>`).join("")}</div>` : ""}
+      ${Z.some(z => String(z.ad || "").trim()) ? `<small class="isa-zb">Sicil amirleri zincirinden seç</small><div class="isa-zin">${Z.filter(z => String(z.ad || "").trim()).map(z => { const on = pAd(z.ad) === pAd(v.onay.ad); return `<button type="button" class="isa-z${on ? " on" : ""}" data-isa-z="${z.id}" aria-pressed="${on}"><span class="ks-av">${esc(ksBas(z.ad))}</span><span class="ks-ad"><b>${esc(z.ad)}</b><small>${esc(z.rutbe || "")}</small></span><em>${on ? "✓" : ""}</em></button>`; }).join("")}</div>` : ""}
       <div class="dl-alanlar"><label class="dl-al tam"><span>Adı soyadı</span><input data-isa-o="ad" value="${esc(v.onay.ad)}"></label><label class="dl-al tam"><span>Sınıfı, rütbesi, sicili</span><input data-isa-o="rutbe" value="${esc(v.onay.rutbe)}" placeholder="ör. P.Komd.Kur.Bnb. [2011-102]"></label><label class="dl-al tam"><span>Görevi</span><input data-isa-o="gorev" value="${esc(v.onay.gorev)}" placeholder="ör. Tabur Komutanı"></label></div></details>
     <details class="dl-kart dl-bilgi"><summary><span>Sayfa altı yazıları</span><em class="dl-not">isteğe bağlı · elle</em></summary>
       <div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt</span><input data-isa-a="sol" value="${esc(v.alt.sol)}"></label><label class="dl-al tam"><span>Sağ alt</span><input data-isa-a="sag" value="${esc(v.alt.sag)}"></label></div>
