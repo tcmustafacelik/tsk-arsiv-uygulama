@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "279";
+  const SURUM = "280";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2395,7 +2395,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 279</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 280</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6521,7 +6521,7 @@ async function tabloPdfCiz(sp, a, parcalar, k){
   const olc = (fs, kalin) => { doc.setFont("LS", kalin ? "bold" : "normal"); doc.setFontSize(fs); };
   /* içerik genişlikleri */
   const dogal = fs => { olc(fs, true); const w = new Array(n).fill(0);
-    sp.body.forEach(satir => { if(satir.bant) return; satir.forEach((c, i) => { if(i < n) w[i] = Math.max(w[i], ...String(c.t ?? "").split("\n").map(x => doc.getTextWidth(x) + pad)); }); });
+    sp.body.forEach(satir => { if(satir.bant) return; satir.forEach((c, i) => { if(i < n) w[i] = Math.max(w[i], ...String(c.t ?? "").split("\n").map(x => doc.getTextWidth(x) + pad + (sp.tema && c.sol ? 1.6 : 0))); }); });
     const hf = Math.max(3.8, Math.min(fs * 0.85, 8.5)); olc(hf, true);
     /* başlık hücrelerini gerçek sütunlarına yerleştir (üst satırdan aşağı uzanan hücreleri atla) */
     const dolu = sp.head.map(() => new Array(n).fill(false));
@@ -6567,8 +6567,8 @@ async function tabloPdfCiz(sp, a, parcalar, k){
     const ge = []; let c0 = 0; sp.ek.spans.forEach(nn => { let x = 0; for(let i = 0; i < nn; i++) x += gen[c0 + i]; ge.push(x); c0 += nn; });
     const cs = {}; ge.forEach((x, i) => cs[i] = { cellWidth: x });
     doc.autoTable({ startY: doc.lastAutoTable.finalY + 4, margin: { left: m.l, right: m.r, top: m.t + basH, bottom: m.b + 2 }, theme: "grid",
-      head: [sp.ek.head.map(h => ({ content: h.t, styles: { fillColor: rgb(h.fill || RENK.bas), halign: h.sol ? "left" : "center", ...(h.k ? { textColor: rgb(h.k) } : {}) } }))],
-      body: sp.ek.body.map(satir => satir.map(c => ({ content: c.t, styles: { fillColor: c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center", ...(c.k ? { textColor: rgb(c.k) } : {}) } }))),
+      head: [sp.ek.head.map(h => ({ content: h.t, styles: { fillColor: rgb(h.fill || RENK.bas), halign: h.sol ? "left" : "center", ...(TM && h.sol ? { cellPadding: { top: 0.8, bottom: 0.8, left: 2.4, right: 0.8 } } : {}), ...(h.k ? { textColor: rgb(h.k) } : {}) } }))],
+      body: sp.ek.body.map(satir => satir.map(c => ({ content: c.t, styles: { fillColor: c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center", ...(TM && c.sol ? { cellPadding: { top: 0.8, bottom: 0.8, left: 2.4, right: 0.8 } } : {}), ...(c.k ? { textColor: rgb(c.k) } : {}) } }))),
       styles: { font: "LS", fontStyle: "bold", fontSize: Math.min(fs, 8.5), textColor: TM ? [38,46,56] : [34,34,34], lineColor: CZ, lineWidth: TM ? 0.12 : 0.15, cellPadding: 0.8, valign: "middle", halign: "center", overflow: "linebreak" },
       headStyles: { font: "LS", fontStyle: "bold", textColor: TM ? rgb(TM.basYazi) : [34,34,34] }, columnStyles: cs, tableWidth: uw, rowPageBreak: "avoid", didDrawPage: () => baslikYaz() });
   }
