@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "245";
+  const SURUM = "246";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1374,6 +1374,8 @@ table.liste td{border-color:var(--line2)}
 .yi-iki{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .yi-ekle{height:40px;border:1px dashed #C9D5E2;border-radius:12px;background:transparent;color:#3F6487;font:600 13px var(--f-ui);cursor:pointer}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
+/* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
+input[type=date]{min-width:140px!important;box-sizing:border-box} table input[type=date]{width:140px!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
 textarea#d-ad{font-family:var(--f-ui);line-height:1.25;resize:none;overflow:hidden;padding:7px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);box-sizing:border-box;align-self:center;min-height:0;display:block}
 .gd-eksi-grup{display:inline-flex;align-items:center;gap:6px;flex-wrap:wrap}
 .gd-yon{display:inline-flex;padding:3px;gap:2px;border:1px solid #E9D6C4;border-radius:999px;background:#FBF4EC}
@@ -2215,7 +2217,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 245</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 246</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
