@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "281";
+  const SURUM = "282";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2396,7 +2396,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 281</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 282</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6741,8 +6741,10 @@ async function tabloWord(sp, a){
   pt = Math.max(3.5, Math.min(pt, (rowH - 40) / 20 / 1.18)); hpt = Math.max(3.5, Math.min(hpt, 8.5));
   const sz = Math.max(7, Math.round(pt * 2)), hsz = Math.max(7, Math.round(hpt * 2));
   const kural = sigar && (sp.sayfaBasina || rowH === Math.floor(govdeH / enCok)) ? "exact" : "atLeast";
-  let hapId = 900; const hapXml = (h, boyut, gen) => { const p = boyut / 2 * 0.92, tw = wGenis(h.t, p) * 1.08, w = Math.min(gen - 90, tw + p * 20 * 1.5), hh = p * 20 * 1.75, cx = Math.round(w * 635), cy = Math.round(hh * 635); hapId++;
-    return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:docPr id="${hapId}" name="Durum ${hapId}"/><wp:cNvGraphicFramePr/><a:graphic><a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"><wps:wsp><wps:cNvSpPr/><wps:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="roundRect"><a:avLst><a:gd name="adj" fmla="val 50000"/></a:avLst></a:prstGeom><a:solidFill><a:srgbClr val="${h.fill}"/></a:solidFill><a:ln><a:noFill/></a:ln></wps:spPr><wps:txbx><w:txbxContent>${paraXml(runXml(h.t, { sz: Math.round(boyut * 0.92), k: h.k }))}</w:txbxContent></wps:txbx><wps:bodyPr rot="0" vert="horz" wrap="none" lIns="0" tIns="0" rIns="0" bIns="0" anchor="ctr" anchorCtr="0"><a:noAutofit/></wps:bodyPr></wps:wsp></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`; };
+  /* durum etiketi: 4 kat çözünürlüklü PNG, satır içi resim (Word mobil dahil her görüntüleyicide aynı, hücrede ortalanır) */
+  let hapId = 900; const HM = [], hapXml = (h, boyut, gen) => { const p = boyut / 2 * 0.92, tw = wGenis(h.t, p) * 1.08, w = Math.min(gen - 90, tw + p * 20 * 1.5), hh = p * 20 * 1.75, cx = Math.round(w * 635), cy = Math.round(hh * 635); hapId++;
+    const pxW = w / 15, pxH = hh / 15, rid = "rIdH" + hapId; HM.push({ id: rid, ad: "durum" + hapId + ".png", veri: Uint8Array.from(atob(hapPng(h.t, h.fill, h.k, pxW, pxH, p * 4 / 3)), c => c.charCodeAt(0)) });
+    return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${cx}" cy="${cy}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:docPr id="${hapId}" name="Durum ${hapId}" descr="${xmlEsc(h.t)}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${hapId}" name="durum${hapId}.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`; };
   const tc = (h, gen, ek = "", boyut = sz) => (TM && h.etiket && h.t) ? `<w:tc><w:tcPr><w:tcW w:w="${gen}" w:type="dxa"/>${ek}${h.zemin ? `<w:shd w:val="clear" w:color="auto" w:fill="${h.zemin}"/>` : ""}<w:vAlign w:val="center"/></w:tcPr><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="auto"/></w:pPr>${hapXml(h, boyut, gen)}</w:p></w:tc>` : `<w:tc><w:tcPr><w:tcW w:w="${gen}" w:type="dxa"/>${ek}${h.fill ? `<w:shd w:val="clear" w:color="auto" w:fill="${h.fill}"/>` : ""}${TM && h.sol ? '<w:tcMar><w:left w:w="130" w:type="dxa"/></w:tcMar>' : ""}<w:vAlign w:val="center"/></w:tcPr>${paraXml(runXml(h.t, { sz: h.etiket ? Math.round(boyut * 0.92) : boyut, k: h.k || (TM ? "262E38" : null) }), h.sol ? "left" : "center")}</w:tc>`;
   const basXml = izgara.map((satir, ri) => `<w:tr><w:trPr><w:tblHeader/><w:cantSplit/><w:trHeight w:val="${Math.round(basSatirH[ri])}" w:hRule="atLeast"/></w:trPr>` + satir.map((h, c) => { if(!h || h === "x") return "";
     const gen = gw.slice(c, c + h.cs).reduce((p, q) => p + q, 0); let ek = h.cs > 1 ? `<w:gridSpan w:val="${h.cs}"/>` : "";
@@ -6771,7 +6773,7 @@ async function tabloWord(sp, a){
         + `</w:tr></w:tbl><w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:rPr><w:sz w:val="14"/></w:rPr></w:pPr></w:p>`; })() : "";
   const baslik = TM ? temaBas : tarihP + `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="0" w:after="80"/></w:pPr>${runXml(sp.baslik, { sz: Math.min(24, Math.max(14, Math.floor(sx.kullan / Math.max(1, wGenis(sp.baslik, 1)) * 2))) })}</w:p>`;
   const sayfalar = parcalar.map((p, i) => (i ? baslik.replace("<w:pPr>", "<w:pPr><w:pageBreakBefore/>") : baslik) + tabloAc + basXml + govde(p) + altSatir + `</w:tbl>` + (i === parcalar.length - 1 ? ek : "") + (alt || `<w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:rPr><w:sz w:val="2"/></w:rPr></w:pPr></w:p>`));
-  return docxPaketle(sayfalar.join("") + sx.sect);
+  return docxPaketle(sayfalar.join("") + sx.sect, HM);
 }
 
 /* ================= çıktı düğmeleri ================= */
@@ -7708,9 +7710,6 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.kpI === "fgsec") return $("#kp-fg-dosya").click();
   if(b.dataset.kpFg){ const x = b.dataset.kpFg; if(x === "yok") v.ayAcik = false; else { v.ayAcik = true; v.fgSec = x; } kaydetBelge(d); kapakCiz(); return bildir(x === "yok" ? "Kapakta filigran basılmayacak" : "Filigran seçildi"); }
   if(b.dataset.kpFgsil){ const id = b.dataset.kpFgsil; kpFgGoc(v); v.fgK = v.fgK.filter(x => x.id !== id); if(v.fgSec === id) v.fgSec = "ay"; kaydetBelge(d); kapakCiz(); return bildir("Filigran silindi"); }
-  if(b.dataset.kpI === "fgsil"){ v.ayAcik = false; kaydetBelge(d); kapakCiz(); return bildir("Filigran kaldırıldı · “Geri koy” ile geri gelir"); }
-  if(b.dataset.kpI === "fgac"){ v.ayAcik = true; kaydetBelge(d); kapakCiz(); return bildir("Filigran geri kondu"); }
-  if(b.dataset.kpI === "fgsifir"){ delete v.ayOzel; delete v.ayOran; v.ayAcik = true; kaydetBelge(d); kapakCiz(); return bildir("Ay-yıldız filigranı geri kondu"); }
   if(b.dataset.kpI === "logo") logoSec(lgBit(null), { kapsam: "vars", kullanilan: kullanilan() });
   if(b.dataset.kpI === "slogo"){ const Sx = kpSayfalar(v, SECIM.klasor)[kpSayfaNo]; if(!Sx) return; logoSec(lgBit(Sx.key), { sayfa: Sx.ad, ozel: !!(v.lgS || {})[Sx.key], kullanilan: kullanilan() }); }
   if(b.dataset.kpI === "lgsil"){ kpLogoUygula(v, null, { islem: "temizle", kapsam: "vars" }); kaydetBelge(d); kapakCiz(); return bildir("Varsayılan logo kaldırıldı"); }
