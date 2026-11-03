@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "247";
+  const SURUM = "248";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1373,6 +1373,9 @@ table.liste td{border-color:var(--line2)}
 .yi-kart input{width:100%;box-sizing:border-box;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 11px;background:var(--panel);font:500 13.5px var(--f-ui);color:var(--fg);min-width:0} .yi-kart input.yi-ad{font-weight:700}
 .yi-iki{display:grid;grid-template-columns:1fr 1fr;gap:6px}
 .yi-ekle{height:40px;border:1px dashed #C9D5E2;border-radius:12px;background:transparent;color:#3F6487;font:600 13px var(--f-ui);cursor:pointer}
+.yardim{margin:6px 0;font-size:12px;color:var(--muted)} .yardim summary{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border:1px solid var(--line2);border-radius:999px;background:var(--panel);font:600 11.5px var(--f-ui);color:#5B7088;cursor:pointer;list-style:none} .yardim summary::-webkit-details-marker{display:none}
+.yardim[open] summary{background:#EDF2F8} .yardim>div{margin-top:6px;padding:9px 11px;border-radius:12px;background:#F5F8FB;border:1px solid #E2E9F1;line-height:1.5}
+@media(max-width:860px){ .gd-cikti-sat{flex-wrap:nowrap!important} .gd-ice-btn span{display:none} .gd-ice-btn{flex:none;width:40px;height:36px;padding:0!important;justify-content:center} }
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:140px!important;box-sizing:border-box} table input[type=date]{width:140px!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2217,7 +2220,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 247</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 248</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2321,12 +2324,12 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
           </div>
           <div class="formul"><span class="hucre-ad" id="g-ad">—</span><input type="text" id="g-bar" placeholder="Hücre içeriği ya da =SUM(E5:M5) gibi formül" aria-label="Hücre içeriği"></div>
           <div class="izgara-kap" id="g-kap"><table class="izgara" id="g-tablo"></table></div>
-          <div class="uclar">Hücreye tıklayıp doğrudan yazın. Birden fazla hücre seçmek için Shift'e basılı tutarak tıklayın. Formüller (=SUM, + − × ÷) kendiliğinden hesaplanır.</div>
+          <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Hücreye tıklayıp doğrudan yazın. Birden fazla hücre seçmek için Shift'e basılı tutarak tıklayın. Formüller (=SUM, + − × ÷) kendiliğinden hesaplanır.</div></details>
         </div>
 
         <!-- PERSONEL -->
         <div id="e-personel" hidden style="display:flex;flex-direction:column;gap:10px">
-          <div class="arac"><button class="btn ana" id="p-ekle">+ Personel ekle</button><span class="uclar">İzin çizelgesi bu listeden oluşur.</span></div><div class="p-kisa" id="p-kisa"></div>
+          <div class="arac"><button class="btn ana" id="p-ekle">+ Personel ekle</button></div><div class="p-kisa" id="p-kisa"></div>
           <div class="tablo-kap"><table class="liste" id="p-tablo"><thead><tr><th style="width:52px">S.No</th><th>Rütbesi</th><th>Adı Soyadı</th><th>Sicil</th><th>Doğum</th><th>Görevi</th><th style="width:96px"></th></tr></thead><tbody></tbody></table></div>
         </div>
 
@@ -2342,7 +2345,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
         <!-- YOKLAMA -->
         <div id="e-yoklama" hidden style="display:flex;flex-direction:column;gap:10px">
           <div id="yk-kart" class="yk-kart"></div>
-          <div class="uclar">Kişiye dokunun: izin, rapor, görev ya da kurs için “＋ Ayrılış satırı ekle” ile türü ve ayrılış/katılış tarihini takvimden seçin; bir kişiye birden çok satır eklenebilir. Durum seçilen yoklama tarihine göre kendiliğinden hesaplanır; katılış günü MEVCUT sayılır. Yoklamada adı değiştirilen kişi isim listesini değiştirmez.</div>
+          <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Kişiye dokunun: izin, rapor, görev ya da kurs için “＋ Ayrılış satırı ekle” ile türü ve ayrılış/katılış tarihini takvimden seçin; bir kişiye birden çok satır eklenebilir. Durum seçilen yoklama tarihine göre kendiliğinden hesaplanır; katılış günü MEVCUT sayılır. Yoklamada adı değiştirilen kişi isim listesini değiştirmez.</div></details>
           <div class="y-imzalar" id="y-imzalar"></div>
         </div>
 
@@ -2365,7 +2368,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
         <div id="e-sema" hidden style="display:flex;flex-direction:column;gap:10px">
           <div class="arac"><input type="text" id="sm-baslik" placeholder="Şema başlığı (boş bırakılabilir)" aria-label="Şema başlığı" style="flex:1;min-width:200px"><button class="btn kucuk" type="button" id="sm-kok">+ Kök kutu</button></div>
           <div class="sm-onizle" id="sm-onizle" aria-label="Şema önizleme"></div>
-          <div class="uclar">Önizlemede bir kutuya dokununca aşağıda o kutu seçilir. Her kutunun altındakiler “yan yana” ya da “alt alta” dizilebilir; çizgiler kendiliğinden çizilir.</div>
+          <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Önizlemede bir kutuya dokununca aşağıda o kutu seçilir. Her kutunun altındakiler “yan yana” ya da “alt alta” dizilebilir; çizgiler kendiliğinden çizilir.</div></details>
           <div class="sm-tmk" id="sm-tmk"></div>
           <div class="sm-liste" id="sm-liste"></div>
           <div class="sm-tablo" id="sm-tablo"></div>
@@ -2418,7 +2421,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
             <span class="gd-cs-et">Çıktı</span><div class="gd-cs-sec" role="radiogroup" aria-label="Çıktı kapsamı"><button type="button" data-kapsam="kisi">Seçili kişi</button><button type="button" data-kapsam="hepsi">Tüm personel</button></div>
             <select id="gd-kapsam" hidden><option value="kisi">Seçili personel</option><option value="hepsi">Tüm personel</option></select>
             <span class="bosluk"></span>
-            <button class="gd-ice-btn" type="button" id="gd-ice" title="Aynı biçimdeki GDHG Excel dosyasından içe aktar"><svg viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg>Excel'den al</button><input type="file" id="gd-dosya" accept=".xlsx" hidden>
+            <button class="gd-ice-btn" type="button" id="gd-ice" title="Aynı biçimdeki GDHG Excel dosyasından içe aktar"><svg viewBox="0 0 24 24"><path d="M12 4v11M7.5 10.5 12 15l4.5-4.5M5 19.5h14"/></svg><span>Excel'den al</span></button><input type="file" id="gd-dosya" accept=".xlsx" hidden>
           </div>
           <div class="mesaj" id="gd-ice-secim" hidden></div>
           <div id="gd-belge" class="gd-duzen"><div class="gd-kisiler" id="gd-kisiler"></div><div class="gd-kagit" id="gd-kagit"></div></div>
@@ -4351,7 +4354,7 @@ function gdBelgeCiz0(){
     <div class="gd-ust gd-ust-duz" title="Başlığa dokunup değiştirebilirsin (bu GDHG kaydındaki bütün rütbeli belgelere uygulanır)">
       <input class="gd-bas" id="gd-ust-baslik" data-t="genel" data-a="baslik" value="${esc(G.baslik)}" aria-label="Belge başlığı" spellcheck="false">
       <textarea class="gd-alt" id="gd-ust-altBaslik" data-t="genel" data-a="altBaslik" rows="${Math.max(2, String(G.altBaslik || "").split("\n").length)}" aria-label="Alt başlık (satır atlamak için Enter)" spellcheck="false">${esc(G.altBaslik)}</textarea>
-      <small class="gd-ust-ipucu">✎ Başlıklara dokunup değiştirebilirsin · alt başlıkta satır atlamak için Enter</small></div>
+</div>
     ${u.length ? `<div class="mesaj hata gd-uyari"><b>Kontrol edin</b><ul>${u.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     ${gdOzKart("kim", "kim", "Personelin kimliği", [k.sicil ? "Sicil " + k.sicil : "sicil yok", trTarih(k.tarih || G.tarih) || "tarih yok", k.gorev ? "görevi yazılı" : "görevi boş"], `<div class="gd-kimlik">
       <label>Sınıf ve rütbesi${gdInp("gd-k-rutbe", "k", "rutbe", k.rutbe)}</label>
@@ -4360,7 +4363,7 @@ function gdBelgeCiz0(){
       <label>Düzenlendiği tarih${gdInp("gd-k-tarih", "k", "tarih", k.tarih || "", { tip: "date" })}<small>${k.tarih ? "Bu belgeye özel tarih" : "Boş bırakılırsa genel tarih: " + (trTarih(G.tarih) || "girilmemiş")}</small></label>
       <label class="gd-genis">Görevi (kadro tam adı)<textarea id="gd-k-gorev" class="oto-boy tek-satir" data-tek data-t="k" data-a="gorev" rows="1" aria-label="Görevi">${esc(k.gorev || "")}</textarea></label>
     </div>`, !k.ad)}
-    ${gdOzKart("don", "don", "Dönem", [donemAd(gdDonem(k)) + (k.donem && (k.donem.bas || k.donem.son) ? " · özel" : " · genel"), k.gelis ? "geliş " + trTarih(k.gelis) : "", k.gorevSonu ? "görev sonu " + trTarih(k.gorevSonu) : ""].filter(Boolean), `<div class="gd-donem">
+    ${gdOzKart("don", "don", "Dönem", [donemAd(gdDonem(k)) + (k.donem && (k.donem.bas || k.donem.son) ? " · özel" : " · genel"), k.gelis ? "geliş " + trTarih(k.gelis) : "", k.gorevSonu ? "görev sonu " + trTarih(k.gorevSonu) : ""].filter(Boolean), `${k.gorevOto === false ? `<div class="gd-oto elle"><span>Görev satırları <b>elle</b> düzenleniyor; izin eklenince değişmez.</span><button class="btn kucuk" type="button" data-gd="oto-ac">İzinlere göre otomatik doldur</button></div>` : ""}<div class="gd-donem">
       <div class="arac"><div><h3>Dönem ve otomatik oluşturma</h3><span class="uclar">Bu belgenin dönemi: <b>${esc(donemAd(gdDonem(k)))}</b>${k.donem && (k.donem.bas || k.donem.son) ? " (bu belgeye özel)" : " (genel dönem)"}</span></div><span class="bosluk"></span>
         <button class="btn ana kucuk" type="button" data-gd="olustur">Satırları dönem ve izinlerden oluştur</button><button class="btn kucuk" type="button" data-gd="olustur-hepsi">Tüm personel için oluştur</button></div>
       <div class="gd-kimlik">
@@ -4372,9 +4375,6 @@ function gdBelgeCiz0(){
       ${(k.donemDisi || []).length ? `<details class="gd-disi"><summary>Dönem dışında ${k.donemDisi.length} izin/rapor (bu belgeye girmez)</summary><p>${k.donemDisi.map(x => `${esc(x.sebep)} ${esc(trTarih(x.ayr))}–${esc(trTarih(x.kat))}`).join(" · ")}</p></details>` : ""}
     </div>`, false, k.gorevOto === false ? ["Elle", "elle"] : ["Otomatik", "oto"])}
     ${(() => { const d = gdDonemOneri(k); return d ? `<div class="mesaj hata gd-uyari"><b>İzinler bu dönemde değil.</b> Seçili dönem ${esc(donemAd(gdDonem(k)))}, izin/raporlar ise ${esc(donemAd(d))} dönemine düşüyor; görev satırları bu yüzden oluşmuyor.<div class="arac" style="margin-top:6px"><button class="btn ana kucuk" type="button" data-gd="donem-oneri">Bu kişinin dönemini ${esc(donemAd(d))} yap</button></div></div>` : ""; })()}
-    <div class="gd-oto ${k.gorevOto === false ? "elle" : ""}">${k.gorevOto === false
-      ? `<span>Görev satırları <b>elle</b> düzenleniyor; izin eklenince değişmez.</span><button class="btn kucuk" type="button" data-gd="oto-ac">İzinlere göre otomatik doldur</button>`
-      : ""}</div>
     <div class="arac gd-bolum g"><h3>Görev yerleri ve kalış süreleri <span class="gd-say">${k.gorevler.length}</span></h3><span class="bosluk"></span>${k.gorevler.some(gdGorevBos) ? `<button class="btn kucuk gd-bos-sil" type="button" data-gd="gorev-bos-sil">🧹 Boş satırları sil</button>` : ""}</div>
     ${(() => { const say = k.gorevler.filter(g => g.don && g.don !== "-"), n = say.length, durum = f => { const ac = say.filter(f).length; return [!n ? "" : ac === n ? "acik" : ac ? "kismi" : "", ac]; };
       const [d1, a1] = durum(gdArti), [d2, a2] = durum(g => gdEksiYon(g)), d3 = k.toplamArti ? "acik" : "", yon = gdKYon(k);
@@ -4410,7 +4410,7 @@ function gdBelgeCiz0(){
     <div class="arac gd-yazi-sec"><span class="uclar">Sayının yazılışı</span><div class="grup"><button class="btn kucuk" type="button" data-gd="yazi-bitisik" aria-pressed="${!G.yaziAyrik}">Bitişik · ${esc(gdYazi(gdToplam(k), false))}</button><button class="btn kucuk" type="button" data-gd="yazi-ayrik" aria-pressed="${!!G.yaziAyrik}">Ayrık · ${esc(gdYazi(gdToplam(k), true))}</button></div></div>
     <div class="arac"><h3>İmzalar ve onay</h3><span class="bosluk"></span><button class="btn kucuk ana" type="button" data-s="imza">✎ İmzaları düzenle</button></div>
     <div class="gd-imzalar imz-dokun">${imzOnizle(im, `<b>${esc(G.onayBaslik)}</b>`, "i")}</div>
-    <div class="uclar">Kalış süresi = dönüş − gidiş. “Durum” sütunundan “Devam” seçilirse dönüş “-” yazılır ve toplama katılmaz; “Görev Sonu” seçilirse görev bitiş tarihi dönüşe yazılır, süre toplama katılır ve düşüncelere “Görev Sonu” yazılır. Ay/Gün, Excel'deki DATEDIF ile aynı hesaplanır. İmzalar ve genel tarih “İmza ve başlık” sekmesinden değişir.</div>`;
+    <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Kalış süresi = dönüş − gidiş. “Durum” sütunundan “Devam” seçilirse dönüş “-” yazılır ve toplama katılmaz; “Görev Sonu” seçilirse görev bitiş tarihi dönüşe yazılır, süre toplama katılır ve düşüncelere “Görev Sonu” yazılır. Ay/Gün, Excel'deki DATEDIF ile aynı hesaplanır. İmzalar ve genel tarih “İmza ve başlık” sekmesinden değişir.</div></details>`;
 }
 function gdListeCiz(){
   const G = S.gdhg; const varolan = new Set(G.kisiler.map(k => normMetin(k.ad)));
@@ -5864,7 +5864,7 @@ function gdSozCiz(){
     </tbody></table></div>
     <div class="arac"><h3>İmzalar ve onay</h3><span class="bosluk"></span><button class="btn kucuk ana" type="button" data-s="imza">✎ İmzaları düzenle</button></div>
     <div class="gd-imzalar imz-dokun">${imzOnizle(im, `<b>${esc(Z.onayBaslik)}</b> <span class="uclar">${esc(Z.onayTarih)}</span>`, "si")}</div>
-    <div class="uclar">Kalış süresi = dönüş − gidiş + 1 (iki gün de dahil) − izin/rapor günleri. İzin günü = katılma − ayrılma. Çıktılar (PDF/Excel/Word) tüm sözleşmeli personeli tek yatay çizelgede verir.</div>`;
+    <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Kalış süresi = dönüş − gidiş + 1 (iki gün de dahil) − izin/rapor günleri. İzin günü = katılma − ayrılma. Çıktılar (PDF/Excel/Word) tüm sözleşmeli personeli tek yatay çizelgede verir.</div></details>`;
 }
 const gdSozSatir = (k, i) => { const h = gdSozHesap(k); return [String(i + 1), k.rutbe, k.ad, k.sicil, k.sozYer || GD_YER, trTarih(h.git), h.donYazi, h.kalis === "" ? "" : h.kalis + " Gün", h.satirlar.join("\n")]; };
 
@@ -8014,7 +8014,7 @@ function sportakipCiz(){ const d = acikBelge(); if(!d || d.tur !== "sportakip") 
   $("#st-govde").innerHTML = `<label class="ko-al ko-tam"><span>Başlık</span><input data-st-g="baslik" value="${esc(v.baslik || "")}"></label>
     <div class="sa-blok"><div class="yk-gbas"><b>Testler</b><small>${T.length} / ${tum.length} test dahil</small></div>
       <div class="st-testler">${tum.map(x => { const t = { d: x, v: spVeri(x) }, G = spGenel(t.v), dahil = !v.haric.includes(x.id); return `<button type="button" class="st-test" data-st-t="${x.id}" aria-pressed="${dahil}"><b>${esc(stTarih(t))}</b><small>${esc(x.ad)}</small><span>${G.oran == null ? "sonuç yok" : "%" + spSayiYaz(G.oran) + " başarı · ort " + spSayiYaz(G.ort)}</span></button>`; }).join("") || `<div class="yk-bos">Henüz spor testi yok</div>`}</div>
-      <div class="uclar">Yeni test için Değerlendirme Çizelgeleri bölümünde testi çoğaltın (⧉); buraya kendiliğinden eklenir. Dokunarak testi takipten çıkarabilirsiniz.</div></div>
+      <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Yeni test için Değerlendirme Çizelgeleri bölümünde testi çoğaltın (⧉); buraya kendiliğinden eklenir. Dokunarak testi takipten çıkarabilirsiniz.</div></details></div>
     <div class="sa-blok"><div class="yk-gbas"><b>Personel</b><small>${L.length} kişi</small></div>
       ${L.map((x, i) => `<div class="yk-k${stAcik === i ? " acik" : ""}"><button type="button" class="yk-s" data-st-ac="${i}"><span class="yk-n">${i + 1}</span><span class="kc-sy"><b>${esc(x.ad)}</b><small>${esc(x.rutbe)}</small></span><span class="sp-oz">${x.son != null ? `<span class="sp-roz ${x.deg > 0 ? "iyi" : x.deg < 0 ? "kot" : "gri"}">${spSayiYaz(x.son)}${x.deg != null ? " " + stDeg(x.deg).split(" ")[0] : ""}</span>` : `<span class="sp-roz gri">sonuç yok</span>`}</span></button>
         ${stAcik === i ? `<div class="st-gecmis">${T.map((t, j) => { const h = x.s[j]; return `<div><span>${esc(stTarih(t))}</span><b>${h && h.ort != null ? spSayiYaz(h.ort) : "—"}</b>${h ? spRozet(h) : `<span class="sp-roz gri">listede yok</span>`}</div>`; }).join("")}</div>` : ""}</div>`).join("") || `<div class="yk-bos">Sonucu olan kişi yok</div>`}</div>`; }
@@ -8052,7 +8052,7 @@ function sicilCiz(){ const d = acikBelge(); if(!d || d.tur !== "sicil") return; 
         ${ac ? `<div class="kc-form"><label class="ko-al ko-tam"><span>Rütbesi</span><textarea class="oto-boy" rows="1" data-sa-z="${z.id}:rutbe" placeholder="ör. Piyade Komando Kurmay Binbaşı">${esc(z.rutbe || "")}</textarea></label><label class="ko-al ko-tam"><span>Adı soyadı</span><textarea class="oto-boy" rows="1" data-sa-z="${z.id}:ad" placeholder="Adı SOYADI">${esc(z.ad || "")}</textarea></label>
           <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-sa="zkapat">✓ Tamam</button><button type="button" class="mini" data-sa-zi="${z.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-sa-zi="${z.id}:1"${i < v.zincir.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini sil" data-sa-zs="${z.id}">Sil</button></div></div>` : ""}</div>`; }).join("") || `<div class="yk-bos">Zincirde amir yok</div>`}
       <button type="button" class="tt-ekle" data-sa="zincir-ekle">＋ Amir ekle</button>
-      <div class="uclar">Kişinin sicil amirleri bu sıradan kendiliğinden gelir: kişi zincirdeyse kendinden sonraki üç amir, değilse ilk üç amir.</div></div>
+      <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Kişinin sicil amirleri bu sıradan kendiliğinden gelir: kişi zincirdeyse kendinden sonraki üç amir, değilse ilk üç amir.</div></details></div>
     <div class="sa-blok"><div class="yk-gbas"><b>Personel</b><small>${v.kisiler.length} kişi</small><button type="button" class="btn kucuk" data-sa="ekle">＋ Kişi ekle</button></div>
       ${v.kisiler.map((k, i) => { const ac = saAcik === k.id;
         return `<div class="yk-k${ac ? " acik" : ""}"><button type="button" class="yk-s" data-sa-ac="${k.id}"><span class="yk-n">${i + 1}</span><span class="kc-sy"><b>${esc(k.ad || "Yeni kişi")}</b><small>${esc([k.rutbe, k.sicil].filter(Boolean).join(" · "))}</small>${saAmirler(v, k).map((z, j) => `<small class="sa-am"><i>${j + 1}.</i> ${esc(z ? `${z.rutbe ? z.rutbe + " " : ""}${z.ad}` : "—")}</small>`).join("")}</span></button>
@@ -8250,7 +8250,7 @@ function candostuCiz(){ const d = acikBelge(); if(!d || d.tur !== "candostu") re
     ${uyari ? `<div class="cd-uyari">${uyari} kişide asıl ve yedek aynı kişi seçilmiş.</div>` : ""}
     <div class="cd-liste">${L.map((p, i) => `<div class="cd-sat${S[p.id].elle ? " elle" : ""}"><span class="cd-no">${i + 1}</span><span class="cd-kim"><b>${esc(p.ad)}</b><small>${esc(p.rutbe)}</small></span>
       <label class="cd-s asil"><i>Asıl</i>${sec(p, "asil")}</label><label class="cd-s yedek"><i>Yedek</i>${sec(p, "yedek")}</label></div>`).join("")}</div>
-    <div class="tz-not2">Kıdem sırası: önce rütbe, aynı rütbede sicili eski olan. Subay/astsubay, uzman ve sözleşmeli kendi içinde kıdem sırasıyla döner: asıl bir alttaki, yedek iki alttaki, en kıdemsizin asılı en kıdemli. İki kişi kalan grubun yedeği bir alt sınıfın en kıdemlisi olur. Elle değiştirdiğin satır turuncu kenarlı görünür ve korunur; "Otomatik dağıt" hepsini yeniden dağıtır.</div>
+    <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Kıdem sırası: önce rütbe, aynı rütbede sicili eski olan. Subay/astsubay, uzman ve sözleşmeli kendi içinde kıdem sırasıyla döner: asıl bir alttaki, yedek iki alttaki, en kıdemsizin asılı en kıdemli. İki kişi kalan grubun yedeği bir alt sınıfın en kıdemlisi olur. Elle değiştirdiğin satır turuncu kenarlı görünür ve korunur; "Otomatik dağıt" hepsini yeniden dağıtır.</div></details>
     ${kkKart("cd-kisi", "#E3EEF0", "Kişiler", `${L.length} / ${T.length} kişi · 19 ÜB isim listesinden`, T.map(p => `<label class="tb-k${v.haric[p.id] ? " haric" : ""}"><input type="checkbox" data-cd-k="${p.id}"${v.haric[p.id] ? "" : " checked"}><span><b>${esc(p.ad)}</b><small>${esc(p.rutbe)}</small></span></label>`).join(""), { kume: cdKapali })}
     ${kkKart("cd-bas", "#F2F4F7", "Başlık", "", `<div class="kp-alanlar"><textarea class="oto-boy" data-cd-baslik rows="2">${esc(cdBaslik(v))}</textarea></div>`, { kume: cdKapali })}`;
   otoBoyHepsi($("#cd-govde")); }
