@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "277";
+  const SURUM = "278";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2395,7 +2395,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 277</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 278</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4086,18 +4086,21 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
     if(is === "sil"){ const geri = anlik(L); L.splice(i, 1); ykAcik = null; ykKaydet(); yoklamaCiz(); return geriAlinabilir(`${r.ad || "Kişi"} yoklamadan çıkarıldı`, () => { geri(); ykKaydet(); yoklamaCiz(); }); }
     let j = i + (is === "yukari" ? -1 : 1); while(j >= 0 && j < L.length && !ayni(j)) j += is === "yukari" ? -1 : 1; if(j < 0 || j >= L.length) return; [L[j], L[i]] = [L[i], L[j]]; ykKaydet(); return yoklamaCiz(); } });
 
+/* yoklama kurumsal teması: açık lacivert başlık, şeritli satırlar, durum etiketleri (mürekkep dostu açık tonlar) */
+const YK_TEMA = { ana: "6F8BA8", bas: "DCE5EF", basYazi: "22374F", bant: "EAF0F6", bantYazi: "2F4A66", serit: "F6F8FB", cizgi: "BCC7D3", soluk: "6B7787", vurgu: "E8F0E3", vurguYazi: "2F5A3A", topSut: "EEF3F8", ustBand: "F1F5F9" };
+const YK_ETIKET = { MEVCUT: ["DDF0E3", "2E6B45"], "İZİN": ["FBEACB", "85561A"], RAPOR: ["E6E2F4", "4E4387"], "GÖREVLİ": ["DCEAF6", "2B5A84"], KURS: ["E2F0EF", "2C6662"], DIGER: ["ECEEF1", "4A5563"] };
 function tanimYoklama(){
-  const t = YS().tarih || bugun(); const body = [];
-  for(const v of ["GÜNDÜZ","GECE"]){ body.push({ bant: v, fill: "E9EEF3" }); let n = 0;
-    YS().rows.filter(r => (r.vardiya || "GÜNDÜZ") === v && r.ad).forEach(r => { n++; const h = yoklamaHesap(r, t);
-      body.push([H(n),H(r.rutbe,{ sol:1 }),H(r.ad,{ sol:1 }),H(r.sicil),H(r.statu),H(r.gorev,{ sol:1 }),H(r.tel),H(h.durum,{ fill: h.durum === "MEVCUT" ? "E3F3EA" : "FBEBD2" }),H(h.yer),H(h.aciklama,{ sol:1 })]); }); }
+  const t = YS().tarih || bugun(); const body = [], T = YK_TEMA;
+  for(const v of ["GÜNDÜZ","GECE"]){ body.push({ bant: v, fill: T.bant, k: T.bantYazi }); let n = 0;
+    YS().rows.filter(r => (r.vardiya || "GÜNDÜZ") === v && r.ad).forEach(r => { n++; const h = yoklamaHesap(r, t), z = n % 2 ? null : T.serit, o = x => ({ ...x, fill: z }), [pf, pk] = YK_ETIKET[h.durum] || YK_ETIKET.DIGER;
+      body.push([H(n,o({ k: T.soluk })),H(r.rutbe,o({ sol:1 })),H(r.ad,o({ sol:1 })),H(r.sicil,o({})),H(r.statu,o({})),H(r.gorev,o({ sol:1 })),H(r.tel,o({})),H(h.durum,{ fill: pf, k: pk, etiket: 1, zemin: z }),H(h.yer,o({})),H(h.aciklama,o({ sol:1 }))]); }); }
   const oz = yoklamaOzet();
   const imzalar = yImzalar().map(im => [im.ad, im.rutbe, im.gorev].filter(x => x && String(x).trim())).filter(x => x.length), imza = imzalar[0] || [];
   return { imza: imza.length ? imza : null, imzalar: imzalar.length > 1 ? imzalar : null, dosya:`Gunluk_Personel_Yoklama${YK === "yoklama" ? "" : "_" + YK.replace("yoklama", "") + "_UB"}_${trTarih(t)}`, baslik:`${YS().baslik || BIRLIK} GÜNLÜK PERSONEL YOKLAMA ÇİZELGESİ`, sagUst: trTarih(t), oran:[5,13,15,10,6,20,10,8,8,17],
     xGenis: (() => { const g = [5,13,15,10,6,20,10,8,8,17].map(o => o / 112 * 190), uz = Math.max(0, ...body.flatMap(b => b.bant ? [] : String((b[9] || {}).t || "").split("\n").map(y => xlsGen(y, 12, true)))); g[9] = Math.min(64, Math.max(g[9], uz + 2)); return g; })(),   // Excel: açıklama sütunu en uzun satıra göre
-    head:[["S.NO.","RÜTBESİ","ADI SOYADI","SİCİLİ","STATÜ","GÖREVİ","TELEFON","DURUMU","YERİ","AÇIKLAMALAR"].map(x => H(x))], body, satirH: 8,
-    ek: { spans:[5,1,1,1,1,1], head:[H("MEVCUT DURUMU",{ sol:1 }),...["Sb.","Asb.","Uzm.Erb.","Söz.Er","TOPLAM"].map(x => H(x))],
-      body: oz.map((s, i) => [H(s[0],{ sol:1, fill: i >= 5 ? "E6EBD9" : null }),...s.slice(1).map(v => H(v,{ sayi:1, fill: i >= 5 ? "E6EBD9" : null }))]) } };
+    tema: T, head:[["S.NO.","RÜTBESİ","ADI SOYADI","SİCİLİ","STATÜ","GÖREVİ","TELEFON","DURUMU","YERİ","AÇIKLAMALAR"].map(x => H(x,{ fill: T.bas, k: T.basYazi }))], body, satirH: 8,
+    ek: { spans:[5,1,1,1,1,1], head:[H("MEVCUT DURUMU",{ sol:1, fill: T.bas, k: T.basYazi }),...["Sb.","Asb.","Uzm.Erb.","Söz.Er","TOPLAM"].map(x => H(x,{ fill: T.bas, k: T.basYazi }))],
+      body: oz.map((s, i) => { const v = i >= 5, z = v ? T.vurgu : i % 2 ? T.serit : null; return [H(s[0],{ sol:1, fill: z, k: v ? T.vurguYazi : null }),...s.slice(1).map((x, j, A) => H(x,{ sayi:1, fill: j === A.length - 1 && !v ? T.topSut : z, k: v ? T.vurguYazi : j === A.length - 1 ? T.basYazi : null }))]; }) } };
 }
 
 /* ================= HEDEF ================= */
@@ -6510,7 +6513,7 @@ async function tabloPdf(sp, a){
 async function tabloPdfCiz(sp, a, parcalar, k){
   const doc = await yeniPdf(a); await yukle(CDN.autotable);
   const W = doc.internal.pageSize.getWidth(), Hh = doc.internal.pageSize.getHeight(); const m = kenarlar(a);
-  const altH = (sp.lejant || sp.altSol) ? 6 : 0, basH = sp.sagUst ? 12 : 7;
+  const altH = (sp.lejant || sp.altSol) ? 6 : 0, TM = sp.tema, basH = TM ? 17 : sp.sagUst ? 12 : 7, CZ = TM ? rgb(TM.cizgi) : [138,138,138];
   const uw = W - m.l - m.r; const tw = sp.oran.reduce((x, y) => x + y, 0); const n = sp.oran.length;
   const enCok = Math.max(1, ...parcalar.map(p => p.length));
   /* başlık satırının gerçek yüksekliğini tahmin et (dar sütunda başlık birkaç satıra bölünür) */
@@ -6544,29 +6547,35 @@ async function tabloPdfCiz(sp, a, parcalar, k){
   else gen = w.map(x => x * uw / top);   // en küçük yazıda da sığmıyorsa: orantılı küçült, uzun yazı alt satıra geçer
   const columnStyles = {}; gen.forEach((g, i) => columnStyles[i] = { cellWidth: g });
   const headRows = sp.head.map(satir => satir.map(c => ({ content: c.t, colSpan: c.cs || 1, rowSpan: c.rs || 1, styles: { fillColor: rgb(c.fill || RENK.bas) } })));
-  const baslikYaz = () => { const ty = m.t + (sp.sagUst ? 9.5 : 4.5);
+  const baslikYaz = () => { if(TM){ const y0 = m.t, h = 12.5; doc.setFillColor(...rgb(TM.ustBand)); doc.setDrawColor(...CZ); doc.setLineWidth(0.2); doc.roundedRect(m.l, y0, uw, h, 1.6, 1.6, "FD"); doc.setFillColor(...rgb(TM.ana)); doc.roundedRect(m.l, y0, 2.2, h, 1.1, 1.1, "F"); doc.rect(m.l + 1.1, y0, 1.1, h, "F");
+      let b = 13.5; doc.setFont("LS", "bold"); doc.setTextColor(...rgb(TM.basYazi)); doc.setFontSize(b); const yer = uw - 2 * 34; while(doc.getTextWidth(sp.baslik) > yer && b > 7){ b -= 0.5; doc.setFontSize(b); } doc.text(sp.baslik, m.l + uw / 2, y0 + h / 2 + b * 0.125, { align: "center" });
+      if(sp.sagUst){ const tx = m.l + uw - 4; doc.setFont("LS", "normal"); doc.setFontSize(6.2); doc.setTextColor(...rgb(TM.soluk)); doc.text("TARİH", tx, y0 + 4.6, { align: "right" }); doc.setFont("LS", "bold"); doc.setFontSize(10.5); doc.setTextColor(...rgb(TM.basYazi)); doc.text(sp.sagUst, tx, y0 + 9.6, { align: "right" }); }
+      return; }
+    const ty = m.t + (sp.sagUst ? 9.5 : 4.5);
     if(sp.sagUst){ doc.setFont("LS", "bold"); doc.setFontSize(10); doc.setTextColor(34, 34, 34); doc.text(sp.sagUst, m.l + uw, m.t + 3.5, { align: "right" }); }   // tarih: en üst sağ, başlık altında
     doc.setFont("LS", "bold"); doc.setTextColor(34, 34, 34); let b = 12.5; doc.setFontSize(b); while(doc.getTextWidth(sp.baslik) > uw && b > 6){ b -= 0.5; doc.setFontSize(b); } doc.text(sp.baslik, m.l + uw / 2, ty, { align: "center" }); };
   parcalar.forEach((p, i) => { if(i) doc.addPage();
     doc.autoTable({ startY: m.t + basH, margin: { left: m.l, right: m.r, top: m.t + basH, bottom: m.b + altH + 2 }, theme: "grid", head: headRows,
-      body: p.map(satir => satir.bant ? [{ content: satir.bant, colSpan: n, styles: { fillColor: rgb(satir.fill || "E9EEF3"), halign: "center", fontStyle: "bold" } }] : satir.map(c => ({ content: c.t, styles: { fillColor: c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center" } }))),
-      styles: { font: "LS", fontStyle: "bold", fontSize: fs, textColor: [34,34,34], lineColor: [138,138,138], lineWidth: 0.15, cellPadding: { top: 0.3, bottom: 0.3, left: 1, right: 1 }, valign: "middle", halign: "center", minCellHeight: rowH, overflow: "linebreak" },
-      headStyles: { font: "LS", fontStyle: "bold", fontSize: Math.max(3.8, Math.min(fs * 0.85, 8.5)), textColor: [34,34,34], minCellHeight: 6.5 * Math.min(1, k + .1), overflow: "linebreak" },
+      body: p.map(satir => satir.bant ? [{ content: satir.bant, colSpan: n, styles: { fillColor: rgb(satir.fill || "E9EEF3"), halign: "center", fontStyle: "bold", ...(satir.k ? { textColor: rgb(satir.k), fontSize: fs * 1.02 } : {}) } }] : satir.map(c => ({ content: c.t, _c: c, styles: { fillColor: c.etiket ? (c.zemin ? rgb(c.zemin) : [255,255,255]) : c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center", ...(c.k ? { textColor: rgb(c.k) } : {}) } }))),
+      didDrawCell: TM ? D => { const c = D.cell.raw && D.cell.raw._c; if(D.section !== "body" || !c || !c.etiket || !c.t) return; const x = D.cell.x, y = D.cell.y, w = D.cell.width, h = D.cell.height; doc.setFontSize(D.cell.styles.fontSize * 0.92); doc.setFont("LS", "bold"); const tw = doc.getTextWidth(c.t), pw = Math.min(w - 1.2, tw + 4), ph = Math.min(h - 1.2, D.cell.styles.fontSize * 0.3528 * 1.75);
+        doc.setFillColor(...rgb(c.fill)); doc.roundedRect(x + (w - pw) / 2, y + (h - ph) / 2, pw, ph, ph / 2, ph / 2, "F"); doc.setTextColor(...rgb(c.k)); doc.text(c.t, x + w / 2, y + h / 2, { align: "center", baseline: "middle" }); } : undefined,
+      styles: { font: "LS", fontStyle: "bold", fontSize: fs, textColor: TM ? [38,46,56] : [34,34,34], lineColor: CZ, lineWidth: TM ? 0.12 : 0.15, cellPadding: { top: 0.3, bottom: 0.3, left: 1, right: 1 }, valign: "middle", halign: "center", minCellHeight: rowH, overflow: "linebreak" },
+      headStyles: { font: "LS", fontStyle: "bold", fontSize: Math.max(3.8, Math.min(fs * 0.85, 8.5)), textColor: TM ? rgb(TM.basYazi) : [34,34,34], minCellHeight: 6.5 * Math.min(1, k + .1), overflow: "linebreak" },
       columnStyles, tableWidth: uw, showHead: "everyPage", rowPageBreak: "avoid",
       didDrawPage: () => { baslikYaz(); if(altH) altKutular(doc, sp, m.l, uw, Hh - m.b - altH, altH); } }); });
   if(sp.ek){   // alttaki özet tablo: sütunları ana tablonun sütunlarına göre birleşir
     const ge = []; let c0 = 0; sp.ek.spans.forEach(nn => { let x = 0; for(let i = 0; i < nn; i++) x += gen[c0 + i]; ge.push(x); c0 += nn; });
     const cs = {}; ge.forEach((x, i) => cs[i] = { cellWidth: x });
     doc.autoTable({ startY: doc.lastAutoTable.finalY + 4, margin: { left: m.l, right: m.r, top: m.t + basH, bottom: m.b + 2 }, theme: "grid",
-      head: [sp.ek.head.map(h => ({ content: h.t, styles: { fillColor: rgb(h.fill || RENK.bas) } }))],
-      body: sp.ek.body.map(satir => satir.map(c => ({ content: c.t, styles: { fillColor: c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center" } }))),
-      styles: { font: "LS", fontStyle: "bold", fontSize: Math.min(fs, 8.5), textColor: [34,34,34], lineColor: [138,138,138], lineWidth: 0.15, cellPadding: 0.8, valign: "middle", halign: "center", overflow: "linebreak" },
-      headStyles: { font: "LS", fontStyle: "bold", textColor: [34,34,34] }, columnStyles: cs, tableWidth: uw, rowPageBreak: "avoid", didDrawPage: () => baslikYaz() });
+      head: [sp.ek.head.map(h => ({ content: h.t, styles: { fillColor: rgb(h.fill || RENK.bas), halign: h.sol ? "left" : "center", ...(h.k ? { textColor: rgb(h.k) } : {}) } }))],
+      body: sp.ek.body.map(satir => satir.map(c => ({ content: c.t, styles: { fillColor: c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center", ...(c.k ? { textColor: rgb(c.k) } : {}) } }))),
+      styles: { font: "LS", fontStyle: "bold", fontSize: Math.min(fs, 8.5), textColor: TM ? [38,46,56] : [34,34,34], lineColor: CZ, lineWidth: TM ? 0.12 : 0.15, cellPadding: 0.8, valign: "middle", halign: "center", overflow: "linebreak" },
+      headStyles: { font: "LS", fontStyle: "bold", textColor: TM ? rgb(TM.basYazi) : [34,34,34] }, columnStyles: cs, tableWidth: uw, rowPageBreak: "avoid", didDrawPage: () => baslikYaz() });
   }
   if(sp.imza && sp.imza.length){   // imza bloğu: sağ altta, ortalı satırlar
     const Hp = doc.internal.pageSize.getHeight(), lh = 4.6; let y = (doc.lastAutoTable ? doc.lastAutoTable.finalY : m.t + basH) + 12;
     if(y + sp.imza.length * lh > Hp - m.b){ doc.addPage(); baslikYaz(); y = m.t + basH + 6; }
-    doc.setFont("LS", "bold"); doc.setFontSize(10); doc.setTextColor(34, 34, 34); const cx = m.l + uw * 0.84;
+    doc.setFont("LS", "bold"); doc.setFontSize(10); doc.setTextColor(...(TM ? rgb(TM.basYazi) : [34, 34, 34])); const cx = m.l + uw * 0.84;
     if(sp.imzalar && sp.imzalar.length > 1){ const n = sp.imzalar.length, en = Math.max(...sp.imzalar.map(x => x.length));
       if(y + en * lh > Hp - m.b){ doc.addPage(); baslikYaz(); y = m.t + basH + 6; }
       sp.imzalar.forEach((B, j) => { const x = m.l + uw * ((j + 0.5) / n); B.forEach((t, i) => doc.text(String(t), x, y + i * lh, { align: "center" })); }); }
@@ -6615,19 +6624,19 @@ async function tabloExcel(sp, a){
       for(let p = 0; p < rs; p++) for(let q = 0; q < cs; q++) dolu[(r + p) + ":" + (c + q)] = 1;
       if(cs > 1 || rs > 1) ws.mergeCells(r, c, r + rs - 1, c + cs - 1);
       for(let p = 0; p < rs; p++) for(let q = 0; q < cs; q++){ const x = ws.getCell(r + p, c + q); x.fill = dol(h.fill || RENK.bas); x.border = { top: ince, left: ince, bottom: ince, right: ince }; }
-      const x = ws.getCell(r, c); x.value = h.t; x.font = yazi(sp.xBasYazi || 11); x.alignment = { horizontal: "center", vertical: "middle", wrapText: true }; c += cs; });
+      const x = ws.getCell(r, c); x.value = h.t; x.font = h.k ? { ...yazi(sp.xBasYazi || 11), color: { argb: "FF" + h.k } } : yazi(sp.xBasYazi || 11); x.alignment = { horizontal: "center", vertical: "middle", wrapText: true }; c += cs; });
     ws.getRow(r).height = 30; });
   let r = 2 + o + sp.head.length; ws.pageSetup.printTitlesRow = `${2 + o}:${1 + o + sp.head.length}`;
   const parcalar = sp.sayfaBasina ? Array.from({ length: parca }, (_, k) => sp.body.slice(k * sp.sayfaBasina, (k + 1) * sp.sayfaBasina)) : [sp.body];
   parcalar.forEach((p, k) => {
-    p.forEach(satir => { if(satir.bant){ ws.mergeCells(r, 1, r, ncol); const x = ws.getCell(r, 1); x.value = satir.bant; x.font = yazi(11); x.alignment = { horizontal: "center", vertical: "middle" };
+    p.forEach(satir => { if(satir.bant){ ws.mergeCells(r, 1, r, ncol); const x = ws.getCell(r, 1); x.value = satir.bant; x.font = satir.k ? { ...yazi(11), color: { argb: "FF" + satir.k } } : yazi(11); x.alignment = { horizontal: "center", vertical: "middle" };
         for(let q = 1; q <= ncol; q++){ ws.getCell(r, q).fill = dol(satir.fill || "E9EEF3"); ws.getCell(r, q).border = { top: ince, left: q === 1 ? kalin : ince, bottom: ince, right: q === ncol ? kalin : ince }; } ws.getRow(r).height = 18; r++; return; }
       let ihtiyac = 0; satir.forEach((h, ci) => { const x = ws.getCell(r, ci + 1);
         if(sp.izin && h.gun !== undefined){ const L = ws.getColumn(ci - 1).letter, K = ws.getColumn(ci).letter; x.value = { formula: `IF(OR(${L}${r}="",${K}${r}=""),"",${K}${r}-${L}${r})`, result: h.t === "" || h.t == null ? "" : +h.t }; x.numFmt = "0"; }
         else if(sp.izin && h.toplam){ const g = [7,10,13].map(c => ws.getColumn(c).letter + r).join(","); x.value = { formula: `IF(COUNT(${g})=0,"",SUM(${g}))`, result: h.t === "" || h.t == null ? "" : +h.t }; }
         else if(h.d){ const [yy, mm, dd] = h.d.split("-").map(Number); x.value = new Date(Date.UTC(yy, mm - 1, dd)); x.numFmt = "dd.mm.yyyy"; }
         else if(h.sayi && h.t !== "" && isFinite(+h.t)) x.value = +h.t; else x.value = h.t;
-        x.font = yazi(sp.xYazi || 12); x.alignment = { horizontal: h.sol ? "left" : "center", vertical: "middle", wrapText: !!sp.xSatir, indent: h.sol ? 1 : 0 };
+        x.font = h.k ? { ...yazi(sp.xYazi || 12), color: { argb: "FF" + h.k } } : yazi(sp.xYazi || 12); x.alignment = { horizontal: h.sol ? "left" : "center", vertical: "middle", wrapText: !!sp.xSatir, indent: h.sol ? 1 : 0 };
         if(!(x.value && typeof x.value === "object")) ihtiyac = Math.max(ihtiyac, xlsSigdir(x, x.value, (ws.getColumn(ci + 1).width || 8) - (h.sol ? 2 : 1), (sp.xYazi || 12) * a.yazi, true));
         if(h.fill) x.fill = dol(h.fill); x.border = { top: ince, left: ci ? ince : kalin, bottom: ince, right: ci === ncol - 1 ? kalin : ince }; });
       ws.getRow(r).height = Math.max(sp.xSatir || (sp.izin ? 30 : 17), ihtiyac); r++; });
