@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "262";
+  const SURUM = "263";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2332,7 +2332,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 262</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 263</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8888,14 +8888,14 @@ function ciktiSec(d, kId, tur){ return new Promise(bitir => {
 }); }
 /* seçime göre çıktıyı üret: A5/A6'da belge A5 kâğıda dizilir, sonra A4'e yerleşir */
 /* PDF → resim: her sayfa ~200 dpi PNG ya da JPEG; çok sayfalıysa tek ZIP içinde */
-async function pdfResim(blob, ad, rf = "png"){ await yukle(PDFJS); const lib = window.pdfjsLib; if(!lib) throw new Error("PDF okuyucu yüklenemedi"); lib.GlobalWorkerOptions.workerSrc = PDFJS_W;
+async function pdfResim(blob, ad, rf = "png", adet = 1){ await yukle(PDFJS); const lib = window.pdfjsLib; if(!lib) throw new Error("PDF okuyucu yüklenemedi"); lib.GlobalWorkerOptions.workerSrc = PDFJS_W;
   const pdf = await lib.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise, L = [], tip = rf === "jpg" ? "image/jpeg" : "image/png", uz = rf === "jpg" ? "jpg" : "png", kok = ad.replace(/\.pdf$/i, "");
-  for(let i = 1; i <= pdf.numPages; i++){ const pg = await pdf.getPage(i), v = pg.getViewport({ scale: 200 / 72 }), c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height);
+  for(let i = 1; i <= pdf.numPages; i++){ const pg = await pdf.getPage(i), v0 = pg.getViewport({ scale: 1 }), dpi = 250 * (adet >= 6 ? 2 : adet >= 3 ? 1.7 : adet >= 2 ? 1.4 : 1), sk = Math.min(dpi / 72, Math.sqrt(16e6 / (v0.width * v0.height))), v = pg.getViewport({ scale: sk }), c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height);   /* çoklu yerleşimde küçük sayfalar da net çıksın (en çok ~16 MP) */
     const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); await pg.render({ canvasContext: x, viewport: v }).promise;
     L.push({ ad: pdf.numPages > 1 ? `${kok}_s${i}.${uz}` : `${kok}.${uz}`, blob: await new Promise(ok => c.toBlob(ok, tip, .92)) }); c.width = c.height = 0; }
   if(L.length === 1) return { ad: L[0].ad, blob: L[0].blob };
   await yukle(CDN.jszip); const z = new JSZip(); L.forEach(o => z.file(o.ad, o.blob)); return { ad: `${kok}_${uz.toUpperCase()}.zip`, blob: await z.generateAsync({ type: "blob" }) }; }
-async function ciktiUret(d, kId, tur, s, ov){ if(tur === "png"){ const r = await ciktiUret(d, kId, "pdf", s, ov); return { ...r, ...(await pdfResim(r.blob, r.ad, s && s.rf)) }; } const n = s && s.n || 1, o = { ...(ov || {}) };
+async function ciktiUret(d, kId, tur, s, ov){ if(tur === "png"){ const r = await ciktiUret(d, kId, "pdf", s, ov); return { ...r, ...(await pdfResim(r.blob, r.ad, s && s.rf, s && s.n || 1)) }; } const n = s && s.n || 1, o = { ...(ov || {}) };
   if(s && s.delgec != null && n === 1) o.delgec = s.delgec;
   if(n > 1 && (tur === "docx" || n === 2 || n === 4) && !o.kagit) o.kagit = "A5";
   let { blob, ad, a } = await belgeCikti(d, kId, tur, o);
