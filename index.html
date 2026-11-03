@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "297";
+  const SURUM = "298";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1551,7 +1551,7 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:8px 4px;font:700 12px var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .dl-is{display:flex;gap:8px;justify-content:flex-end}
 .dl-onz{padding:10px;background:#E9EDF1;border-radius:14px;display:block!important} .dl-onz .dl-kagit{width:100%} .dl-kagit{container-type:inline-size;aspect-ratio:210/297;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);box-sizing:border-box;font-family:"Times New Roman",Tinos,"Liberation Serif",serif;color:#111;font-size:2.02cqw;line-height:1.72;overflow:hidden}
-.dl-ic{padding:4.7cqw 10.7cqw 6.7cqw 11.9cqw} .dl-tar{text-align:right} .dl-kim{display:grid;grid-template-columns:23.9cqw 1fr} .dl-d{position:relative;overflow-wrap:anywhere} .dl-ozu{position:absolute;right:0;top:0;font-weight:400} .dl-on{text-align:center;font-weight:700;margin:2.7cqw 0 .9cqw} .dl-m{text-align:left;text-indent:6cqw;line-height:1.2;white-space:normal} .dl-bos{color:#aaa} .dl-im{display:flex;flex-direction:column;align-items:center;margin:7cqw 0 0 56%;line-height:1.35} .dl-im b{font-weight:700}
+.dl-r{display:grid;line-height:1.2;margin-bottom:2.33cqw} .dl-r>b{font-weight:700;white-space:nowrap} .dl-r>span{overflow-wrap:anywhere} .dl-r .dl-tar{text-align:right} .dl-tc{position:relative;display:block} .dl-oz{position:absolute;top:0;white-space:nowrap} .dl-oz>b,.dl-oz>span{position:absolute;top:0} .dl-oz>b:first-child{left:0;position:static} .dl-on{text-align:center;font-weight:700;margin:.95cqw 0 4.2cqw} .dl-m{text-align:justify;line-height:1.3} .dl-bos{color:#aaa} .dl-im{display:flex;flex-direction:column;align-items:center;margin:7cqw 0 0 56%;line-height:1.35} .dl-im b{font-weight:700}
 .lt-grp{display:flex;align-items:baseline;gap:8px;margin:10px 0 2px;padding:7px 10px;border-radius:9px;background:#F3F1EA} .lt-grp:first-of-type{margin-top:4px} .lt-grp b{font:800 13.5px var(--f-ui);color:#2C3E50;min-width:0;overflow-wrap:anywhere} .lt-grp span{font:500 11px var(--f-ui);color:#8A8574;flex:none} .lt-grp em{margin-left:auto;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums;flex:none}
 .kc-sat.lt-kf{margin-left:12px;border-left:2px solid #E6E1D3} .kc-sat.lt-kf.lt-tek{margin:8px 0 0;border-left:0;background:#FBFAF6;border-radius:9px} .lt-tek-ad{display:block;font:800 13.5px var(--f-ui)!important;color:#2C3E50!important;margin-bottom:3px} .kc-sat.lt-kf .kc-sb{padding-left:8px}
 .lt-kfu{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap} .lt-kfu b{font:700 12.5px ui-monospace,Menlo,Consolas,monospace!important;letter-spacing:.01em;color:#34495E;background:#EEF2F6;border-radius:5px;padding:1px 6px;overflow-wrap:anywhere} .lt-kfu i{font-style:normal;font:500 11px var(--f-ui);color:#8A94A0}
@@ -2428,7 +2428,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 297</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 298</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8512,16 +8512,16 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
    Bu ek alanlar kişinin personel kaydına yazılır; bir kez girilince bütün dilekçelerde kullanılır. */
 const DL_TUR = { izin: { ad: "Yıllık İzin", ozu: "Yıllık İzin Hk." }, mazeret: { ad: "Yıllık Mazeret İzni", ozu: "Mazeret İzni Hk." }, diger: { ad: "Diğer", ozu: "" } };
 const DL_AY = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
-const DL_ALAN = [["kita", "Kıt'ası"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi"], ["duhul", "Duhulü"], ["nasip", "Nasbı"], ["sicil", "Sicili"], ["tc", "T.C. kimlik nu."]];
+const DL_ALAN = [["kita", "Kıt'ası"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi"], ["duhul", "Duhulü"], ["nasip", "Nasbı"], ["sicil", "Sicili"], ["ems", "EMS no."], ["tc", "T.C. kimlik no."]];
 let dlAcik = null, dlKisiAcik = false;
-const dlVeri = d => { d.dl ||= {}; d.dl.garnizon ??= "Diyarbakır"; d.dl.kayitlar ||= []; if(!d.dl.kayitlar.length){ const k = dlYeniKayit(); d.dl.kayitlar.push(k); d.dl.aktif = k.id; } if(!d.dl.kayitlar.some(k => k.id === d.dl.aktif)) d.dl.aktif = d.dl.kayitlar[0].id; return d.dl; };
+const dlVeri = d => { d.dl ||= {}; d.dl.garnizon ??= "DİYARBAKIR"; d.dl.kayitlar ||= []; if(!d.dl.kayitlar.length){ const k = dlYeniKayit(); d.dl.kayitlar.push(k); d.dl.aktif = k.id; } if(!d.dl.kayitlar.some(k => k.id === d.dl.aktif)) d.dl.aktif = d.dl.kayitlar[0].id; return d.dl; };
 const dlYeniKayit = (o = {}) => ({ id: "dk" + yeniId().slice(0, 8), pid: "", tur: "izin", tarih: bugun(), bas: "", gun: "", sebep: "", ozu: "", metin: "", elle: false, imza: false, ...o });
 const dlAktif = v => v.kayitlar.find(k => k.id === v.aktif) || v.kayitlar[0];
 const dlKisi = k => (S.personel.rows || []).find(p => p.id === k.pid) || null;
 const dlUzunTarih = t => { if(!t) return "……"; const [y, m, g] = t.split("-").map(Number); return `${g} ${DL_AY[m - 1]} ${y}`; };
 function dlSayiYazi(n){ n = Math.floor(+n); if(!(n > 0) || n > 999) return ""; const B = ["", "bir", "iki", "üç", "dört", "beş", "altı", "yedi", "sekiz", "dokuz"], O = ["", "on", "yirmi", "otuz", "kırk", "elli", "altmış", "yetmiş", "seksen", "doksan"];
   const y = Math.floor(n / 100), o = Math.floor(n % 100 / 10), b = n % 10; return [y ? (y > 1 ? B[y] + " " : "") + "yüz" : "", O[o], B[b]].filter(Boolean).join(" "); }
-const dlKita = (v, p) => p ? (p.kita || [p.gorev, v.garnizon].filter(Boolean).join(" \\ ")) : "";
+const dlKita = (v, p) => p ? (p.kita || (p.gorev || "") + (v.garnizon ? " \\" + String(v.garnizon).toLocaleUpperCase("tr") : "")) : "";   // PYBS: “… (Aİ Uzm.) \DİYARBAKIR”
 function dlSablon(k){ const n = +k.gun, gun = n ? `${n} (${dlSayiYazi(n)})` : "…", bas = dlUzunTarih(k.bas), son = " Komutanlık emir ve tensiplerine maruzdur. Arz ederim.";
   if(k.tur === "izin") return `${bas} tarihinden itibaren uygun görüldüğü takdirde ${gun} gün yıllık izin kullanmak istiyorum.${son}`;
   if(k.tur === "mazeret") return `${(k.sebep || "…").trim()} olduğundan dolayı ${bas} tarihinden itibaren uygun görüldüğü takdirde ${gun} gün yıllık mazeret izni kullanmak istiyorum.${son}`;
@@ -8530,11 +8530,14 @@ const dlMetin = k => k.elle || k.tur === "diger" ? (k.metin || "") : dlSablon(k)
 const dlOzu = k => k.tur === "diger" ? (k.ozu || "") : DL_TUR[k.tur].ozu;
 /* kâğıda gidecek içerik (önizleme, PDF, Word ve Excel aynı veriden çizer) */
 function dlIcerik(d){ const v = dlVeri(d), k = dlAktif(v), p = dlKisi(k) || {};
-  const sat = [["KIT'ASI", dlKita(v, dlKisi(k))], ["SINIF VE RÜTBESİ", p.rutbe || ""], ["ADI VE SOYADI", p.ad || ""], ["BABA ADI", p.baba || ""], ["MEMLEKETİ", p.memleket || ""], ["DOĞUM TARİHİ", p.dogum || ""], ["DUHULU", p.duhul || ""], ["NASBI", p.nasip || ""], ["SİCİLİ", p.sicil || ""], ["T.C. KİMLİK NU.", p.tc || ""]];
+  const sat = [["KIT'ASI", dlKita(v, dlKisi(k))], ["SINIF VE RÜTBESİ", p.rutbe || ""], ["ADI VE SOYADI", p.ad || ""], ["BABA ADI", p.baba || ""], ["MEMLEKETİ", p.memleket || ""], ["DOĞUM TARİHİ", p.dogum || ""], ["DUHULÜ", p.duhul || ""], ["NASBI", p.nasip || ""], ["SİCİLİ", p.sicil ? `[${p.sicil}]` : ""], ["EMS NO.", p.ems || ""], ["T.C. KİMLİK NO.", p.tc || ""]];
   return { tarih: trTarih(k.tarih), sat, ozu: dlOzu(k), metin: dlMetin(k), imza: k.imza && p.ad ? [p.ad, p.rutbe || ""] : null, dosya: `${dosyaAdi(p.ad || "Dilekce")}-${dosyaAdi(DL_TUR[k.tur].ad)}-${trTarih(k.tarih)}` }; }
-function dlOnHtml(d){ const I = dlIcerik(d), e = t => esc(t || "");
-  return `<div class="dl-kagit"><div class="dl-ic"><div class="dl-tar">${e(I.tarih)}</div><div class="dl-kim">${I.sat.map(([a, b], i) => `<span class="dl-e">${a}</span><span class="dl-d">: ${e(b)}${i === I.sat.length - 1 && I.ozu ? `<b class="dl-ozu">ÖZÜ: ${e(I.ozu)}</b>` : ""}</span>`).join("")}</div>
-    <div class="dl-on">KOMUTANLIK ÖNÜNE</div><div class="dl-m">${e(I.metin).replace(/\n/g, "<br>") || '<i class="dl-bos">Dilekçe metni</i>'}</div>${I.imza ? `<div class="dl-im"><b>${e(I.imza[0])}</b><span>${e(I.imza[1])}</span></div>` : ""}</div></div>`; }
+/* PYBS dilekçesinin ölçüleri (mm): etiket 25 · iki nokta 70,8 · değer 76,7 · kıt'a satırı 160'ta kırılır · tarih sağda 190,6 · satır aralığı 10 */
+const DLM = { L: 25, C: 70.8, V: 76.7, KS: 160, R: 190.6, Y0: 27.4, P: 10, OZ: 119.9, OC: 134.7, OV: 140.4 };
+function dlOnHtml(d){ const I = dlIcerik(d), e = t => esc(t || ""), mm = x => (x / 2.1).toFixed(3) + "cqw";
+  const son = I.sat.length - 1;
+  return `<div class="dl-kagit"><div class="dl-pybs" style="padding:${mm(DLM.Y0 - 4.2)} ${mm(210 - DLM.R)} 0 ${mm(DLM.L)}">${I.sat.map(([a, b], i) => `<div class="dl-r" style="grid-template-columns:${mm(DLM.C - DLM.L)} ${mm(DLM.V - DLM.C)} ${i === 0 ? mm(DLM.KS - DLM.V) + " 1fr" : "1fr"}"><b>${a}</b><b class="dl-ik">:</b>${i === son && I.ozu ? `<span class="dl-tc"><span>${e(b)}</span><span class="dl-oz" style="left:${mm(DLM.OZ - DLM.V)}"><b>ÖZÜ</b><b style="left:${mm(DLM.OC - DLM.OZ)}">:</b><span style="left:${mm(DLM.OV - DLM.OZ)}">${e(I.ozu)}</span></span></span>` : `<span>${e(b)}</span>`}${i === 0 ? `<span class="dl-tar">${e(I.tarih)}</span>` : ""}</div>`).join("")}
+    <div class="dl-on">KOMUTANLIK ÖNÜNE</div><div class="dl-m" style="text-indent:${mm(14.8)}">${e(I.metin).replace(/\n/g, "<br>") || '<i class="dl-bos">Dilekçe metni</i>'}</div>${I.imza ? `<div class="dl-im"><b>${e(I.imza[0])}</b><span>${e(I.imza[1])}</span></div>` : ""}</div></div>`; }
 function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") return; const v = dlVeri(d), k = dlAktif(v), p = dlKisi(k), P = (S.personel.rows || []).filter(x => x.ad);
   const eksik = p ? DL_ALAN.filter(([a]) => a !== "kita" && !String(p[a] || "").trim()).map(([, t]) => t) : [];
   const L = v.kayitlar.slice().reverse();
@@ -8581,34 +8584,44 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
     return geriAlinabilir("Dilekçe silindi", () => { v.kayitlar.splice(i, 0, x); v.aktif = x.id; yaz(); }); } });
 /* ---- çıktılar: örnek dilekçeyle aynı ölçüler (A4, Times New Roman 12, kenar üst 17,5 · sol 25 · sağ 22,5 mm) ---- */
 async function dilekceCikti(d, a, tur){ const I = dlIcerik(d); return tur === "pdf" ? dlPdf(I) : tur === "xlsx" ? dlExcel(I) : dlWord(I); }
-async function dlPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), L = 25, R = 210 - 22.5, W = R - L, X2 = L + 50, fs = 12, lh = fs * 0.3528 * 1.15 * 1.5, lh1 = fs * 0.3528 * 1.38;
-  doc.setTextColor(0, 0, 0); doc.setFont("LS", "normal"); doc.setFontSize(fs); let y = 17.5 + 5;
-  doc.text(I.tarih, R, y, { align: "right" }); y += lh;
-  I.sat.forEach(([a, b], i) => { doc.text(a, L, y); const s = doc.splitTextToSize(": " + b, R - X2); s.forEach((ln, j) => { doc.text(j ? ln.replace(/^\s+/, "") : ln, X2, y + j * lh); });
-    if(i === I.sat.length - 1 && I.ozu) doc.text("ÖZÜ: " + I.ozu, R, y, { align: "right" }); y += s.length * lh; });
-  y += lh * 1.2; doc.setFont("LS", "bold"); doc.text("KOMUTANLIK ÖNÜNE", L + W / 2, y, { align: "center" }); y += 8.6; doc.setFont("LS", "normal");
-  String(I.metin || "").split("\n").forEach(par => { const ilk = 12.5, kel = par.split(/\s+/).filter(Boolean); let sat = [], gen = W - ilk, satirlar = [];
-    kel.forEach(w => { const t = [...sat, w].join(" "); if(sat.length && doc.getTextWidth(t) > gen){ satirlar.push({ k: sat, gen }); sat = [w]; gen = W; } else sat.push(w); }); if(sat.length) satirlar.push({ k: sat, gen, son: 1 });
-    satirlar.forEach((s, i) => { doc.text(s.k.join(" "), L + (i ? 0 : ilk), y); y += lh1; }); });   // örnekteki gibi sola yaslı
-  if(I.imza){ y += lh * 1.6; const cx = L + W * 0.78; doc.setFont("LS", "bold"); doc.text(I.imza[0], cx, y, { align: "center" }); doc.setFont("LS", "normal"); doc.text(I.imza[1], cx, y + lh1, { align: "center" }); }
+async function dlPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), M = DLM, fs = 12, lh = 5.1, son = I.sat.length - 1;
+  doc.setTextColor(0, 0, 0); doc.setFontSize(fs); let y = M.Y0;
+  I.sat.forEach(([a, b], i) => { doc.setFont("LS", "bold"); doc.text(a, M.L, y); doc.text(":", M.C, y); doc.setFont("LS", "normal");
+    const gen = (i === 0 ? M.KS : M.R) - M.V - (i === son && I.ozu ? M.R - M.OZ + 2 : 0), L = doc.splitTextToSize(String(b), Math.max(20, gen));
+    L.forEach((ln, j) => doc.text(ln, M.V, y + j * lh));
+    if(i === 0) doc.text(I.tarih, M.R, y, { align: "right" });
+    if(i === son && I.ozu){ doc.setFont("LS", "bold"); doc.text("ÖZÜ", M.OZ, y); doc.text(":", M.OC, y); doc.setFont("LS", "normal"); doc.text(doc.splitTextToSize(I.ozu, M.R - M.OV)[0] || "", M.OV, y); }
+    y += (L.length - 1) * lh + M.P; });
+  y += 2.0; doc.setFont("LS", "bold"); doc.text("KOMUTANLIK ÖNÜNE", (M.L + M.R) / 2, y, { align: "center" }); y += 11.4; doc.setFont("LS", "normal");
+  const W = M.R - M.L, ilk = 14.8, lh2 = 5.5;
+  String(I.metin || "").split("\n").forEach(par => { const kel = par.split(/\s+/).filter(Boolean); let sat = [], gen = W - ilk; const S2 = [];
+    kel.forEach(w => { const t = [...sat, w].join(" "); if(sat.length && doc.getTextWidth(t) > gen){ S2.push({ k: sat, gen }); sat = [w]; gen = W; } else sat.push(w); }); if(sat.length) S2.push({ k: sat, gen, son: 1 });
+    S2.forEach((s2, n) => { const x0 = M.L + (n ? 0 : ilk); if(s2.son || s2.k.length < 2) doc.text(s2.k.join(" "), x0, y); else { const top = s2.k.reduce((t, w) => t + doc.getTextWidth(w), 0), ara = (s2.gen - top) / (s2.k.length - 1); let x = x0; s2.k.forEach(w => { doc.text(w, x, y); x += doc.getTextWidth(w) + ara; }); } y += lh2; }); });
+  if(I.imza){ y += 14; const cx = M.L + W * 0.78; doc.setFont("LS", "bold"); doc.text(I.imza[0], cx, y, { align: "center" }); doc.setFont("LS", "normal"); doc.text(I.imza[1], cx, y + lh2, { align: "center" }); }
   return new Blob([doc.output("arraybuffer")], { type: "application/pdf" }); }
-function dlWord(I){ const R = (t, o = {}) => runXml(t, { sz: 24, b: false, ...o }), sat = `<w:spacing w:after="0" w:line="360" w:lineRule="auto"/>`;
-  let g = `<w:p><w:pPr><w:jc w:val="right"/>${sat}</w:pPr>${R(I.tarih)}</w:p>`;
-  I.sat.forEach(([a, b], i) => { const son = i === I.sat.length - 1 && I.ozu; g += `<w:p><w:pPr>${son ? '<w:tabs><w:tab w:val="left" w:pos="2832"/><w:tab w:val="right" w:pos="9214"/></w:tabs>' : '<w:tabs><w:tab w:val="left" w:pos="2832"/></w:tabs>'}${sat}<w:ind w:left="2832" w:hanging="2832"/></w:pPr>${R(a)}<w:r><w:tab/></w:r>${R(": " + b)}${son ? `<w:r><w:tab/></w:r>${R("ÖZÜ: " + I.ozu)}` : ""}</w:p>`; });
-  g += `<w:p><w:pPr>${sat}</w:pPr></w:p><w:p><w:pPr><w:jc w:val="center"/><w:spacing w:after="120"/></w:pPr>${R("KOMUTANLIK ÖNÜNE", { b: true })}</w:p>`;
-  String(I.metin || "").split("\n").forEach(par => { g += `<w:p><w:pPr><w:ind w:firstLine="708"/><w:spacing w:after="0" w:line="276" w:lineRule="auto"/></w:pPr>${R(par)}</w:p>`; });
+function dlWord(I){ const M = DLM, tw = x => Math.round(x * 56.7), R = (t, o = {}) => runXml(t, { sz: 24, b: false, k: "000000", ...o }), son = I.sat.length - 1;
+  const g1 = tw(M.C - M.L), g2 = tw(M.V - M.C), g3 = tw(M.KS - M.V), g4 = tw(M.R - M.KS), yok = '<w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/></w:tcBorders>';
+  const p = (ic, o = {}) => `<w:p><w:pPr>${o.tab || ""}<w:spacing w:before="0" w:after="${o.after ?? 284}" w:line="288" w:lineRule="exact"/>${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}</w:pPr>${ic}</w:p>`;
+  const tc = (w, ic, span) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${span ? `<w:gridSpan w:val="${span}"/>` : ""}${yok}</w:tcPr>${ic}</w:tc>`;
+  let rows = I.sat.map(([a, b], i) => { const ozu = i === son && I.ozu, tab = ozu ? `<w:tabs><w:tab w:val="left" w:pos="${tw(M.OZ - M.V)}"/><w:tab w:val="left" w:pos="${tw(M.OC - M.V)}"/><w:tab w:val="left" w:pos="${tw(M.OV - M.V)}"/></w:tabs>` : "";
+    const deger = ozu ? p(`${R(b)}<w:r><w:tab/></w:r>${R("ÖZÜ", { b: true })}<w:r><w:tab/></w:r>${R(":", { b: true })}<w:r><w:tab/></w:r>${R(I.ozu)}`, { tab }) : p(R(b));
+    return `<w:tr><w:trPr><w:cantSplit/></w:trPr>${tc(g1, p(R(a, { b: true })))}${tc(g2, p(R(":", { b: true })))}${i === 0 ? tc(g3, p(R(b))) + tc(g4, p(R(I.tarih), { jc: "right" })) : tc(g3 + g4, deger, 2)}</w:tr>`; }).join("");
+  let g = `<w:tbl><w:tblPr><w:tblW w:w="${g1 + g2 + g3 + g4}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${g1}"/><w:gridCol w:w="${g2}"/><w:gridCol w:w="${g3}"/><w:gridCol w:w="${g4}"/></w:tblGrid>${rows}</w:tbl>`;
+  g += `<w:p><w:pPr><w:jc w:val="center"/><w:spacing w:before="60" w:after="360"/></w:pPr>${R("KOMUTANLIK ÖNÜNE", { b: true })}</w:p>`;
+  String(I.metin || "").split("\n").forEach(par => { g += `<w:p><w:pPr><w:jc w:val="both"/><w:ind w:firstLine="${tw(14.8)}"/><w:spacing w:after="0" w:line="312" w:lineRule="exact"/></w:pPr>${R(par)}</w:p>`; });
   if(I.imza) g += `<w:p><w:pPr><w:spacing w:before="720" w:after="0"/><w:ind w:left="5664"/><w:jc w:val="center"/></w:pPr>${R(I.imza[0], { b: true })}</w:p><w:p><w:pPr><w:spacing w:after="0"/><w:ind w:left="5664"/><w:jc w:val="center"/></w:pPr>${R(I.imza[1])}</w:p>`;
-  return docxPaketle(g + `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="993" w:right="1274" w:bottom="1417" w:left="1417" w:header="708" w:footer="708" w:gutter="0"/></w:sectPr>`); }
-async function dlExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Workbook(), ws = wb.addWorksheet("Dilekçe", { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, margins: { left: 0.98, right: 0.89, top: 0.69, bottom: 0.98, header: 0, footer: 0 } } });
-  ws.columns = [{ width: 24 }, { width: 2 }, { width: 40 }, { width: 22 }]; const f = (b = false) => ({ name: "Times New Roman", size: 12, bold: b }); let r = 1;
+  return docxPaketle(g + `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.Y0 - 4.3)}" w:right="${tw(210 - M.R)}" w:bottom="1134" w:left="${tw(M.L)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`); }
+async function dlExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Workbook(), son = I.sat.length - 1, ws = wb.addWorksheet("Dilekçe", { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, margins: { left: 0.98, right: 0.76, top: 0.9, bottom: 0.6, header: 0, footer: 0 } } });
+  ws.columns = [{ width: 24 }, { width: 3 }, { width: 22 }, { width: 6 }, { width: 3 }, { width: 18 }]; const f = (b = false) => ({ name: "Times New Roman", size: 12, bold: b }); let r = 1;
   const c = (rr, cc, v, o = {}) => { const x = ws.getCell(rr, cc); x.value = v; x.font = f(o.b); x.alignment = { horizontal: o.a || "left", vertical: "top", wrapText: !!o.w }; return x; };
-  ws.mergeCells(r, 1, r, 4); c(r, 1, I.tarih, { a: "right" }); r++;
-  I.sat.forEach(([a, b], i) => { c(r, 1, a); c(r, 2, ":"); const son = i === I.sat.length - 1 && I.ozu; if(!son) ws.mergeCells(r, 3, r, 4); c(r, 3, b, { w: 1 }); if(son) c(r, 4, "ÖZÜ: " + I.ozu, { a: "right" }); ws.getRow(r).height = !son && String(b).length > 46 ? 36 : 20; r++; });
-  r++; ws.mergeCells(r, 1, r, 4); c(r, 1, "KOMUTANLIK ÖNÜNE", { a: "center", b: 1 }); r++;
-  ws.mergeCells(r, 1, r, 4); c(r, 1, "        " + String(I.metin || "").replace(/\n/g, "\n        "), { a: "justify", w: 1 }); ws.getRow(r).height = Math.max(20, Math.ceil(String(I.metin || "").length / 85 + (String(I.metin || "").match(/\n/g) || []).length) * 16.5); r++;
-  if(I.imza){ r += 2; ws.mergeCells(r, 3, r, 4); c(r, 3, I.imza[0], { a: "center", b: 1 }); r++; ws.mergeCells(r, 3, r, 4); c(r, 3, I.imza[1], { a: "center" }); }
+  I.sat.forEach(([a, b], i) => { c(r, 1, a, { b: 1 }); c(r, 2, ":", { b: 1 }); const oz = i === son && I.ozu;
+    if(i === 0){ ws.mergeCells(r, 3, r, 5); c(r, 3, b, { w: 1 }); c(r, 6, I.tarih, { a: "right" }); ws.getRow(r).height = Math.max(28, Math.ceil(String(b).length / 38) * 15.5 + 12); }
+    else if(oz){ c(r, 3, b); c(r, 4, "ÖZÜ", { b: 1 }); c(r, 5, ":", { b: 1 }); c(r, 6, I.ozu); ws.getRow(r).height = 28; }
+    else { ws.mergeCells(r, 3, r, 6); c(r, 3, b, { w: 1 }); ws.getRow(r).height = 28; } r++; });
+  r++; ws.mergeCells(r, 1, r, 6); c(r, 1, "KOMUTANLIK ÖNÜNE", { a: "center", b: 1 }); ws.getRow(r).height = 26; r++;
+  ws.mergeCells(r, 1, r, 6); c(r, 1, "          " + String(I.metin || "").replace(/\n/g, "\n          "), { a: "justify", w: 1 }); ws.getRow(r).height = Math.max(20, Math.ceil(String(I.metin || "").length / 80 + (String(I.metin || "").match(/\n/g) || []).length) * 17); r++;
+  if(I.imza){ r += 2; ws.mergeCells(r, 4, r, 6); c(r, 4, I.imza[0], { a: "center", b: 1 }); r++; ws.mergeCells(r, 4, r, 6); c(r, 4, I.imza[1], { a: "center" }); }
   return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }); }
-
 /* ================= SİCİL AMİRLERİ (tur: "sicil") =================
    d.sa = { baslik, zincir: [{ id, rutbe, ad }], kisiler: [{ id, pid, rutbe, ad, sicil, a: ["", "", ""] }] }
    Amir zincirinde en yakın amir en üstte durur. Kişinin 1./2./3. sicil amiri kendiliğinden
