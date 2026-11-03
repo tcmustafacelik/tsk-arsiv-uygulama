@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "305";
+  const SURUM = "306";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1551,7 +1551,7 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dl-bilgi{border-top:1px dashed var(--line2);padding-top:6px} .dl-bilgi summary{display:flex;align-items:center;gap:8px;cursor:pointer;list-style:none;font:700 12.5px var(--f-ui);padding:4px 0} .dl-bilgi summary::-webkit-details-marker{display:none}
 .dl-eksik{font-style:normal;font:700 10.5px var(--f-ui);color:#9A5B18;background:#FBEFD8;border-radius:10px;padding:1px 8px} .dl-tam{font-style:normal;font:700 10.5px var(--f-ui);color:#2F6B47;background:#E2F1E7;border-radius:10px;padding:1px 8px}
 .dl-alanlar{display:grid;grid-template-columns:1fr 1fr;gap:7px} .dl-al{display:flex;flex-direction:column;gap:3px;min-width:0} .dl-al.tam,.dl-alanlar .tam{grid-column:1 / -1} .dl-al>span{font:600 10.5px var(--f-ui);color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap} .dl-al>span i{font-weight:500;font-style:normal;opacity:.8}
-.dl-al input,.dl-al textarea{width:100%;box-sizing:border-box;min-width:0;border:1px solid var(--line2);border-radius:8px;background:#fff;padding:7px 9px;font:600 13px/1.35 var(--f-ui);color:#22303D;resize:none} .dl-al input{height:36px} .dl-al.bos textarea{border-color:#E5C48E;background:#FFFBF3}
+.dl-al input,.dl-al textarea{width:100%;box-sizing:border-box;min-width:0;border:1px solid var(--line2);border-radius:8px;background:#fff;padding:7px 9px;font:600 13px/1.35 var(--f-ui);color:#22303D;resize:none} .dl-al input{height:36px} .dl-al.dl-bos textarea,#dl-govde .dl-al.dl-bos input{border-color:#E5C48E;background:#FFFBF3}
 .dl-metin{min-height:80px;font-weight:500!important;font-size:13px!important;line-height:1.45!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
 .dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:7px 4px;font:700 11.5px/1.2 var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .dl-is{display:flex;gap:8px;justify-content:flex-end} #dl-govde .dl-ozler{display:flex!important;flex-wrap:nowrap!important;gap:5px;overflow-x:auto;scrollbar-width:none;margin-top:-2px;padding-bottom:2px} .dl-ozler::-webkit-scrollbar{display:none} #dl-govde .dl-ozler button{flex:none!important;padding:4px 10px;font:600 11px var(--f-ui);border-radius:14px;white-space:nowrap}
@@ -2435,7 +2435,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 305</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 306</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8521,7 +8521,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
    Kimlik bloğu personel kartından gelir (rütbe, ad, sicil, görev, doğum + dilekçe için eklenen baba adı, memleket, duhul, nasıp, T.C. kimlik nu.).
    Bu ek alanlar kişinin personel kaydına yazılır; bir kez girilince bütün dilekçelerde kullanılır. */
 const DL_TUR = { diger: { ad: "Genel", ozu: "" }, izin: { ad: "Yıllık İzin", ozu: "Yıllık İzin Hk." }, mazeret: { ad: "Mazeret İzni", ozu: "Mazeret İzni Hk." } };   // genel: konu ve metin elle; izinler hazır şablon
-const DL_OZU = ["Rütbe Terfi Hk.", "Tayin Hk.", "Lojman Talebi Hk.", "Kurs Talebi Hk.", "Görevlendirme Hk.", "Nakil Hk."];
+const DL_OZU = ["Sözleşme Feshi", "Kamuda İstihdam Hk.", "Rütbe Terfi Hk.", "Tayin Hk.", "Lojman Talebi Hk.", "Kurs Talebi Hk.", "Görevlendirme Hk.", "Nakil Hk."];
 const DL_AY = ["Ocak", "Şubat", "Mart", "Nisan", "Mayıs", "Haziran", "Temmuz", "Ağustos", "Eylül", "Ekim", "Kasım", "Aralık"];
 const DL_ALAN = [["kita", "Kıt'ası"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi"], ["duhul", "Duhulü"], ["nasip", "Nasbı"], ["sicil", "Sicili"], ["ems", "EMS no."], ["tc", "T.C. kimlik no."]];
 let dlAcik = null, dlKisiAcik = false;
@@ -8529,6 +8529,13 @@ const dlVeri = d => { d.dl ||= {}; d.dl.garnizon ??= "DİYARBAKIR"; d.dl.kayitla
 const dlYeniKayit = (o = {}) => ({ id: "dk" + yeniId().slice(0, 8), pid: "", tur: "diger", tarih: bugun(), bas: "", gun: "", sebep: "", ozu: "", metin: "", elle: false, imza: false, ...o });
 const dlAktif = v => v.kayitlar.find(k => k.id === v.aktif) || v.kayitlar[0];
 const dlKisi = k => (S.personel.rows || []).find(p => p.id === k.pid) || null;
+const DL_TARIH = ["dogum", "duhul", "nasip"];   // kişi kaydında gg.aa.yyyy durur; ekranda tarih seçiciyle seçilir
+const dlIso = t => { t = String(t || "").trim(); let m = t.match(/^(\d{1,2})[./-](\d{1,2})[./-](\d{4})$/); if(m) return `${m[3]}-${m[2].padStart(2, "0")}-${m[1].padStart(2, "0")}`; return /^\d{4}-\d{2}-\d{2}$/.test(t) ? t : ""; };
+const dlTrT = iso => { const m = String(iso || "").match(/^(\d{4})-(\d{2})-(\d{2})$/); return m ? `${m[3]}.${m[2]}.${m[1]}` : ""; };
+/* Ekler: her satır bir ek; “1-”, “2-” kendiliğinden */
+const dlEk = k => String(k.ek || "").split("\n").map(x => x.trim()).filter(Boolean).map((x, i) => /^\d+\s*[-.)]\s*/.test(x) ? x.replace(/^(\d+)\s*[-.)]\s*/, "$1- ") : `${i + 1}- ${x}`);
+/* İlgi maddeleri: her satır bir madde; “a)”, “b)” kendiliğinden eklenir (yazılmışsa korunur) */
+const dlIlgi = k => String(k.ilgi || "").split("\n").map(x => x.trim()).filter(Boolean).map((x, i) => /^[a-zçğıöşü]\)\s*/i.test(x) ? x.replace(/^([a-zçğıöşü]\))\s*/i, "$1 ") : `${"abcçdefgğhıijklmnoöprsştuüvyz"[i] || i + 1}) ${x}`);
 const dlUzunTarih = t => { if(!t) return "……"; const [y, m, g] = t.split("-").map(Number); return `${g} ${DL_AY[m - 1]} ${y}`; };
 function dlSayiYazi(n){ n = Math.floor(+n); if(!(n > 0) || n > 999) return ""; const B = ["", "bir", "iki", "üç", "dört", "beş", "altı", "yedi", "sekiz", "dokuz"], O = ["", "on", "yirmi", "otuz", "kırk", "elli", "altmış", "yetmiş", "seksen", "doksan"];
   const y = Math.floor(n / 100), o = Math.floor(n % 100 / 10), b = n % 10; return [y ? (y > 1 ? B[y] + " " : "") + "yüz" : "", O[o], B[b]].filter(Boolean).join(" "); }
@@ -8542,20 +8549,25 @@ const dlOzu = k => k.tur === "diger" ? (k.ozu || "") : DL_TUR[k.tur].ozu;
 /* kâğıda gidecek içerik (önizleme, PDF, Word ve Excel aynı veriden çizer) */
 function dlIcerik(d){ const v = dlVeri(d), k = dlAktif(v), p = dlKisi(k) || {};
   const sat = [["KIT'ASI", dlKita(v, dlKisi(k))], ["SINIF VE RÜTBESİ", p.rutbe || ""], ["ADI VE SOYADI", p.ad || ""], ["BABA ADI", p.baba || ""], ["MEMLEKETİ", p.memleket || ""], ["DOĞUM TARİHİ", p.dogum || ""], ["DUHULÜ", p.duhul || ""], ["NASBI", p.nasip || ""], ["SİCİLİ", p.sicil ? `[${p.sicil}]` : ""], ["EMS NO.", p.ems || ""], ["T.C. KİMLİK NO.", p.tc || ""]];
-  return { tarih: trTarih(k.tarih), sat, ozu: dlOzu(k), metin: dlMetin(k), imza: k.imza && p.ad ? [p.ad, p.rutbe || ""] : null, dosya: `${dosyaAdi(p.ad || "Dilekce")}-${dosyaAdi(DL_TUR[k.tur].ad)}-${trTarih(k.tarih)}` }; }
+  return { tarih: trTarih(k.tarih), sat, ozu: dlOzu(k), ilgi: dlIlgi(k), ek: dlEk(k), alt: [String(k.altSol || "").trim(), String(k.altSag || "").trim()], metin: dlMetin(k), imza: k.imza && p.ad ? [p.ad, p.rutbe || ""] : null, dosya: `${dosyaAdi(p.ad || "Dilekce")}-${dosyaAdi(DL_TUR[k.tur].ad)}-${trTarih(k.tarih)}` }; }
 /* PYBS dilekçesinin ölçüleri (mm): etiket 25 · iki nokta 70,8 · değer 76,7 · kıt'a satırı 160'ta kırılır · tarih sağda 190,6 · satır aralığı 10 */
-const DLM = { L: 25, C: 70.8, V: 76.7, KS: 160, R: 190.6, OZ: 121.5, OC: 134.4, OV: 140.7, TX: 170.6, BM: 106.75,
-  Y: [28.9, 48.2, 58.1, 68.2, 78.2, 88.3, 97.6, 107.6, 117.5, 129.0, 140.7], KL: 4.85, BAS: 153.0, MET: 166.3, ML: 4.95, GIR: 14.9 };   // PYBS taramasından ölçülen taban çizgileri (mm)
+const DLM = { L: 25, C: 70.8, V: 76.7, KS: 157.65, R: 190.6, OZ: 121.5, OC: 134.4, OV: 140.7, TX: 170.6, BM: 106.75,
+  Y: [28.9, 48.2, 58.1, 68.2, 78.2, 88.3, 97.6, 107.6, 117.5, 129.0, 140.7], KL: 4.85, BAS: 153.0, MET: 166.3, ML: 4.95, GIR: 14.9,
+  IL: 8.9, IA: 55.3, IM: 10.2, EKB: 24.8, EKA: 5.6, EKX: 23.8, AY: 290.2, AL: 23, AR: 195 };   // İlgi: başlıktan 8,9 aşağı, maddeler 55,3'te, metin son maddeden 10,2 aşağı · sayfa altı yazıları 290 mm (ikinci örnekten)
+/* İlgi satırlarını sar: ilk satır “İlgi:” ile, madde devamı madde yazısının hizasında */
+function dlIlgiSatir(I, gen){ const S = []; I.ilgi.forEach(m => { const p = m.match(/^(\S+\)\s)(.*)$/) || ["", "", m], on = p[1], kel = p[2].split(/\s+/).filter(Boolean); let sat = on.trim(), ilk = true;
+    kel.forEach(w => { const t = sat + " " + w; if(gen(t) > DLM.R - DLM.IA && sat !== on.trim()){ S.push({ t: sat, ilk }); ilk = false; sat = w; } else sat = t; }); S.push({ t: sat, ilk }); }); return S; }   // PYBS taramasından ölçülen taban çizgileri (mm)
 /* kıt'a 3 satırdan farklı sararsa alttaki her şey satır farkı kadar kayar */
 const dlKitaSatir = (doc, t) => doc ? doc.splitTextToSize(String(t), DLM.KS - DLM.V).length : 3;
 function dlOnHtml(d){ const I = dlIcerik(d), e = t => esc(t || ""), mm = x => (x / 2.1).toFixed(3) + "cqw", M = DLM, son = I.sat.length - 1, ust = y => mm(y - 3.25);
-  const ks = Math.max(1, Math.ceil(String(I.sat[0][1] || "").length / 46)), kay = Math.max(0, ks - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
+  const ks = Math.max(1, Math.ceil(String(I.sat[0][1] || "").length / 44)), kay = Math.max(0, ks - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
   let h = I.sat.map(([a, b], i) => `<b class="dl-e" style="left:${mm(M.L)};top:${ust(Y(i))};width:${mm(M.C - M.L - 1)}">${a}</b><b class="dl-ik" style="left:${mm(M.C)};top:${ust(Y(i))}">:</b>`
     + (i === 0 ? `<span class="dl-v" style="left:${mm(M.V)};top:${ust(Y(0))};width:${mm(M.KS - M.V)};white-space:normal;line-height:${mm(M.KL)}">${e(b)}</span><span class="dl-v" style="left:${mm(M.TX)};top:${ust(Y(0))}">${e(I.tarih)}</span>`
       : `<span class="dl-v" style="left:${mm(M.V)};top:${ust(Y(i))}">${e(b)}</span>`)
     + (i === son && I.ozu ? `<b class="dl-v" style="left:${mm(M.OZ)};top:${ust(Y(i))}">ÖZÜ</b><b class="dl-v" style="left:${mm(M.OC)};top:${ust(Y(i))}">:</b><span class="dl-v" style="left:${mm(M.OV)};top:${ust(Y(i))}">${e(I.ozu)}</span>` : "")).join("");
   h += `<b class="dl-v" style="left:${mm(M.BM - 60)};width:${mm(120)};text-align:center;top:${ust(M.BAS + kay)}">KOMUTANLIK ÖNÜNE</b>`;
-  h += `<div class="dl-m" style="left:${mm(M.L)};width:${mm(M.R - M.L)};top:${ust(M.MET + kay)};line-height:${mm(M.ML)};text-indent:${mm(M.GIR)}">${e(I.metin).replace(/\n/g, "<br>") || '<i class="dl-bos">Dilekçe metni</i>'}</div>`;
+  let met = M.MET; if(I.ilgi.length){ const y0 = M.BAS + M.IL; h += `<span class="dl-v" style="left:${mm(M.L + M.GIR)};top:${ust(y0 + kay)}">İlgi:</span>` + I.ilgi.map((m, i) => `<span class="dl-v" style="left:${mm(M.IA)};top:${ust(y0 + i * M.ML + kay)}">${e(m)}</span>`).join(""); met = y0 + (I.ilgi.length - 1) * M.ML + M.IM; }
+  h += `<div class="dl-m" style="left:${mm(M.L)};width:${mm(M.R - M.L)};top:${ust(met + kay)};line-height:${mm(M.ML)};text-indent:${mm(M.GIR)}">${e(I.metin).replace(/\n/g, "<br>") || '<i class="dl-bos">Dilekçe metni</i>'}</div>`;
   if(I.imza) h += `<div class="dl-im" style="left:${mm(M.L + (M.R - M.L) * .56)};width:${mm((M.R - M.L) * .44)};top:${mm(200 + kay)}"><b>${e(I.imza[0])}</b><span>${e(I.imza[1])}</span></div>`;
   return `<div class="dl-kagit dl-mut">${h}</div>`; }
 /* önizleme = gerçek PDF çıktısının resmi (ekranda görülen, basılanın kendisi); yazdıkça kısa gecikmeyle yenilenir */
@@ -8579,9 +8591,11 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
     <section class="dl-kart">
       ${ksSatir(p, 'data-dl="kisi"')}
       ${p ? `<details class="dl-bilgi"${dlKisiAcik || eksik.length ? " open" : ""}><summary><span>Kimlik bilgileri</span>${eksik.length ? `<em class="dl-eksik">${eksik.length} eksik</em>` : '<em class="dl-tam">tamam</em>'}</summary>
-        <div class="dl-alanlar">${DL_ALAN.map(([a, t]) => `<label class="dl-al${a === "kita" ? " tam" : ""}${a !== "kita" && !String(p[a] || "").trim() ? " bos" : ""}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-dl-k="${a}" placeholder="${a === "kita" ? esc(dlKita(v, { ...p, kita: "" })) : ["dogum", "duhul", "nasip"].includes(a) ? "gg.aa.yyyy" : ""}"${a === "tc" || a === "sicil" ? ' inputmode="numeric"' : ""}>${esc(a === "kita" ? (p.kita || "") : (p[a] || ""))}</textarea></label>`).join("")}
-          <label class="dl-al tam"><span>Garnizon (kıt'a satırının sonu)</span><input data-dl-g="garnizon" value="${esc(v.garnizon)}"></label></div>
-        <small class="dl-not">Bu bilgiler kişinin personel kaydına yazılır; bir kez girilince bütün dilekçelerde gelir.</small></details>` : ""}
+        <div class="dl-alanlar">${DL_ALAN.map(([a, t]) => { const bos = a !== "kita" && !String(p[a] || "").trim(), cl = `dl-al${a === "kita" ? " tam" : ""}${bos ? " dl-bos" : ""}`;
+          if(DL_TARIH.includes(a) && (!p[a] || dlIso(p[a]))) return `<label class="${cl}"><span>${t}</span><input type="date" data-dl-k="${a}" value="${esc(dlIso(p[a]))}"></label>`;
+          return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-dl-k="${a}" placeholder="${a === "kita" ? esc(dlKita(v, { ...p, kita: "" })) : ""}"${a === "tc" || a === "sicil" || a === "ems" ? ' inputmode="numeric"' : ""}>${esc(a === "kita" ? (p.kita || "") : (p[a] || ""))}</textarea></label>`; }).join("")}
+          ${p.kita ? "" : `<label class="dl-al tam"><span>Garnizon (kıt'a satırının sonu)</span><input data-dl-g="garnizon" value="${esc(v.garnizon)}"></label>`}</div>
+        <small class="dl-not">Kişinin personel kaydına yazılır; bir kez girilir.</small></details>` : ""}
       <div class="dl-bas">Tür</div>
       <div class="dl-seg">${Object.entries(DL_TUR).map(([t, o]) => `<button type="button" data-dl-tur="${t}" aria-pressed="${k.tur === t}">${o.ad}</button>`).join("")}</div>
       <div class="dl-alanlar">
@@ -8591,6 +8605,11 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
         ${k.tur === "mazeret" ? `<label class="dl-al tam"><span>Mazeret sebebi</span><textarea class="oto-boy" rows="1" data-dl-f="sebep" placeholder="ör. 19 Temmuz 2026 tarihinde Dikey Geçiş Sınavım">${esc(k.sebep)}</textarea></label>` : ""}
         <label class="dl-al tam"><span>Metin${k.tur !== "diger" ? (k.elle ? ' <button type="button" class="dl-sifir" data-dl="sablon">↺ Şablondan yeniden yaz</button>' : " <i>bilgilerden kendiliğinden yazılır, değiştirebilirsiniz</i>") : ""}</span><textarea class="oto-boy dl-metin" rows="4" data-dl-f="metin" placeholder="Dilekçe metni… Komutanlık emir ve tensiplerine maruzdur. Arz ederim.">${esc(dlMetin(k))}</textarea></label>
         <label class="kp-tik tam"><input type="checkbox" data-dl-f="imza"${k.imza ? " checked" : ""}> Altına imza bloğu koy (ad soyad, rütbe)</label></div>
+      <details class="dl-bilgi"${k.ilgi || k.ek || k.altSol || k.altSag ? " open" : ""}><summary><span>İlgi · Ekler · Sayfa altı</span><em class="dl-not">isteğe bağlı</em></summary>
+        <div class="dl-alanlar">        <label class="dl-al tam"><span>İlgi <i>isteğe bağlı · her satıra bir madde, a) b) kendiliğinden</i></span><textarea class="oto-boy" rows="1" data-dl-f="ilgi" placeholder="ör. 6191 Sayılı Sözleşmeli Erbaş ve Er Kanunu">${esc(k.ilgi || "")}</textarea></label>
+          <label class="dl-al tam"><span>Ekler <i>isteğe bağlı · her satıra bir ek, 1- 2- kendiliğinden</i></span><textarea class="oto-boy" rows="1" data-dl-f="ek" placeholder="ör. Mezuniyet Belgesi (Diploma)">${esc(k.ek || "")}</textarea></label>
+            <label class="dl-al tam"><span>Sayfa altı sol</span><input data-dl-f="altSol" value="${esc(k.altSol || "")}"></label><label class="dl-al tam"><span>Sayfa altı sağ</span><input data-dl-f="altSag" value="${esc(k.altSag || "")}"></label></div>
+        <small class="dl-not">Sayfa altına PYBS çıktı satırını uygulama kendisi yazmaz; boş kalırsa basılmaz.</small></details>
       <div class="dl-is"><button type="button" class="mini" data-dl="kopya">⧉ Kopyasını oluştur</button>${v.kayitlar.length > 1 ? '<button type="button" class="mini sil" data-dl="sil">Sil</button>' : ""}</div></section>
     <div class="kp-onizle dl-onz">${dlOnHtml(d)}</div>`;
   otoBoyHepsi($("#dl-govde")); dlSigdir(); dlOnizleTazele(d, true); }
@@ -8599,7 +8618,7 @@ function dlSigdir(){ document.querySelectorAll(".dl-mut>.dl-e").forEach(b => { b
 document.fonts && document.fonts.ready.then(dlSigdir);
 const dlOnizleTazele = (d, hemen) => pdfOnizle($("#dl-govde .dl-onz"), () => dlPdf(dlIcerik(d)), hemen);
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#dl-govde")) return; const d = acikBelge(); if(!d || d.tur !== "dilekce") return; const v = dlVeri(d), k = dlAktif(v);
-  if(el.dataset.dlK){ const p = dlKisi(k); if(!p) return; const a = el.dataset.dlK, val = el.value.replace(/\s*\n\s*/g, " "); if(val.trim()) p[a] = val; else delete p[a]; el.closest(".dl-al")?.classList.toggle("bos", a !== "kita" && !val.trim()); kaydetBt("personel"); }
+  if(el.dataset.dlK){ const p = dlKisi(k); if(!p) return; const a = el.dataset.dlK, val = el.type === "date" ? dlTrT(el.value) : el.value.replace(/\s*\n\s*/g, " "); if(val.trim()) p[a] = val; else delete p[a]; el.closest(".dl-al")?.classList.toggle("dl-bos", a !== "kita" && !val.trim()); kaydetBt("personel"); }
   else if(el.dataset.dlG){ v[el.dataset.dlG] = el.value; }
   else if(el.dataset.dlF){ const f = el.dataset.dlF; if(f === "imza") return;
     if(f === "metin"){ k.metin = el.value; if(k.tur !== "diger") k.elle = true; }
@@ -8629,13 +8648,16 @@ async function dlPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }
     if(i === son && I.ozu){ doc.setFont("LS", "bold"); doc.text("ÖZÜ", M.OZ, y); doc.text(":", M.OC, y); doc.setFont("LS", "normal"); doc.text(I.ozu, M.OV, y); } });
   doc.setFont("LS", "bold"); doc.text("KOMUTANLIK ÖNÜNE", M.BM, M.BAS + kay, { align: "center" }); doc.setFont("LS", "normal");
   let y = M.MET + kay; const W = M.R - M.L;
+  if(I.ilgi.length){ y = M.BAS + kay + M.IL; doc.text("İlgi:", M.L + M.GIR, y); dlIlgiSatir(I, t => doc.getTextWidth(t)).forEach((s2, n) => { if(n) y += M.ML; doc.text(s2.t, M.IA, y); }); y += M.IM; }
   String(I.metin || "").split("\n").forEach(par => { const kel = par.split(/\s+/).filter(Boolean); let sat = [], gen = W - M.GIR; const S2 = [];
     kel.forEach(w => { const t = [...sat, w].join(" "); if(sat.length && doc.getTextWidth(t) > gen){ S2.push({ k: sat, gen }); sat = [w]; gen = W; } else sat.push(w); }); if(sat.length) S2.push({ k: sat, gen, son: 1 });
     S2.forEach((s2, n) => { const x0 = M.L + (n ? 0 : M.GIR); if(s2.son || s2.k.length < 2) doc.text(s2.k.join(" "), x0, y); else { const top = s2.k.reduce((t, w) => t + doc.getTextWidth(w), 0), ara = (s2.gen - top) / (s2.k.length - 1); let x = x0; s2.k.forEach(w => { doc.text(w, x, y); x += doc.getTextWidth(w) + ara; }); } y += M.ML; }); });
   if(I.imza){ y += 14; const cx = M.L + W * 0.78; doc.setFont("LS", "bold"); doc.text(I.imza[0], cx, y, { align: "center" }); doc.setFont("LS", "normal"); doc.text(I.imza[1], cx, y + M.ML, { align: "center" }); }
+  if(I.ek.length){ y += (I.imza ? M.ML : 0) + M.EKB - M.ML; doc.setFont("LS", "normal"); doc.text("Ek :", M.EKX, y); I.ek.forEach(m => { y += M.EKA; doc.splitTextToSize(m, M.R - M.EKX).forEach((ln, j) => { if(j) y += M.ML; doc.text(ln, M.EKX, y); }); }); }
+  if(I.alt[0] || I.alt[1]){ doc.setFont("LS", "normal"); doc.setFontSize(10); if(I.alt[0]) doc.text(I.alt[0], M.AL, M.AY); if(I.alt[1]) doc.text(I.alt[1], M.AR, M.AY, { align: "right" }); doc.setFontSize(12); }
   return new Blob([doc.output("arraybuffer")], { type: "application/pdf" }); }
 function dlWord(I){ const M = DLM, tw = x => Math.round(x * 56.7), R = (t, o = {}) => runXml(t, { sz: 24, b: false, k: "000000", ...o }), son = I.sat.length - 1, AS = 3.9, AL = 0.95;
-  const ks = Math.max(1, Math.ceil(String(I.sat[0][1] || "").length / 46)), kay = Math.max(0, ks - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
+  const ks = Math.max(1, Math.ceil(String(I.sat[0][1] || "").length / 44)), kay = Math.max(0, ks - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
   const g1 = tw(M.C - M.L), g2 = tw(M.V - M.C), g3 = tw(M.KS - M.V), g4 = tw(M.R - M.KS), yok = '<w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/></w:tcBorders>';
   const p = (ic, o = {}) => `<w:p><w:pPr>${o.tab || ""}<w:spacing w:before="0" w:after="0" w:line="${tw(M.KL)}" w:lineRule="exact"/>${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}</w:pPr>${ic}</w:p>`;
   const tc = (w, ic, span, va) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${span ? `<w:gridSpan w:val="${span}"/>` : ""}${yok}<w:vAlign w:val="${va || "bottom"}"/></w:tcPr>${ic}</w:tc>`;
@@ -8646,9 +8668,15 @@ function dlWord(I){ const M = DLM, tw = x => Math.round(x * 56.7), R = (t, o = {
     return `<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${tw(h)}" w:hRule="exact"/></w:trPr>${tc(g1, p(R(a, { b: true })), 0, va)}${tc(g2, p(R(":", { b: true })), 0, va)}${i === 0 ? tc(g3, p(R(b)), 0, va) + tc(g4, `<w:p><w:pPr><w:ind w:left="${tw(M.TX - M.KS)}"/><w:spacing w:before="0" w:after="0" w:line="${tw(M.KL)}" w:lineRule="exact"/></w:pPr>${R(I.tarih)}</w:p>`, 0, va) : tc(g3 + g4, deger, 2, va)}</w:tr>`; }).join("");
   let g = `<w:tbl><w:tblPr><w:tblW w:w="${g1 + g2 + g3 + g4}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${g1}"/><w:gridCol w:w="${g2}"/><w:gridCol w:w="${g3}"/><w:gridCol w:w="${g4}"/></w:tblGrid>${rows}</w:tbl>`;
   g += `<w:p><w:pPr><w:jc w:val="center"/><w:ind w:left="0" w:right="${tw((M.L + M.R) - 2 * M.BM)}"/><w:spacing w:before="${tw(M.BAS + kay - AS - sinir(son))}" w:after="0" w:line="${tw(M.KL)}" w:lineRule="exact"/></w:pPr>${R("KOMUTANLIK ÖNÜNE", { b: true })}</w:p>`;
-  String(I.metin || "").split("\n").forEach((par, n) => { g += `<w:p><w:pPr><w:jc w:val="both"/><w:ind w:firstLine="${tw(M.GIR)}"/><w:spacing w:before="${n ? 0 : tw(M.MET - M.BAS - M.ML)}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${R(par)}</w:p>`; });
+  let onc = tw(M.MET - M.BAS - M.ML);
+  if(I.ilgi.length){ const genis = t => t.length * 2.05; dlIlgiSatir(I, genis).forEach((s2, n) => { const ilk = n === 0;
+      g += `<w:p><w:pPr><w:tabs><w:tab w:val="left" w:pos="${tw(M.IA - M.L)}"/></w:tabs><w:ind w:left="${tw(M.IA - M.L)}"${ilk ? ` w:hanging="${tw(M.IA - M.L - M.GIR)}"` : ""}/><w:spacing w:before="${ilk ? tw(M.IL - M.ML) : 0}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${ilk ? R("İlgi:") + "<w:r><w:tab/></w:r>" : ""}${R(s2.t)}</w:p>`; });
+    onc = tw(M.IM - M.ML); }
+  String(I.metin || "").split("\n").forEach((par, n) => { g += `<w:p><w:pPr><w:jc w:val="both"/><w:ind w:firstLine="${tw(M.GIR)}"/><w:spacing w:before="${n ? 0 : onc}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${R(par)}</w:p>`; });
   if(I.imza) g += `<w:p><w:pPr><w:spacing w:before="720" w:after="0"/><w:ind w:left="5664"/><w:jc w:val="center"/></w:pPr>${R(I.imza[0], { b: true })}</w:p><w:p><w:pPr><w:spacing w:after="0"/><w:ind w:left="5664"/><w:jc w:val="center"/></w:pPr>${R(I.imza[1])}</w:p>`;
-  return docxPaketle(g + `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.Y[0] - AS)}" w:right="${tw(210 - M.R)}" w:bottom="1134" w:left="${tw(M.L)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`); }
+  if(I.ek.length) [ "Ek :", ...I.ek ].forEach((m, i) => { g += `<w:p><w:pPr><w:ind w:left="${tw(M.EKX - M.L)}"/><w:spacing w:before="${i ? tw(M.EKA - M.ML) : tw(M.EKB - M.ML) - (I.imza ? 0 : 0)}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${R(m)}</w:p>`; });
+  const altVar = I.alt[0] || I.alt[1], alt = altVar ? `<w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="${tw(M.AR - M.L)}"/></w:tabs><w:ind w:left="${tw(M.AL - M.L)}" w:right="${tw(M.R - M.AR)}"/><w:spacing w:before="0" w:after="0"/></w:pPr>${R(I.alt[0], { sz: 20 })}<w:r><w:tab/></w:r>${R(I.alt[1], { sz: 20 })}</w:p>` : "";
+  return docxPaketle(g + `<w:sectPr>${altVar ? '<w:footerReference w:type="default" r:id="rIdAlt"/>' : ""}<w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.Y[0] - AS)}" w:right="${tw(210 - M.R)}" w:bottom="1134" w:left="${tw(M.L)}" w:header="0" w:footer="${tw(297 - M.AY - 1)}" w:gutter="0"/></w:sectPr>`, [], altVar ? { alt } : {}); }
 async function dlExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Workbook(), son = I.sat.length - 1, ws = wb.addWorksheet("Dilekçe", { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, margins: { left: 0.98, right: 0.76, top: 0.9, bottom: 0.6, header: 0, footer: 0 } } });
   ws.columns = [{ width: 24 }, { width: 3 }, { width: 22 }, { width: 6 }, { width: 3 }, { width: 18 }]; const f = (b = false) => ({ name: "Times New Roman", size: 12, bold: b }); let r = 1;
   const c = (rr, cc, v, o = {}) => { const x = ws.getCell(rr, cc); x.value = v; x.font = f(o.b); x.alignment = { horizontal: o.a || "left", vertical: "top", wrapText: !!o.w }; return x; };
@@ -8657,8 +8685,11 @@ async function dlExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Work
     else if(oz){ c(r, 3, b); c(r, 4, "ÖZÜ", { b: 1 }); c(r, 5, ":", { b: 1 }); c(r, 6, I.ozu); ws.getRow(r).height = 28; }
     else { ws.mergeCells(r, 3, r, 6); c(r, 3, b, { w: 1 }); ws.getRow(r).height = 28; } r++; });
   r++; ws.mergeCells(r, 1, r, 6); c(r, 1, "KOMUTANLIK ÖNÜNE", { a: "center", b: 1 }); ws.getRow(r).height = 26; r++;
+  I.ilgi.forEach((m, i) => { c(r, 1, i ? "" : "          İlgi:"); ws.mergeCells(r, 3, r, 6); c(r, 3, m, { w: 1 }); ws.getRow(r).height = Math.max(17, Math.ceil(m.length / 52) * 16); r++; }); if(I.ilgi.length) r++;
   ws.mergeCells(r, 1, r, 6); c(r, 1, "          " + String(I.metin || "").replace(/\n/g, "\n          "), { a: "justify", w: 1 }); ws.getRow(r).height = Math.max(20, Math.ceil(String(I.metin || "").length / 80 + (String(I.metin || "").match(/\n/g) || []).length) * 17); r++;
   if(I.imza){ r += 2; ws.mergeCells(r, 4, r, 6); c(r, 4, I.imza[0], { a: "center", b: 1 }); r++; ws.mergeCells(r, 4, r, 6); c(r, 4, I.imza[1], { a: "center" }); }
+  if(I.ek.length){ r += 3; c(r, 1, "Ek :"); r++; I.ek.forEach(m => { ws.mergeCells(r, 1, r, 6); c(r, 1, m, { w: 1 }); r++; }); }
+  if(I.alt[0] || I.alt[1]) (ws.headerFooter ||= {}).oddFooter = `&L&"Times New Roman"&10${I.alt[0].replace(/&/g, "&&")}&R&"Times New Roman"&10${I.alt[1].replace(/&/g, "&&")}`;
   return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }); }
 /* ================= SUBAY / ASTSUBAY İZİN BELGESİ (tur: "izinsa") =================
    PYBS “Silahlı Kuvvetler Personeline Ait İzin Belgesi” ön yüzü: A4'te iki özdeş nüsha, araları kesik çizgi.
