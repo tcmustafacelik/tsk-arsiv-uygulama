@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "284";
+  const SURUM = "285";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2398,7 +2398,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 284</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 285</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8441,8 +8441,15 @@ function saGrid(d){ const v = saVeri(d), W = 6, I = { t: 1, b: 1, l: 1, r: 1 }, 
   v.kisiler.forEach((k, i) => { const f = i % 2 ? "F5F8FB" : undefined, A = saAmirler(v, k);
     g.h.push(36); g.c.push([C(i + 1, { s: 9.5, f }), C(`${k.rutbe || ""}\n${k.ad || ""}`.trim(), { b: 1, f }), C(k.sicil || "", { f }), ...A.map(z => C(saYaz(z), { f }))]); });
   return g; }
-async function sicilCikti(d, a, tur){ const g = saGrid(d), a2 = { ...a, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
-  return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
+/* sicil amiri listesi: kurumsal tema (yoklama, personel, izin ile aynı aile; kendi rengi açık çivit) */
+const TEMA_SICIL = { ana: "7479AE", bas: "E2E3F2", basYazi: "2D3166", bant: "EEEFF8", bantYazi: "3A3E78", serit: "F7F7FC", cizgi: "C5C7DF", soluk: "6D7095", vurgu: "E8F0E3", vurguYazi: "2F5A3A", topSut: "F1F1F9", ustBand: "F3F3FA" };
+function tanimSicil(d){ const v = saVeri(d), T = TEMA_SICIL, bh = t => H(t, { fill: T.bas, k: T.basYazi });
+  const body = v.kisiler.map((k, i) => { const z = i % 2 ? T.serit : null, A = saAmirler(v, k);
+    return [H(i + 1, { fill: z, k: T.soluk }), H(`${k.rutbe || ""}\n${k.ad || ""}`.trim(), { fill: z }), H(k.sicil || "", { fill: z }), ...A.map(x => H(saYaz(x), { fill: z }))]; });
+  return { tema: T, dosya: dosyaAdi(d.ad || "Sicil_Amiri_Listesi"), baslik: v.baslik || "SİCİL AMİRİ LİSTESİ", oran: [6, 22, 12, 26, 28, 26],
+    head: [["S/N", "RÜTBE / ADI SOYADI", "SİCİL", "1. SİCİL AMİRİ", "2. SİCİL AMİRİ", "3. SİCİL AMİRİ"].map(bh)], body, satirH: 13, xSatir: 34, xYazi: 10.5, xBasYazi: 10.5, xBaslikYazi: 15 }; }
+async function sicilCikti(d, a, tur){ const sp = tanimSicil(d); if(!sp.body.length) throw new Error("listede kişi yok");
+  return tur === "pdf" ? await tabloPdf(sp, a) : tur === "xlsx" ? await tabloExcel(sp, a) : await tabloWord(sp, a); }
 /* ---- düzenleyici ---- */
 let saAcik = null, saZAcik = null;
 const saOzet = (v, k) => saAmirler(v, k).map((z, j) => `${j + 1}. ${z ? z.ad : "—"}`).join(" · ");
