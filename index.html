@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "307";
+  const SURUM = "308";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2398,6 +2398,12 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 #sa-govde .yk-s .kc-sy small{white-space:normal} #lt-govde .kc-sy b,#lt-govde .kc-sy small{white-space:normal;overflow-wrap:anywhere} .sa-am{color:#3F6487!important} .sa-am i{font-style:normal;font-weight:700;margin-right:2px}
 .sa-ok{flex:none;font-style:normal;color:var(--muted);font-size:12px}
 #sa-govde .kc-cips button{height:auto;min-height:30px;padding:4px 10px;display:inline-flex;flex-direction:column;align-items:flex-start;line-height:1.15;text-align:left} #sa-govde .kc-cips button small{font-size:10px;font-weight:500;color:var(--muted)}
+
+#dl-govde{gap:12px!important} #dl-govde .dl-ust{display:flex;align-items:center;gap:8px;padding:2px 2px 0} #dl-govde .dl-ust-s{width:28px;height:28px;border-radius:9px;background:#E9F2EC;color:#3E7354;display:grid;place-items:center} .dl-ust-s svg{width:16px;height:16px}
+#dl-govde .dl-yeni{margin-left:auto;display:inline-flex;align-items:center;gap:5px;border:1px solid #BCD6C5;background:#F1F8F3;color:#2F6B47;border-radius:18px;padding:5px 12px 5px 9px;font:700 12px var(--f-ui);cursor:pointer} .dl-yeni span{display:grid;place-items:center;width:17px;height:17px;border-radius:50%;background:#2F6B47;color:#fff;font-size:12px;line-height:1}
+#dl-govde .dl-liste{gap:6px} #dl-govde .dl-kart{gap:10px}
+.dl-ozu{display:flex;gap:6px;align-items:stretch} .dl-ozu textarea{flex:1} .dl-hazir{flex:none;display:inline-flex;align-items:center;gap:5px;border:1px solid #D5CDE6;background:#F4F1FA;color:#54477F;border-radius:8px;padding:0 11px;font:700 12px var(--f-ui);cursor:pointer;min-height:36px} .dl-hazir svg{width:15px;height:15px}
+.ks-av.dl-ko{background:#ECE8F4;color:#54477F}
 </style>
 
 </head>
@@ -2435,7 +2441,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 307</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 308</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8586,7 +8592,7 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
   const eksik = p ? DL_ALAN.filter(([a]) => a !== "kita" && !String(p[a] || "").trim()).map(([, t]) => t) : [];
   const L = v.kayitlar.slice().reverse();
   $("#dl-govde").innerHTML = `
-    <div class="dl-ust"><b>Dilekçeler</b><small>${v.kayitlar.length}</small><button type="button" class="btn ana kucuk" data-dl="yeni">＋ Yeni dilekçe</button></div>
+    <div class="dl-ust"><span class="dl-ust-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z M14 3v5h5 M10 13h6 M10 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><b>Dilekçeler</b><small>${v.kayitlar.length}</small><button type="button" class="dl-yeni" data-dl="yeni"><span>＋</span>Yeni</button></div>
     <div class="dl-liste">${L.map(x => { const q = dlKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-dl-sec="${x.id}"><span class="dl-tur t-${x.tur}">${esc(DL_TUR[x.tur].ad)}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc(trTarih(x.tarih))}${x.tur === "diger" && x.ozu ? " · " + esc(x.ozu) : ""}</small></button>`; }).join("")}</div>
     <section class="dl-kart">
       ${ksSatir(p, 'data-dl="kisi"')}
@@ -8601,7 +8607,7 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
       <div class="dl-alanlar">
         <label class="dl-al"><span>Dilekçe tarihi</span><input type="date" data-dl-f="tarih" value="${esc(k.tarih)}"></label>
         ${k.tur !== "diger" ? `<label class="dl-al"><span>İzin başlangıcı</span><input type="date" data-dl-f="bas" value="${esc(k.bas)}"></label>
-        <label class="dl-al"><span>Gün sayısı</span><input data-dl-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="ör. 3"></label>` : `<label class="dl-al tam"><span>Özü (konu)</span><textarea class="oto-boy" data-tek rows="1" data-dl-f="ozu" placeholder="ör. Rütbe Terfi Hk.">${esc(k.ozu)}</textarea></label><div class="kc-cips dl-ozler tam">${DL_OZU.map(o => `<button type="button" data-dl-oz="${esc(o)}" aria-pressed="${k.ozu === o}">${esc(o)}</button>`).join("")}</div>`}
+        <label class="dl-al"><span>Gün sayısı</span><input data-dl-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="ör. 3"></label>` : `<div class="dl-al tam"><span>Özü (konu)</span><div class="dl-ozu"><textarea class="oto-boy" data-tek rows="1" data-dl-f="ozu" placeholder="Yazın ya da hazır konudan seçin">${esc(k.ozu)}</textarea><button type="button" class="dl-hazir" data-dl="konu" aria-label="Hazır konular"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Hazır</button></div></div>`}
         ${k.tur === "mazeret" ? `<label class="dl-al tam"><span>Mazeret sebebi</span><textarea class="oto-boy" rows="1" data-dl-f="sebep" placeholder="ör. 19 Temmuz 2026 tarihinde Dikey Geçiş Sınavım">${esc(k.sebep)}</textarea></label>` : ""}
         <label class="dl-al tam"><span>Metin${k.tur !== "diger" ? (k.elle ? ' <button type="button" class="dl-sifir" data-dl="sablon">↺ Şablondan yeniden yaz</button>' : " <i>bilgilerden kendiliğinden yazılır, değiştirebilirsiniz</i>") : ""}</span><textarea class="oto-boy dl-metin" rows="4" data-dl-f="metin" placeholder="Dilekçe metni… Komutanlık emir ve tensiplerine maruzdur. Arz ederim.">${esc(dlMetin(k))}</textarea></label>
         <label class="kp-tik tam"><input type="checkbox" data-dl-f="imza"${k.imza ? " checked" : ""}> Altına imza bloğu koy (ad soyad, rütbe)</label></div>
@@ -8632,6 +8638,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.dlOz){ k.ozu = b.dataset.dlOz; return yaz(); }
   if(b.dataset.dlTur){ if(k.tur !== b.dataset.dlTur){ k.tur = b.dataset.dlTur; k.elle = false; if(k.tur === "diger") k.metin = ""; } return yaz(); }
   const is = b.dataset.dl;
+  if(is === "konu") return altPencere("ks-perde", "HAZIR KONU", "Dilekçenin özü", () => `<div class="ap-liste">${DL_OZU.map((o, i) => apSatir(`data-ks="${i}"`, `<span class="ks-av dl-ko">${esc(o.replace(/ Hk\.$/, "")[0])}</span>`, esc(o), o === k.ozu ? '<em class="ks-tik">✓</em>' : "")).join("")}</div>`, (b2, kapat) => { if(b2.dataset.ks){ kapat(); k.ozu = DL_OZU[+b2.dataset.ks]; kaydetBelge(d); dilekceCiz(); } }, { z: "ECE8F4", r: "54477F" });
   if(is === "kisi") return kisiSecAc("Dilekçe kimin adına", (S.personel.rows || []).filter(x => x.ad), k.pid, id => { k.pid = id; kaydetBelge(d); dilekceCiz(); });
   if(is === "yeni"){ const y = dlYeniKayit({ pid: k.pid, tur: k.tur }); v.kayitlar.push(y); v.aktif = y.id; yaz(); return bildir("Yeni dilekçe"); }
   if(is === "kopya"){ const y = { ...kopya(k), id: "dk" + yeniId().slice(0, 8), tarih: bugun() }; v.kayitlar.push(y); v.aktif = y.id; yaz(); return bildir("Kopyası oluşturuldu"); }
