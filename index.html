@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "303";
+  const SURUM = "304";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1194,7 +1194,7 @@ button,.btn,.gd-kisi,.gd-set,.ana-bolum,.ana-son-oge,.ana-kat-bas{transition:tra
 .hz-izgara{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:6px;padding:8px}
 .hz{display:flex;align-items:center;gap:8px;padding:7px 8px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);cursor:pointer;text-align:left;font-family:var(--f-ui);min-width:0}
 .hz-s{flex:none;width:30px;height:30px;border-radius:9px;background:var(--z);color:var(--rk);display:grid;place-items:center} .hz-s svg{width:17px;height:17px}
-.hz-y{min-width:0;display:flex;flex-direction:column} .hz-y b{font-size:13px;font-weight:600;color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .hz-y small{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.hz-y{min-width:0;display:flex;flex-direction:column} .hz-y b{font-size:13px;font-weight:600;color:var(--fg);line-height:1.2;overflow-wrap:anywhere} .hz-y small{font-size:11px;color:var(--muted);line-height:1.25;overflow-wrap:anywhere}
 @media (max-width:600px){ .hz-izgara{grid-template-columns:1fr 1fr} }
 .dk-oge{display:flex;flex-direction:column;gap:1px;text-align:left;padding:9px 12px;border-radius:12px;border:1px solid var(--line);border-left:4px solid var(--dk);background:color-mix(in srgb,var(--dk) 8%,var(--panel));color:var(--fg);font:inherit;cursor:pointer}
 .dk-oge b{font-size:13.5px} .dk-oge small{font-size:12px;color:var(--muted)}
@@ -1930,7 +1930,7 @@ select.sec-gizli{display:none!important}
 .ag-yeni-kat{display:block;width:100%;margin-top:8px;height:42px;border:1px dashed var(--line);border-radius:14px;background:transparent;font:600 13px var(--f-ui);color:var(--accent)}
 .ag-kayar{display:flex;flex-direction:column;gap:8px;padding:10px;border:1px solid var(--line2);border-radius:13px;background:var(--panel)} .ag-kayar>small{font:700 10.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
 .ag-ksat{display:flex;align-items:center;gap:8px} .ag-ksat>span{flex:none;width:66px;line-height:1.2;font:600 11.5px var(--f-ui);color:var(--muted)} .ag-ksat .bs-seg button{height:34px;font-size:12px} .ag-kis{display:flex;gap:6px}
-.hz-duz{display:block;margin:8px auto 2px;border:0;background:transparent;font:600 12px var(--f-ui);color:var(--muted);padding:4px 8px} .hz{position:relative} .hz.hz-gizli{opacity:.4;filter:grayscale(.6)} .hz-tik{position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--rk);background:var(--panel);color:var(--rk);font:800 11px/17px var(--f-ui);text-align:center;font-style:normal}
+.hz-duz{display:block;margin:8px auto 2px;border:0;background:transparent;font:600 12px var(--f-ui);color:var(--muted);padding:4px 8px} .hz-ip{margin:10px 4px 6px;text-align:center;font:500 11.5px var(--f-ui);color:var(--muted)} .hz-duz.hz-bitti{width:calc(100% - 24px);margin:2px auto 12px;padding:11px 12px;border-radius:12px;background:#3D5F8C;color:#fff;font:700 14px var(--f-ui);box-shadow:0 2px 8px rgba(61,95,140,.25);cursor:pointer} .hz{position:relative} .hz.hz-gizli{opacity:.4;filter:grayscale(.6)} .hz-tik{position:absolute;top:7px;right:7px;width:20px;height:20px;border-radius:50%;border:1.5px solid var(--rk);background:var(--panel);color:var(--rk);font:800 11px/17px var(--f-ui);text-align:center;font-style:normal}
 textarea.p-gorev{width:100%;min-height:34px;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font:500 13px/1.35 var(--f-ui);color:var(--fg)}
 .hz-duz~* .hz,.akk .hz[data-hz-t]{padding-right:30px}
 #p-tablo .p-oz{display:none}
@@ -2435,7 +2435,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 303</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 304</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3207,7 +3207,7 @@ function anaCiz(){
   const AD = { dilekce: "Dilekçe", personel: "Personel", izin: "İzin çizelgesi", yoklama: "Yoklama", gdhg: "GDHG onay", izinb: "İzin belgeleri", hedef: "Hedefler", sema: "Teşkilat", baslik: "Başlık yap", spor: "Spor testi" };
   const hzGiz = hzGizli(), turHep = ["personel", "izin", "gdhg", "izinb", "dilekce", "hedef", "yoklama", "sema", "spor", "baslik"].map(t => ({ t, d: S.belgeler.find(x => x.tur === t) })).filter(o => o.d), turler = hzDuzen ? turHep : turHep.filter(o => !hzGiz.includes(o.t));
   $("#ana-pano").innerHTML = donem + (turler.length ? kkKart("hizli", "#E3ECF5", "Hızlı erişim", "", `<div class="hz-izgara">${turler.map(({ t, d }) => { const [z, rk] = PANO_TEMA[t];
-    return `<button type="button" class="hz${hzDuzen && hzGiz.includes(t) ? " hz-gizli" : ""}" ${hzDuzen ? `data-hz-t="${t}" aria-pressed="${!hzGiz.includes(t)}"` : `data-pano-d="${esc(d.id)}"`} style="--z:${z};--rk:${rk}">${hzDuzen ? `<i class="hz-tik">${hzGiz.includes(t) ? "" : "✓"}</i>` : ""}<span class="hz-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PANO_SIMGE[t]}</svg></span><span class="hz-y"><b>${esc(AD[t])}</b><small>${esc(say[t](d))}</small></span></button>`; }).join("")}</div><button type="button" class="hz-duz" data-hz-duz>${hzDuzen ? "✓ Bitti · seçtikleriniz ana sayfada kalır" : "⚙ Kutuları seç"}</button>`, { sayi: turler.length }) : "");
+    return `<button type="button" class="hz${hzDuzen && hzGiz.includes(t) ? " hz-gizli" : ""}" ${hzDuzen ? `data-hz-t="${t}" aria-pressed="${!hzGiz.includes(t)}"` : `data-pano-d="${esc(d.id)}"`} style="--z:${z};--rk:${rk}">${hzDuzen ? `<i class="hz-tik">${hzGiz.includes(t) ? "" : "✓"}</i>` : ""}<span class="hz-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PANO_SIMGE[t]}</svg></span><span class="hz-y"><b>${esc(AD[t])}</b><small>${esc(say[t](d))}</small></span></button>`; }).join("")}</div>${hzDuzen ? `<p class="hz-ip">Ana sayfada görmek istediklerinize dokunun; işaretli olanlar kalır.</p><button type="button" class="hz-duz hz-bitti" data-hz-duz>✓ Bitti</button>` : `<button type="button" class="hz-duz" data-hz-duz>⚙ Kutuları seç</button>`}`, { sayi: turler.length }) : "");
   /* uyarılar (dönem şeridinde gösterilen dönem uyarısı tekrar edilmez) */
   const dk = dikkatListesi().filter(x => !(bas && son && x.tur === "gdhg" && /dönemi bitiyor/.test(x.t)));
   $("#ana-dikkat").innerHTML = dk.length ? kkKart("uyari", "#F6EBD3", "Uyarılar", "", dk.map(x => `<button type="button" class="kk-sat dk-${x.r}" data-dk="${esc(x.tur)}"><span class="kk-rz" style="--z:#F6EBD3;--rk:#8A6416">!</span><span class="kk-sy"><b>${esc(x.t)}</b><small>${esc(x.a)}</small></span><span class="kk-sag">›</span></button>`).join(""), { sayi: dk.length }) : "";
