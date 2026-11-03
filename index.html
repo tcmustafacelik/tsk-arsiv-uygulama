@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "266";
+  const SURUM = "267";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1492,8 +1492,8 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dg-alan:has(.dg-sayfalar){overflow:auto} .dg-sayfalar{transition:none}
 .cs-not{font:500 11.5px/1.4 var(--f-ui);color:var(--muted);margin:-2px 0 4px}
 .sec-ac{display:inline-flex;align-items:center;justify-content:space-between;gap:8px;width:100%;min-width:0;min-height:40px;padding:0 10px 0 12px;border:1px solid var(--line);border-radius:11px;background:var(--panel);color:var(--fg);font:600 13.5px var(--f-ui);text-align:left;cursor:pointer;box-sizing:border-box}
-.sec-ac span{flex:1;min-width:0;overflow-wrap:anywhere;line-height:1.25;padding:6px 0} .sec-ac svg{flex:none;width:16px;height:16px;color:#8A96A3} .sec-ac.bos span{color:var(--muted);font-weight:500}
-.sec-ac.tb{min-height:34px;border-radius:10px;font-size:13px;background:var(--panel2,#F6F8FA);border-color:var(--line2)} .sec-ac:disabled{opacity:.55;cursor:default}
+.sec-ac span{flex:1;min-width:0;overflow-wrap:break-word;line-height:1.25;padding:6px 0} .sec-ac svg{flex:none;width:16px;height:16px;color:#8A96A3} .sec-ac.bos span{color:var(--muted);font-weight:500}
+.sec-ac.tb span{white-space:nowrap} .sec-ac.tb{width:auto;min-width:max-content;min-height:34px;border-radius:10px;font-size:13px;background:var(--panel2,#F6F8FA);border-color:var(--line2)} .sec-ac:disabled{opacity:.55;cursor:default}
 .sec-ac.d-devam{background:#EEF6F0;border-color:#C9DECF;color:#2F6B47} .sec-ac.d-son{background:#FBF2E6;border-color:#E9D2AE;color:#87652A}
 .sc-ara{width:100%;box-sizing:border-box;height:40px;border:1px solid var(--line);border-radius:12px;padding:0 12px;margin-bottom:8px;background:var(--panel);font:500 14px var(--f-ui)}
 .sc-liste{display:flex;flex-direction:column;gap:4px}
@@ -2349,7 +2349,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 266</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 267</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3569,7 +3569,7 @@ function vurguParca(t, x){
   return out;
 }
 const zenginHtml = x => { const t = gosterDeger(x); if(!x || !x.vr || !t) return esc(t); return vurguParca(t, x).map(p => { let h = esc(p.t); if(p.st) h = `<s>${h}</s>`; if(p.b && !x.b) h = `<b>${h}</b>`; return h; }).join(""); };
-const gosterDeger = x => { if(!x) return ""; const v = x.v; if(x.nf === "tl" && typeof v === "number") return v.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); if(x.yz && typeof v === "number") return "%" + Math.round(v * 100);   // yüzde biçimi: 0,6667 → %67
+const gosterDeger = x => { if(!x) return ""; const v = x.v; if(x.nf === "tl" && typeof v === "number") return v.toLocaleString("tr-TR", { minimumFractionDigits: 2, maximumFractionDigits: 2 }); if(x.yz && typeof v === "number") return "%" + Math.round(v * 100); if(x.ek && typeof v === "number") return v.toLocaleString("tr-TR") + " " + x.ek;   // yüzde biçimi: 0,6667 → %67
   if(typeof v === "number"){ return Number.isInteger(v) ? String(v) : String(Math.round(v * 100) / 100).replace(".", ","); } return String(v ?? ""); };
 function gridCiz(){
   const d = acikBelge(); if(!d || d.tur !== "grid") return; if(d.oto === "ic") icYenile(d); icPanelCiz(); const g = d.grid; hesapla(g);
@@ -6336,7 +6336,7 @@ async function gridExcel(d, a){
   const kenar = v => v ? { style: v === 2 ? "medium" : "thin", color: { argb: "FF444444" } } : undefined;
   g.c.forEach((satir, r) => { ws.getRow(r + 1).height = g.h[r] * a.satir; satir.forEach((x, c) => { if(!x) return; const h = ws.getCell(r + 1, c + 1);
     if(x.fx) h.value = { formula: x.fx.slice(1), result: typeof x.v === "number" ? x.v : (x.v ?? "") }; else if(x.v !== undefined && x.v !== "") h.value = x.v;
-    if(x.yz) h.numFmt = "%0"; if(x.nf === "tl") h.numFmt = "#,##0.00";   // % işareti başta: değer ×100 gösterilir (%67)
+    if(x.yz) h.numFmt = "%0"; if(x.nf === "tl") h.numFmt = "#,##0.00"; if(x.ek) h.numFmt = '0 "' + String(x.ek).replace(/"/g, "") + '"';   // % işareti başta: değer ×100 gösterilir (%67)
     h.font = { name: x.fn === "s" ? "Arial" : "Times New Roman", size: (x.s || 11) * a.yazi, bold: !!x.b, color: { argb: "FF" + (x.k || "222222") } };
     h.alignment = { horizontal: { l: "left", r: "right", c: "center" }[x.a] || undefined, vertical: { t: "top", b: "bottom" }[x.va] || "middle", wrapText: true, textRotation: x.rot ? 90 : undefined };
     if(x.u) h.font = { ...h.font, underline: true };
@@ -7879,7 +7879,7 @@ function ltGrid(d){ const v = ltVeri(d), W = v.w.length, I = { t: 1, b: 1, l: 1,
   const koy = (r, c, cs, x) => { g.c[r][c] = x; for(let i = 1; i < cs; i++) g.c[r][c + i] = { br: x.br }; if(cs > 1) g.m.push([r, c, r, c + cs - 1]); };
   if(v.ustSag && v.ustSag.v){ const r = satir(v.ustSag.h || 18); koy(r, 0, W, { v: v.ustSag.v, a: "r", va: "m", s: v.ustSag.s || 10.5, b: 1, fn: v.fn, k: v.ustSag.k || "2F2F2F" }); }
   if(v.baslik && v.baslik.v){ const r = satir(v.baslik.h || 30); koy(r, 0, W, { v: v.baslik.v, a: "c", va: "m", s: v.baslik.s || 13, b: 1, fn: v.fn, f: v.baslik.f, k: v.baslik.k || "2F2F2F", br: v.baslik.f && v.baslik.cerceve !== false ? I : undefined }); }
-  const hucre = (bl, sut, deger, o = {}) => ({ v: deger ?? "", a: sut.a || "c", va: "m", s: sut.s || bl.s || 9, b: sut.b ? 1 : 0, fn: v.fn, k: sut.k || "2F2F2F", br: I, ...o });
+  const hucre = (bl, sut, deger, o = {}) => ({ v: deger ?? "", a: sut.a || "c", va: "m", s: sut.s || bl.s || 9, b: sut.b ? 1 : 0, fn: v.fn, k: sut.k || "2F2F2F", br: I, ...(sut.ek ? { ek: sut.ek } : {}), ...o });   // ek: sayının yanına birim (ör. "Adet")
   const ciz = (bl, r0) => { let r = r0, kul = []; const yaz = (h, fn) => { if(r >= g.c.length) satir(h); else g.h[r] = Math.max(g.h[r], h); fn(r); kul.push(r); r++; };
     if(bl.ad) yaz(bl.adStil?.h || 22, rr => { const c0 = Math.min(...bl.sutunlar.map(s => s.c)), c1 = Math.max(...bl.sutunlar.map(s => s.c + (s.cs || 1))); koy(rr, c0, c1 - c0, { v: bl.ad, a: "c", va: "m", s: bl.adStil?.s || 11, b: 1, fn: v.fn, f: bl.adStil?.f, k: bl.adStil?.k || "2F2F2F", br: I }); });
     if(Array.isArray(bl.bas)){ const r0 = r; bl.bas.forEach(bs => yaz(bs.h || 22, rr => bs.hucreler.forEach(x => { koy(rr, x.c, x.cs || 1, { v: x.v ?? "", a: x.a || "c", va: "m", s: x.s || bs.s || 9, b: x.b ?? 1, fn: v.fn, f: x.f ?? bs.f, k: x.k || bs.k || "2F2F2F", br: I }); if(x.rs > 1) g.m.push([rr, x.c, rr + x.rs - 1, x.c + (x.cs || 1) - 1]); }))); }
@@ -7893,7 +7893,7 @@ function ltGrid(d){ const v = ltVeri(d), W = v.w.length, I = { t: 1, b: 1, l: 1,
     if(sT && sayiS.length){ const a = ltHarf(Math.min(...sayiS.map(s => s.c))), z = ltHarf(Math.max(...sayiS.map(s => s.c))); for(let i = 0; i < n; i++){ const rr = ilkVeri + i; g.c[rr][sT.c].fx = `=SUM(${a}${rr + 1}:${z}${rr + 1})`; } }
     if(gT && sT){ const gs = ltBaslikSut(bl), H = ltHarf(sT.c); let i = 0; while(i < n){ let j = i; while(j + 1 < n && !bl.satirlar[j + 1].v[gs.id]) j++; const r1 = ilkVeri + i, r2 = ilkVeri + j; g.c[r1][gT.c].fx = `=SUM(${H}${r1 + 1}:${H}${r2 + 1})`; if(j > i) g.m.push([r1, gT.c, r2, gT.c + (gT.cs || 1) - 1]); i = j + 1; } }
     if(bl.toplam) yaz(bl.h || 20, rr => bl.sutunlar.forEach((s, i) => { const say = LT_SAYI.includes(s.tip), H = ltHarf(s.c);
-      const ecs = bl.toplam.cs || 1; if(i > 0 && i < ecs) return; koy(rr, s.c, i === 0 && ecs > 1 ? bl.sutunlar[ecs - 1].c + (bl.sutunlar[ecs - 1].cs || 1) - s.c : s.cs || 1, hucre(bl, s, say ? "" : i === 0 ? bl.toplam.etiket || "TOPLAM" : "", { b: 1, f: bl.toplam.f || bl.bas?.f, ...(say && n ? { fx: `=SUM(${H}${ilkVeri + 1}:${H}${ilkVeri + n})` } : {}) })); }));
+      const ecs = bl.toplam.cs || 1; if(i > 0 && i < ecs) return; koy(rr, s.c, i === 0 && ecs > 1 ? bl.sutunlar[ecs - 1].c + (bl.sutunlar[ecs - 1].cs || 1) - s.c : s.cs || 1, hucre(bl, s, say ? "" : i === 0 ? bl.toplam.etiket || "TOPLAM" : "", { b: 1, f: bl.toplam.f || bl.bas?.f, ...(i === 0 && !say && bl.toplam.a ? { a: bl.toplam.a } : {}), ...(say && n ? { fx: `=SUM(${H}${ilkVeri + 1}:${H}${ilkVeri + n})` } : {}) })); }));
     if(bl.cerceve){ const c0 = Math.min(...bl.sutunlar.map(s => s.c)), c1 = Math.max(...bl.sutunlar.map(s => s.c + (s.cs || 1))) - 1, r0 = kul[0], r1 = kul[kul.length - 1], K = bl.cerceve;
       for(let rr = r0; rr <= r1; rr++) for(let c = c0; c <= c1; c++){ const x = g.c[rr][c]; if(!x) continue; const b = { ...(x.br || I) }; if(rr === r0) b.t = K; if(rr === r1) b.b = K; if(c === c0) b.l = K; if(c === c1) b.r = K; x.br = b; } }
     return kul; };
