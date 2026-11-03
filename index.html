@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "261";
+  const SURUM = "262";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1484,6 +1484,8 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .kd-k-d{font:800 19px/1.15 var(--f-ui);color:var(--kc);overflow-wrap:anywhere;margin-top:auto}
 .kd-k.uyar .kd-k-d{color:#9A5A12} .kd-k.gri .kd-k-d{color:#7A8592;font-size:15px}
 .kd-k small{font:500 11.5px/1.3 var(--f-ui);color:var(--muted);overflow-wrap:anywhere;min-height:1.3em}
+.gd-ozk-bas .gd-ozb{background:linear-gradient(135deg,#F3F0F8,var(--panel) 75%)} .gd-ozk-bas .gd-ozi{background:#E9E4F2;color:#5B4A80}
+.gd-ozk-bas .gd-ozg .gd-ust{border:0;background:transparent;padding:6px 0 0}
 .gd-eksi small{font-size:9px;margin-left:2px;opacity:.85}
 /* tarih kutuları: telefonun kendi ok işareti yazının üstüne binmesin, yıl kesilmesin */
 input[type=date]{min-width:10.5em!important;box-sizing:border-box} table input[type=date]{width:10.5em!important} input[type=date]::-webkit-datetime-edit{overflow:visible}
@@ -2330,7 +2332,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 261</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 262</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4499,10 +4501,10 @@ function gdBelgeCiz0(){
   if(!k){ P.innerHTML = `<div class="bos"><strong>Personel yok</strong>“+ Personel ekle” ile ya da “Excel'den içe aktar” ile ekleyin.</div>`; return; }
   const T = gdToplam(k), u = gdUyarilar(k), im = G.imza;
   P.innerHTML = `
-    <div class="gd-ust gd-ust-duz" title="Başlığa dokunup değiştirebilirsin (bu GDHG kaydındaki bütün rütbeli belgelere uygulanır)">
+    ${gdOzKart("bas", "bas", "Belge başlığı", [G.baslik || "başlık yok", String(G.altBaslik || "").split("\n").filter(Boolean).length + " satır alt başlık"], `<div class="gd-ust gd-ust-duz" title="Başlığa dokunup değiştirebilirsin (bu GDHG kaydındaki bütün rütbeli belgelere uygulanır)">
       <input class="gd-bas" id="gd-ust-baslik" data-t="genel" data-a="baslik" value="${esc(G.baslik)}" aria-label="Belge başlığı" spellcheck="false">
       <textarea class="gd-alt" id="gd-ust-altBaslik" data-t="genel" data-a="altBaslik" rows="${Math.max(2, String(G.altBaslik || "").split("\n").length)}" aria-label="Alt başlık (satır atlamak için Enter)" spellcheck="false">${esc(G.altBaslik)}</textarea>
-</div>
+</div>`)}
     ${u.length ? `<div class="mesaj hata gd-uyari"><b>Kontrol edin</b><ul>${u.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     ${gdOzKart("kim", "kim", "Personelin kimliği", [k.sicil ? "Sicil " + k.sicil : "sicil yok", trTarih(k.tarih || G.tarih) || "tarih yok", k.gorev ? "görevi yazılı" : "görevi boş"], `<div class="gd-kimlik">
       <label>Sınıf ve rütbesi${gdInp("gd-k-rutbe", "k", "rutbe", k.rutbe)}</label>
@@ -4691,7 +4693,7 @@ $("#e-gdhg").addEventListener("change", e => {
 });
 /* kimlik ve dönem: az değişen alanlar özet kartta durur, dokununca açılır */
 let gdOzAcik = {}; try { gdOzAcik = JSON.parse(localStorage.getItem("gdOzAcik") || "{}"); } catch(e){}
-const GD_OZ_IK = { kim: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg>', don: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>' };
+const GD_OZ_IK = { bas: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M6 4h9l3 3v13H6z"/><path d="M9 10h6M9 13.5h6M9 17h4"/></svg>', kim: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.6 3.6-5.6 7-5.6s6.2 2 7 5.6"/></svg>', don: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="3"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>' };
 function gdOzKart(id, ik, baslik, ozet, govde, zorla, rozet){ const acik = zorla || !!gdOzAcik[id];
   return `<div class="gd-ozk gd-ozk-${ik}${acik ? " acik" : ""}" data-gd-ozk="${id}"><button type="button" class="gd-ozb" data-gd-oz="${id}" aria-expanded="${acik}"><span class="gd-ozi">${GD_OZ_IK[ik] || ""}</span><span class="gd-ozy"><b>${esc(baslik)}</b><small>${ozet.map(x => `<span>${esc(x)}</span>`).join("")}</small></span>${rozet ? `<span class="gd-ozr ${rozet[1]}">${esc(rozet[0])}</span>` : ""}<span class="gd-ozo">${acik ? "Kapat" : "Düzenle"}</span></button><div class="gd-ozg">${govde}</div></div>`; }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-gd-oz]"); if(!b) return; const id = b.dataset.gdOz, k = b.closest(".gd-ozk"), ac = !k.classList.contains("acik");
@@ -6023,7 +6025,7 @@ function gdSozCiz(){
   if(!k){ P.innerHTML = `<div class="bos"><strong>Sözleşmeli personel yok</strong>Rütbesinde “Söz.” geçen personel buraya gelir. “+ Personel ekle” ile ekleyebilir ya da “Personel listesi”nden türünü “Sözleşmeli” yapabilirsiniz.</div>`; return; }
   const h = gdSozHesap(k), Z = G.soz, im = Z.imza, L = G.kisiler.filter(gdSozMu);
   P.innerHTML = `
-    <div class="gd-ust"><div class="gd-bas">SÖZLEŞMELİ PERSONEL HİZMET ÇİZELGESİ</div><div class="gd-alt">${esc(Z.baslik).replace(/\n/g, "<br>")}</div></div>
+    ${gdOzKart("sbas", "bas", "Çizelge başlığı", ["SÖZLEŞMELİ PERSONEL HİZMET ÇİZELGESİ"], `<div class="gd-ust"><div class="gd-bas">SÖZLEŞMELİ PERSONEL HİZMET ÇİZELGESİ</div><div class="gd-alt">${esc(Z.baslik).replace(/\n/g, "<br>")}</div></div>`)}
     ${h.uyari.length ? `<div class="mesaj hata gd-uyari"><b>Kontrol edin</b><ul>${h.uyari.map(x => `<li>${esc(x)}</li>`).join("")}</ul></div>` : ""}
     ${gdOzKart("skim", "kim", "Personelin kimliği", [k.sicil ? "Sicil " + k.sicil : "sicil yok", k.sozYer || GD_YER], `<div class="gd-kimlik">
       <label>Sınıf ve rütbesi${gdInp("gd-k-rutbe", "k", "rutbe", k.rutbe)}</label>
