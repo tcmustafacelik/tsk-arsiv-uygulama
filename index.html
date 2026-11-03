@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "304";
+  const SURUM = "305";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1554,8 +1554,8 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dl-al input,.dl-al textarea{width:100%;box-sizing:border-box;min-width:0;border:1px solid var(--line2);border-radius:8px;background:#fff;padding:7px 9px;font:600 13px/1.35 var(--f-ui);color:#22303D;resize:none} .dl-al input{height:36px} .dl-al.bos textarea{border-color:#E5C48E;background:#FFFBF3}
 .dl-metin{min-height:80px;font-weight:500!important;font-size:13px!important;line-height:1.45!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
 .dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:7px 4px;font:700 11.5px/1.2 var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
-.dl-is{display:flex;gap:8px;justify-content:flex-end} .dl-ozler{display:flex;flex-wrap:wrap;gap:5px} .dl-ozler button{padding:4px 9px;font:600 11px var(--f-ui);border-radius:14px}
-.dl-onz{padding:10px;background:#E9EDF1;border-radius:14px;display:block!important} .dl-onz .dl-kagit{width:100%} .dl-kagit{container-type:inline-size;aspect-ratio:210/297;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);box-sizing:border-box;font-family:"Times New Roman",Tinos,"Liberation Serif",serif;color:#111;font-size:2.02cqw;line-height:1.72;overflow:hidden}
+.dl-is{display:flex;gap:8px;justify-content:flex-end} #dl-govde .dl-ozler{display:flex!important;flex-wrap:nowrap!important;gap:5px;overflow-x:auto;scrollbar-width:none;margin-top:-2px;padding-bottom:2px} .dl-ozler::-webkit-scrollbar{display:none} #dl-govde .dl-ozler button{flex:none!important;padding:4px 10px;font:600 11px var(--f-ui);border-radius:14px;white-space:nowrap}
+.dl-onz{padding:10px;background:#E9EDF1;border-radius:14px;display:block!important} .dl-onz .dl-kagit{width:100%} .onz-tuval{display:block;width:100%;height:auto;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12)} .dl-kagit{container-type:inline-size;aspect-ratio:210/297;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);box-sizing:border-box;font-family:"Times New Roman",Tinos,"Liberation Serif",serif;color:#111;font-size:2.02cqw;line-height:1.72;overflow:hidden}
 .dl-mut{position:relative} .dl-mut>*{position:absolute;white-space:nowrap;line-height:1.2} .dl-mut .dl-m{white-space:normal;text-align:justify} .dl-mut .dl-e{overflow:visible} .dl-r{display:grid;line-height:1.2;margin-bottom:2.33cqw} .dl-r>b{font-weight:700;white-space:nowrap;overflow:hidden;min-width:0} .dl-r>span{overflow-wrap:anywhere} .dl-r .dl-tar{text-align:right;white-space:nowrap} .dl-tc{position:relative;display:block} .dl-oz{position:absolute;top:0;white-space:nowrap} .dl-oz>b,.dl-oz>span{position:absolute;top:0} .dl-oz>b:first-child{left:0;position:static} .dl-on{text-align:center;font-weight:700;margin:.95cqw 0 4.2cqw} .dl-m{text-align:justify;line-height:1.3} .dl-bos{color:#aaa} .dl-im{display:flex;flex-direction:column;align-items:center;margin:7cqw 0 0 56%;line-height:1.35} .dl-im b{font-weight:700}
 .izt-sec{margin-bottom:2px;grid-template-columns:1fr 1fr!important} .izt-sec button{white-space:nowrap} .isa-tur{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:5px!important} .isa-tur button{justify-content:center;text-align:center;padding:7px 4px!important;font:600 11.5px/1.2 var(--f-ui)!important;border-radius:9px!important} .isa-not{font:600 10px var(--f-ui);color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px}
 .isa-kagit{position:relative} .isa-kagit>span{position:absolute;font-size:1.344cqw;line-height:1;white-space:nowrap;color:#000} .isa-k{position:absolute;border:.13cqw solid #000;box-sizing:border-box} .isa-c{position:absolute;border-top:.12cqw solid #000} .isa-kes{position:absolute;border-top:.22cqw dashed #000}
@@ -2435,7 +2435,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 304</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 305</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8549,7 +8549,7 @@ const DLM = { L: 25, C: 70.8, V: 76.7, KS: 160, R: 190.6, OZ: 121.5, OC: 134.4, 
 /* kıt'a 3 satırdan farklı sararsa alttaki her şey satır farkı kadar kayar */
 const dlKitaSatir = (doc, t) => doc ? doc.splitTextToSize(String(t), DLM.KS - DLM.V).length : 3;
 function dlOnHtml(d){ const I = dlIcerik(d), e = t => esc(t || ""), mm = x => (x / 2.1).toFixed(3) + "cqw", M = DLM, son = I.sat.length - 1, ust = y => mm(y - 3.25);
-  const ks = Math.max(1, Math.ceil(String(I.sat[0][1] || "").length / 46)), kay = (ks - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
+  const ks = Math.max(1, Math.ceil(String(I.sat[0][1] || "").length / 46)), kay = Math.max(0, ks - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
   let h = I.sat.map(([a, b], i) => `<b class="dl-e" style="left:${mm(M.L)};top:${ust(Y(i))};width:${mm(M.C - M.L - 1)}">${a}</b><b class="dl-ik" style="left:${mm(M.C)};top:${ust(Y(i))}">:</b>`
     + (i === 0 ? `<span class="dl-v" style="left:${mm(M.V)};top:${ust(Y(0))};width:${mm(M.KS - M.V)};white-space:normal;line-height:${mm(M.KL)}">${e(b)}</span><span class="dl-v" style="left:${mm(M.TX)};top:${ust(Y(0))}">${e(I.tarih)}</span>`
       : `<span class="dl-v" style="left:${mm(M.V)};top:${ust(Y(i))}">${e(b)}</span>`)
@@ -8558,6 +8558,14 @@ function dlOnHtml(d){ const I = dlIcerik(d), e = t => esc(t || ""), mm = x => (x
   h += `<div class="dl-m" style="left:${mm(M.L)};width:${mm(M.R - M.L)};top:${ust(M.MET + kay)};line-height:${mm(M.ML)};text-indent:${mm(M.GIR)}">${e(I.metin).replace(/\n/g, "<br>") || '<i class="dl-bos">Dilekçe metni</i>'}</div>`;
   if(I.imza) h += `<div class="dl-im" style="left:${mm(M.L + (M.R - M.L) * .56)};width:${mm((M.R - M.L) * .44)};top:${mm(200 + kay)}"><b>${e(I.imza[0])}</b><span>${e(I.imza[1])}</span></div>`;
   return `<div class="dl-kagit dl-mut">${h}</div>`; }
+/* önizleme = gerçek PDF çıktısının resmi (ekranda görülen, basılanın kendisi); yazdıkça kısa gecikmeyle yenilenir */
+let onzSira = 0; const onzZaman = new WeakMap();
+function pdfOnizle(kap, uret, hemen){ if(!kap) return; clearTimeout(onzZaman.get(kap)); onzZaman.set(kap, setTimeout(async () => { const no = String(++onzSira); kap.dataset.no = no;
+  try { const blob = await uret(); if(kap.dataset.no !== no) return; await yukle(PDFJS); const lib = window.pdfjsLib; lib.GlobalWorkerOptions.workerSrc = PDFJS_W;
+    const pdf = await lib.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise, pg = await pdf.getPage(1), v0 = pg.getViewport({ scale: 1 }), w = Math.max(280, kap.clientWidth - 20);
+    const v = pg.getViewport({ scale: w * Math.min(3, (window.devicePixelRatio || 1) * 1.5) / v0.width }), c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height);
+    const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); await pg.render({ canvasContext: x, viewport: v }).promise; if(kap.dataset.no !== no) return;
+    c.className = "onz-tuval"; kap.replaceChildren(c); } catch(e){ console.warn("önizleme", e); } }, hemen ? 0 : 450)); }
 /* kişi seçimi: tek satır, dokununca alttan liste (dilekçe ve izin belgesinde ortak) */
 const ksBas = ad => String(ad || "").split(/\s+/).filter(Boolean).map(x => x[0]).slice(0, 2).join("").toLocaleUpperCase("tr");
 const ksSatir = (p, veri, bosYazi = "Kişi seç") => `<button type="button" class="ks-sec" ${veri}>${p ? `<span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small></span><i>Değiştir ›</i>` : `<span class="ks-av bos">＋</span><span class="ks-ad"><b>${bosYazi}</b><small>personel listesinden</small></span><i>›</i>`}</button>`;
@@ -8568,13 +8576,13 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
   $("#dl-govde").innerHTML = `
     <div class="dl-ust"><b>Dilekçeler</b><small>${v.kayitlar.length}</small><button type="button" class="btn ana kucuk" data-dl="yeni">＋ Yeni dilekçe</button></div>
     <div class="dl-liste">${L.map(x => { const q = dlKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-dl-sec="${x.id}"><span class="dl-tur t-${x.tur}">${esc(DL_TUR[x.tur].ad)}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc(trTarih(x.tarih))}${x.tur === "diger" && x.ozu ? " · " + esc(x.ozu) : ""}</small></button>`; }).join("")}</div>
-    <section class="dl-kart"><div class="dl-bas">Kişi</div>
+    <section class="dl-kart">
       ${ksSatir(p, 'data-dl="kisi"')}
       ${p ? `<details class="dl-bilgi"${dlKisiAcik || eksik.length ? " open" : ""}><summary><span>Kimlik bilgileri</span>${eksik.length ? `<em class="dl-eksik">${eksik.length} eksik</em>` : '<em class="dl-tam">tamam</em>'}</summary>
         <div class="dl-alanlar">${DL_ALAN.map(([a, t]) => `<label class="dl-al${a === "kita" ? " tam" : ""}${a !== "kita" && !String(p[a] || "").trim() ? " bos" : ""}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-dl-k="${a}" placeholder="${a === "kita" ? esc(dlKita(v, { ...p, kita: "" })) : ["dogum", "duhul", "nasip"].includes(a) ? "gg.aa.yyyy" : ""}"${a === "tc" || a === "sicil" ? ' inputmode="numeric"' : ""}>${esc(a === "kita" ? (p.kita || "") : (p[a] || ""))}</textarea></label>`).join("")}
           <label class="dl-al tam"><span>Garnizon (kıt'a satırının sonu)</span><input data-dl-g="garnizon" value="${esc(v.garnizon)}"></label></div>
-        <small class="dl-not">Bu bilgiler kişinin personel kaydına yazılır; bir kez girilince bütün dilekçelerde gelir.</small></details>` : ""}</section>
-    <section class="dl-kart"><div class="dl-bas">Dilekçe</div>
+        <small class="dl-not">Bu bilgiler kişinin personel kaydına yazılır; bir kez girilince bütün dilekçelerde gelir.</small></details>` : ""}
+      <div class="dl-bas">Tür</div>
       <div class="dl-seg">${Object.entries(DL_TUR).map(([t, o]) => `<button type="button" data-dl-tur="${t}" aria-pressed="${k.tur === t}">${o.ad}</button>`).join("")}</div>
       <div class="dl-alanlar">
         <label class="dl-al"><span>Dilekçe tarihi</span><input type="date" data-dl-f="tarih" value="${esc(k.tarih)}"></label>
@@ -8585,11 +8593,11 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
         <label class="kp-tik tam"><input type="checkbox" data-dl-f="imza"${k.imza ? " checked" : ""}> Altına imza bloğu koy (ad soyad, rütbe)</label></div>
       <div class="dl-is"><button type="button" class="mini" data-dl="kopya">⧉ Kopyasını oluştur</button>${v.kayitlar.length > 1 ? '<button type="button" class="mini sil" data-dl="sil">Sil</button>' : ""}</div></section>
     <div class="kp-onizle dl-onz">${dlOnHtml(d)}</div>`;
-  otoBoyHepsi($("#dl-govde")); dlSigdir(); if(document.fonts) document.fonts.load('700 12px "TSK Serif"').then(dlSigdir).catch(() => {}); }
+  otoBoyHepsi($("#dl-govde")); dlSigdir(); dlOnizleTazele(d, true); }
 /* önizleme: etiket kendi sütununa sığmazsa (telefon başka yazı tipi koyarsa) o etiketin yazısı küçülür; iki nokta hep görünür */
 function dlSigdir(){ document.querySelectorAll(".dl-mut>.dl-e").forEach(b => { b.style.fontSize = ""; let k = 1; while(b.scrollWidth > b.clientWidth + .5 && k > .7){ k -= .03; b.style.fontSize = k + "em"; } }); }
 document.fonts && document.fonts.ready.then(dlSigdir);
-const dlOnizleTazele = d => { const o = $("#dl-govde .dl-onz"); if(o){ o.innerHTML = dlOnHtml(d); dlSigdir(); } };
+const dlOnizleTazele = (d, hemen) => pdfOnizle($("#dl-govde .dl-onz"), () => dlPdf(dlIcerik(d)), hemen);
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#dl-govde")) return; const d = acikBelge(); if(!d || d.tur !== "dilekce") return; const v = dlVeri(d), k = dlAktif(v);
   if(el.dataset.dlK){ const p = dlKisi(k); if(!p) return; const a = el.dataset.dlK, val = el.value.replace(/\s*\n\s*/g, " "); if(val.trim()) p[a] = val; else delete p[a]; el.closest(".dl-al")?.classList.toggle("bos", a !== "kita" && !val.trim()); kaydetBt("personel"); }
   else if(el.dataset.dlG){ v[el.dataset.dlG] = el.value; }
@@ -8615,7 +8623,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 async function dilekceCikti(d, a, tur){ const I = dlIcerik(d); return tur === "pdf" ? dlPdf(I) : tur === "xlsx" ? dlExcel(I) : dlWord(I); }
 async function dlPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), M = DLM, son = I.sat.length - 1;
   doc.setTextColor(0, 0, 0); doc.setFontSize(12); doc.setFont("LS", "normal");
-  const ks = doc.splitTextToSize(String(I.sat[0][1] || ""), M.KS - M.V), kay = (ks.length - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
+  const ks = doc.splitTextToSize(String(I.sat[0][1] || ""), M.KS - M.V), kay = Math.max(0, ks.length - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
   I.sat.forEach(([a, b], i) => { const y = Y(i); doc.setFont("LS", "bold"); doc.text(a, M.L, y); doc.text(":", M.C, y); doc.setFont("LS", "normal");
     if(i === 0){ ks.forEach((ln, j) => doc.text(ln, M.V, y + j * M.KL)); doc.text(I.tarih, M.TX, y); } else doc.text(String(b), M.V, y);
     if(i === son && I.ozu){ doc.setFont("LS", "bold"); doc.text("ÖZÜ", M.OZ, y); doc.text(":", M.OC, y); doc.setFont("LS", "normal"); doc.text(I.ozu, M.OV, y); } });
@@ -8627,7 +8635,7 @@ async function dlPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }
   if(I.imza){ y += 14; const cx = M.L + W * 0.78; doc.setFont("LS", "bold"); doc.text(I.imza[0], cx, y, { align: "center" }); doc.setFont("LS", "normal"); doc.text(I.imza[1], cx, y + M.ML, { align: "center" }); }
   return new Blob([doc.output("arraybuffer")], { type: "application/pdf" }); }
 function dlWord(I){ const M = DLM, tw = x => Math.round(x * 56.7), R = (t, o = {}) => runXml(t, { sz: 24, b: false, k: "000000", ...o }), son = I.sat.length - 1, AS = 3.9, AL = 0.95;
-  const ks = Math.max(1, Math.ceil(String(I.sat[0][1] || "").length / 46)), kay = (ks - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
+  const ks = Math.max(1, Math.ceil(String(I.sat[0][1] || "").length / 46)), kay = Math.max(0, ks - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
   const g1 = tw(M.C - M.L), g2 = tw(M.V - M.C), g3 = tw(M.KS - M.V), g4 = tw(M.R - M.KS), yok = '<w:tcBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="nil"/><w:right w:val="nil"/></w:tcBorders>';
   const p = (ic, o = {}) => `<w:p><w:pPr>${o.tab || ""}<w:spacing w:before="0" w:after="0" w:line="${tw(M.KL)}" w:lineRule="exact"/>${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}</w:pPr>${ic}</w:p>`;
   const tc = (w, ic, span, va) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${span ? `<w:gridSpan w:val="${span}"/>` : ""}${yok}<w:vAlign w:val="${va || "bottom"}"/></w:tcPr>${ic}</w:tc>`;
@@ -8710,9 +8718,9 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
       <div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt</span><input data-isa-a="sol" value="${esc(v.alt.sol)}"></label><label class="dl-al tam"><span>Sağ alt</span><input data-isa-a="sag" value="${esc(v.alt.sag)}"></label></div>
       <small class="dl-not">PYBS çıktısındaki ekran adı, saat ve basan personel bilgisi uygulama tarafından üretilmez. Boş bırakılırsa basılmaz.</small></details>
     <div class="kp-onizle dl-onz">${isaOnHtml(d)}</div>`;
-  otoBoyHepsi($("#isa-govde")); }
+  otoBoyHepsi($("#isa-govde")); isaTazele(d, true); }
 const P0 = () => (S.personel.rows || []).filter(x => x.ad && isaSubayMi(x));
-const isaTazele = d => { const o = $("#isa-govde .dl-onz"); if(o) o.innerHTML = isaOnHtml(d); };
+const isaTazele = (d, hemen) => pdfOnizle($("#isa-govde .dl-onz"), () => isaPdf(isaIcerik(d)), hemen);
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#isa-govde")) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v);
   if(el.dataset.isaF) k[el.dataset.isaF] = el.value; else if(el.dataset.isaO) v.onay[el.dataset.isaO] = el.value; else if(el.dataset.isaA) v.alt[el.dataset.isaA] = el.value; else return;
   kaydetBelge(d); isaTazele(d); if(el.dataset.isaF === "ayr" || el.dataset.isaF === "kat"){ const g = $('#isa-govde [data-isa-f="gun"]'); if(g) g.placeholder = isaGun({ ...k, gun: "" }) || "otomatik"; } });
