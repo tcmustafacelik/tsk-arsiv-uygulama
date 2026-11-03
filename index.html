@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "282";
+  const SURUM = "283";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2396,7 +2396,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 282</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 283</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6654,7 +6654,7 @@ async function tabloExcel(sp, a){
         else if(h.sayi && h.t !== "" && isFinite(+h.t)) x.value = +h.t; else x.value = h.t;
         x.font = h.k ? { ...yazi(sp.xYazi || 12), color: { argb: "FF" + h.k } } : yazi(sp.xYazi || 12); x.alignment = { horizontal: h.sol ? "left" : "center", vertical: "middle", wrapText: !!sp.xSatir, indent: h.sol ? 1 : 0 };
         if(!(x.value && typeof x.value === "object")) ihtiyac = Math.max(ihtiyac, xlsSigdir(x, x.value, (ws.getColumn(ci + 1).width || 8) - (h.sol ? 2 : 1), (sp.xYazi || 12) * a.yazi, true));
-        if(h.etiket && TM && h.t){ HAP.push({ r, c: ci + 1, h }); x.font = { ...x.font, color: { argb: "FF" + (h.zemin || "FFFFFF") } }; if(h.zemin) x.fill = dol(h.zemin); }
+        if(h.etiket && TM){ HAP.push({ r, c: ci + 1 }); if(h.fill) x.fill = dol(h.fill); x.font = { ...x.font, size: (sp.xYazi || 12) * a.yazi * 0.92, color: { argb: "FF" + (h.k || "262E38") } }; }
         else if(h.fill) x.fill = dol(h.fill); x.border = { top: ince, left: ci ? ince : kalin, bottom: ince, right: ci === ncol - 1 ? kalin : ince }; });
       ws.getRow(r).height = Math.max(sp.xSatir || (sp.izin ? 30 : TM ? 24 : 17), ihtiyac); r++; });
     if(sp.lejant || sp.altSol){ ws.getRow(r).height = 30; let c = 1;
@@ -6665,9 +6665,10 @@ async function tabloExcel(sp, a){
           const x = ws.getCell(r, c); x.value = `${l.t} (${l.alt})`; x.font = yazi(9); x.alignment = { horizontal: "center", vertical: "middle", wrapText: true }; c = son + 1; }); }
       if(k < parcalar.length - 1) ws.getRow(r).addPageBreak(); r++; }
   });
-  HAP.forEach(({ r: rr, c, h }) => { const cw = ((ws.getColumn(c).width || 8) * 7 + 5), rh = (ws.getRow(rr).height || 17) * 4 / 3, fpx = (sp.xYazi || 12) * a.yazi * 0.9 * 4 / 3;
-    wOlcCv.font = `bold ${fpx}px "Times New Roman","Liberation Serif",serif`; const pw = Math.min(cw - 6, wOlcCv.measureText(h.t).width + fpx * 1.6), ph = Math.min(rh - 4, fpx * 1.75);
-    const id = wb.addImage({ base64: hapPng(h.t, h.fill, h.k, pw, ph, fpx), extension: "png" }); ws.addImage(id, { tl: { col: c - 1 + (cw - pw) / 2 / cw, row: rr - 1 + (rh - ph) / 2 / rh }, ext: { width: pw, height: ph }, editAs: "oneCell" }); });
+  /* durum sütunu: Excel'in koşullu biçimlendirmesi — hücrede durum elle değişirse rengi de kendiliğinden değişir */
+  if(HAP.length && TM && ws.addConditionalFormatting){ const c = HAP[0].c, L = ws.getColumn(c).letter, r1 = Math.min(...HAP.map(x => x.r)), r2 = Math.max(...HAP.map(x => x.r));
+    ws.addConditionalFormatting({ ref: `${L}${r1}:${L}${r2}`, rules: Object.entries(YK_ETIKET).filter(([k]) => k !== "DIGER").map(([k, [f, y]], i) => ({ type: "containsText", operator: "containsText", text: k, priority: i + 1,
+      style: { fill: { type: "pattern", pattern: "solid", bgColor: { argb: "FF" + f } }, font: { bold: true, color: { argb: "FF" + y } } } })) }); }
   if(sp.ek){ r++;
     const yazSatir = (hucreler, bas) => { let c = 1, ihtiyac = 0; hucreler.forEach((h, i) => { const n = sp.ek.spans[i]; if(n > 1) ws.mergeCells(r, c, r, c + n - 1);
         for(let q = c; q < c + n; q++){ const y = ws.getCell(r, q); y.border = { top: ince, left: ince, bottom: ince, right: ince }; if(h.fill || bas) y.fill = dol(h.fill || RENK.bas); }
