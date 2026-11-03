@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "283";
+  const SURUM = "284";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1525,6 +1525,8 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 #lt-govde .lt-dg-b{display:flex;justify-content:space-between;align-items:baseline;margin:9px 0 5px;font:700 11px var(--f-ui);color:#6B7480} #lt-govde .lt-dg-b .lt-top{font:600 11px var(--f-ui);color:#6B7480;padding:0;margin:0} #lt-govde .lt-dg-b .lt-top b{font:800 14px var(--f-ui);color:#2C3E50;margin-left:3px}
 #lt-govde .lt-dg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px} #lt-govde .lt-dg label{display:flex;flex-direction:column;gap:2px;padding:4px 5px 5px;border-radius:8px;background:#F6F7F9;min-width:0} #lt-govde .lt-dg label.dolu{background:#EEF4EC} #lt-govde .lt-dg span{line-height:1.2;overflow-wrap:anywhere;font-size:10px} #lt-govde .lt-dg input{height:28px;text-align:center;font-variant-numeric:tabular-nums;padding:2px}
 #lt-govde .lt-kform .ko-is{margin-top:10px}
+.yk-bas{display:flex;flex-direction:column;gap:5px;margin:0 0 10px} .yk-bas>span{display:flex;align-items:center;justify-content:space-between;font:600 11px var(--f-ui);color:var(--muted);letter-spacing:.03em;text-transform:uppercase} .yk-bas>span .yk-bugun{text-transform:none}
+.yk-bas textarea{width:100%;box-sizing:border-box;resize:none;overflow:hidden;min-height:38px;padding:8px 11px;border:1px solid var(--line2);border-radius:10px;background:var(--panel);font:700 12.5px/1.4 var(--f-ui);color:#22374F}
 .lt-grp{display:flex;align-items:baseline;gap:8px;margin:10px 0 2px;padding:7px 10px;border-radius:9px;background:#F3F1EA} .lt-grp:first-of-type{margin-top:4px} .lt-grp b{font:800 13.5px var(--f-ui);color:#2C3E50;min-width:0;overflow-wrap:anywhere} .lt-grp span{font:500 11px var(--f-ui);color:#8A8574;flex:none} .lt-grp em{margin-left:auto;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums;flex:none}
 .kc-sat.lt-kf{margin-left:12px;border-left:2px solid #E6E1D3} .kc-sat.lt-kf.lt-tek{margin:8px 0 0;border-left:0;background:#FBFAF6;border-radius:9px} .lt-tek-ad{display:block;font:800 13.5px var(--f-ui)!important;color:#2C3E50!important;margin-bottom:3px} .kc-sat.lt-kf .kc-sb{padding-left:8px}
 .lt-kfu{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap} .lt-kfu b{font:700 12.5px ui-monospace,Menlo,Consolas,monospace!important;letter-spacing:.01em;color:#34495E;background:#EEF2F6;border-radius:5px;padding:1px 6px;overflow-wrap:anywhere} .lt-kfu i{font-style:normal;font:500 11px var(--f-ui);color:#8A94A0}
@@ -2396,7 +2398,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 283</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 284</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2499,13 +2501,13 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
         </div>
 
         <!-- PERSONEL -->
-        <div id="e-personel" hidden style="display:flex;flex-direction:column;gap:10px">
+        <div id="e-personel" hidden style="display:flex;flex-direction:column;gap:10px"><div id="p-bas"></div>
           <div class="arac"><button class="btn ana" id="p-ekle">+ Personel ekle</button></div><div class="p-kisa" id="p-kisa"></div>
           <div class="tablo-kap"><table class="liste" id="p-tablo"><thead><tr><th style="width:52px">S.No</th><th>Rütbesi</th><th>Adı Soyadı</th><th>Sicil</th><th>Doğum</th><th>Katılış</th><th>Görevi</th><th style="width:96px"></th></tr></thead><tbody></tbody></table></div>
         </div>
 
         <!-- İZİN -->
-        <div id="e-izin" hidden style="display:flex;flex-direction:column;gap:10px">
+        <div id="e-izin" hidden style="display:flex;flex-direction:column;gap:10px"><div id="i-bas"></div>
           <div class="arac"><label class="kutu" for="i-yil">Yıl <input type="number" id="i-yil" min="2024" max="2040" style="width:84px"></label><span class="uclar">Gün sayısı = katılış − ayrılış.</span></div>
           <div class="tablo-kap"><table class="liste" id="i-tablo"><thead>
             <tr><th rowspan="2">S.No</th><th rowspan="2">Rütbesi</th><th rowspan="2">Adı Soyadı</th><th colspan="3" style="background:#E1ECF7;color:#2B3A4A">1'inci İzin</th><th colspan="3" style="background:#E5F2E2;color:#2B3A2B">2'nci İzin</th><th colspan="3" style="background:#F6EFD9;color:#4A3E1F">3'üncü İzin</th><th rowspan="2">Toplam Gün</th><th rowspan="2">Açıklama</th></tr>
@@ -3827,7 +3829,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   else if(b.dataset.pk === "don"){ const V = P.varsayilan || [], sira = id => { const i = V.indexOf(id); return i < 0 ? 1e6 : i; }; P.rows.sort((x, y) => sira(x.id) - sira(y.id)); }
   if(P.rows.map(r => r.id).join() === ilk) return bildir(b.dataset.pk === "rutbe" ? "Liste zaten rütbe sırasında" : "Liste zaten varsayılan sırada");
   kaydetBt("personel"); personelCiz(); geriAlinabilir(b.dataset.pk === "rutbe" ? "Rütbe ve kıdeme göre sıralandı" : "Varsayılan sıraya dönüldü", () => { geri(); personelCiz(); kaydetBt("personel"); }); });
-function personelCiz(){ pKisaCiz();
+function personelCiz(){ pKisaCiz(); { const pb = $("#p-bas"); if(pb && !odakIcinde("#p-bas")){ pb.innerHTML = basAlanHtml("personel"); otoBoyHepsi(pb); } }
   const tb = $("#p-tablo tbody"); const rows = S.personel.rows;
   if(!rows.length){ tb.innerHTML = `<tr><td colspan="7"><div class="bos"><strong>${S.yuklendi.personel ? "Personel listesi boş" : "Yükleniyor…"}</strong>“+ Personel ekle” ile girin.</div></td></tr>`; return; }
   tb.innerHTML = rows.map((r, i) => `<tr data-id="${esc(r.id)}"${pAcik === r.id ? ' class="acik"' : ""}><td class="sn">${i + 1}</td><td class="p-oz"><button type="button" data-p-ac>${pOzet(r)}<i class="p-ok"></i></button><button type="button" class="p-dosya" data-p-dosya="${esc(r.id)}" aria-label="${esc(r.ad || "Kişi")} dosyası" title="Kişi dosyası">${KD_IK}</button></td>
@@ -3889,7 +3891,7 @@ $("#p-ekle").addEventListener("click", () => { const r = { id: yeniId(), rutbe:"
 /* ================= İZİN ================= */
 const gunFark = (a, k) => { if(!a || !k) return ""; const d = (Date.parse(k) - Date.parse(a)) / 864e5; return isFinite(d) ? Math.round(d) : ""; };
 const izinKayit = id => (S.izin.kayit[id] ||= { i: [{ a:"", k:"" }, { a:"", k:"" }, { a:"", k:"" }], not: "" });
-function izinCiz(){
+function izinCiz(){ { const ib = $("#i-bas"); if(ib && !odakIcinde("#i-bas")){ ib.innerHTML = basAlanHtml("izin"); otoBoyHepsi(ib); } }
   const tb = $("#i-tablo tbody"); const yil = S.izin.yil || 2027; $("#i-yil").value = yil;
   if(!S.personel.rows.length){ tb.innerHTML = `<tr><td colspan="14"><div class="bos"><strong>Önce personel ekleyin</strong>İzin çizelgesi Personel İsim Listesi belgesinden oluşur.</div></td></tr>`; return; }
   tb.innerHTML = S.personel.rows.map((p, n) => {
@@ -4016,7 +4018,8 @@ function ykBas(r, n, t){ const h = yoklamaHesap(r, t), [z, k] = YK_RENK[h.durum]
 function ykKartCiz(){ const el = $("#yk-kart"); if(!el) return; const Y = YS(), t = Y.tarih || bugun(), oz = yoklamaOzet(), top = s => oz.find(x => x[0] === s)?.slice(-1)[0] ?? 0;
   const tiles = [["Mevcut", top("GENEL MEVCUT"), "MEVCUT"], ["Hazır", top("ÜS BÖLGESİ HAZIR MEVCUT"), "MEVCUT"], ["İzinli", top("İZİNLİ"), "İZİN"], ["Raporlu", top("RAPORLU"), "RAPOR"], ["Görevli", top("GÖREVLİ"), "GÖREVLİ"], ["Kursta", top("KURSTA"), "KURS"]];
   const P = (S.personel.rows || []).filter(p => p.ad && !Y.rows.some(r => r.pid === p.id || pAd(r.ad) === pAd(p.ad)));
-  let h = `<div class="yk-tarih yk-t2"><div class="yk-tust"><span>Yoklama tarihi</span><button type="button" class="yk-bugun" data-ykg="0">Bugün</button></div><div class="yk-tbar"><button type="button" class="mini" data-ykg="-1" aria-label="Önceki gün">‹</button><input type="date" class="yk-tb" id="yk-t" value="${t}" aria-label="Yoklama tarihi"><button type="button" class="mini" data-ykg="1" aria-label="Sonraki gün">›</button></div></div>
+  let h = `${basAlanHtml("yoklama")}
+    <div class="yk-tarih yk-t2"><div class="yk-tust"><span>Yoklama tarihi</span><button type="button" class="yk-bugun" data-ykg="0">Bugün</button></div><div class="yk-tbar"><button type="button" class="mini" data-ykg="-1" aria-label="Önceki gün">‹</button><input type="date" class="yk-tb" id="yk-t" value="${t}" aria-label="Yoklama tarihi"><button type="button" class="mini" data-ykg="1" aria-label="Sonraki gün">›</button></div></div>
     <div class="yk-top"><button type="button" class="btn kucuk" data-yk-izin="1" title="Personel İzin Çizelgesindeki izinleri yoklamaya ekler">⇣ İzin Çizelgesinden al</button><button type="button" class="btn kucuk" data-yk-gdhg="1" title="Yoklamadaki rapor, görev ve kursları GDHG'ye ekler">→ Ayrılışları GDHG'ye aktar</button></div>
     <div class="yk-oz">${tiles.map(([a, n, d]) => `<div style="--z:${YK_RENK[d][0]};--k:${YK_RENK[d][1]}"><b>${n}</b><small>${a}</small></div>`).join("")}</div>`;
   for(const v of ["GÜNDÜZ", "GECE"]){ const L = Y.rows.filter(r => (r.vardiya || "GÜNDÜZ") === v);
@@ -4041,6 +4044,15 @@ function ykKartCiz(){ const el = $("#yk-kart"); if(!el) return; const Y = YS(), 
   el.innerHTML = h; }
 const ykBul = id => YS().rows.find(r => r.id === id);
 const ykKaydet = () => kaydetBt(YK);
+/* çıktı başlığı (yoklama, personel listesi, izin çizelgesi): elle yazıldıysa o, yoksa birlik adı + belgenin sabit eki */
+const BAS_T = { yoklama: { v: () => YS(), kay: () => kaydetBt(YK), vars: () => `${YS().baslik || BIRLIK} GÜNLÜK PERSONEL YOKLAMA ÇİZELGESİ` },
+  personel: { v: () => S.personel, kay: () => kaydetBt("personel"), vars: () => BIRLIK + " PERSONEL İSİM LİSTESİ" },
+  izin: { v: () => S.izin, kay: () => kaydetBt("izin"), vars: () => `${BIRLIK} ${S.izin.yil || 2027} YILI PERSONEL İZİN ÇİZELGESİ` } };
+const belgeBaslik = k => String(BAS_T[k].v().baslikTam || "").trim() || BAS_T[k].vars(), ykBaslik = () => belgeBaslik("yoklama");
+const basAlanHtml = k => { const T = BAS_T[k], ozel = T.v().baslikTam && T.v().baslikTam.trim() !== T.vars();
+  return `<label class="yk-bas"><span>Çıktı başlığı <button type="button" class="yk-bugun" data-bas-vars="${k}"${ozel ? "" : " hidden"}>↺ Varsayılan</button></span><textarea class="oto-boy" data-tek rows="1" spellcheck="false" data-bas="${k}">${esc(belgeBaslik(k))}</textarea></label>`; };
+document.addEventListener("input", e => { const el = e.target; if(!el.dataset || !el.dataset.bas) return; const T = BAS_T[el.dataset.bas]; T.v().baslikTam = el.value.replace(/\s*\n\s*/g, " "); T.kay(); const b = document.querySelector(`[data-bas-vars="${el.dataset.bas}"]`); if(b) b.hidden = !T.v().baslikTam.trim() || T.v().baslikTam.trim() === T.vars(); });
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-bas-vars]"); if(!b) return; const k = b.dataset.basVars, T = BAS_T[k]; delete T.v().baslikTam; T.kay(); const t = document.querySelector(`[data-bas="${k}"]`); if(t){ t.value = T.vars(); otoBoy(t); } b.hidden = true; bildir("Başlık varsayılana döndü"); });
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#yk-kart")) return;
   if(el.id === "yk-t"){ const p = el.selectionStart, eski = el.value; el.value = ykNoktala(el.value); if(el.value.length > eski.length && p === eski.length) el.setSelectionRange(el.value.length, el.value.length); const iso = ykIso(el.value); if(iso){ YS().tarih = iso; ykKaydet(); yoklamaCiz(); const y = $("#yk-t"); if(y){ y.focus(); y.setSelectionRange(y.value.length, y.value.length); } } return; }
   if(el.dataset.ykf){ const [id, k] = el.dataset.ykf.split(":"), r = ykBul(id); if(!r) return; r[k] = el.value; if(k === "rutbe" && !r.statu) r.statu = ykStatu(el.value);
@@ -4097,7 +4109,7 @@ function tanimYoklama(){
       body.push([H(n,o({ k: T.soluk })),H(r.rutbe,o({ sol:1 })),H(r.ad,o({ sol:1 })),H(r.sicil,o({})),H(r.statu,o({})),H(r.gorev,o({ sol:1 })),H(r.tel,o({})),H(h.durum,{ fill: pf, k: pk, etiket: 1, zemin: z }),H(h.yer,o({})),H(h.aciklama,o({ sol:1 }))]); }); }
   const oz = yoklamaOzet();
   const imzalar = yImzalar().map(im => [im.ad, im.rutbe, im.gorev].filter(x => x && String(x).trim())).filter(x => x.length), imza = imzalar[0] || [];
-  return { imza: imza.length ? imza : null, imzalar: imzalar.length > 1 ? imzalar : null, dosya:`Gunluk_Personel_Yoklama${YK === "yoklama" ? "" : "_" + YK.replace("yoklama", "") + "_UB"}_${trTarih(t)}`, baslik:`${YS().baslik || BIRLIK} GÜNLÜK PERSONEL YOKLAMA ÇİZELGESİ`, sagUst: trTarih(t), oran:[5,13,15,10,6,20,10,8,8,17],
+  return { imza: imza.length ? imza : null, imzalar: imzalar.length > 1 ? imzalar : null, dosya:`Gunluk_Personel_Yoklama${YK === "yoklama" ? "" : "_" + YK.replace("yoklama", "") + "_UB"}_${trTarih(t)}`, baslik: ykBaslik(), sagUst: trTarih(t), oran:[5,13,15,10,6,20,10,8,8,17],
     xGenis: (() => { const g = [5,13,15,10,6,20,10,8,8,17].map(o => o / 112 * 190), uz = Math.max(0, ...body.flatMap(b => b.bant ? [] : String((b[9] || {}).t || "").split("\n").map(y => xlsGen(y, 12, true)))); g[9] = Math.min(64, Math.max(g[9], uz + 2)); return g; })(),   // Excel: açıklama sütunu en uzun satıra göre
     tema: T, head:[["S.NO.","RÜTBESİ","ADI SOYADI","SİCİLİ","STATÜ","GÖREVİ","TELEFON","DURUMU","YERİ","AÇIKLAMALAR"].map(x => H(x,{ fill: T.bas, k: T.basYazi }))], body, satirH: 8,
     ek: { spans:[5,1,1,1,1,1], head:[H("MEVCUT DURUMU",{ sol:1, fill: T.bas, k: T.basYazi }),...["Sb.","Asb.","Uzm.Erb.","Söz.Er","TOPLAM"].map(x => H(x,{ fill: T.bas, k: T.basYazi }))],
@@ -6470,7 +6482,7 @@ const TEMA_PERS = { ana: "A88F57", bas: "E9E2CC", basYazi: "4A3C1E", bant: "F2EE
 const TEMA_IZIN = { ana: "5E8C86", bas: "DCEAE7", basYazi: "21463F", bant: "EAF3F1", bantYazi: "2C5A53", serit: "F5FAF9", cizgi: "B8CEC9", soluk: "62807B", vurgu: "E6F0E4", vurguYazi: "2F5A3A", topSut: "EEF5F3", ustBand: "F0F7F5" };
 function tanimPersonel(){
   const T = TEMA_PERS, bh = t => H(t,{ fill: T.bas, k: T.basYazi });
-  return { tema: T, dosya:"Personel_Isim_Listesi", baslik: BIRLIK + " PERSONEL İSİM LİSTESİ", oran:[6,17,22,11,93],
+  return { tema: T, dosya:"Personel_Isim_Listesi", baslik: belgeBaslik("personel"), oran:[6,17,22,11,93],
     head: [[bh("S.NU."),bh("SINIF/RÜTBE"),bh("ADI SOYADI"),bh("SİCİL"),bh("GÖREVİ")]],
     body: S.personel.rows.map((r, i) => { const f = PERS_RENK(r.rutbe); return [H(i + 1,{ fill:f }),H(r.rutbe,{ fill:f, sol:1 }),H(r.ad,{ fill:f, sol:1 }),H(r.sicil,{ fill:f }),H(r.gorev,{ fill:f, sol:1 })]; }),
     satirH: 12, xSatir: 42, xYazi: 9, xBasYazi: 10, xBaslikYazi: 12, xGenis: [6, 17, 22, 11, 93] };
@@ -6483,7 +6495,7 @@ function tanimIzin(){
   const body = S.personel.rows.map((p, n) => { const k = S.izin.kayit[p.id] || { i:[{},{},{}], not:"" }; let top = 0, v = false;
     const iz = k.i.flatMap((x, j) => { const g = gunFark(x.a, x.k); if(g !== ""){ top += g; v = true; } return [H(tr(x.a),{ fill:IZIN_RENK[j], d:x.a }),H(tr(x.k),{ fill:IZIN_RENK[j], d:x.k }),H(g,{ fill:IZIN_RENK[j], gun:j })]; });
     const z = n % 2 ? T.serit : null; return [H(n + 1,{ fill: z, k: T.soluk }),H(p.rutbe,{ sol:1, fill: z }),H(p.ad,{ sol:1, fill: z }),H(p.sicil,{ fill: z }),...iz,H(v ? top : "",{ fill:"ECE9F0", toplam:1 }),H(k.not,{ sol:1, fill: z })]; });
-  return { tema: T, dosya:`Personel_Izin_Cizelgesi_${yil}`, baslik:`${BIRLIK} ${yil} YILI PERSONEL İZİN ÇİZELGESİ`, oran:[5,15,18,10,9,9,5,9,9,5,9,9,5,7,14], head, body, satirH: 14, izin:true };
+  return { tema: T, dosya:`Personel_Izin_Cizelgesi_${yil}`, baslik: belgeBaslik("izin"), oran:[5,15,18,10,9,9,5,9,9,5,9,9,5,7,14], head, body, satirH: 14, izin:true };
 }
 /* hedef listesinin sayfa sayısı: istenen sayıya bölünür ama satırlar okunur boyutun altına inmez;
    sığmazsa sayfa sayısı artırılır ve satırlar sayfalara eşit dağıtılır (ör. 130 hedef → 5 × 26). */
