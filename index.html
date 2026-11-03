@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "293";
+  const SURUM = "294";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2409,7 +2409,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 293</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 294</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6345,7 +6345,7 @@ function pdfZengin(doc, x, t, X, Y, Wc, Hc, pad, fs0, hz){
 }
 /* ızgara belgelerine kurumsal görünüm: başlık bandı + sol vurgu şeridi, yumuşak çizgiler, şeritli satırlar.
    Renkler belgenin kendi başlık renginden türetilir (her belge kendi renginde kalır); hücre içerikleri ve anlamlı renkler değişmez. */
-const KURUMSAL_GRID = new Set(["barut-pusu", "entegre", "g01", "g02", "g05", "g06", "spor-takip"]);
+const KURUMSAL_GRID = new Set(["barut-pusu", "entegre", "g01", "g02", "g05", "g06", "spor-takip", "candostu"]);
 const kurumsalMi = d => d && (d.kurumsal ?? KURUMSAL_GRID.has(d.id));
 function renkKar(a, b, t){ const A = rgb(a), B = rgb(b); return A.map((x, i) => Math.round(x + (B[i] - x) * t).toString(16).padStart(2, "0")).join("").toUpperCase(); }
 function gridTema(g){ const R = g.c.length, W = g.w.length, mg = (r, c) => (g.m || []).find(([r1, c1, r2, c2]) => r1 === r && c1 === c);
@@ -8696,11 +8696,11 @@ function cdGrid(d){ const v = cdVeri(d), { L, S } = cdDagit(v), T = { l: 1, r: 1
       br: { ...T, ...(gi === 0 && i === 0 ? { l: 2 } : {}), ...(gi === 2 && i === 4 ? { r: 2 } : {}), ...(son ? { b: 2 } : {}) } })))); });
   g.c.forEach(row => row.forEach(x => { if(x && x.f === undefined) delete x.f; }));
   return g; }
-async function candostuCikti(d, a, tur){ const g = cdGrid(d), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: 1, yazi: 1 }, sahte = { ...d, grid: g };
+async function candostuCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(cdGrid(d)) : cdGrid(d), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: 1, yazi: 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
-function cdOnHtml(d){ const g = cdGrid(d), kap = kapsananlar(g), TW = g.w.reduce((a, b) => a + b, 0); let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / TW * 100).toFixed(2)}%">`).join("")}</colgroup>`;
+function cdOnHtml(d){ const g = kurumsalMi(d) ? gridTema(cdGrid(d)) : cdGrid(d), GT = g.tema, kap = kapsananlar(g), TW = g.w.reduce((a, b) => a + b, 0); let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / TW * 100).toFixed(2)}%">`).join("")}</colgroup>`;
   g.c.forEach((row, r) => { h += `<tr style="height:${(g.h[r] * .075).toFixed(2)}cqw">`; for(let c = 0; c < g.w.length; c++){ const kk = kap[r + ":" + c]; if(kk === 1) continue; const x = row[c] || {}, sp = Array.isArray(kk) ? ` colspan="${kk[3] - kk[1] + 1}"` : "", br = x.br || {};
-    h += `<td${sp} style="${x.f ? `background:#${x.f};` : ""}${["l", "r", "t", "b"].map(k => br[k] ? `border-${{ l: "left", r: "right", t: "top", b: "bottom" }[k]}:${br[k] === 2 ? .3 : .12}cqw solid #444;` : "").join("")}font-weight:${x.b ? 700 : 400};text-align:${x.a === "c" ? "center" : "left"};font-size:${((x.s || 10) * .105).toFixed(2)}cqw">${esc(x.v ?? "")}</td>`; } h += "</tr>"; });
+    h += `<td${sp} style="${x.f ? `background:#${x.f};` : ""}${["l", "r", "t", "b"].map(k => br[k] ? `border-${{ l: "left", r: "right", t: "top", b: "bottom" }[k]}:${br[k] === 3 ? .6 : br[k] === 2 ? .3 : .12}cqw solid #${br[k] === 3 && GT ? GT.ana : GT ? GT.cizgi : "444"};` : "").join("")}font-weight:${x.b ? 700 : 400};text-align:${x.a === "c" ? "center" : "left"};${x.a !== "c" ? "padding-left:.6cqw;" : ""}${x.k ? `color:#${x.k};` : ""}font-size:${((x.s || 10) * .105).toFixed(2)}cqw">${esc(x.v ?? "")}</td>`; } h += "</tr>"; });
   return `<table class="mz-tablo cd-tablo">${h}</table>`; }
 const cdKapali = kkKume("cdKapali", ["cd-bas"]);
 function candostuCiz(){ const d = acikBelge(); if(!d || d.tur !== "candostu") return; const v = cdVeri(d), { L, S } = cdDagit(v), T = tbPersonel().sort(cdKidem);
