@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "291";
+  const SURUM = "292";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1549,7 +1549,7 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .lt-s-b{font:700 10px var(--f-ui);letter-spacing:.05em;color:#8A6A35;text-transform:uppercase} .lt-sonuc b{font:700 13px var(--f-ui)} .lt-sonuc small{font:500 11.5px/1.35 var(--f-ui);color:var(--muted);overflow-wrap:anywhere}
 .lt-on{border:1px solid var(--line2);border-radius:14px;background:var(--panel);overflow:hidden} .lt-on summary{display:flex;align-items:center;gap:8px;padding:10px 12px;cursor:pointer;list-style:none;font:700 13px var(--f-ui)} .lt-on summary::-webkit-details-marker{display:none}
 .lt-on summary span{width:26px;height:26px;border-radius:8px;display:grid;place-items:center;background:#EEF2F7;color:#4A5868} .lt-on summary small{margin-left:auto;white-space:nowrap;font:500 11px var(--f-ui);color:var(--muted)}
-.lt-on-kap{overflow:auto;max-height:70vh;border-top:1px solid var(--line2);background:#fff} .lt-on-t{border-collapse:collapse;min-width:640px;width:100%;table-layout:fixed;font-family:"Times New Roman",serif} .lt-on-t td{padding:2px 3px;overflow-wrap:anywhere;line-height:1.2}
+.lt-on-kap{overflow:auto;max-height:70vh;border-top:1px solid var(--line2);background:#fff} .lt-on-t{border-collapse:collapse;width:max-content;min-width:100%;table-layout:auto;font-family:"Times New Roman",serif} .lt-on-t col{width:auto!important} .lt-on-t td{padding:3px 5px;white-space:nowrap;overflow-wrap:normal;word-break:normal;line-height:1.2}
 .lt-on-t td.lt-isik{background:#FFF1A8!important;box-shadow:inset 0 0 0 2px #E2B93B}
 .lt-boz{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:0 14px;margin-top:6px;padding-top:5px;border-top:1px dashed var(--line2)} .lt-boz.yazi{grid-template-columns:1fr}
 .lt-boz>span{font:500 12px/1.9 var(--f-ui);color:#4A5868;overflow-wrap:anywhere;min-width:0} .lt-boz>em{font-style:normal;font:700 12px/1.9 var(--f-ui);color:#2C3E50;text-align:right;font-variant-numeric:tabular-nums}
@@ -2409,7 +2409,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 291</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 292</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4158,7 +4158,7 @@ function hedefOnHtml(){ const W = H_ORAN.reduce((a, b) => a + b, 0), n = araNorm
   return `<table class="lt-on-t">${h}</table>`; }
 function hedefCiz(){
   hedefOzet(); const L = $("#h-tablo"); const ara = araNorm($("#h-ara").value);
-  const on = $("#h-on"); if(on){ on.open = hOnAcik; const k = $("#h-on-kap"); if(hOnAcik){ k.innerHTML = hedefOnHtml(); ltOnSigdir(k); } else k.innerHTML = ""; }
+  const on = $("#h-on"); if(on){ on.open = hOnAcik; const k = $("#h-on-kap"); if(hOnAcik){ k.innerHTML = hedefOnHtml(); ltOnSigdir(k); onIsikGit(k); } else k.innerHTML = ""; }
   if(!S.hedef.rows.length){ $("#h-say").textContent = ""; L.innerHTML = `<div class="bos"><strong>${S.yuklendi.hedef ? "Hedef listesi boş" : "Yükleniyor…"}</strong>“Excel'den içe aktar” ya da “+ Hedef ekle”.</div>`; return; }
   const goster = S.hedef.rows.map((r, i) => ({ r, i })).filter(({ r }) => (!hFiltre || (hFiltre === "__yok" ? !grupBul(r) : grupBul(r) === hFiltre)) && (!ara || H_ALAN.some(a => araNorm(r[a] ?? "").includes(ara))));
   $("#h-say").textContent = goster.length === S.hedef.rows.length ? `${goster.length} hedef` : `${goster.length} / ${S.hedef.rows.length} hedef gösteriliyor`;
@@ -8083,18 +8083,20 @@ function ltBlokOzet(bl){ const gs = ltBaslikSut(bl), sayili = bl.sutunlar.some(s
   const ek = (bl.sutunlar.find(s => s.ek) || {}).ek || "", top = G.reduce((a, g) => a + g.n, 0);
   return { G, sayili, parca: G.map(g => sayili ? `${g.ad} ${String(g.n).replace(".", ",")}` : g.ad), top: sayili ? String(top).replace(".", ",") + (ek ? " " + ek : "") : "" }; }
 /* tablo görünümü telefonda yana kaymasın: kâğıttaki hali kutu genişliğine ölçeklenir (iki parmakla büyütülebilir) */
-function ltOnSigdir(k){ const t = k && k.querySelector(".lt-on-t"); if(!t) return; t.style.zoom = ""; k.scrollLeft = 0; const kw = k.clientWidth, tw = t.offsetWidth; if(kw && tw > kw + 1) t.style.zoom = String(Math.max(.4, kw / tw)); }
+/* aramada ilk eşleşen hücreye tablo görünümünün içinde kay (sayfayı oynatmadan) */
+function onIsikGit(k){ const x = k && k.querySelector(".lt-isik"); if(!x) return; const z = parseFloat((k.querySelector(".lt-on-t") || {}).style?.zoom) || 1, kr = k.getBoundingClientRect(), xr = x.getBoundingClientRect(); k.scrollTop += (xr.top - kr.top) - k.clientHeight / 3; k.scrollLeft += (xr.left - kr.left) - k.clientWidth / 4; }
+function ltOnSigdir(k){ const t = k && k.querySelector(".lt-on-t"); if(!t) return; t.style.zoom = ""; k.scrollLeft = 0; const kw = k.clientWidth, tw = t.offsetWidth; if(kw && tw > kw + 1) t.style.zoom = String(Math.max(.55, kw / tw)); }
 addEventListener("resize", () => ltOnSigdir(document.querySelector("#lt-govde .lt-on-kap")));
 function ltOnHtml(d){ const g = kurumsalMi(d) ? gridTema(ltGrid(d)) : ltGrid(d), GT = g.tema; try { hesapla(g); } catch(e){} const kap = kapsananlar(g), W = g.w.reduce((a, b) => a + b, 0), n = normMetin(ltAra);
   let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / W * 100).toFixed(2)}%">`).join("")}</colgroup>`;
   g.c.forEach((row, r) => { h += `<tr style="height:${Math.round((g.h[r] || 18) * 1.1)}px">`; for(let c = 0; c < g.w.length; c++){ const kk = kap[r + ":" + c]; if(kk === 1) continue; const x = row[c] || {}, sp = Array.isArray(kk) ? ` rowspan="${kk[2] - kk[0] + 1}" colspan="${kk[3] - kk[1] + 1}"` : "", t = gosterDeger(x), isik = n && t && normMetin(t).includes(n);
-      h += `<td${sp} class="${isik ? "lt-isik" : ""}" style="${x.br ? `border:1px solid #${GT ? GT.cizgi : "9AA3AD"};${x.br.l === 3 ? `border-left:5px solid #${GT.ana};` : ""}` : ""}${x.f ? `background:#${x.f};` : ""}${x.b ? "font-weight:700;" : ""}text-align:${x.a === "l" ? "left" : x.a === "r" ? "right" : "center"};font-size:${((x.s || 9) * 1.05).toFixed(1)}px;color:#${x.k || "2F2F2F"}${x.rot ? ";writing-mode:vertical-rl;transform:rotate(180deg)" : ""}">${esc(t).replace(/\n/g, "<br>")}</td>`; } h += "</tr>"; });
+      h += `<td${sp} class="${isik ? "lt-isik" : ""}" style="${x.br ? `border:1px solid #${GT ? GT.cizgi : "9AA3AD"};${x.br.l === 3 ? `border-left:5px solid #${GT.ana};` : ""}` : ""}${x.f ? `background:#${x.f};` : ""}${x.b ? "font-weight:700;" : ""}text-align:${x.a === "l" ? "left" : x.a === "r" ? "right" : "center"};font-size:${((x.s || 9) * 1.05).toFixed(1)}px;color:#${x.k || "2F2F2F"}">${x.rot ? `<span style="display:inline-block;writing-mode:vertical-rl;transform:rotate(180deg)">${esc(t).replace(/\n/g, "<br>")}</span>` : esc(t).replace(/\n/g, "<br>")}</td>`; } h += "</tr>"; });
   return `<table class="lt-on-t">${h}</table>`; }
 function ltAraSonuc(v){ const n = normMetin(ltAra); if(!n) return ""; const R = []; v.bloklar.forEach((bl, bi) => { const gs = ltBaslikSut(bl); let grup = ""; bl.satirlar.forEach((st, si) => { if(st.v[gs.id]) grup = st.v[gs.id];
     const hepsi = [grup, ...bl.sutunlar.map(s => st.v[s.id])].filter(x => x != null && x !== "").join(" "); if(normMetin(hepsi).includes(n)) R.push({ bl, bi, st, si, o: ltSatirOzet(bl, st), grup }); }); });
   return R.length ? `<div class="lt-sonuc">${R.slice(0, 30).map(x => `<button type="button" data-lt-git="${x.bl.id}|${x.st.id}"><span class="lt-s-b">${esc(String(x.bl.ad || (ltBaslikSut(x.bl) || {}).ad || "Tablo " + (x.bi + 1)).replace(/\n/g, " "))}</span><b>${esc(x.o.bas === "—" || x.o.bas.startsWith("↳") ? x.grup || x.o.bas : x.o.bas)}</b><small>${esc(x.o.alt)}</small></button>`).join("")}${R.length > 30 ? `<div class="uclar">+${R.length - 30} sonuç daha · aramayı daraltın</div>` : ""}</div>` : `<div class="yk-bos">“${esc(ltAra)}” bulunamadı</div>`; }
 document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#lt-ara")) return; const d = acikBelge(); if(!d || d.tur !== "liste") return; ltAra = el.value; const v = ltVeri(d);
-  const s = $("#lt-ara-sonuc"); if(s) s.innerHTML = ltAraSonuc(v); const on = $("#lt-govde .lt-on-kap"); if(on && ltOnAcik){ on.innerHTML = ltOnHtml(d); ltOnSigdir(on); } const ilk = on && on.querySelector(".lt-isik"); if(ilk) ilk.scrollIntoView({ block: "nearest" }); });
+  const s = $("#lt-ara-sonuc"); if(s) s.innerHTML = ltAraSonuc(v); const on = $("#lt-govde .lt-on-kap"); if(on && ltOnAcik){ on.innerHTML = ltOnHtml(d); ltOnSigdir(on); onIsikGit(on); } });
 document.addEventListener("toggle", e => { if(!e.target.matches || !e.target.matches("#lt-govde .lt-on")) return; ltOnAcik = e.target.open; try { localStorage.setItem("ltOnAcik", ltOnAcik ? "1" : "0"); } catch(_){} if(ltOnAcik){ const d = acikBelge(); const k = e.target.querySelector(".lt-on-kap"); if(d && k){ k.innerHTML = ltOnHtml(d); ltOnSigdir(k); } } }, true);
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-lt-git]"); if(!b) return; const [bid, sid] = b.dataset.ltGit.split("|"); ltBlokAcik = bid; ltAcik = sid; listeCiz();
   requestAnimationFrame(() => { const x = document.querySelector(`#lt-govde [data-lt-satir="${sid}"]`); if(x){ x.scrollIntoView({ block: "center", behavior: "smooth" }); const k = x.closest(".kc-sat"); k && k.classList.add("lt-yanip"); setTimeout(() => k && k.classList.remove("lt-yanip"), 1600); } }); });
