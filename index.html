@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "344";
+  const SURUM = "345";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2565,9 +2565,11 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 /* GDHG durum seçimi: boşken de, "Görev Sonu"ndayken de aynı genişlikte; yazı kesilmez */
 .gd-tablo td.devam .sec-ac.gd-durum{width:100%;min-width:136px;box-sizing:border-box;justify-content:space-between}
 .gd-tablo td.devam .sec-ac.gd-durum>span{overflow:visible;text-overflow:clip;white-space:nowrap}
-.gd-tablo td.gd-kalis .gd-kelle{width:64px;height:30px;text-align:center;border:1px solid var(--line);border-radius:7px;background:var(--panel);font:600 13px var(--f-ui);padding:0 4px}
-.gd-tablo td.gd-kalis .gd-kt{min-width:30px;height:26px;margin-left:4px;font-size:11.5px}
-.gd-tablo td.gd-kalis .gd-kt.acik{background:#E2EDF8;border-color:#9DB8D6;color:#24394A}
+.gd-tablo td.gd-kalis{min-width:150px;white-space:nowrap}
+.gd-kseg{display:inline-flex;gap:2px;padding:2px;border-radius:8px;background:var(--line2);vertical-align:middle}
+ .gd-kseg button{min-width:38px;height:28px;padding:0 8px;border:0;border-radius:6px;background:transparent;font:600 12px var(--f-ui);color:var(--muted);cursor:pointer}
+ .gd-kseg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);box-shadow:0 1px 2px rgba(20,40,70,.12)}
+.gd-tablo td.gd-kalis .gd-kelle{display:block;margin:6px auto 0;width:132px;height:30px;text-align:center;border:1px solid var(--line);border-radius:7px;background:var(--panel);font:600 13px var(--f-ui);padding:0 6px}
 </style>
 
 </head>
@@ -2605,7 +2607,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 344</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 345</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4625,9 +4627,10 @@ const gdGun = iso => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(iso || ""); re
 const gdTr = v => v === "-" ? "-" : trTarih(v || "");
 /* artiBir: gidiş ve dönüş günü birlikte sayılır (dönüş − gidiş + 1), kayıttaki tüm satırlara uygulanır */
 document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("input[data-gd-kelle]")) return; const kk = gdKisi(); const g = kk && kk.gorevler[+el.dataset.gdKelle]; if(!g) return;
-  if(el.value === "-") delete g.kalisElle; else g.kalisElle = el.value; el.parentNode.querySelectorAll(".gd-kt").forEach(x => x.classList.toggle("acik", x.dataset.gdKt.endsWith(":" + (el.value === "-" ? "-" : "")) && (el.value === "-" || el.value === ""))); kaydetBt("gdhg"); });
+  g.kalisMod = "elle"; g.kalisElle = el.value; kaydetBt("gdhg"); });
 /* tireli satırlarda (Devam / — / Görev Sonu) kalış süresi elle: varsayılan "-", silinirse boş, istenirse yazı */
-function gdKalis(g){ if(g.don === "-" && g.kalisElle != null) return g.kalisElle; if(!g.git || !g.don) return ""; if(g.don === "-") return "-"; const a = gdGun(g.git), b = gdGun(g.don); return a == null || b == null ? "" : b - a + (gdArti(g) ? 1 : 0); }
+const gdKMod = g => g.kalisMod || (g.kalisElle === "" ? "bos" : g.kalisElle != null ? "elle" : "tire");
+function gdKalis(g){ if(g.don === "-"){ const m = gdKMod(g); if(m === "bos") return ""; if(m === "elle") return g.kalisElle || ""; } if(!g.git || !g.don) return ""; if(g.don === "-") return "-"; const a = gdGun(g.git), b = gdGun(g.don); return a == null || b == null ? "" : b - a + (gdArti(g) ? 1 : 0); }
 /* satıra özel +1: g.arti true/false genel ayarı ezer; tanımsızsa genel "+1 gün" ayarı geçerli */
 const gdArti = g => g.arti !== undefined ? !!g.arti : !!(S.gdhg && S.gdhg.artiBir);
 /* k.toplamArti: toplama ayrıca 1 gün eklenir (kişiye özel) */
@@ -4935,7 +4938,7 @@ function gdBelgeCiz0(){
           <td>${gdInp(`gd-g-${i}-git`, "g", "git", g.git, { i, tip: "date", ad: "Gidiş tarihi" })}</td>
           <td>${tire ? `<input disabled value="-" aria-label="Dönüş tarihi (devam)" style="text-align:center">` : gdInp(`gd-g-${i}-don`, "g", "don", g.don, { i, tip: "date", ad: "Dönüş tarihi" })}</td>
           <td class="devam"><select id="gd-g-${i}-durum" data-t="g" data-a="durum" data-i="${i}" aria-label="Görev durumu" class="gd-durum${devam ? " d-devam" : g.son ? " d-son" : ""}"><option value=""></option><option value="tire"${g.tire && g.don === "-" ? " selected" : ""}>—</option><option value="devam"${devam ? " selected" : ""}>Devam</option><option value="son"${!devam && g.son ? " selected" : ""}>Görev Sonu</option></select></td>
-          <td class="hesap gd-kalis"${typeof v === "number" && v < 0 ? ' style="color:var(--danger)"' : ""}>${tire ? `<input class="gd-kelle" data-gd-kelle="${i}" value="${esc(g.kalisElle ?? "-")}" placeholder="boş" aria-label="Kalış süresi (elle)"><button class="mini gd-kt${(g.kalisElle ?? "-") === "-" ? " acik" : ""}" type="button" data-gd-kt="${i}:-" title="Tire koy">-</button><button class="mini gd-kt${g.kalisElle === "" ? " acik" : ""}" type="button" data-gd-kt="${i}:" title="Boş bırak">Boş</button>` : `<span>${esc(v)}</span>`}${tire ? "" : `<button class="mini gd-arti${gdArti(g) ? " acik" : ""}" type="button" data-gd-arti="${i}" aria-pressed="${gdArti(g)}" title="Bu satırın kalış süresine 1 gün ekle / çıkar">+1</button><button class="mini gd-eksi${g.eksi ? " acik" : ""}" type="button" data-gd-eksi="${i}" aria-pressed="${!!g.eksi}" title="${gdEksiYon(g) === "git" ? "Gidiş 1 gün ileri alındı · geri getir" : gdEksiYon(g) ? "Dönüş 1 gün geri alındı · geri getir" : gdKYon(k) === "git" ? "Gidiş tarihini 1 gün ileri al" : "Dönüş tarihini 1 gün geri al"}">−1${gdEksiYon(g) ? `<small>${gdEksiYon(g) === "git" ? "G" : "D"}</small>` : ""}</button>`}</td>
+          <td class="hesap gd-kalis"${typeof v === "number" && v < 0 ? ' style="color:var(--danger)"' : ""}>${tire ? `<div class="gd-kseg" role="group" aria-label="Kalış süresi">${[["tire", "–"], ["bos", "Boş"], ["elle", "Elle"]].map(([m, t]) => `<button type="button" data-gd-kt="${i}:${m}" aria-pressed="${gdKMod(g) === m}">${t}</button>`).join("")}</div>${gdKMod(g) === "elle" ? `<input class="gd-kelle" data-gd-kelle="${i}" value="${esc(g.kalisElle || "")}" aria-label="Kalış süresi (elle)">` : ""}` : `<span>${esc(v)}</span>`}${tire ? "" : `<button class="mini gd-arti${gdArti(g) ? " acik" : ""}" type="button" data-gd-arti="${i}" aria-pressed="${gdArti(g)}" title="Bu satırın kalış süresine 1 gün ekle / çıkar">+1</button><button class="mini gd-eksi${g.eksi ? " acik" : ""}" type="button" data-gd-eksi="${i}" aria-pressed="${!!g.eksi}" title="${gdEksiYon(g) === "git" ? "Gidiş 1 gün ileri alındı · geri getir" : gdEksiYon(g) ? "Dönüş 1 gün geri alındı · geri getir" : gdKYon(k) === "git" ? "Gidiş tarihini 1 gün ileri al" : "Dönüş tarihini 1 gün geri al"}">−1${gdEksiYon(g) ? `<small>${gdEksiYon(g) === "git" ? "G" : "D"}</small>` : ""}</button>`}</td>
           <td>${gdInp(`gd-g-${i}-not`, "g", "not", g.not, { i, st: "min-width:100px", ad: "Düşünceler" })}</td>${gdIslem("g", i)}</tr>`; }).join("") ||
         `<tr><td colspan="8"><div class="bos" style="padding:10px">Görev yeri satırı yok</div></td></tr>`}
     </tbody><tfoot><tr><td colspan="5" style="text-align:right">TOPLAM</td><td class="hesap gd-kalis"><span>${T}</span><button class="mini gd-arti${k.toplamArti ? " acik" : ""}" type="button" data-gd="toplam-arti" aria-pressed="${!!k.toplamArti}" title="Toplama 1 gün ekle / çıkar">+1</button></td><td colspan="2"></td></tr></tfoot></table></div>
@@ -5133,7 +5136,7 @@ $("#e-gdhg").addEventListener("click", e => {
   if(b.dataset.gd === "eksi-bir"){ const say = k.gorevler.filter(g => g.git && g.don && g.don !== "-"); if(!say.length) return; const hepsi = say.every(g => gdEksiYon(g)), yon = gdKYon(k);
     say.forEach(g => { if(hepsi) gdEksiKaldir(g); else if(!gdEksiYon(g)) gdEksiUygula(g, yon); }); k.eksiBir = !hepsi; if(!k.eksiBir) delete k.eksiBir; kaydetBt("gdhg"); gdBelgeCiz();
     document.querySelectorAll("#e-gdhg .gd-kalis > span").forEach(x => x.classList.add("gd-zipla")); bildir(!hepsi ? (yon === "git" ? "Bütün gidiş tarihleri 1 gün ileri alındı" : "Bütün dönüş tarihleri 1 gün geri alındı") : "Tarihler eski haline getirildi"); return; }
-  if(b.dataset.gdKt !== undefined){ const [n, d] = b.dataset.gdKt.split(":"), g = k.gorevler[+n]; if(!g) return; if(d === "-") delete g.kalisElle; else g.kalisElle = d; kaydetBt("gdhg"); gdBelgeCiz(); return; }
+  if(b.dataset.gdKt !== undefined){ const [n, m] = b.dataset.gdKt.split(":"), g = k.gorevler[+n]; if(!g) return; if(m === "tire"){ delete g.kalisMod; delete g.kalisElle; } else g.kalisMod = m; kaydetBt("gdhg"); gdBelgeCiz(); if(m === "elle") setTimeout(() => document.querySelector(`input[data-gd-kelle="${n}"]`)?.focus(), 30); return; }
   if(b.dataset.gdArti !== undefined){ const g = k.gorevler[+b.dataset.gdArti]; if(!g) return; g.arti = !gdArti(g); kaydetBt("gdhg"); gdBelgeCiz(); return; }
   if(b.dataset.gd === "yazi-bitisik" || b.dataset.gd === "yazi-ayrik"){ G.yaziAyrik = b.dataset.gd === "yazi-ayrik"; if(!G.yaziAyrik) delete G.yaziAyrik; kaydetBt("gdhg"); gdBelgeCiz(); return; }
   if(b.dataset.gd === "toplam-arti"){ k.toplamArti = !k.toplamArti; if(!k.toplamArti) delete k.toplamArti; kaydetBt("gdhg"); gdBelgeCiz(); document.querySelectorAll('#e-gdhg tfoot .gd-kalis > span').forEach(x => x.classList.add("gd-zipla")); const an = document.querySelector('#e-gdhg .gd-anahtar[data-gd="toplam-arti"]'); an && an.classList.add("degisti"); return; }
@@ -5785,7 +5788,7 @@ async function gdhgExcel(a, liste){
     k.gorevler.forEach((g, i) => { ws.getRow(r).height = 30;
       C("A" + r, i + 1, { k: 1 }); C("B" + r, g.yer, { al: "left", k: 1 });
       tarihHucre(C("C" + r, undefined, { k: 1 }), g.git); tarihHucre(C("D" + r, undefined, { k: 1 }), g.don);
-      const v = gdKalis(g); if(g.don === "-" && g.kalisElle != null) C("E" + r, g.kalisElle || null, { k: 1 }); else C("E" + r, { formula: `IF(OR(ISBLANK(C${r}), ISBLANK(D${r})), "", IF(D${r}="-", "-", D${r}-C${r}${gdArti(g) ? "+1" : ""}))`, result: v }, { k: 1 });
+      const v = gdKalis(g); if(g.don === "-" && gdKMod(g) !== "tire") C("E" + r, v || null, { k: 1 }); else C("E" + r, { formula: `IF(OR(ISBLANK(C${r}), ISBLANK(D${r})), "", IF(D${r}="-", "-", D${r}-C${r}${gdArti(g) ? "+1" : ""}))`, result: v }, { k: 1 });
       C("F" + r, g.not || null, { k: 1 }); r++; });
     const top = r; C("A" + top, null, { k: 1 }); B(top, 2, top, 4); C("B" + top, "TOPLAM", { sz: 10, b: 1, k: 1 }); C("C" + top, undefined, { k: 1 }); C("D" + top, undefined, { k: 1 });
     C("E" + top, { formula: k.gorevler.length ? `SUM(E${ilk}:E${top - 1})${k.toplamArti ? "+1" : ""}` : (k.toplamArti ? "1" : "0"), result: gdToplam(k) }, { sz: 10, b: 1, k: 1 }); C("F" + top, null, { k: 1 });
