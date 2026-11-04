@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "346";
+  const SURUM = "347";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2570,6 +2570,11 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
  .gd-kseg button{min-width:38px;height:28px;padding:0 8px;border:0;border-radius:6px;background:transparent;font:600 12px var(--f-ui);color:var(--muted);cursor:pointer}
  .gd-kseg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);box-shadow:0 1px 2px rgba(20,40,70,.12)}
 .gd-tablo td.gd-kalis .gd-kelle{display:block;margin:6px auto 0;width:132px;height:30px;text-align:center;border:1px solid var(--line);border-radius:7px;background:var(--panel);font:600 13px var(--f-ui);padding:0 6px}
+.gd-secbar{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;border:1px solid #E7C9C2;border-left:6px solid #E8CFC6;border-radius:9px;background:#FBF4F2}
+ .gd-secbar span{font:600 12.5px var(--f-ui);color:var(--muted);margin-right:auto}
+ .gd-secbar .btn.sil{color:#fff;background:#B5523F;border-color:#B5523F} .gd-secbar .btn.sil:disabled{opacity:.45}
+.gd-tablo input.gd-sec{width:20px;height:20px;accent-color:#B5523F}
+.gd-tablo tr.gd-secili td{background:#FBEFEC!important}
 </style>
 
 </head>
@@ -2607,7 +2612,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 346</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 347</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4956,15 +4961,18 @@ function gdBelgeCiz0(){
     <div class="gd-imzalar imz-dokun">${imzOnizle(im, `<b>${esc(G.onayBaslik)}</b>`, "i")}</div>
     <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Kalış süresi = dönüş − gidiş. “Durum” sütunundan “Devam” seçilirse dönüş “-” yazılır ve toplama katılmaz; “Görev Sonu” seçilirse görev bitiş tarihi dönüşe yazılır, süre toplama katılır ve düşüncelere “Görev Sonu” yazılır. Ay/Gün, Excel'deki DATEDIF ile aynı hesaplanır. İmzalar ve genel tarih “İmza ve başlık” sekmesinden değişir.</div></details>`;
 }
+let gdSecim = null;   // Liste sekmesinde toplu silme için seçilen kişiler (id kümesi)
+document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches("input[data-gd-sec]") || !gdSecim) return; el.checked ? gdSecim.add(el.dataset.gdSec) : gdSecim.delete(el.dataset.gdSec); gdListeCiz(); });
 function gdListeCiz(){
   const G = S.gdhg; const varolan = new Set(G.kisiler.map(k => normMetin(k.ad)));
   const bt = (S.personel.rows || []).filter(p => p.ad && !varolan.has(normMetin(p.ad)));
   $("#gd-liste").innerHTML = `<div style="display:flex;flex-direction:column;gap:10px">
-    <div class="arac"><button class="btn ana" type="button" data-gd="kisi-ekle">+ Personel ekle</button>
+    <div class="arac"><button class="btn ana" type="button" data-gd="kisi-ekle">+ Personel ekle</button><button class="btn" type="button" data-gd="sec-ac" aria-pressed="${!!gdSecim}">${gdSecim ? "✓ Seçimi bitir" : "☑ Seç ve toplu sil"}</button>
       ${bt.length ? `<select id="gd-bt-ekle" aria-label="Batarya personelinden ekle"><option value="">Batarya isim listesinden ekle…</option>${bt.map(p => `<option value="${esc(p.id)}">${esc(p.rutbe)} ${esc(p.ad)}</option>`).join("")}</select>` : ""}
       <span class="uclar">Onay belgelerindeki kimlik bilgileri (sınıf/rütbe, sicil, görev) bu listeden gelir.</span></div>
-    <div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>S.No</th><th>Adı soyadı</th><th>Sınıf ve rütbesi</th><th>Sicili</th><th>Görevi (kadro tam adı)</th><th>Tür</th><th>Toplam gün</th><th></th></tr></thead><tbody>
-    ${G.kisiler.map((k, i) => `<tr><td class="sn">${i + 1}</td>
+    ${gdSecim ? `<div class="gd-secbar"><button type="button" class="btn kucuk" data-gd="sec-hepsi">${G.kisiler.length && gdSecim.size === G.kisiler.length ? "Hiçbirini seçme" : "Tümünü seç"}</button><button type="button" class="btn kucuk" data-gd="sec-bos">Adı boş olanlar</button><span>${gdSecim.size} kişi seçili</span><button type="button" class="btn sil kucuk" data-gd="sec-sil"${gdSecim.size ? "" : " disabled"}>Seçilenleri sil${gdSecim.size ? ` (${gdSecim.size})` : ""}</button></div>` : ""}
+    <div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>${gdSecim ? "Seç" : "S.No"}</th><th>Adı soyadı</th><th>Sınıf ve rütbesi</th><th>Sicili</th><th>Görevi (kadro tam adı)</th><th>Tür</th><th>Toplam gün</th><th></th></tr></thead><tbody>
+    ${G.kisiler.map((k, i) => `<tr${gdSecim && gdSecim.has(k.id) ? ' class="gd-secili"' : ""}><td class="sn">${gdSecim ? `<input type="checkbox" class="gd-sec" data-gd-sec="${esc(k.id)}"${gdSecim.has(k.id) ? " checked" : ""} aria-label="${esc(k.ad || "Adsız")} seç">` : i + 1}</td>
       <td>${gdInp(`gd-l-${i}-ad`, "l", "ad", k.ad, { i, st: "min-width:150px;font-weight:700", ad: "Adı soyadı" })}</td>
       <td>${gdInp(`gd-l-${i}-rutbe`, "l", "rutbe", k.rutbe, { i, st: "min-width:130px", ad: "Sınıf ve rütbesi" })}</td>
       <td class="orta">${gdInp(`gd-l-${i}-sicil`, "l", "sicil", k.sicil, { i, st: "min-width:100px", ad: "Sicil" })}</td>
@@ -5108,6 +5116,13 @@ $("#e-gdhg").addEventListener("click", e => {
     if(hedef){ const v = $("#v-belge"); v.scrollTop = 0; requestAnimationFrame(() => { v.scrollTo({ top: Math.max(0, hedef.getBoundingClientRect().top - v.getBoundingClientRect().top - 90), behavior: "smooth" }); }); } else $("#v-belge").scrollTop = 0; return; }
   if(b.dataset.kisi){ gdSecili = b.dataset.kisi; gdBelgeCiz(); return; }
   const k = gdKisi(); const onay = (metin, eski) => { if(b.dataset.onay === "1") return true; b.dataset.onay = "1"; b.textContent = metin; setTimeout(() => { b.dataset.onay = ""; b.textContent = eski; }, 3500); return false; };
+  if(b.dataset.gd === "sec-ac"){ gdSecim = gdSecim ? null : new Set(); gdListeCiz(); return; }
+  if(b.dataset.gd === "sec-hepsi"){ gdSecim = gdSecim && gdSecim.size === G.kisiler.length ? new Set() : new Set(G.kisiler.map(x => x.id)); gdListeCiz(); return; }
+  if(b.dataset.gd === "sec-bos"){ gdSecim = new Set(G.kisiler.filter(x => !String(x.ad || "").trim()).map(x => x.id)); gdListeCiz(); if(!gdSecim.size) bildir("Adı boş kişi yok"); return; }
+  if(b.dataset.gd === "sec-sil"){ if(!gdSecim || !gdSecim.size) return; const n = gdSecim.size, geri = anlik(G.kisiler);
+    for(let j = G.kisiler.length - 1; j >= 0; j--) if(gdSecim.has(G.kisiler[j].id)) G.kisiler.splice(j, 1);
+    if(gdSecili && !G.kisiler.some(x => x.id === gdSecili)) gdSecili = null; gdSecim = null; kaydetBt("gdhg"); gdhgCiz();
+    return geriAlinabilir(`${n} kişi silindi`, () => { geri(); kaydetBt("gdhg"); gdhgCiz(); }); }
   if(b.dataset.gd === "kisi-ekle"){ const yeni = { id: yeniId(), ad: "", rutbe: "", sicil: "", gorev: "", tarih: "", gorevler: [{ yer: GD_YER, git: "", don: "", not: "" }], ayri: [], ...(gdSekme === "soz" ? { tip: "s" } : {}) };
     G.kisiler.push(yeni); gdSecili = yeni.id; kaydetBt("gdhg"); gdhgCiz(); document.getElementById(gdSekme === "belge" || gdSekme === "soz" ? "gd-k-rutbe" : `gd-l-${G.kisiler.length - 1}-ad`)?.focus(); return; }
   if(!k && b.dataset.gd) return;
