@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "315";
+  const SURUM = "316";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2446,6 +2446,10 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 #geri-al{display:none!important}
 #kayit-cubugu.tamam{border-color:#BCD6C5;background:#F1F8F3} #kayit-cubugu.tamam .k-metin{color:#2F6B47} #kayit-cubugu.tamam .k-metin i{background:#3E8A5C;box-shadow:0 0 0 3px #D6EBDD}
 #kayit-cubugu #k-geri{background:#fff;border:1px solid #BCD6C5;color:#2F6B47}
+
+#kayit-cubugu button.k-metin{border:0;background:none;padding:2px 4px 2px 0;cursor:pointer;text-align:left} #kayit-cubugu.tamam button.k-metin{cursor:default}
+#kayit-cubugu .k-metin small{text-decoration:underline;text-decoration-color:#E3C88F;text-underline-offset:2px}
+.ks-av.deg-av{background:#FBEFD8;color:#7A5214;font-weight:800} .deg-not{margin:10px 2px 0;font:500 11.5px var(--f-ui);color:var(--muted)}
 </style>
 
 </head>
@@ -2483,7 +2487,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 315</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 316</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2540,7 +2544,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
       <button id="yapistir-btn" class="kopya yapistir" hidden type="button" aria-label="Panodakini kutuya yapıştır">⇣ Yapıştır</button>
       <div id="toast" class="toast" hidden role="status"></div>
       <div id="geri-al" class="geri-al" hidden role="status"><span id="geri-al-yazi">Kaydedildi</span><button type="button" id="geri-al-btn">↶ Geri al</button></div>
-      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><span id="k-metin" class="k-metin">Kaydedilmedi</span><button class="btn" id="k-vazgec" type="button" hidden>Vazgeç</button><button class="btn" id="k-geri" type="button" hidden>↶ Geri al</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
+      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><button type="button" id="k-metin" class="k-metin">Kaydedilmedi</button><button class="btn" id="k-vazgec" type="button" hidden>Vazgeç</button><button class="btn" id="k-geri" type="button" hidden>↶ Geri al</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
       <section class="panel" id="v-belge" hidden role="dialog" aria-modal="true" aria-label="Belge düzenleyici">
         <div class="arac">
           <button class="btn kucuk" id="d-geri" aria-label="Belgeyi kapat">✕ Kapat</button>
@@ -2761,10 +2765,10 @@ const TASLAK = "tskTaslak";
 function taslakYaz(hemen){ clearTimeout(taslakYaz.z); const is = () => { try { const o = {}; for(const y in kirli){ const v = kirli[y](); if(v !== undefined) o[y] = v; } if(Object.keys(o).length) localStorage.setItem(TASLAK, JSON.stringify({ t: Date.now(), o })); else localStorage.removeItem(TASLAK); } catch(e){} }; if(hemen) is(); else taslakYaz.z = setTimeout(is, 700); }
 function taslakGeriYukle(){ let t = null; try { t = JSON.parse(localStorage.getItem(TASLAK) || "null"); } catch(e){} if(!t || !t.o) return;
   let n = 0; for(const [y, v] of Object.entries(t.o)){ const [kol, id] = y.split("/"); if(!v || !id) continue;
-    if(kol === "bt"){ S[id] = v; btDuzelt(id); kirli[y] = () => S[id]; }
-    else if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(i >= 0) S.belgeler[i] = v; else S.belgeler.push(v); kirli[y] = () => S.belgeler.find(x => x.id === id) || v; }
+    if(kol === "bt"){ if(JSON.stringify(S[id]) === JSON.stringify(v)) continue; S[id] = v; btDuzelt(id); kirli[y] = () => S[id]; }
+    else if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(i >= 0 && JSON.stringify(S.belgeler[i]) === JSON.stringify(v)) continue; if(i >= 0) S.belgeler[i] = v; else S.belgeler.push(v); kirli[y] = () => S.belgeler.find(x => x.id === id) || v; }
     else continue; surum[y] = (surum[y] || 0) + 1; n++; }
-  if(!n) return; kayitCubugu(); agacCiz(); anaCiz(); if(SECIM.belge){ const d = acikBelge(); if(d) belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
+  if(!n){ taslakYaz(true); return; } kayitCubugu(); agacCiz(); anaCiz(); if(SECIM.belge){ const d = acikBelge(); if(d) belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
   uyar("Kaydedilmemiş değişiklikleriniz geri getirildi. Saklamak için alttaki “Kaydet”e basın."); }
 /* ===== otomatik kaydetme ve geri alma =====
    Her değişiklik yazmayı bıraktıktan kısa süre sonra kendiliğinden kaydedilir. Kaydedilmeden önceki hâl saklanır;
@@ -2782,6 +2786,30 @@ async function otoKaydet(){
     if(ok){ geriYigin.push({ zaman: Date.now(), once }); if(geriYigin.length > 40) geriYigin.shift(); geriGoster(); }
   } finally { otoCalisiyor = false; kayitCubugu(); }
 }
+/* kaydedilmemiş değişiklikler nerede: her yol için kayıtlı hâlle karşılaştırılır, dokununca oraya gidilir */
+const DEG_AD = { ad: "adı", rutbe: "rütbe", tel: "telefon", memleket: "memleket", baba: "baba adı", dogum: "doğum tarihi", duhul: "duhul", nasip: "nasıp", sicil: "sicil", ems: "EMS no", tc: "T.C. no", kita: "kıt'a", adres: "adres", ayr: "ayrılış", kat: "katılış", gun: "gün", tur: "tür", ozu: "özü", metin: "metin", tarih: "tarih", gorev: "görev", ilgi: "ilgi", ek: "ekler", kayitlar: "", rows: "", kisiler: "", bas: "başlangıç", bit: "bitiş", onay: "onaylayan", durum: "durum", not: "not" };
+const degEt = x => x && typeof x === "object" ? (x.ad || x.baslik || x.no || x.hedef || x.id || "satır") : String(x);
+function degFark(a, b, yol, o){ if(o.length > 5 || JSON.stringify(a) === JSON.stringify(b)) return o; const on = yol ? yol + " · " : "";
+  if(Array.isArray(a) && Array.isArray(b)){ const id = x => x && typeof x === "object" ? (x.id || x.ad) : x, am = new Map(a.map(x => [id(x), x])), bm = new Map(b.map(x => [id(x), x])), n0 = o.length;
+    for(const x of b){ if(!am.has(id(x))) o.push(`${on}${degEt(x)} eklendi`); else degFark(am.get(id(x)), x, on + degEt(x), o); if(o.length > 5) return o; }
+    for(const x of a) if(!bm.has(id(x))) o.push(`${on}${degEt(x)} silindi`);
+    if(o.length === n0) o.push(`${yol || "liste"} sırası değişti`); return o; }
+  if(a && b && typeof a === "object" && typeof b === "object"){ for(const k of new Set([...Object.keys(a), ...Object.keys(b)])){ if(JSON.stringify(a[k]) === JSON.stringify(b[k])) continue;
+      const et = DEG_AD[k] ?? k; if(a[k] && b[k] && typeof a[k] === "object" && typeof b[k] === "object") degFark(a[k], b[k], et ? on + et : yol, o); else o.push(on + (et || k)); if(o.length > 5) return o; } return o; }
+  o.push(yol || "değer"); return o; }
+/* “Enes DEMİR · memleket”, “Enes DEMİR · telefon” → “Enes DEMİR: memleket, telefon” */
+const degOzet = F => { const M = new Map(); F.forEach(x => { const i = x.lastIndexOf(" · "), k = i < 0 ? "" : x.slice(0, i), v = i < 0 ? x : x.slice(i + 3); M.set(k, [...(M.get(k) || []), v]); });
+  return [...M].map(([k, v]) => (k ? k + ": " : "") + [...new Set(v)].join(", ")).join(" · "); };
+const DEG_BT = { personel: ["personel", "Personel"], izin: ["izin", "İzin çizelgesi"], yoklama: ["yoklama", "Yoklama"], yoklama30: ["yoklama", "Yoklama (30 kişilik)"], gdhg: ["gdhg", "GDHG onay"], gdhgSet: ["gdhg", "GDHG ayarları"], izinb: ["izinb", "Uzman · sözleşmeli izin belgesi"], hedef: ["hedef", "Hedefler"], yapi: [null, "Klasör ve bölüm düzeni"] };
+async function degisenlerAc(){ const yollar = Object.keys(kirli); if(!yollar.length) return; const L = [];
+  for(const y of yollar){ const [kol, id] = y.split("/"); let once = null; try { const d = await db.doc(y).get(); once = d.exists ? d.data() : null; } catch(e){}
+    const simdi = kopya(kirli[y]() ?? null), F = once ? degFark(once, simdi, "", []) : ["yeni oluşturuldu"];
+    if(once && !F.length){ delete kirli[y]; continue; }   // aslında değişmemiş
+    let ad, git; if(kol === "belgeler"){ const d = S.belgeler.find(x => x.id === id); ad = d ? d.ad : "Belge"; git = d && (() => belgeGit(d)); } else { const [t, a] = DEG_BT[id] || [null, id]; ad = a; const d = t && belgeTur(t); git = d ? () => belgeGit(d) : (id === "yapi" ? () => { belgeKapat && belgeKapat(); } : null); }
+    L.push({ ad, F, git }); }
+  kayitCubugu(); taslakYaz(true); if(!L.length){ bildir("Kaydedilmemiş değişiklik kalmadı"); return; }
+  altPencere("ks-perde", "KAYDEDİLMEMİŞ", "Değişen yerler", () => `<div class="ap-liste">${L.map((x, i) => apSatir(`data-ks="${i}"`, `<span class="ks-av deg-av">${i + 1}</span>`, esc(x.ad), "", { alt: esc(degOzet(x.F) + (x.F.length > 5 ? " …" : "")) })).join("")}</div><p class="deg-not">Dokununca o belge açılır. Hepsini saklamak için alttaki “Kaydet”e basın.</p>`,
+    (b, kapat) => { if(b.dataset.ks){ const x = L[+b.dataset.ks]; kapat(); if(x.git) x.git(); } }, { z: "FFF3DD", r: "7A5214" }); }
 function cubukTamam(yazi, geri){ const c = $("#kayit-cubugu"); if(Object.keys(kirli).length) return; c.classList.add("tamam"); $("#k-metin").innerHTML = `<i></i>${yazi}`; $("#k-kaydet").hidden = true; $("#k-geri").hidden = !geri; c.hidden = false;
   clearTimeout(geriGoster.z); geriGoster.z = setTimeout(() => { c.classList.remove("tamam"); kayitCubugu(); }, 4500); }
 function geriGoster(){ cubukTamam("Kaydedildi", geriYigin.length > 0); }
@@ -2806,7 +2834,7 @@ document.addEventListener("visibilitychange", () => { if(document.hidden) taslak
 function kayitCubugu(){
   const n = Object.keys(kirli).length; const c = $("#kayit-cubugu"); if(n){ clearTimeout(geriGoster.z); c.classList.remove("tamam"); $("#k-kaydet").hidden = false; $("#k-geri").hidden = true; c.hidden = false; } else if(!c.classList.contains("tamam")) c.hidden = true;   // tek çubuk: değişiklik varken “Kaydet”, kaydedince kısa süre “Geri al”
   document.documentElement.classList.toggle("kayit-bekliyor", !!n);
-  if(n){ $("#k-metin").innerHTML = `<i></i>Kaydedilmedi<small>${n} yerde değişiklik</small>`; durum("yaz","Kaydedilmedi"); }
+  if(n){ $("#k-metin").innerHTML = `<i></i>Kaydedilmedi<small>${n} yerde değişiklik · göster ›</small>`; durum("yaz","Kaydedilmedi"); }
   else if(db && yazabilir) durum("ok","Kaydedildi");
 }
 async function yaz(yol){
@@ -9691,7 +9719,7 @@ $("#b-dosyalar").addEventListener("click", async e => {
 });
 
 $("#k-kaydet").addEventListener("click", hepsiniKaydet);
-$("#geri-al-btn").addEventListener("click", geriAl); $("#k-geri").addEventListener("click", geriAl);
+$("#geri-al-btn").addEventListener("click", geriAl); $("#k-geri").addEventListener("click", geriAl); $("#k-metin").addEventListener("click", () => { if(Object.keys(kirli).length) degisenlerAc(); });
 $("#k-vazgec").addEventListener("click", e => { const b = e.currentTarget; if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misiniz? Geri al"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Vazgeç"; }, 3500); return; } b.dataset.onay = ""; b.textContent = "Vazgeç"; vazgec(); });
 document.addEventListener("keydown", e => { if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s"){ e.preventDefault(); hepsiniKaydet(); } });
 addEventListener("beforeunload", e => { if(Object.keys(kirli).length){ e.preventDefault(); e.returnValue = ""; } });
