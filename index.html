@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "342";
+  const SURUM = "343";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2562,6 +2562,9 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 /* liste öğeleri de sırtlı (dilekçe / izin belgesi listeleri, karşılama sınıfları, sayfa ayarları) */
 .ko-kat,.dl-sat,.sayfa-ayar{border-left:6px solid #CFD8E3!important;border-radius:8px!important}
 .dl-sat[aria-current="true"],.dl-sat.on{border-left-color:#9FC2AA!important}
+/* GDHG durum seçimi: boşken de, "Görev Sonu"ndayken de aynı genişlikte; yazı kesilmez */
+.gd-tablo td.devam .sec-ac.gd-durum{width:100%;min-width:136px;box-sizing:border-box;justify-content:space-between}
+.gd-tablo td.devam .sec-ac.gd-durum>span{overflow:visible;text-overflow:clip;white-space:nowrap}
 </style>
 
 </head>
@@ -2599,7 +2602,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 342</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 343</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
