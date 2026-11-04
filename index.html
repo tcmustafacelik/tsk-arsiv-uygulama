@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "313";
+  const SURUM = "314";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2436,6 +2436,12 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 #kayit-cubugu .k-metin i{grid-row:1 / 3;width:8px;height:8px;border-radius:50%;background:#E0A040;box-shadow:0 0 0 3px #F8E5C2} #kayit-cubugu .k-metin small{grid-column:2;font:600 10.5px var(--f-ui);color:#A0814D}
 #kayit-cubugu .btn{padding:8px 14px;border-radius:11px;font:700 13px var(--f-ui)} #kayit-cubugu #k-vazgec{background:#fff;border:1px solid #E6D6B8;color:#7A5214} #kayit-cubugu #k-kaydet{background:#2F6B47;border-color:#2F6B47;color:#fff}
 html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important} html.kayit-bekliyor body{padding-bottom:76px}
+
+:is(#dl-govde,#isa-govde,#izb-kisiler) .dl-liste{max-height:none!important;overflow:visible!important}
+.dl-liste.kisa>.dl-sat:nth-child(n+4):not(.on){display:none}
+.dl-hepsi{align-self:center;display:inline-flex;align-items:center;gap:6px;margin-top:-4px;border:1px solid var(--line2);background:var(--panel);border-radius:16px;padding:5px 14px;font:700 12px var(--f-ui);color:#3D5F8C;cursor:pointer}
+.dl-hepsi b{font:800 11px var(--f-ui);background:#E6EEF7;border-radius:9px;padding:1px 7px} .dl-hepsi span{font-size:13px;line-height:1}
+.dl-sat .dl-tur{white-space:nowrap;max-width:none}
 </style>
 
 </head>
@@ -2473,7 +2479,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 313</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 314</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5363,7 +5369,7 @@ function izbhCiz(){
 function izbBelgeCiz(){
   const G = izbG(), k = izbKisi(), mz = t => t !== "Yıllık İzin";
   $("#izb-kisiler").innerHTML = `<div class="dl-ust"><span class="dl-ust-s isa-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z M8 9h8 M8 13h8 M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><b>İzin belgeleri</b><small>${G.kisiler.length}</small><button type="button" class="dl-yeni" data-izb-is="kisi-ekle"><span>＋</span>Yeni</button></div>
-    <div class="dl-liste">${G.kisiler.map(x => { const h = izbHesap(x); return `<button type="button" class="dl-sat${x === k ? " on" : ""}" data-izb-kisi="${esc(x.id)}"><span class="dl-tur ${mz(x.tur) ? "t-mazeret" : "t-izin"}">${mz(x.tur) ? "Mazeret" : "Yıllık"}</span><b class="gd-k-ad">${esc(x.ad || "(adsız)")}</b><small>${esc(x.rutbe || "")}${x.ayr ? " · " + izbTr(x.ayr) + " → " + izbTr(h.kat) : ""}</small></button>`; }).join("")}</div>`;
+    ${listeSar("izb", G.kisiler.length, G.kisiler.map(x => { const h = izbHesap(x); return `<button type="button" class="dl-sat${x === k ? " on" : ""}" data-izb-kisi="${esc(x.id)}"><span class="dl-tur ${mz(x.tur) ? "t-mazeret" : "t-izin"}">${mz(x.tur) ? "Mazeret" : "Yıllık"}</span><b class="gd-k-ad">${esc(x.ad || "(adsız)")}</b><small>${esc(x.rutbe || "")}${x.ayr ? " · " + izbTr(x.ayr) + " → " + izbTr(h.kat) : ""}</small></button>`; }).join(""))}`;
   if(!k){ $("#izb-form").innerHTML = `<div class="bos"><strong>Personel yok</strong>“＋ Yeni” ile başlayın.</div>`; $("#izb-onizleme").innerHTML = ""; return; }
   const h = izbHesap(k), al = (et, html, tam) => `<label class="dl-al${tam ? " tam" : ""}"><span>${et}</span>${html}</label>`;
   $("#izb-form").innerHTML = `
@@ -8640,6 +8646,10 @@ function pdfOnizle(kap, uret, hemen){ if(!kap) return; clearTimeout(onzZaman.get
     const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); await pg.render({ canvasContext: x, viewport: v }).promise; if(kap.dataset.no !== no) return;
     c.className = "onz-tuval"; kap.replaceChildren(c); } catch(e){ console.warn("önizleme", e); } }, hemen ? 0 : 450)); }
 /* kişi seçimi: tek satır, dokununca alttan liste (dilekçe ve izin belgesinde ortak) */
+const LISTE_ACIK = new Set();
+const listeSar = (an, n, ic) => { const kisa = n > 4 && !LISTE_ACIK.has(an); return `<div class="dl-liste${kisa ? " kisa" : ""}">${ic}</div>${n > 4 ? `<button type="button" class="dl-hepsi" data-liste-ac="${an}">${kisa ? `Tümünü göster <b>${n}</b> <span>⌄</span>` : `Daha az göster <span>⌃</span>`}</button>` : ""}`; };
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-liste-ac]"); if(!b) return; const an = b.dataset.listeAc, ac = !LISTE_ACIK.has(an); ac ? LISTE_ACIK.add(an) : LISTE_ACIK.delete(an);
+  const l = b.previousElementSibling; if(l) l.classList.toggle("kisa", !ac); const n = l ? l.children.length : 0; b.innerHTML = ac ? `Daha az göster <span>⌃</span>` : `Tümünü göster <b>${n}</b> <span>⌄</span>`; });
 const ksBas = ad => String(ad || "").split(/\s+/).filter(Boolean).map(x => x[0]).slice(0, 2).join("").toLocaleUpperCase("tr");
 const ksSatir = (p, veri, bosYazi = "Kişi seç") => `<button type="button" class="ks-sec" ${veri}>${p ? `<span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small></span><i>Değiştir ›</i>` : `<span class="ks-av bos">＋</span><span class="ks-ad"><b>${bosYazi}</b><small>personel listesinden</small></span><i>›</i>`}</button>`;
 function kisiSecAc(baslik, L, secili, cb){ altPencere("ks-perde", "KİŞİ SEÇ", baslik, () => `<div class="ap-liste">${L.map(p => apSatir(`data-ks="${esc(p.id)}"`, `<span class="ks-av">${esc(ksBas(p.ad))}</span>`, esc(p.ad), p.id === secili ? '<em class="ks-tik">✓</em>' : "", { alt: esc(p.rutbe || "") })).join("") || '<div class="yk-bos">Uygun personel yok</div>'}</div>`, (b, kapat) => { if(b.dataset.ks){ kapat(); cb(b.dataset.ks); } }, { z: "E2F1E7", r: "2F6B47" }); }
@@ -8648,7 +8658,7 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
   const L = v.kayitlar.slice().reverse();
   $("#dl-govde").innerHTML = `
     <div class="dl-ust"><span class="dl-ust-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z M14 3v5h5 M10 13h6 M10 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><b>Dilekçeler</b><small>${v.kayitlar.length}</small><button type="button" class="dl-yeni" data-dl="yeni"><span>＋</span>Yeni</button></div>
-    <div class="dl-liste">${L.map(x => { const q = dlKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-dl-sec="${x.id}"><span class="dl-tur t-${x.tur}">${esc(DL_TUR[x.tur].ad)}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc(trTarih(x.tarih))}${x.tur === "diger" && x.ozu ? " · " + esc(x.ozu) : ""}</small></button>`; }).join("")}</div>
+    ${listeSar("dl", L.length, L.map(x => { const q = dlKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-dl-sec="${x.id}"><span class="dl-tur t-${x.tur}">${esc(DL_TUR[x.tur].ad)}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc(trTarih(x.tarih))}${x.tur === "diger" && x.ozu ? " · " + esc(x.ozu) : ""}</small></button>`; }).join(""))}
     <section class="dl-kart">
       ${ksSatir(p, 'data-dl="kisi"')}
       ${p ? `<details class="dl-bilgi"${dlKisiAcik || eksik.length ? " open" : ""}><summary><span>Kimlik bilgileri</span>${eksik.length ? `<em class="dl-eksik">${eksik.length} eksik</em>` : '<em class="dl-tam">tamam</em>'}</summary>
@@ -8763,6 +8773,7 @@ async function dlExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Work
 const ISA_TUR = ["Yıllık İzin", "Yıllık Mazeret İzni"];   // sabit türler; diğerleri belgeye elle eklenir (d.isa.turler)
 const ISA_TUR_EK = ["Garnizon Terk İzni", "Evlilik İzni", "Ölüm İzni"];
 document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target && e.target.id === "isa-tyeni"){ e.preventDefault(); const b = document.querySelector("#ks-perde [data-tekle]"); b && b.click(); } });
+const isaTurKisa = t => ({ "Yıllık İzin": "Yıllık", "Yıllık Mazeret İzni": "Mazeret" })[t] || String(t || "İzin").replace(/\s+İzni$/, "");
 const isaTurAd = t => String(t || "").replace("Yıllık Mazeret İzni", "Mazeret İzni") || "Seçilmedi";
 let isaKisiAcik = false;
 const isaVeri = d => { d.isa ||= {}; const v = d.isa; v.turler ||= ISA_TUR_EK.slice(); v.onay ||= { ad: "", rutbe: "", gorev: "" }; v.alt ||= { sol: "", sag: "" }; v.kayitlar ||= [];
@@ -8799,7 +8810,7 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
   const Z = ((S.belgeler.find(x => x.tur === "sicil") || {}).sa || {}).zincir || [];
   $("#isa-govde").innerHTML = `${iztSecHtml("izinsa")}
     <div class="dl-ust"><span class="dl-ust-s isa-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h14v16H5z M8 9h8 M8 13h8 M8 17h5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><b>İzin belgeleri</b><small>${v.kayitlar.length}</small><button type="button" class="dl-yeni" data-isa="yeni"><span>＋</span>Yeni</button></div>
-    <div class="dl-liste">${v.kayitlar.slice().reverse().map(x => { const q = isaKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-isa-sec="${x.id}"><span class="dl-tur t-izin">${esc(x.tur || "İzin")}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc([trTarih(x.ayr), trTarih(x.kat)].filter(Boolean).join(" → ") || trTarih(x.tarih))}</small></button>`; }).join("")}</div>
+    ${listeSar("isa", v.kayitlar.length, v.kayitlar.slice().reverse().map(x => { const q = isaKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-isa-sec="${x.id}"><span class="dl-tur t-izin">${esc(isaTurKisa(x.tur))}</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc([trTarih(x.ayr), trTarih(x.kat)].filter(Boolean).join(" → ") || trTarih(x.tarih))}</small></button>`; }).join(""))}
     <section class="dl-kart">
       ${ksSatir(p, 'data-isa="kisi"', "Kişi seç (subay · astsubay)")}
       <button type="button" class="isa-tsec" data-isa="tursec"><span class="isa-tsec-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v15H4z M4 10h16 M9 3v4 M15 3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><span class="isa-tsec-y"><small>İzin türü</small><b>${esc(isaTurAd(k.tur))}</b></span><i>Değiştir ›</i></button>
