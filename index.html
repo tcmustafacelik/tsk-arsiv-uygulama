@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "330";
+  const SURUM = "331";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2531,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 330</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 331</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8964,20 +8964,42 @@ function dlWord(I){ const M = DLM, tw = x => Math.round(x * 56.7), R = (t, o = {
   if(I.ek.length) [ "Ek :", ...I.ek ].forEach((m, i) => { g += `<w:p><w:pPr><w:ind w:left="${tw(M.EKX - M.L)}"/><w:spacing w:before="${i ? tw(M.EKA - M.ML) : tw(M.EKB - M.ML) - (I.imza ? 0 : 0)}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${R(m)}</w:p>`; });
   const altVar = I.alt[0] || I.alt[1], alt = altVar ? `<w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="${tw(M.AR - M.L)}"/></w:tabs><w:ind w:left="${tw(M.AL - M.L)}" w:right="${tw(M.R - M.AR)}"/><w:spacing w:before="0" w:after="0"/></w:pPr>${R(I.alt[0], { sz: 20 })}<w:r><w:tab/></w:r>${R(I.alt[1], { sz: 20 })}</w:p>` : "";
   return docxPaketle(g + `<w:sectPr>${altVar ? '<w:footerReference w:type="default" r:id="rIdAlt"/>' : ""}<w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.Y[0] - AS)}" w:right="${tw(210 - M.R)}" w:bottom="1134" w:left="${tw(M.L)}" w:header="0" w:footer="${tw(297 - M.AY - 1)}" w:gutter="0"/></w:sectPr>`, [], altVar ? { alt } : {}); }
-async function dlExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Workbook(), son = I.sat.length - 1, ws = wb.addWorksheet("Dilekçe", { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, margins: { left: 0.98, right: 0.76, top: 0.9, bottom: 0.6, header: 0, footer: 0 } } });
-  ws.columns = [{ width: 24 }, { width: 3 }, { width: 22 }, { width: 6 }, { width: 3 }, { width: 18 }]; const f = (b = false) => ({ name: "Times New Roman", size: 12, bold: b }); let r = 1;
-  const c = (rr, cc, v, o = {}) => { const x = ws.getCell(rr, cc); x.value = v; x.font = f(o.b); x.alignment = { horizontal: o.a || "left", vertical: "top", wrapText: !!o.w }; return x; };
-  I.sat.forEach(([a, b], i) => { c(r, 1, a, { b: 1 }); c(r, 2, ":", { b: 1 }); const oz = i === son && I.ozu;
-    if(i === 0){ ws.mergeCells(r, 3, r, 5); c(r, 3, b, { w: 1 }); c(r, 6, I.tarih, { a: "right" }); ws.getRow(r).height = Math.max(28, Math.ceil(String(b).length / 38) * 15.5 + 12); }
-    else if(oz){ c(r, 3, b); c(r, 4, "ÖZÜ", { b: 1 }); c(r, 5, ":", { b: 1 }); c(r, 6, I.ozu); ws.getRow(r).height = 28; }
-    else { ws.mergeCells(r, 3, r, 6); c(r, 3, b, { w: 1 }); ws.getRow(r).height = 28; } r++; });
-  r++; ws.mergeCells(r, 1, r, 6); c(r, 1, "KOMUTANLIK ÖNÜNE", { a: "center", b: 1 }); ws.getRow(r).height = 26; r++;
-  I.ilgi.forEach((m, i) => { c(r, 1, i ? "" : "          İlgi:"); ws.mergeCells(r, 3, r, 6); c(r, 3, m, { w: 1 }); ws.getRow(r).height = Math.max(17, Math.ceil(m.length / 52) * 16); r++; }); if(I.ilgi.length) r++;
-  ws.mergeCells(r, 1, r, 6); c(r, 1, "          " + String(I.metin || "").replace(/\n/g, "\n          "), { a: "justify", w: 1 }); ws.getRow(r).height = Math.max(20, Math.ceil(String(I.metin || "").length / 80 + (String(I.metin || "").match(/\n/g) || []).length) * 17); r++;
-  if(I.imza){ r += 2; ws.mergeCells(r, 4, r, 6); c(r, 4, I.imza[0], { a: "center", b: 1 }); r++; ws.mergeCells(r, 4, r, 6); c(r, 4, I.imza[1], { a: "center" }); }
-  if(I.ek.length){ r += 3; c(r, 1, "Ek :"); r++; I.ek.forEach(m => { ws.mergeCells(r, 1, r, 6); c(r, 1, m, { w: 1 }); r++; }); }
-  if(I.alt[0] || I.alt[1]) (ws.headerFooter ||= {}).oddFooter = `&L&"Times New Roman"&10${I.alt[0].replace(/&/g, "&&")}&R&"Times New Roman"&10${I.alt[1].replace(/&/g, "&&")}`;
+/* dilekçenin bütün yazıları, PDF ile aynı hesapla (mm, taban çizgisi): Excel bunlardan satır/sütun kurar */
+function dlYerlesim(I, olc){ const M = DLM, L = [], son = I.sat.length - 1, W = M.R - M.L, w12 = (t, b) => olc(t, b, 12);
+  const sar = (t, gen) => { const S2 = []; let sat = ""; String(t || "").split(/\s+/).filter(Boolean).forEach(k => { const d = sat ? sat + " " + k : k; if(sat && w12(d) > gen){ S2.push(sat); sat = k; } else sat = d; }); if(sat) S2.push(sat); return S2; };
+  const ks = sar(I.sat[0][1], M.KS - M.V), kay = Math.max(0, ks.length - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
+  I.sat.forEach(([a, b], i) => { const y = Y(i); L.push({ t: a, x1: M.L, x2: M.C, y, b: 1 }, { t: ":", x1: M.C, x2: M.V, y, b: 1 });
+    if(i === 0){ ks.forEach((ln, j) => L.push({ t: ln, x1: M.V, x2: M.KS, y: y + j * M.KL })); L.push({ t: I.tarih, x1: M.TX, x2: M.R, y }); }
+    else L.push({ t: String(b), x1: M.V, x2: i === son && I.ozu ? M.OZ : M.R, y });
+    if(i === son && I.ozu) L.push({ t: "ÖZÜ", x1: M.OZ, x2: M.OC, y, b: 1 }, { t: ":", x1: M.OC, x2: M.OV, y, b: 1 }, { t: I.ozu, x1: M.OV, x2: M.R, y }); });
+  L.push({ t: "KOMUTANLIK ÖNÜNE", x1: M.L, x2: 2 * M.BM - M.L, y: M.BAS + kay, b: 1, al: "c" });
+  let y = M.MET + kay;
+  if(I.ilgi.length){ y = M.BAS + kay + M.IL; L.push({ t: "İlgi:", x1: M.L + M.GIR, x2: M.IA, y }); dlIlgiSatir(I, t => w12(t)).forEach((s2, n) => { if(n) y += M.ML; L.push({ t: s2.t, x1: M.IA, x2: M.R, y }); }); y += M.IM; }
+  String(I.metin || "").split("\n").forEach(par => { const kel = par.split(/\s+/).filter(Boolean); let sat = [], gen = W - M.GIR; const S2 = [];
+    kel.forEach(w => { const t = [...sat, w].join(" "); if(sat.length && w12(t) > gen){ S2.push({ k: sat }); sat = [w]; gen = W; } else sat.push(w); }); if(sat.length) S2.push({ k: sat, son: 1 });
+    if(!S2.length) S2.push({ k: [], son: 1 });
+    S2.forEach((s2, n) => { const x1 = M.L + (n ? 0 : M.GIR), t = s2.k.join(" "), bos = (M.R - x1) - w12(t);   // bos: satırın sağında kalan boşluk
+      L.push({ t, x1, x2: M.R, y, dag: !s2.son && s2.k.length > 1 && bos >= 1.2 }); y += M.ML; }); });
+  if(I.imza){ y += 14; const cx = M.L + W * 0.78, yr = Math.min(cx - M.L, M.R - cx) ; L.push({ t: I.imza[0], x1: cx - yr, x2: cx + yr, y, b: 1, al: "c" }, { t: I.imza[1], x1: cx - yr, x2: cx + yr, y: y + M.ML, al: "c" }); }
+  if(I.ek.length){ y += (I.imza ? M.ML : 0) + M.EKB - M.ML; L.push({ t: "Ek :", x1: M.EKX, x2: M.R, y }); I.ek.forEach(m => { y += M.EKA; sar(m, M.R - M.EKX).forEach((ln, j) => { if(j) y += M.ML; L.push({ t: ln, x1: M.EKX, x2: M.R, y }); }); }); }
+  if(I.alt[0]) L.push({ t: I.alt[0], x1: M.AL, x2: M.BM, y: M.AY, fs: 10 }); if(I.alt[1]) L.push({ t: I.alt[1], x1: M.BM, x2: M.AR, y: M.AY, fs: 10, al: "r" });
+  return L.filter(o => o.t !== "" || o.dag); }
+/* Excel: her yazı kendi taban çizgisinde biten satırda, kendi x aralığındaki (birleşik) hücrelerde; satır yükseklikleri ve sütun genişlikleri mm'den */
+async function dlExcel(I){ await yukle(CDN.exceljs); const L = dlYerlesim(I, await pdfOlcer()), wb = new ExcelJS.Workbook();
+  const X = [...new Set(L.flatMap(o => [o.x1, o.x2]).map(x => +x.toFixed(2)))].sort((a, b) => a - b), ci = x => X.indexOf(+x.toFixed(2)) + 1;
+  const gen = mm => Math.max(0.1, +((mm * 96 / 25.4 - 5) / 7).toFixed(2)), izg = mm => Math.round(mm * 2.8346 / 0.75) * 0.75;
+  const ust = 12, ws = wb.addWorksheet("Dilekçe", { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: false, scale: 100, margins: { left: X[0] / 25.4, right: 0.2, top: ust / 25.4, bottom: 0.2, header: 0, footer: 0 } } });
+  ws.columns = X.slice(0, -1).map((x, i) => ({ width: gen(X[i + 1] - x) }));
+  const satirlar = []; [...L].sort((a, b) => a.y - b.y).forEach(o => { const s2 = satirlar[satirlar.length - 1]; if(s2 && Math.abs(s2.y - o.y) < 0.05) s2.L.push(o); else satirlar.push({ y: o.y, L: [o] }); });
+  let r = 1, alt = ust;
+  satirlar.forEach(sr => { const fs = Math.max(...sr.L.map(o => o.fs || 12)), dip = sr.y + fs * 0.3528 * 0.22;   // satır alt kenarı: taban çizgisi + iniş payı
+    ws.getRow(r).height = Math.max(0.75, +(izg(dip) - izg(alt)).toFixed(2)); alt = dip;
+    sr.L.forEach(o => { const c1 = ci(o.x1), c2 = ci(o.x2) - 1; if(c2 > c1) ws.mergeCells(r, c1, r, c2); const x = ws.getCell(r, c1); x.value = o.t;
+      x.font = { name: "Times New Roman", size: o.fs || 12, bold: !!o.b }; x.alignment = { horizontal: o.dag ? "distributed" : o.al === "c" ? "center" : o.al === "r" ? "right" : "left", vertical: "bottom", wrapText: false }; });
+    r++; });
+  ws.pageSetup.printArea = `A1:${ws.getCell(r - 1, X.length - 1).address}`;
   return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }); }
+
 /* ================= SUBAY / ASTSUBAY İZİN BELGESİ (tur: "izinsa") =================
    PYBS “Silahlı Kuvvetler Personeline Ait İzin Belgesi” ön yüzü: A4'te iki özdeş nüsha, araları kesik çizgi.
    d.isa = { aktif, kayitlar: [{ id, pid, tur, kullan, gun, tel, adres, ayr, kat, tarih }], onay: { ad, rutbe, gorev }, alt: { sol, sag } }
@@ -9008,6 +9030,8 @@ const ISA_M = { BL: 13.1, BR: 194.75, X1: 13.8, XC: 59.45, XV: 61.7, SG: 130, SP
   Y: { ust: [28.23, 33.3, 38.36, 46.35], orta: [51.41, 56.47, 61.53, 66.59, 71.65], alt: [102.82, 107.88, 112.94, 118.0, 123.06, 128.12, 133.18] } };   // düz PYBS taramasından (A4, mm)
 const ISA_BAS = ["T.C.", "SİLAHLI KUVVETLER", "PERSONELİNE AİT İZİN BELGESİ"];
 /* her iki çıktının (önizleme, PDF) çizim listesi */
+/* PDF ile aynı ölçüm: jsPDF'in Liberation Serif (Times ölçülü) yazı tipiyle genişlik (mm) */
+async function pdfOlcer(){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }); return (t, b, fs = 12) => { doc.setFont("LS", b ? "bold" : "normal"); doc.setFontSize(fs); return doc.getTextWidth(String(t)); }; }
 /* değer yazısı sütuna sığmazsa küçültülmez, alt satıra iner (PYBS çıktısındaki gibi); olc: (yazı, kalın) → mm */
 const isaOlcTuval = (() => { let c = null; return (t, b, fs = ISA_M.FS) => { c ||= document.createElement("canvas").getContext("2d"); c.font = `${b ? "bold " : ""}100px "TSK Serif", "Liberation Serif", "Times New Roman", serif`; return c.measureText(String(t)).width / 100 * fs * 0.3528; }; })();
 function isaSar(t, gen, olc){ const S2 = []; String(t || "").split("\n").forEach(par => { let sat = ""; par.split(/\s+/).filter(Boolean).forEach(w => { const d = sat ? sat + " " + w : w; if(sat && olc(d) > gen){ S2.push(sat); sat = w; } else sat = d; }); S2.push(sat); }); return S2; }
@@ -9134,7 +9158,7 @@ async function isaPdf(I, o = {}){ const doc = await yeniPdf({ yon: "dikey", kagi
   if(yuz !== "arka") ciz(isaCizim(I, olc));
   if(yuz !== "on"){ if(yuz === "ikisi") doc.addPage("a4", "portrait"); ciz(isaArkaCizim(I)); }
   return new Blob([doc.output("arraybuffer")], { type: "application/pdf" }); }
-function isaWord(I){ const M = ISA_M, A = ISA_ARKA_M, tw = x => Math.round(x * 56.7), K = 'w:val="single" w:sz="6" w:space="0" w:color="000000"', AS = 0.62;
+async function isaWord(I){ const OL = await pdfOlcer(), M = ISA_M, A = ISA_ARKA_M, tw = x => Math.round(x * 56.7), K = 'w:val="single" w:sz="6" w:space="0" w:color="000000"', AS = 0.62;
   const R = (t, o = {}) => runXml(t, { sz: (o.fs || M.FS) * 2, b: false, k: "000000", ...o });
   const g1 = tw(M.XC - M.BL), g2 = tw(M.XV - M.XC), g3 = tw(M.BR - M.XV), T = g1 + g2 + g3;
   const par = (ic, o = {}) => `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="${tw(o.lh || M.SP)}" w:lineRule="exact"/>${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}${o.ind != null ? `<w:ind w:left="${o.ind}"/>` : ""}</w:pPr>${ic}</w:p>`;
@@ -9147,7 +9171,7 @@ function isaWord(I){ const M = ISA_M, A = ISA_ARKA_M, tw = x => Math.round(x * 5
   for(const dy of [0, M.ALT]){ const ikinci = dy > 0;
     ISA_BAS.forEach((t, i) => tek(M.T[i] + dy, par(R(t, { b: true }), { jc: "center", lh: 3.25 })));
     bos(M.BT + dy);
-    const satir = (g, i, a, b, ust, cizgi, son) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy), L2 = isaSar(b, M.SG, t => isaOlcTuval(t, false));
+    const satir = (g, i, a, b, ust, cizgi, son) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy), L2 = isaSar(b, M.SG, t => OL(t, false, M.FS));
       const h = sinir(y + (L2.length - 1) * M.SP) - alt, kut = { t: ust, b: cizgi };
       const ek = par("").repeat(L2.length - 1);   // çok satırlı değerde etiket ve iki nokta ilk satırda kalsın
       rows += tr(h, hc(g1, par(R(isaEt(a, ikinci), { b: true }), { ind: tw(M.X1 - M.BL) }) + ek, { ...kut, l: 1 }) + hc(g2, par(R(":")) + ek, kut) + hc(g3, L2.map(t => par(R(t))).join(""), { ...kut, r: 1 }));
@@ -9169,7 +9193,7 @@ function isaWord(I){ const M = ISA_M, A = ISA_ARKA_M, tw = x => Math.round(x * 5
     arka = `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/></w:pPr><w:r><w:rPr><w:sz w:val="2"/></w:rPr><w:br w:type="page"/></w:r></w:p>`
       + `<w:tbl><w:tblPr><w:tblW w:w="${T}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${g1}"/><w:gridCol w:w="${g2}"/><w:gridCol w:w="${g3}"/></w:tblGrid>${ar}</w:tbl>`; }
   return docxPaketle(tablo + arka + `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.T[0] + AS - 3.25)}" w:right="${tw(210 - M.BR)}" w:bottom="${tw(4)}" w:left="${tw(M.BL)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`); }
-async function isaExcel(I){ await yukle(CDN.exceljs); const M = ISA_M, A = ISA_ARKA_M, wb = new ExcelJS.Workbook(), pt = mm => +(mm * 2.8346).toFixed(2), AS = 0.62;
+async function isaExcel(I){ await yukle(CDN.exceljs); const OL = await pdfOlcer(), M = ISA_M, A = ISA_ARKA_M, wb = new ExcelJS.Workbook(), pt = mm => +(mm * 2.8346).toFixed(2), AS = 0.62;
   const sayfa = ad => wb.addWorksheet(ad, { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: false, scale: 100, horizontalCentered: false, margins: { left: M.BL / 25.4, right: 0.2, top: (M.T[0] + AS - 3.25) / 25.4, bottom: 0.1, header: 0, footer: 0 } } });   // ölçek %100: satır aralıkları küçülmesin
   const gen = mm => +((mm * 96 / 25.4 - 5) / 7).toFixed(2);   // Excel sütun genişliği: piksel = genişlik × 7 + 5 (Calibri 11, 96 dpi)
   const ws = sayfa("İzin Belgesi (ön)"); ws.columns = [{ width: gen(M.XC - M.BL) }, { width: gen(M.XV - M.XC) }, { width: gen(M.BR - M.XV) }];
@@ -9183,7 +9207,7 @@ async function isaExcel(I){ await yukle(CDN.exceljs); const M = ISA_M, A = ISA_A
     ISA_BAS.forEach((t, i) => { ws.mergeCells(r, 1, r, 3); yaz(1, t, { a: "center", b: 1 }); satirH(sinir(M.T[i] + dy)); r++; });
     if(M.BT + dy - alt > 0.05){ satirH(M.BT + dy); r++; }
     const ilk = r;
-    const grup = g => I[g].forEach(([a, b], i) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy), L2 = isaSar(b, M.SG, t => isaOlcTuval(t, false));
+    const grup = g => I[g].forEach(([a, b], i) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy), L2 = isaSar(b, M.SG, t => OL(t, false, M.FS));
       yaz(1, isaEt(a, ikinci) + "\n".repeat(L2.length - 1), { b: 1, ind: 0 }); yaz(2, ":" + "\n".repeat(L2.length - 1)); yaz(3, L2.join("\n")); satirH(sinir(y + (L2.length - 1) * M.SP)); kenar(r, { l: 1, r: 1, t: r === ilk }); r++; });
     const bosK = (yeni, o = {}) => { if(yeni - alt > 0.05){ satirH(yeni); kenar(r, { l: 1, r: 1, ...o }); r++; } };
     grup("ust"); bosK(M.AY + dy, { b: 1 }); grup("orta"); bosK(sinir(M.Y.alt[0] + (ikinci ? M.ALT2 : dy)) - 5.07); grup("alt"); bosK(ikinci ? M.BB2 : M.BB + dy, { b: 1 });
