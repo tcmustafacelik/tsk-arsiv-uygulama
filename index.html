@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "312";
+  const SURUM = "313";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2430,6 +2430,12 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 .izb-tur2,.izb-yol{grid-template-columns:1fr 1fr} .izb-hes{height:36px;box-sizing:border-box;display:flex;align-items:center;justify-content:space-between;gap:6px;border:1px dashed var(--line2);border-radius:8px;background:#F7F9FB;padding:0 9px;font:700 13px var(--f-ui);color:#22303D;font-variant-numeric:tabular-nums} .izb-hes small{font:600 10px var(--f-ui);color:var(--muted)}
 .izb-3{grid-template-columns:repeat(3,1fr)} #izb-form .dl-al input[type=date]{min-width:0!important}
 #izb-form .izb-foto{display:flex;align-items:center;gap:10px} #izb-form .izb-foto>div{display:flex;gap:6px;flex-wrap:wrap}
+
+#kayit-cubugu{flex-wrap:nowrap;gap:8px;padding:6px 6px 6px 12px;border:1px solid #E8CF9F;background:#FFF9EE;border-radius:16px;box-shadow:0 8px 26px rgba(80,60,20,.18);width:max-content}
+#kayit-cubugu .k-metin{display:grid;grid-template-columns:auto auto;align-items:center;column-gap:7px;font:700 13px var(--f-ui);color:#7A5214;white-space:nowrap}
+#kayit-cubugu .k-metin i{grid-row:1 / 3;width:8px;height:8px;border-radius:50%;background:#E0A040;box-shadow:0 0 0 3px #F8E5C2} #kayit-cubugu .k-metin small{grid-column:2;font:600 10.5px var(--f-ui);color:#A0814D}
+#kayit-cubugu .btn{padding:8px 14px;border-radius:11px;font:700 13px var(--f-ui)} #kayit-cubugu #k-vazgec{background:#fff;border:1px solid #E6D6B8;color:#7A5214} #kayit-cubugu #k-kaydet{background:#2F6B47;border-color:#2F6B47;color:#fff}
+html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-bottom:calc(84px + env(safe-area-inset-bottom,0px))!important} html.kayit-bekliyor body{padding-bottom:76px}
 </style>
 
 </head>
@@ -2467,7 +2473,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 312</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 313</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2524,7 +2530,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
       <button id="yapistir-btn" class="kopya yapistir" hidden type="button" aria-label="Panodakini kutuya yapıştır">⇣ Yapıştır</button>
       <div id="toast" class="toast" hidden role="status"></div>
       <div id="geri-al" class="geri-al" hidden role="status"><span id="geri-al-yazi">Kaydedildi</span><button type="button" id="geri-al-btn">↶ Geri al</button></div>
-      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><span id="k-metin">Kaydedilmemiş değişiklik var</span><button class="btn" id="k-vazgec" type="button">Vazgeç</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
+      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><span id="k-metin" class="k-metin">Kaydedilmedi</span><button class="btn" id="k-vazgec" type="button">Vazgeç</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
       <section class="panel" id="v-belge" hidden role="dialog" aria-modal="true" aria-label="Belge düzenleyici">
         <div class="arac">
           <button class="btn kucuk" id="d-geri" aria-label="Belgeyi kapat">✕ Kapat</button>
@@ -2738,8 +2744,18 @@ const zaman = {}, bekleyen = {}, kirli = {}; let kayitSayaci = 0;
 const surum = {};
 function kaydet(yol, veriFn){
   if(!db){ durum("hata","Bağlantı yok: değişiklik kaydedilemez"); }
-  kirli[yol] = veriFn; surum[yol] = (surum[yol] || 0) + 1; kayitCubugu(); otoKaydetPlanla();
+  kirli[yol] = veriFn; surum[yol] = (surum[yol] || 0) + 1; kayitCubugu(); taslakYaz();   // elle kayıt: yalnız “Kaydet” ile yazılır
 }
+/* kaydedilmemiş değişiklikler telefonda kaybolmasın: taslak olarak bu cihazda tutulur, açılışta geri getirilir (kaydetmek yine kullanıcının elinde) */
+const TASLAK = "tskTaslak";
+function taslakYaz(hemen){ clearTimeout(taslakYaz.z); const is = () => { try { const o = {}; for(const y in kirli){ const v = kirli[y](); if(v !== undefined) o[y] = v; } if(Object.keys(o).length) localStorage.setItem(TASLAK, JSON.stringify({ t: Date.now(), o })); else localStorage.removeItem(TASLAK); } catch(e){} }; if(hemen) is(); else taslakYaz.z = setTimeout(is, 700); }
+function taslakGeriYukle(){ let t = null; try { t = JSON.parse(localStorage.getItem(TASLAK) || "null"); } catch(e){} if(!t || !t.o) return;
+  let n = 0; for(const [y, v] of Object.entries(t.o)){ const [kol, id] = y.split("/"); if(!v || !id) continue;
+    if(kol === "bt"){ S[id] = v; btDuzelt(id); kirli[y] = () => S[id]; }
+    else if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(i >= 0) S.belgeler[i] = v; else S.belgeler.push(v); kirli[y] = () => S.belgeler.find(x => x.id === id) || v; }
+    else continue; surum[y] = (surum[y] || 0) + 1; n++; }
+  if(!n) return; kayitCubugu(); agacCiz(); anaCiz(); if(SECIM.belge){ const d = acikBelge(); if(d) belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
+  uyar("Kaydedilmemiş değişiklikleriniz geri getirildi. Saklamak için “Kaydet”, atmak için “Vazgeç”."); }
 /* ===== otomatik kaydetme ve geri alma =====
    Her değişiklik yazmayı bıraktıktan kısa süre sonra kendiliğinden kaydedilir. Kaydedilmeden önceki hâl saklanır;
    “Geri al” son kaydı geri çevirir (art arda basılırsa daha öncekileri de). */
@@ -2775,10 +2791,11 @@ async function geriAl(){
   const g = $("#geri-al"); $("#geri-al-yazi").textContent = geriYigin.length ? "Geri alındı · bir öncekine de dönebilirsin" : "Geri alındı"; $("#geri-al-btn").hidden = !geriYigin.length;
   g.hidden = false; clearTimeout(geriGoster.z); geriGoster.z = setTimeout(() => { g.hidden = true; $("#geri-al-btn").hidden = false; }, 6000);
 }
-document.addEventListener("visibilitychange", () => { if(document.hidden && Object.keys(kirli).length){ clearTimeout(otoZaman); otoKaydet(); } });
+document.addEventListener("visibilitychange", () => { if(document.hidden) taslakYaz(true); });
 function kayitCubugu(){
-  const n = Object.keys(kirli).length; const c = $("#kayit-cubugu"); c.hidden = !n || !otoHata;   // otomatik kayıt çalışıyorsa çubuk görünmez; yalnız kayıt başarısız olursa çıkar
-  if(n){ $("#k-metin").textContent = `Kaydedilmemiş değişiklik var (${n} belge)`; durum("yaz","Kaydedilmedi"); }
+  const n = Object.keys(kirli).length; const c = $("#kayit-cubugu"); c.hidden = !n;   // elle kayıt: değişiklik varken çubuk hep görünür
+  document.documentElement.classList.toggle("kayit-bekliyor", !!n);
+  if(n){ $("#k-metin").innerHTML = `<i></i>Kaydedilmedi<small>${n} yerde değişiklik</small>`; durum("yaz","Kaydedilmedi"); }
   else if(db && yazabilir) durum("ok","Kaydedildi");
 }
 async function yaz(yol){
@@ -2791,9 +2808,9 @@ async function yaz(yol){
 }
 async function hepsiniKaydet(){
   const yollar = Object.keys(kirli); if(!yollar.length) return; if(!db){ uyar("Bağlantı yok; değişiklikler kaydedilemedi.", true); return; }
-  const b = $("#k-kaydet"); b.disabled = true; b.textContent = "Kaydediliyor…"; durum("yaz","Kaydediliyor…");
-  let ok = true; for(const y of yollar) ok = (await yaz(y)) && ok;
-  b.disabled = false; b.textContent = "Kaydet"; kayitCubugu(); if(ok) bildir("Kaydedildi");
+  const b = $("#k-kaydet"); b.disabled = true; b.textContent = "Kaydediliyor…";
+  clearTimeout(otoZaman); await otoKaydet();   // önceki hâli saklar (Geri al için) ve yazar
+  b.disabled = false; b.textContent = "Kaydet"; kayitCubugu(); taslakYaz(true);
 }
 function btDuzelt(k){
   if(k === "hedef"){ S.hedef.lejant = { ...VARSAYILAN_LEJANT, ...(S.hedef.lejant || {}) }; S.hedef.rows ||= []; }
@@ -2806,7 +2823,7 @@ async function vazgec(){
       if(kol === "bt"){ if(d.exists){ S[id] = kopya(d.data()); btDuzelt(id); } }
       else if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(d.exists){ if(i >= 0) S.belgeler[i] = kopya(d.data()); else S.belgeler.push(kopya(d.data())); } else if(i >= 0) S.belgeler.splice(i, 1); }
     } catch(e){} }
-  kayitCubugu(); agacCiz(); anaCiz();
+  kayitCubugu(); taslakYaz(true); agacCiz(); anaCiz();
   if(SECIM.belge){ const d = acikBelge(); if(!d) belgeKapat(); else belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
   bildir("Değişiklikler geri alındı");
 }
@@ -3839,7 +3856,8 @@ $("#g-k-gen").addEventListener("change", e => { const d = acikBelge(); const v =
    Yalnız aynı kişi birden çok listede varsa, birinde ad/rütbe/sicil düzeltilince diğerlerinde de düzelir.
    Personel İzin Çizelgesi'ndeki izinler, o kişi GDHG'de varsa “Yıllık İzin” olarak ayrı kalınan sürelere düşer. */
 let esitleZaman = null, esitleniyor = false; const esitleKaynak = new Set();
-function esitlePlanla(kaynak){ esitleKaynak.add(kaynak || "ilk"); clearTimeout(esitleZaman); esitleZaman = setTimeout(() => { const ks = [...esitleKaynak]; esitleKaynak.clear(); esitleniyor = true; try { personelEsitle(ks); } catch(e){ console.error(e); } finally { esitleniyor = false; } }, 900); }
+function esitlePlanla(kaynak){ esitleKaynak.add(kaynak || "ilk"); clearTimeout(esitleZaman); esitleZaman = setTimeout(() => { const ks = [...esitleKaynak]; esitleKaynak.clear(); const onceTemiz = !Object.keys(kirli).length; esitleniyor = true; try { personelEsitle(ks); } catch(e){ console.error(e); } finally { esitleniyor = false; }
+    if(onceTemiz && ks.length === 1 && ks[0] === "ilk" && Object.keys(kirli).length && db) (async () => { for(const y of Object.keys(kirli)) await yaz(y); kayitCubugu(); taslakYaz(true); })(); }, 900); }   // açılıştaki kendiliğinden eşitleme kullanıcı değişikliği sayılmaz, sessizce yazılır
 const pAd = s => normMetin(s).replace(/[^A-Z0-9]/g, "");
 function personelEsitle(kaynaklar = ["ilk"]){
   const P = (S.personel.rows || []).filter(p => p.ad && p.ad.trim()); if(!P.length) return;
@@ -9764,6 +9782,7 @@ function yerGeriYukle(){ if(SECIM.klasor || !OTURUM_DEVAM) return; try { const y
     S.belgeler = yeni.map(d => kirli["belgeler/" + d.id] ? (S.belgeler.find(x => x.id === d.id) || d) : d).concat(yerel);
     agacCiz(); anaCiz(); if(SECIM.belge){ const d = acikBelge(); if(!d){ belgeKapat(); } else if(d.tur === "grid" && !odakIcinde("#e-grid") && !kirli["belgeler/" + d.id]) gridCiz(); } else if(SECIM.bolum) bolumCiz();
   }, () => durum("hata","Belgeler okunamadı"));
+  setTimeout(function taslakBekle(){ if(["yapi", "personel", "izin", "yoklama", "gdhg", "izinb", "hedef", "belgeler"].every(x => S.yuklendi[x])) taslakGeriYukle(); else setTimeout(taslakBekle, 400); }, 600);
   db.collection("arsiv").onSnapshot(s => { S.yuklendi.arsiv = true; S.arsiv = s.docs.map(d => d.data()); agacCiz(); anaCiz(); if(SECIM.bolum && !SECIM.belge) bolumCiz(); }, () => durum("hata","Arşiv okunamadı"));
 })();
 </script>
