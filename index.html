@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "326";
+  const SURUM = "327";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2491,6 +2491,9 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 #lt-govde .lt-tas .izb-ay-sat>span{min-width:52px} .lt-pal{display:flex;flex-wrap:wrap;gap:5px;flex:1}
 .lt-pal button{border:1px solid color-mix(in srgb, var(--pz) 55%, #7D8A97 45%);background:var(--pz);border-radius:14px;padding:5px 11px;font:700 11.5px var(--f-ui);color:#33404D;cursor:pointer}
 .lt-pal button[aria-pressed="true"]{box-shadow:0 0 0 2px #fff, 0 0 0 3.5px #3F5F80}
+
+#lt-govde .lt-sut-s{display:grid!important;grid-template-columns:auto 1fr auto;gap:6px;align-items:center} #lt-govde .lt-sut-s .isa-tsil{width:34px;height:34px;font-size:12px}
+#lt-govde .lt-sut-ekle{width:100%;margin-top:4px} #lt-govde .lt-sut>summary small{font:500 11px var(--f-ui);color:var(--muted);margin-left:6px}
 </style>
 
 </head>
@@ -2528,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 326</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 327</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6584,23 +6587,25 @@ async function gridPdf(d, a){
     if(a.sigdir === "tek") y = m.t;   // üstten başla
     gor.forEach(r => { ry[r] = y; y += rh[r] * s; });
     const yuk = (r1, r2) => { let t = 0; for(let r = r1; r <= r2; r++) if(r in ry) t += rh[r] * s; return t; };
-    /* kurumsal tema: tablo yuvarlak köşeli tek çerçeve içinde, başlık oval bant, tablo altındaki renk açıklamaları oval etiket */
-    const T = g.tema, RD = 2.4; let tab = null;
-    if(T && T.hr >= 0){ let r2 = T.hr; while(r2 + 1 < g.c.length && (g.c[r2 + 1] || []).some(x => x && x.br)) r2++; const ic = gor.filter(r => r >= T.hr && r <= r2);
-      const sut = (g.c[T.hr] || []).map((x, c) => x && x.br ? c : -1).filter(c => c >= 0);
-      if(ic.length && sut.length){ const c0 = Math.min(...sut), kk = kap[T.hr + ":" + Math.max(...sut)], c1 = Array.isArray(kk) ? kk[3] : Math.max(...sut); tab = { r1: ic[0], r2: ic[ic.length - 1], son: r2, x: cx[c0], w: cx[c1 + 1] - cx[c0], y: ry[ic[0]], h: yuk(ic[0], ic[ic.length - 1]) }; } }
-    const etiketMi = (r, x) => tab && r > tab.son && x && x.etk && x.f;   // yalnız renk açıklaması (lejant) etiketleri oval
-    let kirpik = false, kirpBitti = false; const kirp = r => { if(!tab) return; if(!kirpik && !kirpBitti && r >= tab.r1 && r <= tab.r2){ doc.saveGraphicsState(); doc.roundedRect(tab.x, tab.y, tab.w, tab.h, RD, RD, null); doc.clip(); doc.discardPath(); kirpik = true; }
-      else if(kirpik && r > tab.r2){ doc.restoreGraphicsState(); kirpik = false; kirpBitti = true; } };
+    /* kurumsal tema: her tablo (art arda kenarlıklı satırlar; yan yana tablolar ayrı) yuvarlak köşeli çerçeve içinde, başlık oval bant, renk açıklamaları oval etiket */
+    const T = g.tema, RD = 2.4, tablar = [], tabHucre = {};
+    const etiketMi = (r, x) => !!(T && x && x.etk && x.f);
+    if(T){ const kenarli = r => g.c[r] && g.c[r].some((x, c) => kap[r + ":" + c] !== 1 && x && x.br && !x.ban && !x.etk);
+      let kos = []; const bitir = () => { if(!kos.length) return; const S2 = new Set();
+          kos.forEach(r => g.c[r].forEach((x, c) => { const k = kap[r + ":" + c]; if(k === 1 || !x || !x.br) return; const c2 = Array.isArray(k) ? k[3] : c; for(let j = c; j <= c2; j++) S2.add(j); }));
+          const C = [...S2].sort((a, b) => a - b); let bas = 0; for(let i = 1; i <= C.length; i++){ if(i === C.length || C[i] !== C[i - 1] + 1){ const c0 = C[bas], c1 = C[i - 1], r1 = kos[0], r2 = kos[kos.length - 1];
+            const t = { r1, r2, c0, c1, x: cx[c0], w: cx[c1 + 1] - cx[c0], y: ry[r1], h: yuk(r1, r2) }; tablar.push(t); kos.forEach(r => { for(let c = c0; c <= c1; c++) tabHucre[r + ":" + c] = t; }); bas = i; } } kos = []; };
+      gor.forEach((r, i) => { if(kenarli(r) && (!kos.length || gor[i - 1] === kos[kos.length - 1])) kos.push(r); else { bitir(); if(kenarli(r)) kos.push(r); } }); bitir(); }
+    const koseMi = (t, r, r2, c, c2) => t && (r === t.r1 || r2 === t.r2) && (c === t.c0 || c2 === t.c1);
     // dolgular ve metin
     gor.forEach(r => { for(let c = 0; c < g.w.length; c++){
       const k = kap[r + ":" + c]; if(k === 1) continue; const x = g.c[r]?.[c]; const r2 = Array.isArray(k) ? k[2] : r, c2 = Array.isArray(k) ? k[3] : c;
       const X = cx[c], Y = ry[r], Wc = cx[c2 + 1] - cx[c], Hc = yuk(r, r2);
-      kirp(r);   // tablo satırlarında yuvarlak çerçeveye kırp
+      const tb = tabHucre[r + ":" + c];
       if(x && x.ban){ if(x.v != null && x.v !== ""){ const bx = X, bw = cx[(kap[r + ":" + c] && Array.isArray(kap[r + ":" + c]) ? kap[r + ":" + c][3] : c2) + 1] - X; doc.setFillColor(...rgb(T.band)); doc.setDrawColor(...rgb(T.cizgi)); doc.setLineWidth(.2); doc.roundedRect(bx, Y, bw, Hc, RD + .6, RD + .6, "FD");
           doc.setFillColor(...rgb(T.ana)); doc.roundedRect(bx + 2.2, Y + Hc * .24, 1.5, Hc * .52, .75, .75, "F"); } }
       else if(etiketMi(r, x)){ const e = Math.min(.6, Hc * .1); doc.setFillColor(...rgb(x.f)); doc.setDrawColor(...rgb(renkKar(x.f, "6F7F90", .35))); doc.setLineWidth(.2); doc.roundedRect(X + e, Y + e, Wc - 2 * e, Hc - 2 * e, (Hc - 2 * e) / 2, (Hc - 2 * e) / 2, "FD"); }
-      else if(x && x.f){ doc.setFillColor(...rgb(x.f)); doc.rect(X, Y, Wc, Hc, "F"); }
+      else if(x && x.f){ doc.setFillColor(...rgb(x.f)); if(koseMi(tb, r, r2, c, c2)){ doc.saveGraphicsState(); doc.roundedRect(tb.x, tb.y, tb.w, tb.h, RD, RD, null); doc.clip(); doc.discardPath(); doc.rect(X, Y, Wc, Hc, "F"); doc.restoreGraphicsState(); } else doc.rect(X, Y, Wc, Hc, "F"); }   // köşe hücresi yuvarlak çerçeveden taşmasın
       if(x && x.rz && gosterDeger(x)){ const ph = Math.min(Hc * .62, 6.2), pw = Wc - Math.min(3, Wc * .1); doc.setFillColor(...rgb(x.rz)); doc.setDrawColor(...rgb(renkKar(x.rz, "6F7F90", .4))); doc.setLineWidth(.2); doc.roundedRect(X + (Wc - pw) / 2, Y + (Hc - ph) / 2, pw, ph, ph / 2, ph / 2, "FD"); }
       const t = gosterDeger(x); if(t){
         doc.setFont(x.fn === "s" ? "LA" : "LS", x.b ? "bold" : "normal"); doc.setTextColor(...rgb(x.k || "222222"));
@@ -6620,19 +6625,17 @@ async function gridPdf(d, a){
         }
       }
     } });
-    if(kirpik){ doc.restoreGraphicsState(); kirpik = false; } kirpBitti = false;
     // kenarlıklar
     gor.forEach(r => { for(let c = 0; c < g.w.length; c++){
       const k = kap[r + ":" + c]; if(k === 1) continue; const r2 = Array.isArray(k) ? k[2] : r, c2 = Array.isArray(k) ? k[3] : c;
-      kirp(r);
-      const xh = g.c[r]?.[c]; if(xh && (xh.ban || etiketMi(r, xh))) continue;
+      const xh = g.c[r]?.[c]; if(xh && (xh.ban || etiketMi(r, xh))) continue; const tb = tabHucre[r + ":" + c];
       const X = cx[c], Y = ry[r], X2 = cx[c2 + 1], Y2 = Y + yuk(r, r2);
       const kn = (rr, cc, yon) => (g.c[rr]?.[cc]?.br || {})[yon];
       const ciz = (w, x1, y1, x2, y2) => { if(!w) return; if(w === 3 && g.tema){ doc.setDrawColor(...rgb(g.tema.ana)); doc.setLineWidth(1.6); doc.line(x1 + 0.8, y1, x2 + 0.8, y2); return; } doc.setDrawColor(...(g.tema ? rgb(g.tema.cizgi) : [68, 68, 68])); doc.setLineWidth(w === 2 ? 0.5 : g.tema ? 0.15 : 0.2); doc.line(x1, y1, x2, y2); };
-      ciz(kn(r, c, "t"), X, Y, X2, Y); ciz(kn(r, c, "l"), X, Y, X, Y2); ciz(kn(r, c2, "r"), X2, Y, X2, Y2); ciz(kn(r2, c, "b"), X, Y2, X2, Y2);
+      const dis = (y2, yon) => tb && ({ t: r === tb.r1, b: r2 === tb.r2, l: c === tb.c0, r: c2 === tb.c1 })[yon];   // dış kenarları yuvarlak çerçeve çizer
+      if(!dis(0, "t")) ciz(kn(r, c, "t"), X, Y, X2, Y); if(!dis(0, "l")) ciz(kn(r, c, "l"), X, Y, X, Y2); if(!dis(0, "r")) ciz(kn(r, c2, "r"), X2, Y, X2, Y2); if(!dis(0, "b")) ciz(kn(r2, c, "b"), X, Y2, X2, Y2);
     } });
-    if(kirpik){ doc.restoreGraphicsState(); kirpik = false; }
-    if(tab){ doc.setDrawColor(...rgb(T.ana)); doc.setLineWidth(.35); doc.roundedRect(tab.x, tab.y, tab.w, tab.h, RD, RD, "S"); }
+    tablar.forEach(t => { doc.setDrawColor(...rgb(T.ana)); doc.setLineWidth(.35); doc.roundedRect(t.x, t.y, t.w, t.h, RD, RD, "S"); });
   });
   if(a.altBilgi) pdfAltBilgi(doc, a.altBilgi, m);
   return new Blob([doc.output("arraybuffer")], { type: "application/pdf" });
@@ -8279,7 +8282,8 @@ function ltGrid(d){ const v = ltVeri(d), W = v.w.length, I = { t: 1, b: 1, l: 1,
 async function listeCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(ltGrid(d)) : ltGrid(d), a2 = { ...a, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
 /* ---- düzenleyici ---- */
-let ltAcik = null, ltBlokAcik = null, ltSecKisi = null;
+let ltAcik = null, ltBlokAcik = null, ltSecKisi = null, ltSutAcik = false;
+document.addEventListener("toggle", e => { if(e.target.matches && e.target.matches("#lt-govde .lt-sut")) ltSutAcik = e.target.open; }, true);
 const ltBaslikSut = bl => bl.sutunlar.find(s => s.tip === "metin" || s.tip === "kisi" || s.tip === "rutbeKisi") || bl.sutunlar[0];
 const ltKisiSut = bl => bl.sutunlar.filter(s => s.tip === "kisi" || s.tip === "rutbeKisi");
 const ltSyHtml = o => o.kaf != null ? `<span class="lt-kfu"><b>${esc(o.kaf || "Kafile yok")}</b>${o.yil ? `<i>${esc(o.yil)}</i>` : ""}</span><small>${esc(o.yer || "Dağılım girilmedi")}</small>` : `<b>${esc(o.bas)}</b><small>${esc(o.alt)}</small>`;
@@ -8338,7 +8342,7 @@ function listeCiz(){ const d = acikBelge(); if(!d || d.tur !== "liste") return; 
     ${v.bloklar.map((bl, bi) => { const ac = ltBlokAcik === bl.id || v.bloklar.length === 1;
       return `<div class="kc-blok${ac ? " acik" : ""}">${v.bloklar.length > 1 ? `<button type="button" class="kc-bb" data-lt-blok="${bl.id}"><span class="kc-no" style="background:#${bl.adStil?.f || bl.bas?.f || "E6EEF6"}">${bi + 1}</span><span class="kc-sy">${(() => { const oz = ltBlokOzet(bl); return `<b>${esc(bl.ad || String((ltBaslikSut(bl) || {}).ad || "Tablo").replace(/\n/g, " "))}${oz.top ? `<em class="lt-btop">${esc(oz.top)}</em>` : ""}</b>${ac ? `<span class="lt-boz-ac">${oz.G.length} kalem · ${bl.satirlar.length} satır</span>` : `<span class="lt-boz${oz.sayili ? "" : " yazi"}">${oz.G.length ? oz.G.map(g => `<span>${esc(g.ad)}</span>${oz.sayili ? `<em>${esc(String(g.n).replace(".", ","))}</em>` : ""}${oz.sayili && g.K.length > 1 ? g.K.map(x => `<span class="lt-bk">${esc(x.k)}</span><em class="lt-bk">${esc(String(x.n).replace(".", ","))}</em>`).join("") : ""}`).join("") : `<span>${bl.satirlar.length} satır</span>`}</span>`}`; })()}</span><i>${ac ? "▴" : "▾"}</i></button>` : ""}
         ${ac ? `<div class="kc-ic">${bl.ad != null ? `<label class="ko-al ko-tam"><span>Tablo başlığı</span><input data-lt-b="${bl.id}" value="${esc(bl.ad || "")}"></label>` : ""}
-          ${Array.isArray(bl.bas) || bl.bas === false ? "" : `<details class="lt-sut"><summary>Sütun adları</summary><div class="lt-sut-ic">${bl.sutunlar.filter(s => s.tip !== "sira").map((s, j) => `<label><span>${j + 1}</span><textarea class="oto-boy" rows="1" data-lt-sad="${bl.id}:${s.id}">${esc(s.ad || "")}</textarea></label>`).join("")}</div></details>`}
+          ${Array.isArray(bl.bas) || bl.bas === false ? "" : `<details class="lt-sut"${ltSutAcik ? " open" : ""}><summary>Sütunlar <small>ad değiştir · ekle · sil</small></summary><div class="lt-sut-ic">${bl.sutunlar.filter(s => s.tip !== "sira").map((s, j) => `<label class="lt-sut-s"><span>${j + 1}</span><textarea class="oto-boy" data-tek rows="1" data-lt-sad="${bl.id}:${s.id}">${esc(s.ad || "")}</textarea>${bl.sutunlar.length > 1 ? `<button type="button" class="isa-tsil" data-lt-sut-sil="${bl.id}:${s.id}" aria-label="Sütunu sil">✕</button>` : ""}</label>`).join("")}<button type="button" class="tt-ekle lt-sut-ekle" data-lt-sut-ekle="${bl.id}">＋ Sütun ekle</button></div></details>`}
           ${(() => { const oz = ltBlokOzet(bl); let gi = -1; return bl.satirlar.map((st, i) => { const sa = ltAcik === st.id, o = ltSatirOzet(bl, st), kf = o.kaf != null;
             const gb0 = kf && o.yeni ? (gi++, oz.G[gi]) : null, tek = gb0 && gb0.K.length === 1, gb = tek ? null : gb0;
             return `${gb ? `<div class="lt-grp"><b>${esc(gb.ad)}</b><span>${gb.K.length} kafile</span><em>${esc(String(gb.n).replace(".", ","))}</em></div>` : ""}<div class="kc-sat${sa ? " acik" : ""}${kf ? (tek ? " lt-kf lt-tek" : " lt-kf") : ""}"${(() => { const rf = (bl.renk && bl.renk.harita[st.v[bl.renk.sutun]]) || st.f; return rf ? ` style="--rf:#${rf}"` : ""; })()}><button type="button" class="kc-sb" data-lt-satir="${st.id}"><span class="kc-sn">${i + 1}</span><span class="kc-sy">${tek ? `<b class="lt-tek-ad">${esc(gb0.ad)}</b>` : ""}${ltSyHtml(o)}</span>${o.top != null ? `<em class="lt-stop">${esc(String(o.top).replace(".", ","))}</em>` : ""}</button>
@@ -8361,11 +8365,23 @@ const ltAcikRenk = h => { const n = parseInt(String(h).replace("#", ""), 16); if
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#lt-govde")) return; const d = acikBelge(); if(!d || d.tur !== "liste") return; const v = ltVeri(d);
   if(el.dataset.ltG){ v[el.dataset.ltG] ||= {}; v[el.dataset.ltG].v = el.value; }
   else if(el.dataset.ltB){ const bl = ltBlok(v, el.dataset.ltB); if(bl) bl.ad = el.value; }
-  else if(el.dataset.ltSad){ const [b, c] = el.dataset.ltSad.split(":"), s = (ltBlok(v, b) || { sutunlar: [] }).sutunlar.find(x => x.id === c); if(s) s.ad = el.value; }
+  else if(el.dataset.ltSad){ const [b, c] = el.dataset.ltSad.split(":"), s = (ltBlok(v, b) || { sutunlar: [] }).sutunlar.find(x => x.id === c); if(s){ const eski = s.ad; s.ad = el.value; v.bloklar.forEach(x => x.sutunlar.forEach(y => { if(y !== s && y.c === s.c && (y.ad === eski || y.id === s.id)) y.ad = el.value; })); } }   // aynı sütun öteki tablolarda da
   else if(el.dataset.ltH){ const [b, s, c] = el.dataset.ltH.split(":"), bl = ltBlok(v, b), st = bl && bl.satirlar.find(x => x.id === s); if(!st) return; st.v[c] = el.value;
     const btn = document.querySelector(`#lt-govde [data-lt-satir="${s}"] .kc-sy`); if(btn){ const o = ltSatirOzet(bl, st); const ta = btn.querySelector(".lt-tek-ad"); btn.innerHTML = (ta ? ta.outerHTML : "") + ltSyHtml(o); const em = btn.parentNode.querySelector(".lt-stop"); if(em && o.top != null) em.textContent = String(o.top).replace(".", ","); } const tp = document.querySelector("#lt-govde .kc-sat.acik .lt-top b"); if(tp) tp.textContent = ltSatirTop(bl, st); const dl = el.closest(".lt-dg label"); if(dl) dl.classList.toggle("dolu", +String(el.value).replace(",", ".") > 0); }
   else return; kaydetBelge(d); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#lt-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "liste") return; const v = ltVeri(d), yaz = () => { kaydetBelge(d); listeCiz(); };
+  /* sütun ekle / sil: aynı genişlikteki bütün tablolara (ör. SİLAHLAR ve ARAÇLAR) birlikte uygulanır, hizaları bozulmasın */
+  if(b.dataset.ltSutEkle){ const bl = ltBlok(v, b.dataset.ltSutEkle); if(!bl) return; const W = v.w.length, son = s0 => s0.c + (s0.cs || 1);
+    const ayni = v.bloklar.filter(x => Math.max(...x.sutunlar.map(son)) === Math.max(...bl.sutunlar.map(son))); v.w.push(16);
+    const id = "c" + yeniId().slice(0, 5); ayni.forEach(x => { const sa = Math.max(...x.sutunlar.map(son)); x.sutunlar.forEach(s0 => { if(son(s0) === sa && sa < W){} }); x.sutunlar.push({ id, ad: "YENİ SÜTUN", c: W, tip: "metin", b: 1, s: (x.sutunlar[0] && x.sutunlar[0].s) || 9 }); });
+    if(v.baslik) {} kaydetBelge(d); listeCiz(); const t = document.querySelector(`#lt-govde [data-lt-sad="${bl.id}:${id}"]`); if(t){ t.focus(); t.select(); } return bildir("Sütun eklendi · adını yazın"); }
+  if(b.dataset.ltSutSil){ const [bi, si] = b.dataset.ltSutSil.split(":"), bl = ltBlok(v, bi), s0 = bl && bl.sutunlar.find(x => x.id === si); if(!s0) return;
+    if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Sil?"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "✕"; }, 3000); return; }
+    const c = s0.c, n = s0.cs || 1, eski = kopya(v);
+    v.bloklar.forEach(x => { const k = x.sutunlar.find(y => y.c === c && (y.cs || 1) === n); if(k){ x.sutunlar = x.sutunlar.filter(y => y !== k); x.satirlar.forEach(st => delete st.v[k.id]); if(x.renk && x.renk.sutun === k.id) delete x.renk; }
+      x.sutunlar.forEach(y => { if(y.c > c) y.c -= n; }); });
+    if(v.lejant) v.lejant.hucreler.forEach(h => { if(h.c > c) h.c = Math.max(0, h.c - n); });
+    v.w.splice(c, n); kaydetBelge(d); listeCiz(); return geriAlinabilir("Sütun silindi", () => { d.lt = eski; kaydetBelge(d); listeCiz(); }); }
   if(b.dataset.ltTas){ v.tasarim = b.dataset.ltTas === "rozet" ? "rozet" : undefined; if(!v.tasarim) delete v.tasarim; return yaz(); }
   if(b.dataset.ltPal != null){ if(b.dataset.ltPal) v.palet = b.dataset.ltPal; else delete v.palet; return yaz(); }
   if(b.dataset.ltRk){ const [bi, si, c] = b.dataset.ltRk.split(":"), bl = ltBlok(v, bi), st = bl && bl.satirlar.find(x => x.id === si); if(!st) return; st.v[c] = b.dataset.v; return yaz(); }
