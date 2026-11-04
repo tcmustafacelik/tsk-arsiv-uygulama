@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "333";
+  const SURUM = "334";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2531,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 333</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 334</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9114,7 +9114,7 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
       ${Z.some(z => String(z.ad || "").trim()) ? `<small class="isa-zb">Sicil amirleri zincirinden seç</small><div class="isa-zin">${Z.filter(z => String(z.ad || "").trim()).map(z => { const on = pAd(z.ad) === pAd(v.onay.ad); return `<button type="button" class="isa-z${on ? " on" : ""}" data-isa-z="${z.id}" aria-pressed="${on}"><span class="ks-av">${esc(ksBas(z.ad))}</span><span class="ks-ad"><b>${esc(z.ad)}</b><small>${esc(z.rutbe || "")}</small></span><em>${on ? "✓" : ""}</em></button>`; }).join("")}</div>` : ""}
       <div class="dl-alanlar"><label class="dl-al tam"><span>Adı soyadı</span><input data-isa-o="ad" value="${esc(v.onay.ad)}"></label><label class="dl-al tam"><span>Sınıfı, rütbesi, sicili</span><input data-isa-o="rutbe" value="${esc(v.onay.rutbe)}" placeholder="ör. P.Komd.Kur.Bnb. [2011-102]"></label><label class="dl-al tam"><span>Görevi</span><input data-isa-o="gorev" value="${esc(v.onay.gorev)}" placeholder="ör. Tabur Komutanı"></label></div></details>
     <details class="dl-kart dl-bilgi"><summary><span>Sayfa altı yazıları</span><em class="dl-not">isteğe bağlı · elle</em></summary>
-      <div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt</span><input data-isa-a="sol" value="${esc(v.alt.sol)}"></label><label class="dl-al tam"><span>Sağ alt</span><input data-isa-a="sag" value="${esc(v.alt.sag)}"></label></div>
+      <div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt</span><input data-isa-a="sol" value="${esc(v.alt.sol)}" placeholder="Örn. IzinKagidiAdres (gg.aa.yyyy ss:dd:sn)"></label><label class="dl-al tam"><span>Sağ alt</span><input data-isa-a="sag" value="${esc(v.alt.sag)}" placeholder="Örn. Topçu Asb.Üçvş. Ad SOYAD [Sicil]"></label></div>
       <small class="dl-not">PYBS çıktısındaki ekran adı, saat ve basan personel bilgisi uygulama tarafından üretilmez. Boş bırakılırsa basılmaz.</small></details>
     <section class="dl-kart isa-yuz"><div class="izb-ay-sat"><span>Önizleme</span><div class="dl-seg izb-kap"><button type="button" data-isa-yuz="on" aria-pressed="${isaOnzYuz === "on"}">Ön yüz</button><button type="button" data-isa-yuz="arka" aria-pressed="${isaOnzYuz === "arka"}">Arka yüz</button></div></div>
       <label class="kp-tik"><input type="checkbox" data-isa-arka${v.arka !== false ? " checked" : ""}> Çıktıya arka yüzü de ekle <small class="dl-not">İzin Belgesi Talimatı · 2. sayfa</small></label></section>
