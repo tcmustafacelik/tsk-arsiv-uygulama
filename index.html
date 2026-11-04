@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "335";
+  const SURUM = "336";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2531,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 335</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 336</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3049,8 +3049,15 @@ function bulYap(q, ilk, sessiz){ const eski = BUL.i; bulTemizle(); BUL.q = q; co
   H.forEach(el => { const s = el.closest("tr") || el, renk = BUL_RENK[satirlar.indexOf(s) % BUL_RENK.length]; el.classList.add("bul-isik"); el.style.setProperty("--bul", renk);
     if(s !== el){ s.classList.add("bul-satir"); s.style.setProperty("--bul", renk); } });
   BUL.L = H; BUL.i = 0; if(H.length && sessiz){ BUL.i = Math.min(eski, H.length - 1); H[BUL.i].classList.add("bul-aktif"); if(say) say.textContent = `${BUL.i + 1} / ${H.length}`; } else if(H.length) bulGit(0, ilk); else if(say) say.textContent = "bulunamadı"; bulDugme(); return H.length; }
+/* sabit başlıklı tablo görünümü (hedef listesi): üstteki araç çubuğunun yüksekliği */
+const aracAlt = () => { const a = document.querySelector("#v-belge > .arac:first-child"); return a ? a.getBoundingClientRect().bottom : 0; };
+const hdKapBoy = (k, bas) => { k.style.maxHeight = Math.max(220, Math.round(innerHeight - aracAlt() - bas.getBoundingClientRect().height - 14)) + "px"; };
 function bulGit(i, ilk){ const L = BUL.L; if(!L.length) return; BUL.i = (i + L.length) % L.length; L.forEach(x => x.classList.remove("bul-aktif")); const el = L[BUL.i]; el.classList.add("bul-aktif");
-  el.scrollIntoView({ behavior: ilk ? "auto" : "smooth", block: "center", inline: "center" });
+  let kk = el.parentElement; while(kk && kk !== document.body && !(kk.previousElementSibling && kk.previousElementSibling.classList.contains("hd-on-bas"))) kk = kk.parentElement;
+  if(kk && kk !== document.body){ const bas = kk.previousElementSibling; hdKapBoy(kk, bas); let sc = kk.parentElement; while(sc && sc !== document.body && !(/(auto|scroll)/.test(getComputedStyle(sc).overflowY) && sc.scrollHeight > sc.clientHeight)) sc = sc.parentElement;
+    const fark = bas.getBoundingClientRect().top - (aracAlt() + 2); if(sc && sc !== document.body) sc.scrollTop += fark; else scrollBy(0, fark);   // başlık araç çubuğunun hemen altında kalır, eşleşme tablonun içinde ortalanır
+    const kr = kk.getBoundingClientRect(), xr = el.getBoundingClientRect(); kk.scrollTop += (xr.top - kr.top) - (kk.clientHeight - xr.height) / 2; kk.scrollLeft += (xr.left - kr.left) - (kk.clientWidth - xr.width) / 2; }
+  else el.scrollIntoView({ behavior: ilk ? "auto" : "smooth", block: "center", inline: "center" });
   const say = $("#bul-say"); if(say) say.textContent = `${BUL.i + 1} / ${L.length}`; }
 function bulAc(q){ const bar = $("#bul-bar"); if(!bar) return; bar.hidden = false; const i = $("#bul-q"); if(q != null) i.value = q; bulDugme();
   if(q != null){ let d = 0; const dene = () => { if(bulYap(i.value, true) || ++d > 12) return; setTimeout(dene, 220); }; setTimeout(dene, 200); } else { i.focus(); if(i.value) bulYap(i.value); } }
@@ -6546,6 +6553,8 @@ function pdfZengin(doc, x, t, X, Y, Wc, Hc, pad, fs0, hz){
 }
 /* ızgara belgelerine kurumsal görünüm: başlık bandı + sol vurgu şeridi, yumuşak çizgiler, şeritli satırlar.
    Renkler belgenin kendi başlık renginden türetilir (her belge kendi renginde kalır); hücre içerikleri ve anlamlı renkler değişmez. */
+/* etiket köşe yarıçapı (mm): tam oval yerine yumuşak köşe (B) */
+const ETK_R = 1.4;
 const KURUMSAL_GRID = new Set(["barut-pusu", "entegre", "g01", "g02", "g05", "g06", "spor-takip", "candostu"]);
 const kurumsalMi = d => d && (d.kurumsal ?? KURUMSAL_GRID.has(d.id));
 function renkKar(a, b, t){ const A = rgb(a), B = rgb(b); return A.map((x, i) => Math.round(x + (B[i] - x) * t).toString(16).padStart(2, "0")).join("").toUpperCase(); }
@@ -6588,7 +6597,7 @@ async function gridPdf(d, a){
     gor.forEach(r => { ry[r] = y; y += rh[r] * s; });
     const yuk = (r1, r2) => { let t = 0; for(let r = r1; r <= r2; r++) if(r in ry) t += rh[r] * s; return t; };
     /* kurumsal tema: her tablo (art arda kenarlıklı satırlar; yan yana tablolar ayrı) yuvarlak köşeli çerçeve içinde, başlık oval bant, renk açıklamaları oval etiket */
-    const T = g.tema, RD = 2.4, tablar = [], tabHucre = {};
+    const T = g.tema, RD = 1.6, tablar = [], tabHucre = {};
     const etiketMi = (r, x) => !!(T && x && x.etk && x.f);
     if(T){ const kenarli = r => g.c[r] && g.c[r].some((x, c) => kap[r + ":" + c] !== 1 && x && x.br && !x.ban && !x.etk);
       let kos = []; const bitir = () => { if(!kos.length) return; const S2 = new Set();
@@ -6604,9 +6613,9 @@ async function gridPdf(d, a){
       const tb = tabHucre[r + ":" + c];
       if(x && x.ban){ if(x.v != null && x.v !== ""){ const bx = X, bw = cx[(kap[r + ":" + c] && Array.isArray(kap[r + ":" + c]) ? kap[r + ":" + c][3] : c2) + 1] - X; doc.setFillColor(...rgb(T.band)); doc.setDrawColor(...rgb(T.cizgi)); doc.setLineWidth(.2); doc.roundedRect(bx, Y, bw, Hc, RD + .6, RD + .6, "FD");
           doc.setFillColor(...rgb(T.ana)); doc.roundedRect(bx + 2.2, Y + Hc * .24, 1.5, Hc * .52, .75, .75, "F"); } }
-      else if(etiketMi(r, x)){ const e = Math.min(.6, Hc * .1); doc.setFillColor(...rgb(x.f)); doc.setDrawColor(...rgb(renkKar(x.f, "6F7F90", .35))); doc.setLineWidth(.2); doc.roundedRect(X + e, Y + e, Wc - 2 * e, Hc - 2 * e, (Hc - 2 * e) / 2, (Hc - 2 * e) / 2, "FD"); }
+      else if(etiketMi(r, x)){ const e = Math.min(.6, Hc * .1); doc.setFillColor(...rgb(x.f)); doc.setDrawColor(...rgb(renkKar(x.f, "6F7F90", .35))); doc.setLineWidth(.2); doc.roundedRect(X + e, Y + e, Wc - 2 * e, Hc - 2 * e, Math.min(ETK_R, (Hc - 2 * e) / 2), Math.min(ETK_R, (Hc - 2 * e) / 2), "FD"); }
       else if(x && x.f){ doc.setFillColor(...rgb(x.f)); if(koseMi(tb, r, r2, c, c2)){ doc.saveGraphicsState(); doc.roundedRect(tb.x, tb.y, tb.w, tb.h, RD, RD, null); doc.clip(); doc.discardPath(); doc.rect(X, Y, Wc, Hc, "F"); doc.restoreGraphicsState(); } else doc.rect(X, Y, Wc, Hc, "F"); }   // köşe hücresi yuvarlak çerçeveden taşmasın
-      if(x && x.rz && gosterDeger(x)){ const ph = Math.min(Hc * .62, 6.2), pw = Wc - Math.min(3, Wc * .1); doc.setFillColor(...rgb(x.rz)); doc.setDrawColor(...rgb(renkKar(x.rz, "6F7F90", .4))); doc.setLineWidth(.2); doc.roundedRect(X + (Wc - pw) / 2, Y + (Hc - ph) / 2, pw, ph, ph / 2, ph / 2, "FD"); }
+      if(x && x.rz && gosterDeger(x)){ const ph = Math.min(Hc * .62, 6.2), pw = Wc - Math.min(3, Wc * .1); doc.setFillColor(...rgb(x.rz)); doc.setDrawColor(...rgb(renkKar(x.rz, "6F7F90", .4))); doc.setLineWidth(.2); doc.roundedRect(X + (Wc - pw) / 2, Y + (Hc - ph) / 2, pw, ph, Math.min(ETK_R, ph / 2), Math.min(ETK_R, ph / 2), "FD"); }
       const t = gosterDeger(x); if(t){
         doc.setFont(x.fn === "s" ? "LA" : "LS", x.b ? "bold" : "normal"); doc.setTextColor(...rgb(x.k || "222222"));
         let fs = (x.s || 11) * s * a.yazi * 1.0; const pad = Math.min(0.8, Wc * 0.08);
@@ -6838,7 +6847,7 @@ async function tabloPdfCiz(sp, a, parcalar, k){
     doc.autoTable({ startY: m.t + basH, margin: { left: m.l, right: m.r, top: m.t + basH, bottom: m.b + altH + 2 }, theme: "grid", head: headRows,
       body: p.map(satir => satir.bant ? [{ content: satir.bant, colSpan: n, styles: { fillColor: rgb(satir.fill || "E9EEF3"), halign: "center", fontStyle: "bold", ...(satir.k ? { textColor: rgb(satir.k), fontSize: fs * 1.02 } : {}) } }] : satir.map(c => ({ content: c.t, _c: c, styles: { fillColor: c.etiket ? (c.zemin ? rgb(c.zemin) : [255,255,255]) : c.fill ? rgb(c.fill) : [255,255,255], halign: c.sol ? "left" : "center", ...(TM && c.sol ? { cellPadding: { top: 0.3, bottom: 0.3, left: 2.4, right: 1.2 } } : {}), ...(c.k ? { textColor: rgb(c.k) } : {}) } }))),
       didDrawCell: TM ? D => { const c = D.cell.raw && D.cell.raw._c; if(D.section !== "body" || !c || !c.etiket || !c.t) return; const x = D.cell.x, y = D.cell.y, w = D.cell.width, h = D.cell.height; doc.setFontSize(D.cell.styles.fontSize * 0.92); doc.setFont("LS", "bold"); const tw = doc.getTextWidth(c.t), pw = Math.min(w - 1.2, tw + 4), ph = Math.min(h - 1.2, D.cell.styles.fontSize * 0.3528 * 1.75);
-        doc.setFillColor(...rgb(c.fill)); doc.roundedRect(x + (w - pw) / 2, y + (h - ph) / 2, pw, ph, ph / 2, ph / 2, "F"); doc.setTextColor(...rgb(c.k)); doc.text(c.t, x + w / 2, y + h / 2, { align: "center", baseline: "middle" }); } : undefined,
+        doc.setFillColor(...rgb(c.fill)); doc.roundedRect(x + (w - pw) / 2, y + (h - ph) / 2, pw, ph, Math.min(ETK_R, ph / 2), Math.min(ETK_R, ph / 2), "F"); doc.setTextColor(...rgb(c.k)); doc.text(c.t, x + w / 2, y + h / 2, { align: "center", baseline: "middle" }); } : undefined,
       styles: { font: "LS", fontStyle: "bold", fontSize: fs, textColor: TM ? [38,46,56] : [34,34,34], lineColor: CZ, lineWidth: TM ? 0.12 : 0.15, cellPadding: { top: 0.3, bottom: 0.3, left: 1, right: 1 }, valign: "middle", halign: "center", minCellHeight: rowH, overflow: "linebreak" },
       headStyles: { font: "LS", fontStyle: "bold", fontSize: Math.max(3.8, Math.min(fs * 0.85, 8.5)), textColor: TM ? rgb(TM.basYazi) : [34,34,34], minCellHeight: 6.5 * Math.min(1, k + .1), overflow: "linebreak" },
       columnStyles, tableWidth: uw, showHead: "everyPage", rowPageBreak: "avoid",
@@ -8314,7 +8323,7 @@ function onIsikGit(k){ const x = k && k.querySelector(".lt-isik"); if(!x) return
 function hdBasSabit(k, t, z){ const tr = t.rows[0]; if(!tr) return; k.previousElementSibling?.classList.contains("hd-on-bas") && k.previousElementSibling.remove(); tr.classList.remove("hb-gizli");
   const W = [...tr.cells].map(c => c.getBoundingClientRect().width), H = tr.getBoundingClientRect().height, TW = t.getBoundingClientRect().width;
   const b = document.createElement("div"); b.className = "hd-on-bas"; b.innerHTML = `<table class="lt-on-t hd-on-t" style="--z:${z};width:${TW}px;min-width:0"><colgroup>${W.map(w => `<col style="width:${w}px">`).join("")}</colgroup><tr style="height:${H}px">${tr.innerHTML}</tr></table>`; b.querySelector("colgroup").remove;
-  k.before(b); [...b.querySelectorAll("td")].forEach((c, i) => { const w = W[i] + "px"; Object.assign(c.style, { width: w, minWidth: w, maxWidth: w, boxSizing: "border-box", whiteSpace: "normal", overflowWrap: "normal", lineHeight: "1.15" }); }); tr.classList.add("hb-gizli"); b.scrollLeft = k.scrollLeft; if(!k.dataset.basBagli){ k.dataset.basBagli = 1; k.addEventListener("scroll", () => { const x = k.previousElementSibling; if(x && x.classList.contains("hd-on-bas")) x.scrollLeft = k.scrollLeft; }, { passive: true }); } }
+  k.before(b); hdKapBoy(k, b); [...b.querySelectorAll("td")].forEach((c, i) => { const w = W[i] + "px"; Object.assign(c.style, { width: w, minWidth: w, maxWidth: w, boxSizing: "border-box", whiteSpace: "normal", overflowWrap: "normal", lineHeight: "1.15" }); }); tr.classList.add("hb-gizli"); b.scrollLeft = k.scrollLeft; if(!k.dataset.basBagli){ k.dataset.basBagli = 1; k.addEventListener("scroll", () => { const x = k.previousElementSibling; if(x && x.classList.contains("hd-on-bas")) x.scrollLeft = k.scrollLeft; }, { passive: true }); } }
 function ltOnSigdir(k){ const t = k && k.querySelector(".lt-on-t"); if(!t) return;
   if(t.classList.contains("hd-on-t")){ t.style.setProperty("--z", 1); k.scrollLeft = 0; const kw = k.clientWidth, tw = t.offsetWidth, z = kw && tw > kw + 1 ? Math.max(.6, kw / tw * .99) : 1; t.style.setProperty("--z", z); t.dataset.z = z;
     hdBasSabit(k, t, z); return; }   // yazı boyuyla ölçek: sabit başlık/sütun çalışır   // zoom yerine transform: Android Chrome'da büyütünce hücre kaybolmasın
