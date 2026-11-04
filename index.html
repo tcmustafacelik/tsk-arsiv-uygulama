@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "339";
+  const SURUM = "340";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2503,7 +2503,19 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
  .mn-liste .ap-sat.mn-bos .ap-ad{color:var(--muted);font-weight:500}
  .mn-liste .ap-sat.mn-bura{background:color-mix(in srgb,var(--apz) 70%,#fff)} .mn-liste .ap-sat.mn-bura .ap-ad::after{content:"buradasın";font:700 9.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--apr);margin-top:1px}
 .mn-bas{display:flex;align-items:baseline;justify-content:space-between;margin:2px 2px 8px} .mn-bas b{font:700 14px var(--f-ui);color:var(--fg)} .mn-bas small{font:500 11.5px var(--f-ui);color:var(--muted)}
-#ana-ozet:empty{display:none}
+#ana-ozet:empty{display:none} #ana-ozet{display:block}
+@media (min-width:860px){ #ana-ozet{display:none!important} }
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]) .kk-bas{background:linear-gradient(90deg,color-mix(in srgb,var(--r) 22%,var(--panel)),transparent 88%)}
+  :root:not([data-theme="light"]) .ap-kart{background:linear-gradient(180deg,color-mix(in srgb,var(--apz) 16%,var(--panel)) 0,var(--panel) 150px)}
+  :root:not([data-theme="light"]) .mn-s{background:color-mix(in srgb,var(--z) 30%,var(--panel));color:color-mix(in srgb,var(--rk) 55%,#fff)}
+  :root:not([data-theme="light"]) .ap-no,:root:not([data-theme="light"]) .ag-no{background:color-mix(in srgb,var(--r2,#8894A0) 20%,var(--panel));color:color-mix(in srgb,var(--v,#B8C2CC) 60%,#fff)}
+  :root:not([data-theme="light"]) .mn-kat.aktif{background:color-mix(in srgb,var(--z) 12%,var(--panel))}
+  :root:not([data-theme="light"]) .mn-liste .ap-sat.mn-bura{background:color-mix(in srgb,var(--apz) 14%,var(--panel))}
+}
+:root[data-theme="dark"] .kk-bas{background:linear-gradient(90deg,color-mix(in srgb,var(--r) 22%,var(--panel)),transparent 88%)}
+:root[data-theme="dark"] .ap-kart{background:linear-gradient(180deg,color-mix(in srgb,var(--apz) 16%,var(--panel)) 0,var(--panel) 150px)}
+:root[data-theme="dark"] .mn-s{background:color-mix(in srgb,var(--z) 30%,var(--panel));color:color-mix(in srgb,var(--rk) 55%,#fff)}
 @media (max-width:859px){
   html.ana-gorunum #agac.kapali,body:has(#v-ana:not([hidden])) #agac.kapali{display:none}
   #v-ana{gap:12px} .ana-bas h3{font-size:18px!important} .ana-bas{margin-bottom:-2px}
@@ -2551,7 +2563,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 339</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 340</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
