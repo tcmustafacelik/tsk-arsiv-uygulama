@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "332";
+  const SURUM = "333";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2531,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 332</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 333</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9027,7 +9027,7 @@ function isaIcerik(d){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k) || 
 /* ölçüler (mm, sayfanın sol üstünden): kutu 10–197,6 · etiket 11,5 · iki nokta 58,7 · değer 60,8 · ikinci nüsha 137,7 mm aşağıda */
 /* Orijinalde "İmza / Mühür" satırında iki nokta yok */
 const isaIki = a => /^İmza/.test(a) ? "" : ":";
-const ISA_M = { BL: 13.1, BR: 194.75, X1: 13.8, XC: 59.45, XV: 61.7, SG: 130, SP: 3.19, ALT: 135.7, ALT2: 132.92, BB2: 267.57, CIZ: 142.77, FY: 281.3, FX: 10.7, FR: 193.6, FS: 8,
+const ISA_M = { BL: 13.1, BR: 194.75, X1: 13.8, XC: 59.45, XV: 61.7, SG: 130, SP: 3.19, ALT: 135.7, ALT2: 132.92, BB2: 267.57, CIZ: 142.77, FY: 281.85, FX: 13.4, FR: 193.6, FS: 8,
   T: [12.67, 15.98, 19.18], BT: 24.51, AY: 47.81, BB: 135.05,
   Y: { ust: [28.23, 33.3, 38.36, 46.35], orta: [51.41, 56.47, 61.53, 66.59, 71.65], alt: [102.82, 107.88, 112.94, 118.0, 123.06, 128.12, 133.18] } };   // düz PYBS taramasından (A4, mm)
 const ISA_BAS = ["T.C.", "SİLAHLI KUVVETLER", "PERSONELİNE AİT İZİN BELGESİ"];
@@ -9090,7 +9090,7 @@ function isaArkaCizim(I){ const M = ISA_ARKA_M, L = [], X = [M.L, M.G1, M.G2, 21
     ISA_ARKA.forEach(([g, b, t], i) => L.push({ t, x: X[g], y: M.B0 + i * M.P + dy, b, fs }));
     L.push({ t: "Arz ederim.", x: 35.2, y: 127.3 + dy, fs }, { t: "İMZA", x: 130.7, y: 129.99 + dy, fs }); }
   L.push({ k: [ISA_M.BL, M.CIZ, ISA_M.BR, M.CIZ] });
-  if(I.sol) L.push({ t: I.sol, x: ISA_M.FX, y: M.FY }); if(I.sag) L.push({ t: I.sag, x: ISA_M.FR, y: M.FY, al: "r" });
+  if(I.sol) L.push({ t: I.sol, x: 10.7, y: M.FY }); if(I.sag) L.push({ t: I.sag, x: ISA_M.FR, y: M.FY, al: "r" });
   return L; }
 function isaOnHtml(d){ const L = isaCizim(isaIcerik(d)), mm = x => (x / 2.1).toFixed(3) + "cqw", fs = ISA_M.FS * .3528;
   return `<div class="dl-kagit isa-kagit">${L.map(o => o.r ? `<i class="isa-k" style="left:${mm(o.r[0])};top:${mm(o.r[1])};width:${mm(o.r[2])};height:${mm(o.r[3])}"></i>` : o.l ? `<i class="isa-c" style="left:${mm(o.l[0])};top:${mm(o.l[1])};width:${mm(o.l[2] - o.l[0])}"></i>` : o.k ? `<i class="isa-kes" style="left:${mm(o.k[0])};top:${mm(o.k[1])};width:${mm(o.k[2] - o.k[0])}"></i>`
