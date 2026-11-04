@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "328";
+  const SURUM = "329";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2531,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 328</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 329</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8280,8 +8280,10 @@ function ltGrid(d){ const v = ltVeri(d), W = v.w.length, I = { t: 1, b: 1, l: 1,
   if(v.lejant && v.tasarim !== "sade"){ satir(v.lejant.bosluk || 15); const r = satir(v.lejant.h || 15); v.lejant.hucreler.forEach(x => koy(r, x.c, x.cs || 1, { v: x.v, a: "c", va: "m", s: x.s || 8, b: 1, fn: v.fn, f: x.f, k: "2F2F2F", br: I, etk: 1 })); }
   if(v.not && v.not.v){ satir(8); const r = satir(v.not.h || 18); koy(r, 0, W, { v: v.not.v, a: "l", va: "m", s: v.not.s || 8.5, fn: v.fn, k: "5A6470" }); }
   hesapla(g); return g; }
-async function listeCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(ltGrid(d), { seritYok: true }) : ltGrid(d), a2 = { ...a, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
+async function listeCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(ltGrid(d), { seritYok: true }) : ltGrid(d), _i = a.isik && ltIsikla(g, a.isik), a2 = { ...a, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
+/* önizlemede arama: eşleşen hücreler sarı (yalnız ekrandaki tablo görünümü; çıktıya gitmez) */
+function ltIsikla(g, ara){ const n = normMetin(ara); if(!n) return; g.c.forEach(row => (row || []).forEach(x => { if(x && x.v != null && x.v !== "" && normMetin(String(x.v)).includes(n)){ x.f = "FFE58A"; delete x.rz; } })); }
 /* ---- düzenleyici ---- */
 let ltAcik = null, ltBlokAcik = null, ltSecKisi = null, ltSutAcik = false;
 document.addEventListener("toggle", e => { if(e.target.matches && e.target.matches("#lt-govde .lt-sut")) ltSutAcik = e.target.open; }, true);
@@ -8329,7 +8331,7 @@ function ltAraSonuc(v){ const n = normMetin(ltAra); if(!n) return ""; const R = 
     const hepsi = [grup, ...bl.sutunlar.map(s => st.v[s.id])].filter(x => x != null && x !== "").join(" "); if(normMetin(hepsi).includes(n)) R.push({ bl, bi, st, si, o: ltSatirOzet(bl, st), grup }); }); });
   return R.length ? `<div class="lt-sonuc">${R.slice(0, 30).map(x => `<button type="button" data-lt-git="${x.bl.id}|${x.st.id}"><span class="lt-s-b">${esc(String(x.bl.ad || (ltBaslikSut(x.bl) || {}).ad || "Tablo " + (x.bi + 1)).replace(/\n/g, " "))}</span><b>${esc(x.o.bas === "—" || x.o.bas.startsWith("↳") ? x.grup || x.o.bas : x.o.bas)}</b><small>${esc(x.o.alt)}</small></button>`).join("")}${R.length > 30 ? `<div class="uclar">+${R.length - 30} sonuç daha · aramayı daraltın</div>` : ""}</div>` : `<div class="yk-bos">“${esc(ltAra)}” bulunamadı</div>`; }
 document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#lt-ara")) return; const d = acikBelge(); if(!d || d.tur !== "liste") return; ltAra = el.value; const v = ltVeri(d);
-  const s = $("#lt-ara-sonuc"); if(s) s.innerHTML = ltAraSonuc(v); });
+  const s = $("#lt-ara-sonuc"); if(s) s.innerHTML = ltAraSonuc(v); ltPdfTazele(d); });
 document.addEventListener("toggle", e => { if(!e.target.matches || !e.target.matches("#lt-govde .lt-on")) return; ltOnAcik = e.target.open; try { localStorage.setItem("ltOnAcik", ltOnAcik ? "1" : "0"); } catch(_){} if(ltOnAcik){ const d = acikBelge(); if(d) ltPdfTazele(d, true); } }, true);
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-lt-git]"); if(!b) return; const [bid, sid] = b.dataset.ltGit.split("|"); ltBlokAcik = bid; ltAcik = sid; listeCiz();
   requestAnimationFrame(() => { const x = document.querySelector(`#lt-govde [data-lt-satir="${sid}"]`); if(x){ x.scrollIntoView({ block: "center", behavior: "smooth" }); const k = x.closest(".kc-sat"); k && k.classList.add("lt-yanip"); setTimeout(() => k && k.classList.remove("lt-yanip"), 1600); } }); });
@@ -8359,7 +8361,7 @@ function listeCiz(){ const d = acikBelge(); if(!d || d.tur !== "liste") return; 
   otoBoyHepsi($("#lt-govde")); if(ltOnAcik) ltPdfTazele(d, true); }
 /* tablo görünümü: çıktının kendisi (PDF'in ilk sayfası); yazdıkça kısa gecikmeyle yenilenir */
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#lt-govde") || el.id === "lt-ara") return; const d = acikBelge(); if(d && d.tur === "liste") ltPdfTazele(d); });
-const ltPdfTazele = (d, hemen) => { const k = $("#lt-govde .lt-pdf"); if(!k || !ltOnAcik) return; pdfOnizle(k, async () => (await belgeCikti(d, SECIM.klasor, "pdf", {})).blob, hemen); };
+const ltPdfTazele = (d, hemen) => { const k = $("#lt-govde .lt-pdf"); if(!k || !ltOnAcik) return; pdfOnizle(k, async () => (await belgeCikti(d, SECIM.klasor, "pdf", ltAra ? { isik: ltAra } : {})).blob, hemen); };
 const ltBlok = (v, id) => v.bloklar.find(b => b.id === id);
 /* başlık renginin çok açık tonu (şerit için): beyaza %70 yaklaştırılır */
 const ltAcikRenk = h => { const n = parseInt(String(h).replace("#", ""), 16); if(isNaN(n)) return "F6F7F9"; const k = x => Math.round(x + (255 - x) * .7).toString(16).padStart(2, "0"); return (k(n >> 16 & 255) + k(n >> 8 & 255) + k(n & 255)).toUpperCase(); };
