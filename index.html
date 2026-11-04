@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "329";
+  const SURUM = "330";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2531,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 329</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 330</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9171,7 +9171,8 @@ function isaWord(I){ const M = ISA_M, A = ISA_ARKA_M, tw = x => Math.round(x * 5
   return docxPaketle(tablo + arka + `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.T[0] + AS - 3.25)}" w:right="${tw(210 - M.BR)}" w:bottom="${tw(4)}" w:left="${tw(M.BL)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`); }
 async function isaExcel(I){ await yukle(CDN.exceljs); const M = ISA_M, A = ISA_ARKA_M, wb = new ExcelJS.Workbook(), pt = mm => +(mm * 2.8346).toFixed(2), AS = 0.62;
   const sayfa = ad => wb.addWorksheet(ad, { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: false, scale: 100, horizontalCentered: false, margins: { left: M.BL / 25.4, right: 0.2, top: (M.T[0] + AS - 3.25) / 25.4, bottom: 0.1, header: 0, footer: 0 } } });   // ölçek %100: satır aralıkları küçülmesin
-  const ws = sayfa("İzin Belgesi (ön)"); ws.columns = [{ width: (M.XC - M.BL) / 2.0 }, { width: (M.XV - M.XC) / 2.0 }, { width: (M.BR - M.XV) / 2.0 }];
+  const gen = mm => +((mm * 96 / 25.4 - 5) / 7).toFixed(2);   // Excel sütun genişliği: piksel = genişlik × 7 + 5 (Calibri 11, 96 dpi)
+  const ws = sayfa("İzin Belgesi (ön)"); ws.columns = [{ width: gen(M.XC - M.BL) }, { width: gen(M.XV - M.XC) }, { width: gen(M.BR - M.XV) }];
   const f = (b, fs = M.FS) => ({ name: "Times New Roman", size: fs, bold: !!b }), ince = { style: "thin", color: { argb: "FF000000" } };
   let r = 1, alt = M.T[0] + AS - 3.25; const sinir = y => y + AS;
   const yaz = (c, v, o = {}) => { const x = ws.getCell(r, c); x.value = v; x.font = f(o.b, o.fs); x.alignment = { horizontal: o.a || "left", vertical: "bottom", wrapText: true, indent: o.ind || 0 }; return x; };
@@ -9189,7 +9190,7 @@ async function isaExcel(I){ await yukle(CDN.exceljs); const M = ISA_M, A = ISA_A
     if(!ikinci){ satirH(M.CIZ); kenar(r, { b: 1, kes: 1 }); r++; } }
   if(I.sol || I.sag){ ws.mergeCells(r, 1, r, 2); yaz(1, I.sol); yaz(3, I.sag, { a: "right" }); satirH(sinir(M.FY)); }
   ws.pageSetup.printArea = `A1:C${r}`;
-  if(I.arka){ const w2 = sayfa("İzin Belgesi (arka)"); w2.columns = [{ width: (M.BR - M.BL) / 2.0 }]; let r2 = 1, a2 = M.T[0] + AS - 3.25, kes = false;
+  if(I.arka){ const w2 = sayfa("İzin Belgesi (arka)"); w2.columns = [{ width: gen(M.BR - M.BL) }]; let r2 = 1, a2 = M.T[0] + AS - 3.25, kes = false;
     isaArkaCizim(I).filter(o => o.t).sort((a, b) => a.y - b.y).forEach(o => {
       if(!kes && o.y > A.CIZ){ w2.getRow(r2).height = Math.max(0.75, +(izg(A.CIZ) - izg(a2)).toFixed(2)); a2 = A.CIZ; w2.getCell(r2, 1).border = { bottom: { style: "dashed", color: { argb: "FF000000" } } }; r2++; kes = true; }
       const x = w2.getCell(r2, 1), sag = o.al === "r", ort = o.al === "c"; x.value = (sag || ort ? "" : " ".repeat(Math.max(0, Math.round((o.x - M.BL) / 0.62)))) + o.t; x.font = f(o.b, o.y > 270 ? M.FS : A.FS);
