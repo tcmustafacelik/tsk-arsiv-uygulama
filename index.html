@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "324";
+  const SURUM = "325";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2523,7 +2523,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 324</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 325</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6548,13 +6548,13 @@ function gridTema(g){ const R = g.c.length, W = g.w.length, mg = (r, c) => (g.m 
   const T = { ana: renkKar(renkKar(baz, "000000", .42), "6F7F90", .35), yazi: renkKar(baz, "000000", .72), cizgi: renkKar(renkKar(baz, "8A939C", .7), "FFFFFF", .25), band: renkKar(baz, "FFFFFF", .55), serit: renkKar(baz, "FFFFFF", .84) };
   for(let r = 0; r < R; r++) for(let c = 0; c < W; c++){ const x = g.c[r] && g.c[r][c]; if(x && x.br){ x.br = { ...x.br }; for(const k of "tblr") if(x.br[k] === 2) x.br[k] = 1; } }
   if(tr >= 0){ const c0 = g.c[tr].findIndex(x => x && x.v != null && x.v !== ""), m = mg(tr, c0), c1 = m ? m[3] : c0;
-    for(let c = c0; c <= c1; c++){ const x = g.c[tr][c] || (g.c[tr][c] = {}); x.f = T.band; x.br = { t: 1, b: 1, ...(c === c0 ? { l: 3 } : {}), ...(c === c1 ? { r: 1 } : {}) }; }
+    for(let c = c0; c <= c1; c++){ const x = g.c[tr][c] || (g.c[tr][c] = {}); x.f = T.band; x.ban = 1; x.br = { t: 1, b: 1, ...(c === c0 ? { l: 3 } : {}), ...(c === c1 ? { r: 1 } : {}) }; }
     Object.assign(g.c[tr][c0], { k: T.yazi }); if((g.h[tr] || 0) < 30) g.h[tr] = 30;
     if(tr + 1 < R && hr === tr + 1){ g.h.splice(tr + 1, 0, 6); g.c.splice(tr + 1, 0, Array.from({ length: W }, () => ({}))); (g.m || []).forEach(m => { if(m[0] > tr){ m[0]++; m[2]++; } }); (g.sb || []).forEach((v, i, A) => { if(v > tr) A[i]++; }); hr++; } }
   for(let r = Math.max(0, hr); r < g.c.length; r++) (g.c[r] || []).forEach(x => { if(x && x.f && x.b && x.br && (!x.k || x.k === "2F2F2F" || x.k === "222222" || x.k === "1F1F1F")) x.k = T.yazi; });
   if(hr >= 0){ let n = 0; for(let r = hr + 1; r < g.c.length; r++){ const L = (g.c[r] || []).filter(x => x && x.br), dolu = L.some(x => x.v != null && x.v !== ""), duz = L.length && L.every(x => !x.f);
       if(duz && dolu){ if(n % 2) L.forEach(x => { x.f = T.serit; }); n++; } else n = 0; } }
-  g.tema = T; return g; }
+  T.hr = hr; g.tema = T; return g; }
 async function gridPdf(d, a){
   const g = kopya(d.grid); hesapla(g); const doc = await yeniPdf(a);
   const W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(); const m = kenarlar(a);
@@ -6579,11 +6579,23 @@ async function gridPdf(d, a){
     if(a.sigdir === "tek") y = m.t;   // üstten başla
     gor.forEach(r => { ry[r] = y; y += rh[r] * s; });
     const yuk = (r1, r2) => { let t = 0; for(let r = r1; r <= r2; r++) if(r in ry) t += rh[r] * s; return t; };
+    /* kurumsal tema: tablo yuvarlak köşeli tek çerçeve içinde, başlık oval bant, tablo altındaki renk açıklamaları oval etiket */
+    const T = g.tema, RD = 2.4; let tab = null;
+    if(T && T.hr >= 0){ let r2 = T.hr; while(r2 + 1 < g.c.length && (g.c[r2 + 1] || []).some(x => x && x.br)) r2++; const ic = gor.filter(r => r >= T.hr && r <= r2);
+      const sut = (g.c[T.hr] || []).map((x, c) => x && x.br ? c : -1).filter(c => c >= 0);
+      if(ic.length && sut.length){ const c0 = Math.min(...sut), kk = kap[T.hr + ":" + Math.max(...sut)], c1 = Array.isArray(kk) ? kk[3] : Math.max(...sut); tab = { r1: ic[0], r2: ic[ic.length - 1], son: r2, x: cx[c0], w: cx[c1 + 1] - cx[c0], y: ry[ic[0]], h: yuk(ic[0], ic[ic.length - 1]) }; } }
+    const etiketMi = (r, x) => tab && r > tab.son && x && x.etk && x.f;   // yalnız renk açıklaması (lejant) etiketleri oval
+    let kirpik = false, kirpBitti = false; const kirp = r => { if(!tab) return; if(!kirpik && !kirpBitti && r >= tab.r1 && r <= tab.r2){ doc.saveGraphicsState(); doc.roundedRect(tab.x, tab.y, tab.w, tab.h, RD, RD, null); doc.clip(); doc.discardPath(); kirpik = true; }
+      else if(kirpik && r > tab.r2){ doc.restoreGraphicsState(); kirpik = false; kirpBitti = true; } };
     // dolgular ve metin
     gor.forEach(r => { for(let c = 0; c < g.w.length; c++){
       const k = kap[r + ":" + c]; if(k === 1) continue; const x = g.c[r]?.[c]; const r2 = Array.isArray(k) ? k[2] : r, c2 = Array.isArray(k) ? k[3] : c;
       const X = cx[c], Y = ry[r], Wc = cx[c2 + 1] - cx[c], Hc = yuk(r, r2);
-      if(x && x.f){ doc.setFillColor(...rgb(x.f)); doc.rect(X, Y, Wc, Hc, "F"); }
+      kirp(r);   // tablo satırlarında yuvarlak çerçeveye kırp
+      if(x && x.ban){ if(x.v != null && x.v !== ""){ const bx = X, bw = cx[(kap[r + ":" + c] && Array.isArray(kap[r + ":" + c]) ? kap[r + ":" + c][3] : c2) + 1] - X; doc.setFillColor(...rgb(T.band)); doc.setDrawColor(...rgb(T.cizgi)); doc.setLineWidth(.2); doc.roundedRect(bx, Y, bw, Hc, RD + .6, RD + .6, "FD");
+          doc.setFillColor(...rgb(T.ana)); doc.roundedRect(bx + 2.2, Y + Hc * .24, 1.5, Hc * .52, .75, .75, "F"); } }
+      else if(etiketMi(r, x)){ const e = Math.min(.6, Hc * .1); doc.setFillColor(...rgb(x.f)); doc.setDrawColor(...rgb(renkKar(x.f, "6F7F90", .35))); doc.setLineWidth(.2); doc.roundedRect(X + e, Y + e, Wc - 2 * e, Hc - 2 * e, (Hc - 2 * e) / 2, (Hc - 2 * e) / 2, "FD"); }
+      else if(x && x.f){ doc.setFillColor(...rgb(x.f)); doc.rect(X, Y, Wc, Hc, "F"); }
       const t = gosterDeger(x); if(t){
         doc.setFont(x.fn === "s" ? "LA" : "LS", x.b ? "bold" : "normal"); doc.setTextColor(...rgb(x.k || "222222"));
         let fs = (x.s || 11) * s * a.yazi * 1.0; const pad = Math.min(0.8, Wc * 0.08);
@@ -6602,14 +6614,19 @@ async function gridPdf(d, a){
         }
       }
     } });
+    if(kirpik){ doc.restoreGraphicsState(); kirpik = false; } kirpBitti = false;
     // kenarlıklar
     gor.forEach(r => { for(let c = 0; c < g.w.length; c++){
       const k = kap[r + ":" + c]; if(k === 1) continue; const r2 = Array.isArray(k) ? k[2] : r, c2 = Array.isArray(k) ? k[3] : c;
+      kirp(r);
+      const xh = g.c[r]?.[c]; if(xh && (xh.ban || etiketMi(r, xh))) continue;
       const X = cx[c], Y = ry[r], X2 = cx[c2 + 1], Y2 = Y + yuk(r, r2);
       const kn = (rr, cc, yon) => (g.c[rr]?.[cc]?.br || {})[yon];
       const ciz = (w, x1, y1, x2, y2) => { if(!w) return; if(w === 3 && g.tema){ doc.setDrawColor(...rgb(g.tema.ana)); doc.setLineWidth(1.6); doc.line(x1 + 0.8, y1, x2 + 0.8, y2); return; } doc.setDrawColor(...(g.tema ? rgb(g.tema.cizgi) : [68, 68, 68])); doc.setLineWidth(w === 2 ? 0.5 : g.tema ? 0.15 : 0.2); doc.line(x1, y1, x2, y2); };
       ciz(kn(r, c, "t"), X, Y, X2, Y); ciz(kn(r, c, "l"), X, Y, X, Y2); ciz(kn(r, c2, "r"), X2, Y, X2, Y2); ciz(kn(r2, c, "b"), X, Y2, X2, Y2);
     } });
+    if(kirpik){ doc.restoreGraphicsState(); kirpik = false; }
+    if(tab){ doc.setDrawColor(...rgb(T.ana)); doc.setLineWidth(.35); doc.roundedRect(tab.x, tab.y, tab.w, tab.h, RD, RD, "S"); }
   });
   if(a.altBilgi) pdfAltBilgi(doc, a.altBilgi, m);
   return new Blob([doc.output("arraybuffer")], { type: "application/pdf" });
@@ -8247,7 +8264,7 @@ function ltGrid(d){ const v = ltVeri(d), W = v.w.length, I = { t: 1, b: 1, l: 1,
     return kul; };
   let onceki = null;
   v.bloklar.forEach(bl => { if(bl.yan && onceki){ ciz(bl, onceki[0]); return; } if(bl.bosluk) [].concat(bl.bosluk).forEach(h => satir(h)); onceki = ciz(bl, g.c.length); });
-  if(v.lejant){ satir(v.lejant.bosluk || 15); const r = satir(v.lejant.h || 15); v.lejant.hucreler.forEach(x => koy(r, x.c, x.cs || 1, { v: x.v, a: "c", va: "m", s: x.s || 8, b: 1, fn: v.fn, f: x.f, k: "2F2F2F", br: I })); }
+  if(v.lejant){ satir(v.lejant.bosluk || 15); const r = satir(v.lejant.h || 15); v.lejant.hucreler.forEach(x => koy(r, x.c, x.cs || 1, { v: x.v, a: "c", va: "m", s: x.s || 8, b: 1, fn: v.fn, f: x.f, k: "2F2F2F", br: I, etk: 1 })); }
   if(v.not && v.not.v){ satir(8); const r = satir(v.not.h || 18); koy(r, 0, W, { v: v.not.v, a: "l", va: "m", s: v.not.s || 8.5, fn: v.fn, k: "5A6470" }); }
   hesapla(g); return g; }
 async function listeCikti(d, a, tur){ const g = kurumsalMi(d) ? gridTema(ltGrid(d)) : ltGrid(d), a2 = { ...a, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
