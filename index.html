@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "345";
+  const SURUM = "346";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2607,7 +2607,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 345</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 346</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3092,9 +3092,6 @@ $("#agac").addEventListener("click", e => {
   if(b.dataset.agUye){ agacUye[b.dataset.grup] = b.dataset.agUye; menuSakla(); agacCiz(); return; }
   if(b.dataset.kac){ const id = b.dataset.kac; acikKlasorler.has(id) ? acikKlasorler.delete(id) : acikKlasorler.add(id); menuSakla(); agacCiz(); return; }
   if(b.id === "klasor-ekle"){ S.yapi.klasorler.push({ id: "k" + yeniId(), ad: "Yeni Klasör", kagit: "A4", numarali: false, delgec: false, bolumler: [] }); agacCiz(); anaCiz(); kaydetYapi(); return; }
-  if(b.dataset.yk){ const K = S.yapi.klasorler, i = +b.dataset.ki;
-    if(b.dataset.yk === "yukari" && i > 0) [K[i - 1], K[i]] = [K[i], K[i - 1]]; else if(b.dataset.yk === "sil") K.splice(i, 1); else return;
-    agacCiz(); anaCiz(); kaydetYapi(); return; }
   if(b.classList.contains("b")){ if(innerWidth < 860) agacKapali = true; bolumAc(b.dataset.k, b.dataset.b); return; }
   const kl = klasorBul(b.dataset.k); if(!kl || !b.dataset.yb) return; const i = +b.dataset.i; const L = kl.bolumler;
   if(b.dataset.yb === "yukari" && i > 0 && !L[i - 1].sabit) [L[i - 1], L[i]] = [L[i], L[i - 1]];
@@ -4346,8 +4343,6 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
     let cak = 0; Y.rows.forEach(r => { const D = ykDonemler(r); let deg = false; D.forEach(p => { if(p.kaynak === "izin" || !p.tur || !p.ayr || p.gdhgde) return; const o = ykGdhgAktar(r, p); if(o.hata){ if(/listesinde yok/.test(o.hata)) yok.add(r.ad); if(o.cakisma) cak++; return; } p.gdhgde = new Date().toISOString().slice(0, 10); deg = true; n++; }); if(deg) ykDonemYaz(r, D); });
     if(n){ kaydetBt("gdhg"); ykKaydet(); yoklamaCiz(); } const ek = [yok.size ? `GDHG'de olmayan: ${[...yok].join(", ")}` : "", cak ? `${cak} satır GDHG'deki tarihlerle çakıştığı için aktarılmadı` : ""].filter(Boolean).join(" · ");
     return (cak || yok.size ? uyar : bildir)(n ? `${n} ayrılış GDHG'ye aktarıldı${ek ? " · " + ek : ""}` : ek || "Aktarılacak yeni ayrılış yok"); }
-  if(b.dataset.ykgd){ const [id, j] = b.dataset.ykgd.split(":"), r = ykBul(id); if(!r) return; const D = ykDonemler(r), p = D[+j]; if(!p) return; const o = ykGdhgAktar(r, p); if(o.hata) return uyar(o.hata, true);
-    p.gdhgde = new Date().toISOString().slice(0, 10); ykDonemYaz(r, D); kaydetBt("gdhg"); ykKaydet(); yoklamaCiz(); return bildir(`${r.ad}: ${(YK_GD_SEBEP[p.tur] || p.tur)} GDHG'ye ${o.yeni ? "eklendi" : "güncellendi"}`); }
   if(b.dataset.ykgz){ const [id, j] = b.dataset.ykgz.split(":"), r = ykBul(id); if(!r) return; const D = ykDonemler(r); if(!D[+j]) return; if(D[+j].gizli) delete D[+j].gizli; else D[+j].gizli = true; ykDonemYaz(r, D); ykKaydet(); return yoklamaCiz(); }
   if(b.dataset.ykVt){ const r = ykBul(b.dataset.ykVt); if(!r) return; const eski = r.vardiya || "GÜNDÜZ", yeni = eski === "GÜNDÜZ" ? "GECE" : "GÜNDÜZ"; r.vardiya = yeni; ykKaydet(); yoklamaCiz();
     return geriAlinabilir(`${r.ad || "Kişi"} ${yeni === "GECE" ? "geceye" : "gündüze"} taşındı`, () => { r.vardiya = eski; ykKaydet(); yoklamaCiz(); }); }
@@ -6305,7 +6300,6 @@ $("#b-beyan").addEventListener("change", e => {
   const el = e.target;
   if(el.id === "by-dosya"){ const f = [...el.files]; el.value = ""; if(!f.length) return; dosyalariYukle(f); beyanTopluBasla(f); return; }
   if(el.id === "by-kisi" && beyanSonuc){ beyanSonuc.kisiId = el.value; beyanSonuc.elleSecim = !!el.value; beyanSonuc.kisiOto = false; if(el.value) beyanSonuc.kisiSoru = null; beyanSonucCiz(); return; }
-  if(el.dataset.dahil){ const v = el.dataset.dahil; const D = new Set(gdDahil()); el.checked ? D.add(v) : D.delete(v); S.gdhg.dahil = gdSebepler().filter(x => D.has(x)); dahilDegisti(); return; }
   if(!el.dataset.by || !beyanSonuc) return; const L = el.dataset.by === "g" ? beyanSonuc.gorevler : beyanSonuc.ayri; const x = L[+el.dataset.i]; if(!x) return;
   if(el.tagName === "SELECT" && el.dataset.a === "sebep"){ if(el.value === "__diger"){ x.elle = true; if(gdSebepler().includes(x.sebep)) x.sebep = ""; } else { x.sebep = el.value; delete x.elle; } x.esas = gdEsasMi(x.sebep); beyanSonucCiz(); return; }
   x[el.dataset.a] = el.type === "checkbox" ? el.checked : el.value; if(el.type === "date" || el.dataset.a === "devam") beyanSonucCiz();
@@ -7855,11 +7849,6 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
     if(n) v.rt.sort(tzSiraKarsilastir); kaydetBelge(d); tazminatCiz(); return bildir(n ? `${n} kişi eklendi, rütbeye göre sıralandı` : "Listedeki herkes zaten ekli"); }
   if(is === "sirala"){ const geri = anlik(v[g]); v[g].sort(tzSiraKarsilastir); kaydetBelge(d); tazminatCiz(); return geriAlinabilir("Rütbeye göre sıralandı", () => { geri(); kaydetBelge(d); tazminatCiz(); }); } });
 document.addEventListener("input", e => { const el = e.target; if(!el.closest) return; const d = acikBelge(); if(!d || d.tur !== "tazminat") return; const v = tzVeri(d);
-  if(el.closest("#tz-govde") && el.dataset.tzYari != null){ const y = +el.dataset.tzYari, n = +String(el.value).replace(/\s/g, "").replace(",", ".") || 0;   // 6 aylık dönem: altı ayın hepsine yaz
-    TZ_AYLAR.slice(y * 6, y * 6 + 6).forEach(a => v.kat[a] = n); kaydetBelge(d);
-    const sm = el.closest(".tz-kr")?.querySelector(".tz-kr-alt"); if(sm) sm.textContent = "6 ayın hepsine uygulanır";
-    if(tzAylikAcik) TZ_AYLAR.slice(y * 6, y * 6 + 6).forEach(a => { const i2 = document.querySelector(`#tz-govde [data-tz="kat.${a}"]`); if(i2) i2.value = String(n).replace(".", ","); });
-    const ust = document.querySelector("#tz-govde .tz-ay-ad small"); if(ust){ const P = tzParam(v); ust.textContent = `${P.G} gün · katsayı ${String(P.K).replace(".", ",")}`; } return; }
   if(el.closest("#tz-govde") && el.dataset.tz){ const yol = el.dataset.tz.split("."); let o = v; yol.slice(0, -1).forEach(k => o = o[k]); const son = yol[yol.length - 1], sayi = yol[0] === "kat" || yol[0] === "g";
     o[son] = sayi ? (+String(el.value).replace(/\s/g, "").replace(",", ".") || 0) : el.value; kaydetBelge(d);
     if(sayi){ const P = tzParam(v); if(yol[0] === "g" && son !== "tavan"){ const g = yol[1], k = son, ay = (g === "rt" ? P.rD : P.eD)[k], gu = (g === "rt" ? P.rE : P.eE)[k]; const sm = el.closest(".tz-kr")?.querySelector(".tz-kr-alt"); if(sm) sm.innerHTML = [ay != null ? `<span>Aylık <b>${tzTL(ay)}</b></span>` : "", gu != null ? `<span>Günlük <b>${tzTL(gu)}</b></span>` : ""].join(""); }
@@ -8068,8 +8057,8 @@ document.addEventListener("change", e => { const el = e.target; if(!el.closest |
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#kp-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kapak") return; const v = kpVeri(d);
   if(b.dataset.kk){ kpKapali.degis(b.dataset.kk); return kapakCiz(); }
   if(b.dataset.kpGit){ kpSayfaNo += +b.dataset.kpGit; return kapakCiz(); }
-  if(b.hasAttribute("data-kp-renk") || b.dataset.kpTasi){ const k = klasorBul(SECIM.klasor), bol = k && k.bolumler.find(x => x.id === b.closest("[data-kp-b]").dataset.kpB); if(!bol) return;
-    if(b.dataset.kpTasi){ if(!bolumTasi(k, bol, +b.dataset.kpTasi)) return; } else bolumRenkDegis(k, bol);
+  if(b.hasAttribute("data-kp-renk")){ const k = klasorBul(SECIM.klasor), bol = k && k.bolumler.find(x => x.id === b.closest("[data-kp-b]").dataset.kpB); if(!bol) return;
+    bolumRenkDegis(k, bol);
     kaydetYapi(); agacCiz(); anaCiz(); return kapakCiz(); }
   if(b.dataset.kpI === "yeni"){ const inp = $("#kp-yeni-ad"), ad = (inp.value || "").trim().toLocaleUpperCase("tr"); if(!ad){ inp.focus(); return bildir("Bölüm adını yazın"); }
     const k = klasorBul(SECIM.klasor); if(!k) return; const L = k.bolumler, son = L.findLastIndex(x => !x.sabit && !KP_HARIC.has(x.id)); const yeni = { id: "x-" + yeniId(), ad }; L.splice(son + 1, 0, yeni);
@@ -8996,8 +8985,6 @@ document.addEventListener("change", e => { const el = e.target; if(!el.closest |
 document.addEventListener("toggle", e => { if(e.target.matches && e.target.matches("#dl-govde .dl-bilgi")) dlKisiAcik = e.target.open; }, true);
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#dl-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "dilekce") return; const v = dlVeri(d), k = dlAktif(v), yaz = () => { kaydetBelge(d); dilekceCiz(); };
   if(b.dataset.dlSec){ v.aktif = b.dataset.dlSec; return yaz(); }
-  if(b.dataset.dlP){ k.pid = k.pid === b.dataset.dlP ? "" : b.dataset.dlP; return yaz(); }
-  if(b.dataset.dlOz){ k.ozu = b.dataset.dlOz; return yaz(); }
   if(b.dataset.dlTur){ if(k.tur !== b.dataset.dlTur){ k.tur = b.dataset.dlTur; k.elle = false; if(k.tur === "diger") k.metin = ""; } return yaz(); }
   const is = b.dataset.dl;
   if(is === "konu") return altPencere("ks-perde", "HAZIR KONU", "Dilekçenin özü", () => `<div class="ap-liste">${DL_OZU.map((o, i) => apSatir(`data-ks="${i}"`, `<span class="ks-av dl-ko">${esc(o.replace(/ Hk\.$/, "")[0])}</span>`, esc(o), o === k.ozu ? '<em class="ks-tik">✓</em>' : "")).join("")}</div>`, (b2, kapat) => { if(b2.dataset.ks){ kapat(); k.ozu = DL_OZU[+b2.dataset.ks]; kaydetBelge(d); dilekceCiz(); } }, { z: "ECE8F4", r: "54477F" });
@@ -9211,7 +9198,6 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#isa-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v), yaz = () => { kaydetBelge(d); izinsaCiz(); };
   if(b.dataset.isaYuz){ isaOnzYuz = b.dataset.isaYuz; document.querySelectorAll("#isa-govde [data-isa-yuz]").forEach(x => x.setAttribute("aria-pressed", x === b)); return isaTazele(d, true); }
   if(b.dataset.isaSec){ v.aktif = b.dataset.isaSec; return yaz(); }
-  if(b.dataset.isaP){ k.pid = k.pid === b.dataset.isaP ? "" : b.dataset.isaP; return yaz(); }
   if(b.dataset.isaTur){ k.tur = b.dataset.isaTur === "Diğer" ? "" : b.dataset.isaTur; return yaz(); }
   if(b.dataset.isa === "kimlikten"){ const p = isaKisi(k); if(!p) return;
     return kmAdresSec(p, adr => { let n = 0; if(adr && adr !== k.adres){ k.adres = adr; n++; } if(p.tel && !String(k.tel || "").trim()){ k.tel = p.tel; n++; }
