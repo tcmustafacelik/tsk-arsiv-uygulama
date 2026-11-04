@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "338";
+  const SURUM = "339";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2491,6 +2491,29 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 
 #lt-govde .lt-sut-s{display:grid!important;grid-template-columns:auto 1fr auto;gap:6px;align-items:center} #lt-govde .lt-sut-s .isa-tsil{width:34px;height:34px;font-size:12px}
 #lt-govde .lt-sut-ekle{width:100%;margin-top:4px} #lt-govde .lt-sut>summary small{font:500 11px var(--f-ui);color:var(--muted);margin-left:6px}
+/* ===== yeni ana sayfa ve menü ===== */
+.mn-izgara{display:grid;grid-template-columns:1fr 1fr;gap:7px}
+.mn-kat{display:flex;align-items:center;gap:9px;min-width:0;padding:9px 10px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);text-align:left;font-family:var(--f-ui);cursor:pointer;box-shadow:0 1px 2px rgba(20,40,70,.04)}
+ .mn-kat:active{transform:scale(.98)} .mn-kat.aktif{border-color:color-mix(in srgb,var(--rk) 45%,var(--line2));background:color-mix(in srgb,var(--z) 35%,var(--panel))}
+ .mn-s{flex:none;width:32px;height:32px;border-radius:9px;background:var(--z);color:var(--rk);display:grid;place-items:center} .mn-s svg{width:18px;height:18px}
+ .mn-y{min-width:0;display:flex;flex-direction:column;gap:1px} .mn-y b{font:650 12.5px/1.2 var(--f-ui);color:var(--fg);overflow-wrap:anywhere} .mn-y small{font:500 10.5px/1.25 var(--f-ui);color:var(--muted);overflow-wrap:anywhere}
+.mn-alt{display:flex;gap:7px;flex-wrap:wrap;justify-content:flex-end}
+ .mn-is{flex:1;min-width:140px;height:40px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font:600 12.5px var(--f-ui);color:#3D5F8C;cursor:pointer}
+.mn-liste .ap-sat{min-height:44px;padding:6px 12px;font-size:13px}
+ .mn-liste .ap-sat.mn-bos .ap-ad{color:var(--muted);font-weight:500}
+ .mn-liste .ap-sat.mn-bura{background:color-mix(in srgb,var(--apz) 70%,#fff)} .mn-liste .ap-sat.mn-bura .ap-ad::after{content:"buradasın";font:700 9.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--apr);margin-top:1px}
+.mn-bas{display:flex;align-items:baseline;justify-content:space-between;margin:2px 2px 8px} .mn-bas b{font:700 14px var(--f-ui);color:var(--fg)} .mn-bas small{font:500 11.5px var(--f-ui);color:var(--muted)}
+#ana-ozet:empty{display:none}
+@media (max-width:859px){
+  html.ana-gorunum #agac.kapali,body:has(#v-ana:not([hidden])) #agac.kapali{display:none}
+  #v-ana{gap:12px} .ana-bas h3{font-size:18px!important} .ana-bas{margin-bottom:-2px}
+  .pano-donem{padding:11px 14px!important;margin-bottom:10px!important;gap:6px!important;border-radius:14px!important}
+  .pano-donem .pd-ust b{font-size:14px} .pano-donem .pd-alt{font-size:11px}
+  #ana-pano .hz-izgara{grid-template-columns:repeat(3,minmax(0,1fr));gap:6px;padding:8px}
+  #ana-pano .hz{flex-direction:column;align-items:flex-start;gap:6px;padding:9px 8px;border-radius:11px}
+  #ana-pano .hz-s{width:28px;height:28px} #ana-pano .hz-s svg{width:16px;height:16px}
+  #ana-pano .hz-y b{font-size:12px} #ana-pano .hz-y small{font-size:10px}
+}
 </style>
 
 </head>
@@ -2528,7 +2551,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 338</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 339</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2963,6 +2986,34 @@ function agacListe(){ const K = S.yapi.klasorler, gor = new Set(), G = [], kisaA
         ${agAdDuz === c.anah ? "" : uye.bolumler.map(b => { const n = say(uye, b), no = bolumNo(uye.id, b.id), cur = SECIM.klasor === uye.id && SECIM.bolum === b.id;
           return `<button type="button" class="b ag-b${n ? "" : " bos"}" data-k="${esc(uye.id)}" data-b="${esc(b.id)}" aria-current="${cur}"><span class="ag-no"${b.vurgu ? ` style="--v:#${b.vurgu};--r2:#${b.renk || "EEF2F6"}"` : ""}>${no || (b.sabit ? "◆" : "•")}</span><span class="ad">${esc(b.ad)}</span>${n ? `<span class="ag-say">${n}</span>` : ""}</button>`; }).join("")}${agAdDuz === c.anah ? "" : `<button type="button" class="ag-adbtn" data-ag-adduz="${esc(c.anah)}">✎ Düzenle · taşı</button>`}</div>` : ""}</div>`; }).join("") + `</div>`; }
 let agAdDuz = null, agBolAcik = null;
+/* ===== yeni menü (telefon): kategoriler kutu kutu; dokununca bölümleri aynı pencerede açılır, sayfa uzamaz ===== */
+const mnKisa = u => u.kisa || u.ad.split("/").pop().trim();
+function mnGruplar(){ const K = S.yapi.klasorler, gor = new Set(), G = [];
+  K.forEach(k => { const a = k.ust || k.id; if(gor.has(a)) return; gor.add(a); G.push({ anah: k.ust ? "g:" + k.ust : k.id, ad: k.ust || k.ad, uyeler: k.ust ? K.filter(x => x.ust === k.ust).sort((a, b) => mnKisa(a).localeCompare(mnKisa(b), "tr")) : [k] }); });
+  return G.map((c, i) => { const [simge] = anaKatBilgi(c.uyeler[0]), [z, rk] = ANA_RENK[i % ANA_RENK.length];
+    const top = c.uyeler.reduce((t, u) => t + u.bolumler.reduce((s2, b) => s2 + apSay(u, b), 0), 0);
+    return { ...c, simge, z, rk, top, aktif: c.uyeler.some(u => u.id === SECIM.klasor) }; }); }
+const mnKatDugme = c => `<button type="button" class="mn-kat${c.aktif ? " aktif" : ""}" data-mn-kat="${esc(c.anah)}" style="--z:${c.z};--rk:${c.rk}"><span class="mn-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${ANA_SIMGE[c.simge]}</svg></span><span class="mn-y"><b>${esc(c.ad)}</b><small>${c.uyeler.length > 1 ? esc(c.uyeler.map(mnKisa).join(" · ")) + " · " : ""}${c.top ? c.top + " öğe" : "boş"}</small></span></button>`;
+let mnKat = null;
+function menuAc(anah){ mnKat = anah === undefined ? (mnGruplar().find(c => c.aktif) || {}).anah || null : anah;
+  const G = () => mnGruplar(), bul = () => G().find(c => c.anah === mnKat);
+  altPencere("mn-perde", "TSK ARŞİV", () => { const c = bul(); return c ? c.ad : "Klasörler"; }, () => { const c = bul();
+    if(!c) return `<div class="mn-izgara">${G().map(mnKatDugme).join("")}</div>
+      <div class="mn-alt"><button type="button" class="mn-is" data-mn-yeni>＋ Yeni kategori</button><button type="button" class="mn-is" data-mn-indir>⇩ Bütün arşivi indir</button></div>`;
+    const uye = c.uyeler.find(u => u.id === agacUye[c.anah]) || c.uyeler.find(u => u.id === SECIM.klasor) || c.uyeler[0];
+    return `<button type="button" class="ap-geri" data-mn-geri>‹ Bütün kategoriler</button>
+      ${c.uyeler.length > 1 ? `<div class="ap-sekme">${c.uyeler.map(u => `<button type="button" data-mn-uye="${esc(u.id)}" aria-pressed="${u.id === uye.id}">${esc(mnKisa(u))}${u.delgec ? " · delgeç" : ""}</button>`).join("")}</div>` : ""}
+      <div class="ap-liste mn-liste">${uye.bolumler.map(b => { const n = apSay(uye, b), cur = SECIM.klasor === uye.id && SECIM.bolum === b.id;
+        return `<button type="button" class="ap-sat${n ? "" : " mn-bos"}${cur ? " mn-bura" : ""}" data-mn-b="${esc(uye.id)}|${esc(b.id)}">${b.sabit ? `<span class="ap-no">◆</span>` : apNo(uye, b)}<span class="ap-ad">${esc(b.ad)}</span>${n ? `<span class="ap-say">${n}</span>` : ""}</button>`; }).join("")}</div>
+      <div class="mn-alt"><button type="button" class="mn-is" data-mn-duz>✎ Düzenle · taşı</button></div>`; },
+    (b, kapat, yenile) => { const d = b.dataset;
+      if(d.mnKat){ mnKat = d.mnKat; yenile(); return; }
+      if(d.mnGeri != null){ mnKat = null; yenile(); return; }
+      if(d.mnUye){ agacUye[mnKat] = d.mnUye; menuSakla(); yenile(); return; }
+      if(d.mnB){ const [k, bb] = d.mnB.split("|"); kapat(); bolumAc(k, bb); setTimeout(() => scrollTo(0, 0), 40); return; }
+      if(d.mnDuz != null){ const a = mnKat; kapat(); agacKapali = false; kokAcik = true; acikKlasorler.add(a); agAdDuz = a; menuSakla(); agacCiz(); setTimeout(() => document.querySelector("#agac .ag-k.acik")?.scrollIntoView({ block: "start", behavior: "smooth" }), 60); return; }
+      if(d.mnYeni != null){ kapat(); agacKapali = false; agacCiz(); $("#kat-ekle")?.click(); return; }
+      if(d.mnIndir != null){ kapat(); $("#arsiv-indir")?.click(); return; } }, { z: "E6EDF5", r: "3D5F8C" }); }
 document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target.matches && e.target.matches("textarea[data-ag-bad]")){ e.preventDefault(); e.target.blur(); } });
 /* menü düzenleme: bölüm adı, sıra (↑ ↓), başka kategoriye taşıma, başka bölümle birleştirme, altına yeni bölüm (ayırma) */
 function agBolumSatir(k, b){ const n = apSay(k, b);
@@ -2976,7 +3027,7 @@ document.addEventListener("change", e => { const el = e.target; if(!el.matches |
   kaydetYapi(); try { anaCiz(); } catch(x){} if(SECIM.bolum && !SECIM.belge) try { bolumCiz(); } catch(x){} bildir("Ad değişti"); });
 $("#agac").addEventListener("click", e => {
   const b = e.target.closest("button"); if(!b) return;
-  if(b.id === "agac-ac"){ agacKapali = !agacKapali; agacCiz(); return; }
+  if(b.id === "agac-ac"){ if(agacKapali && innerWidth < 860) return menuAc(); agacKapali = !agacKapali; agAdDuz = null; agacCiz(); return; }
   if(b.id === "kat-ekle"){ const k = { id: "k" + yeniId(), ad: "Yeni Kategori", kagit: "A4", numarali: false, delgec: false, bolumler: [{ id: "x-" + yeniId(), ad: "YENİ BÖLÜM" }] }; S.yapi.klasorler.push(k); kokAcik = true; acikKlasorler.add(k.id); agAdDuz = k.id; menuSakla(); yapiYenile("Yeni kategori eklendi · adını yazın"); const i = document.querySelector("#agac [data-ag-kad]"); if(i){ i.focus(); i.select(); i.scrollIntoView({ block: "center" }); } return; }
   if(b.dataset.agKs){ const K = S.yapi.klasorler, uy = K.filter(k => (k.ust ? "g:" + k.ust : k.id) === b.dataset.agKs), y = +b.dataset.agKy;
     if(y){ const G = []; K.forEach(k => { const a = k.ust ? "g:" + k.ust : k.id; if(!G.includes(a)) G.push(a); }); const i = G.indexOf(b.dataset.agKs), j = i + y; if(j < 0 || j >= G.length) return; [G[i], G[j]] = [G[j], G[i]]; const yeni = G.flatMap(a => K.filter(k => (k.ust ? "g:" + k.ust : k.id) === a)); K.splice(0, K.length, ...yeni); return yapiYenile(); }
@@ -3221,7 +3272,7 @@ function araVurgula(ipucu){
 function goster(v){
   if(v === "belge"){ $("#v-belge").hidden = false; $("#perde").hidden = false; document.documentElement.style.overflow = "hidden"; return; }
   $("#v-belge").hidden = true; $("#perde").hidden = true; document.documentElement.style.overflow = ""; if(v === "ana") try { anaCiz(); } catch(e){}
-  ["ana","bolum","ara"].forEach(x => $("#v-" + x).hidden = x !== v);
+  ["ana","bolum","ara"].forEach(x => $("#v-" + x).hidden = x !== v); document.documentElement.classList.toggle("ana-gorunum", v === "ana");
 }
 function belgeKapat(){ SECIM.belge = null; if($("#ara").value.trim().length >= 2){ goster("ara"); araYap(); return; } goster(SECIM.bolum ? "bolum" : "ana"); if(SECIM.bolum) bolumCiz(); }
 /* ana sayfa: sade kategori kartları (sayı ve kâğıt bilgisi yok) */
@@ -3354,14 +3405,14 @@ function anaCiz(){
   $("#ana-son").innerHTML = sonL.length ? kkKart("son", "#E8E2F4", "Son açtıkların", "", sonL.map(o => { const [z, rk] = (o.tur && PANO_TEMA[o.tur]) || (o.d ? ["#E6ECF3", "#4E6B89"] : ["#EEEBE4", "#7A6A4E"]);
     const sim = o.tur && PANO_SIMGE[o.tur] ? PANO_SIMGE[o.tur] : SON_SIMGE[o.d ? "belge" : "bolum"];
     return `<button type="button" class="kk-sat" data-son-k="${esc(o.k)}" data-son-b="${esc(o.b)}"${o.d ? ` data-son-d="${esc(o.d)}"` : ""}><span class="kk-rz" style="--z:${z};--rk:${rk}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${sim}</svg></span><span class="kk-sy"><b>${esc(o.ad)}</b><small>${esc(o.alt)}</small></span><span class="kk-sag">›</span></button>`; }).join("")) : "";
-  $("#ana-ozet").innerHTML = "";   /* klasörlere menüden ulaşılır */
+  $("#ana-ozet").innerHTML = `<div class="mn-bas"><b>Klasörler</b><small>${mnGruplar().length} kategori</small></div><div class="mn-izgara ana-mn">${mnGruplar().map(mnKatDugme).join("")}</div>`;
 }
 $("#ana-pano").addEventListener("click", e => { const k = e.target.closest("[data-pano-d]"); if(k){ belgeGit(S.belgeler.find(x => x.id === k.dataset.panoD)); return; }
   const g = e.target.closest("[data-pano]"); if(g){ const d = belgeTur(g.dataset.pano); if(d) belgeGit(d); } });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#v-ana [data-kk]"); if(!b) return; anaKapali.degis(b.dataset.kk); anaCiz(); });
 $("#ana-dikkat").addEventListener("click", e => { const b = e.target.closest("[data-dk]"); if(!b) return; const d = belgeTur(b.dataset.dk); if(d) belgeGit(d); });
 $("#ana-son").addEventListener("click", e => { const b = e.target.closest("[data-son-k]"); if(!b) return; bolumAc(b.dataset.sonK, b.dataset.sonB); if(b.dataset.sonD) belgeAc(b.dataset.sonD); });
-$("#ana-ozet").addEventListener("click", e => {
+$("#ana-ozet").addEventListener("click", e => { const mk = e.target.closest("[data-mn-kat]"); if(mk){ menuAc(mk.dataset.mnKat); return; }
   const g = e.target.closest("[data-git-k]"); if(g){ bolumAc(g.dataset.gitK, g.dataset.gitB); return; }
   const u = e.target.closest("[data-uye]"); if(u){ anaUye[u.dataset.grup] = u.dataset.uye; try { localStorage.setItem("anaUye", JSON.stringify(anaUye)); } catch(e){} anaCiz(); return; }
   const k = e.target.closest("[data-ac-kat]"); if(k){ anaAcik = anaAcik === k.dataset.acKat ? "" : k.dataset.acKat; try { localStorage.setItem("anaAcik", anaAcik); } catch(e){} anaCiz();
