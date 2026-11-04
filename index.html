@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "325";
+  const SURUM = "326";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2486,6 +2486,11 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 
 #lt-govde .kc-form{align-items:end} .lt-rk{display:flex;flex-wrap:wrap;gap:5px;margin-top:5px} .lt-rk button{border:1px solid color-mix(in srgb, var(--rk) 60%, #8A9AA8 40%);background:var(--rk);border-radius:14px;padding:4px 10px;font:700 11.5px var(--f-ui);color:#34414E;cursor:pointer}
 .lt-rk button[aria-pressed="true"]{box-shadow:0 0 0 2px #fff, 0 0 0 3.5px #4A6A86}
+
+#lt-govde .lt-tas{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line2);border-radius:14px;background:var(--panel);padding:10px 12px}
+#lt-govde .lt-tas .izb-ay-sat>span{min-width:52px} .lt-pal{display:flex;flex-wrap:wrap;gap:5px;flex:1}
+.lt-pal button{border:1px solid color-mix(in srgb, var(--pz) 55%, #7D8A97 45%);background:var(--pz);border-radius:14px;padding:5px 11px;font:700 11.5px var(--f-ui);color:#33404D;cursor:pointer}
+.lt-pal button[aria-pressed="true"]{box-shadow:0 0 0 2px #fff, 0 0 0 3.5px #3F5F80}
 </style>
 
 </head>
@@ -2523,7 +2528,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 325</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 326</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6596,6 +6601,7 @@ async function gridPdf(d, a){
           doc.setFillColor(...rgb(T.ana)); doc.roundedRect(bx + 2.2, Y + Hc * .24, 1.5, Hc * .52, .75, .75, "F"); } }
       else if(etiketMi(r, x)){ const e = Math.min(.6, Hc * .1); doc.setFillColor(...rgb(x.f)); doc.setDrawColor(...rgb(renkKar(x.f, "6F7F90", .35))); doc.setLineWidth(.2); doc.roundedRect(X + e, Y + e, Wc - 2 * e, Hc - 2 * e, (Hc - 2 * e) / 2, (Hc - 2 * e) / 2, "FD"); }
       else if(x && x.f){ doc.setFillColor(...rgb(x.f)); doc.rect(X, Y, Wc, Hc, "F"); }
+      if(x && x.rz && gosterDeger(x)){ const ph = Math.min(Hc * .62, 6.2), pw = Wc - Math.min(3, Wc * .1); doc.setFillColor(...rgb(x.rz)); doc.setDrawColor(...rgb(renkKar(x.rz, "6F7F90", .4))); doc.setLineWidth(.2); doc.roundedRect(X + (Wc - pw) / 2, Y + (Hc - ph) / 2, pw, ph, ph / 2, ph / 2, "FD"); }
       const t = gosterDeger(x); if(t){
         doc.setFont(x.fn === "s" ? "LA" : "LS", x.b ? "bold" : "normal"); doc.setTextColor(...rgb(x.k || "222222"));
         let fs = (x.s || 11) * s * a.yazi * 1.0; const pad = Math.min(0.8, Wc * 0.08);
@@ -6655,7 +6661,7 @@ async function gridExcel(d, a){
     h.alignment = { horizontal: { l: "left", r: "right", c: "center" }[x.a] || undefined, vertical: { t: "top", b: "bottom" }[x.va] || "middle", wrapText: true, textRotation: x.rot ? 90 : undefined };
     if(x.u) h.font = { ...h.font, underline: true };
     if(x.vr && !x.fx){ const t = gosterDeger(x); if(t) h.value = { richText: vurguParca(t, x).map(p => ({ text: p.t, font: { ...h.font, bold: p.b, strike: p.st || undefined } })) }; }
-    if(x.f) h.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF" + x.f }, bgColor: { indexed: 64 } };
+    if(x.f || x.rz) h.fill = { type: "pattern", pattern: "solid", fgColor: { argb: "FF" + (x.rz || x.f) }, bgColor: { indexed: 64 } };
     const br = x.br || {}; h.border = { left: kenar(br.l), right: kenar(br.r), top: kenar(br.t), bottom: kenar(br.b) }; }); });
   (g.m || []).forEach(([r1, c1, r2, c2]) => { try { ws.mergeCells(r1 + 1, c1 + 1, r2 + 1, c2 + 1); } catch(e){} });
   (g.sb || []).forEach(r => { if(r > 0) ws.getRow(r).addPageBreak(); });   // elle sayfa başı
@@ -6708,7 +6714,7 @@ async function gridWord(d, a){
       if(mg){ const [r1, c1, r2, c2] = mg; if(c !== c1) continue; span = c2 - c1 + 1; if(r2 > r1) vm = r === r1 ? '<w:vMerge w:val="restart"/>' : "<w:vMerge/>"; if(r !== r1){ x = g.c[r1][c1]; } }
       const w = gw.slice(c, c + span).reduce((p, q) => p + q, 0); const devam = mg && r !== mg[0];
       const br = (x && x.br) || {}; const bx = Object.entries({ top: "t", left: "l", bottom: "b", right: "r" }).map(([ad, k]) => `<w:${ad} w:val="${br[k] ? "single" : "nil"}" w:sz="${br[k] === 2 ? 12 : 4}" w:space="0" w:color="${d.grid.tema ? d.grid.tema.cizgi : "444444"}"/>`).join("");
-      const tcPr = `<w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${span > 1 ? `<w:gridSpan w:val="${span}"/>` : ""}${vm}<w:tcBorders>${bx}</w:tcBorders>${x && x.f ? `<w:shd w:val="clear" w:color="auto" w:fill="${x.f}"/>` : ""}<w:vAlign w:val="${{ t: "top", b: "bottom" }[x && x.va] || "center"}"/>${x && x.rot ? '<w:textDirection w:val="btLr"/>' : ""}</w:tcPr>`;
+      const tcPr = `<w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${span > 1 ? `<w:gridSpan w:val="${span}"/>` : ""}${vm}<w:tcBorders>${bx}</w:tcBorders>${x && (x.f || x.rz) ? `<w:shd w:val="clear" w:color="auto" w:fill="${x.rz || x.f}"/>` : ""}<w:vAlign w:val="${{ t: "top", b: "bottom" }[x && x.va] || "center"}"/>${x && x.rot ? '<w:textDirection w:val="btLr"/>' : ""}</w:tcPr>`;
       const t = devam ? "" : gosterDeger(x); const jc = { l: "left", r: "right", c: "center" }[x && x.a] || (x && typeof x.v === "number" ? "right" : "left");
       const ro = { sz: ((x && x.s) || 11) * 2 * olc, k: x && x.k, sans: x && x.fn === "s", u: !!(x && x.u) };
       const ic = !t ? "" : x && x.vr ? vurguParca(t, x).map(p => runXml(p.t, { ...ro, b: p.b, st: p.st })).join("") : runXml(t, { ...ro, b: !!(x && x.b) });
@@ -8233,6 +8239,8 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
    d.lt = { w: [sütun genişlikleri], baslik: { v, f, k, s, h }, ustSag: { v, k, s }, bloklar: [blok], not: { v, s } }
    blok = { id, ad, adStil: { f, k, s }, bas: { f, k, s, h }, sutunlar: [{ id, ad, c, cs, tip: "metin"|"rutbe"|"kisi"|"rutbeKisi"|"sayi", b, s, a }],
             satirlar: [{ id, v: { sutunId: değer }, f }], h, yan: true (bir önceki bloğun sağına), toplam: { etiket, f } } */
+/* tablo tasarımı: palet (başlık rengi, kurumsal tema buradan türer) · tasarim: "satir" satırlar yer rengiyle boyanır, "rozet" satırlar beyaz/şeritli, yer sütunu oval renkli etiket */
+const LT_PALET = { lacivert: "DCE4EF", zeytin: "E1EADB", antrasit: "E2E5E9", kum: "EEE6D6", deniz: "DCEBEC" };
 const ltVeri = d => { d.lt ||= { w: [30, 30, 30], baslik: { v: d.ad }, bloklar: [] }; d.lt.bloklar ||= []; return d.lt; };
 const LT_BOS = "Atama yapılmamıştır.", LT_SAYI = ["sayi", "satirToplam", "grupToplam"], LT_HESAP = ["satirToplam", "grupToplam"];
 const ltHarf = c => { let s = ""; c++; while(c > 0){ const m = (c - 1) % 26; s = String.fromCharCode(65 + m) + s; c = (c - m - 1) / 26; } return s; };
@@ -8248,11 +8256,12 @@ function ltGrid(d){ const v = ltVeri(d), W = v.w.length, I = { t: 1, b: 1, l: 1,
   const ciz = (bl, r0) => { let r = r0, kul = []; const yaz = (h, fn) => { if(r >= g.c.length) satir(h); else g.h[r] = Math.max(g.h[r], h); fn(r); kul.push(r); r++; };
     if(bl.ad) yaz(bl.adStil?.h || 22, rr => { const c0 = Math.min(...bl.sutunlar.map(s => s.c)), c1 = Math.max(...bl.sutunlar.map(s => s.c + (s.cs || 1))); koy(rr, c0, c1 - c0, { v: bl.ad, a: "c", va: "m", s: bl.adStil?.s || 11, b: 1, fn: v.fn, f: bl.adStil?.f, k: bl.adStil?.k || "2F2F2F", br: I }); });
     if(Array.isArray(bl.bas)){ const r0 = r; bl.bas.forEach(bs => yaz(bs.h || 22, rr => bs.hucreler.forEach(x => { koy(rr, x.c, x.cs || 1, { v: x.v ?? "", a: x.a || "c", va: "m", s: x.s || bs.s || 9, b: x.b ?? 1, fn: v.fn, f: x.f ?? bs.f, k: x.k || bs.k || "2F2F2F", br: I }); if(x.rs > 1) g.m.push([rr, x.c, rr + x.rs - 1, x.c + (x.cs || 1) - 1]); }))); }
-    else if(bl.bas !== false) yaz(bl.bas?.h || 22, rr => bl.sutunlar.forEach(s => koy(rr, s.c, s.cs || 1, hucre(bl, s, s.ad, { b: 1, f: bl.bas?.f, s: bl.bas?.s || s.s || 9, k: bl.bas?.k || "2F2F2F", ...(bl.bas?.a || s.a ? { a: bl.bas?.a || s.a } : {}), ...(s.rot ? { rot: 1 } : {}) }))));
-    const ilkVeri = r, rf = st => (bl.renk && bl.renk.harita[st.v[bl.renk.sutun]]) || st.f || (bl.serit && bl.satirlar.indexOf(st) % 2 ? bl.serit : bl.f);   // serit: her ikinci satır açık renk
+    else if(bl.bas !== false) yaz(bl.bas?.h || 22, rr => bl.sutunlar.forEach(s => koy(rr, s.c, s.cs || 1, hucre(bl, s, s.ad, { b: 1, f: LT_PALET[v.palet] || bl.bas?.f, s: bl.bas?.s || s.s || 9, k: bl.bas?.k || "2F2F2F", ...(bl.bas?.a || s.a ? { a: bl.bas?.a || s.a } : {}), ...(s.rot ? { rot: 1 } : {}) }))));
+    const rozet = v.tasarim === "rozet" && bl.renk, zebra = LT_PALET[v.palet] ? renkKar(LT_PALET[v.palet], "FFFFFF", .72) : "F6F8FA";
+    const ilkVeri = r, rf = st => rozet ? (bl.satirlar.indexOf(st) % 2 ? zebra : null) : (bl.renk && bl.renk.harita[st.v[bl.renk.sutun]]) || st.f || (bl.serit && bl.satirlar.indexOf(st) % 2 ? bl.serit : bl.f);   // serit: her ikinci satır açık renk
     bl.satirlar.forEach((st, si) => yaz(st.h || bl.h || 20, rr => bl.sutunlar.forEach(s => { const ham = s.tip === "sira" ? si + 1 : st.v[s.id], val = (s.tip === "sayi" || s.tip === "yil") && ham !== "" && ham != null && isFinite(+ham) ? +ham : (ham ?? "");
       const yz = st.yz && s.tip !== "sira" && s.tip !== "metin0" && ham !== "" && ham != null && isFinite(+String(ham).replace(",", ".")) && s !== ltBaslikSut(bl);
-      koy(rr, s.c, s.cs || 1, hucre(bl, s, yz ? +String(ham).replace(",", ".") : val, { ...(yz ? { yz: 1 } : {}), f: s.f || rf(st), k: (s.tip === "kisi" || s.tip === "rutbeKisi") && (!ham || ham === LT_BOS) ? "7A7A7A" : (s.k || "2F2F2F"), s: (s.tip === "kisi" || s.tip === "rutbeKisi") && ham === LT_BOS && s.bosS ? s.bosS : (s.s || bl.s || 9), b: (s.tip === "kisi" || s.tip === "rutbeKisi") && ham === LT_BOS ? 0 : s.b ? 1 : 0 })); })));
+      koy(rr, s.c, s.cs || 1, hucre(bl, s, yz ? +String(ham).replace(",", ".") : val, { ...(yz ? { yz: 1 } : {}), ...(rozet && s.id === bl.renk.sutun && bl.renk.harita[ham] ? { rz: bl.renk.harita[ham] } : {}), f: s.f || rf(st), k: (s.tip === "kisi" || s.tip === "rutbeKisi") && (!ham || ham === LT_BOS) ? "7A7A7A" : (s.k || "2F2F2F"), s: (s.tip === "kisi" || s.tip === "rutbeKisi") && ham === LT_BOS && s.bosS ? s.bosS : (s.s || bl.s || 9), b: (s.tip === "kisi" || s.tip === "rutbeKisi") && ham === LT_BOS ? 0 : s.b ? 1 : 0 })); })));
     bl.sutunlar.filter(s => s.birlestir).forEach(s => { let i = 0; const L = bl.satirlar; while(i < L.length){ let j = i; const x = L[i].v[s.id]; if(x){ while(j + 1 < L.length && !L[j + 1].v[s.id] && (s.birlestir === true || L[j + 1].v[s.birlestir] === L[i].v[s.birlestir])) j++; } if(j > i){ g.m.push([ilkVeri + i, s.c, ilkVeri + j, s.c + (s.cs || 1) - 1]); if(s.birlestirF) g.c[ilkVeri + i][s.c].f = s.birlestirF; if(s.birlestirRot) g.c[ilkVeri + i][s.c].rot = 1; } i = j + 1; } });
     const n = bl.satirlar.length, sayiS = bl.sutunlar.filter(s => s.tip === "sayi"), sT = bl.sutunlar.find(s => s.tip === "satirToplam"), gT = bl.sutunlar.find(s => s.tip === "grupToplam");
     if(sT && sayiS.length){ const a = ltHarf(Math.min(...sayiS.map(s => s.c))), z = ltHarf(Math.max(...sayiS.map(s => s.c))); for(let i = 0; i < n; i++){ const rr = ilkVeri + i; g.c[rr][sT.c].fx = `=SUM(${a}${rr + 1}:${z}${rr + 1})`; } }
@@ -8321,6 +8330,8 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   requestAnimationFrame(() => { const x = document.querySelector(`#lt-govde [data-lt-satir="${sid}"]`); if(x){ x.scrollIntoView({ block: "center", behavior: "smooth" }); const k = x.closest(".kc-sat"); k && k.classList.add("lt-yanip"); setTimeout(() => k && k.classList.remove("lt-yanip"), 1600); } }); });
 function listeCiz(){ const d = acikBelge(); if(!d || d.tur !== "liste") return; const v = ltVeri(d);
   $("#lt-govde").innerHTML = `<label class="ko-al ko-tam"><span>Başlık</span><textarea class="oto-boy" rows="1" data-lt-g="baslik">${esc(v.baslik?.v || "")}</textarea></label>
+    ${kurumsalMi(d) ? `<div class="lt-tas">${v.bloklar.some(bl => bl.renk) ? `<div class="izb-ay-sat"><span>Satırlar</span><div class="dl-seg izb-kap"><button type="button" data-lt-tas="satir" aria-pressed="${v.tasarim !== "rozet"}">Yer rengiyle</button><button type="button" data-lt-tas="rozet" aria-pressed="${v.tasarim === "rozet"}">Beyaz · yer oval</button></div></div>` : ""}
+      <div class="izb-ay-sat"><span>Renk</span><div class="lt-pal"><button type="button" data-lt-pal="" aria-pressed="${!v.palet}" style="--pz:#${(v.bloklar[0] && v.bloklar[0].bas && v.bloklar[0].bas.f) || "DCE5EF"}">Orijinal</button>${Object.entries(LT_PALET).map(([k, z]) => `<button type="button" data-lt-pal="${k}" aria-pressed="${v.palet === k}" style="--pz:#${z}">${k[0].toLocaleUpperCase("tr") + k.slice(1)}</button>`).join("")}</div></div></div>` : ""}
     ${v.bloklar.length > 1 || v.bloklar.some(bl => bl.satirlar.length > 8) ? `<div class="lt-ara-k"><input type="search" id="lt-ara" value="${esc(ltAra)}" placeholder="Listede ara… (ör. M107, KF-MKE, 1990)" aria-label="Listede ara"><div id="lt-ara-sonuc">${ltAraSonuc(v)}</div></div>` : ""}
     <details class="lt-on lt-on2"${ltOnAcik ? " open" : ""}><summary><span>▦</span>Tablo görünümü<small>kâğıttaki hali</small></summary><div class="lt-pdf kp-onizle"></div></details>
     ${v.ustSag ? `<label class="ko-al ko-tam"><span>Sağ üst (tarih vb.)</span><input data-lt-g="ustSag" value="${esc(v.ustSag.v || "")}"></label>` : ""}
@@ -8355,6 +8366,8 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
     const btn = document.querySelector(`#lt-govde [data-lt-satir="${s}"] .kc-sy`); if(btn){ const o = ltSatirOzet(bl, st); const ta = btn.querySelector(".lt-tek-ad"); btn.innerHTML = (ta ? ta.outerHTML : "") + ltSyHtml(o); const em = btn.parentNode.querySelector(".lt-stop"); if(em && o.top != null) em.textContent = String(o.top).replace(".", ","); } const tp = document.querySelector("#lt-govde .kc-sat.acik .lt-top b"); if(tp) tp.textContent = ltSatirTop(bl, st); const dl = el.closest(".lt-dg label"); if(dl) dl.classList.toggle("dolu", +String(el.value).replace(",", ".") > 0); }
   else return; kaydetBelge(d); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#lt-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "liste") return; const v = ltVeri(d), yaz = () => { kaydetBelge(d); listeCiz(); };
+  if(b.dataset.ltTas){ v.tasarim = b.dataset.ltTas === "rozet" ? "rozet" : undefined; if(!v.tasarim) delete v.tasarim; return yaz(); }
+  if(b.dataset.ltPal != null){ if(b.dataset.ltPal) v.palet = b.dataset.ltPal; else delete v.palet; return yaz(); }
   if(b.dataset.ltRk){ const [bi, si, c] = b.dataset.ltRk.split(":"), bl = ltBlok(v, bi), st = bl && bl.satirlar.find(x => x.id === si); if(!st) return; st.v[c] = b.dataset.v; return yaz(); }
   if(b.dataset.ltSerit){ const bl = ltBlok(v, b.dataset.ltSerit); if(!bl) return; if(bl.serit) delete bl.serit; else { bl.serit = "F4F6F9"; const ts = bl.toplam && bl.toplam.f || bl.bas && bl.bas.f; if(ts) bl.serit = ltAcikRenk(ts); } bl.satirlar.forEach(st => { if(st.f && /^F[A-F]F[0-9A-F]F[0-9A-F]$/i.test(st.f)) delete st.f; }); yaz(); return bildir(bl.serit ? "Satır şeridi açık · yeni satırlar da şeride uyar" : "Satır şeridi kapalı"); }
   if(b.dataset.ltBlok){ ltBlokAcik = ltBlokAcik === b.dataset.ltBlok ? null : b.dataset.ltBlok; ltAcik = null; return listeCiz(); }
