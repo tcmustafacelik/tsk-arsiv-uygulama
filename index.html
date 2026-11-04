@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "318";
+  const SURUM = "319";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2510,7 +2510,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 318</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 319</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9734,13 +9734,21 @@ async function pdfSayfaResim(pg, dpi, alan, tip){ const v0 = pg.getViewport({ sc
     try { const x = c.getContext("2d"); if(!x) throw 0; x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); await pg.render({ canvasContext: x, viewport: v }).promise;
       const bl = await new Promise(ok => c.toBlob(ok, tip, .93)); c.width = c.height = 0; if(bl && bl.size > 1000) return bl; } catch(e){ c.width = c.height = 0; } }
   throw new Error("telefon bu büyüklükte resim üretemedi; daha düşük kalite seçin"); }
-async function pdfResim(blob, ad, rf = "png", adet = 1, kalite = "yuksek"){ await yukle(PDFJS); const lib = window.pdfjsLib; if(!lib) throw new Error("PDF okuyucu yüklenemedi"); lib.GlobalWorkerOptions.workerSrc = PDFJS_W;
+/* izin belgesi resmi: hangi yüz (zip yerine tek resim) */
+function izbYuzSor(){ return new Promise(ok => { let sonuc = null; const Y = [["on", "Ön yüz", "tek resim"], ["arka", "Arka yüz", "tek resim"], ["ikisi", "Ön ve arka yüz", "iki resim, zip olarak"]];
+  const pen = altPencere("ks-perde", "RESİM", "Hangi yüz?", () => `<div class="ap-liste">${Y.map(([k, ad, alt], i) => apSatir(`data-ks="${k}"`, `<span class="ks-av km-adr-av">${i < 2 ? ad[0] : "2"}</span>`, ad, "", { alt })).join("")}</div>`,
+    (b, kapat) => { if(b.dataset.ks){ sonuc = b.dataset.ks; kapat(); ok(sonuc); } }, { z: "ECE7F3", r: "5E5487" });
+  const p = $("#ks-perde"), gozle = new MutationObserver(() => { if(p.hidden){ gozle.disconnect(); if(!sonuc) ok(null); } }); gozle.observe(p, { attributes: true, attributeFilter: ["hidden"] }); }); }
+async function pdfResim(blob, ad, rf = "png", adet = 1, kalite = "yuksek", yuz){ await yukle(PDFJS); const lib = window.pdfjsLib; if(!lib) throw new Error("PDF okuyucu yüklenemedi"); lib.GlobalWorkerOptions.workerSrc = PDFJS_W;
   const pdf = await lib.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise, L = [], tip = rf === "jpg" ? "image/jpeg" : "image/png", uz = rf === "jpg" ? "jpg" : "png", kok = ad.replace(/\.pdf$/i, "");
   const [taban, alan] = RESIM_KALITE[kalite] || RESIM_KALITE.yuksek, dpi = taban * (adet >= 6 ? 2 : adet >= 3 ? 1.7 : adet >= 2 ? 1.4 : 1);
-  for(let i = 1; i <= pdf.numPages; i++){ const pg = await pdf.getPage(i); L.push({ ad: pdf.numPages > 1 ? `${kok}_s${i}.${uz}` : `${kok}.${uz}`, blob: await pdfSayfaResim(pg, dpi, alan, tip) }); }
+  /* izin belgesi: sayfalar ön, arka, ön, arka… sırasıyla; istenen yüz ayrı alınabilir */
+  const sayfa = []; for(let i = 1; i <= pdf.numPages; i++) if(!yuz || yuz === "ikisi" || (yuz === "on") === (i % 2 === 1)) sayfa.push(i);
+  const ek = yuz === "on" ? "_On_Yuz" : yuz === "arka" ? "_Arka_Yuz" : "";
+  for(const [j, i] of sayfa.entries()){ const pg = await pdf.getPage(i); const ikisi = yuz === "ikisi" ? (i % 2 ? "_On_Yuz" : "_Arka_Yuz") : ""; L.push({ ad: sayfa.length > 1 ? `${kok}${ek}${ikisi}${yuz === "ikisi" ? (pdf.numPages > 2 ? "_" + Math.ceil(i / 2) : "") : "_s" + (j + 1)}.${uz}` : `${kok}${ek}.${uz}`, blob: await pdfSayfaResim(pg, dpi, alan, tip) }); }
   if(L.length === 1) return { ad: L[0].ad, blob: L[0].blob };
   await yukle(CDN.jszip); const z = new JSZip(); L.forEach(o => z.file(o.ad, o.blob)); return { ad: `${kok}_${uz.toUpperCase()}.zip`, blob: await z.generateAsync({ type: "blob" }) }; }
-async function ciktiUret(d, kId, tur, s, ov){ if(tur === "png"){ const r = await ciktiUret(d, kId, "pdf", s, ov); return { ...r, ...(await pdfResim(r.blob, r.ad, s && s.rf, s && s.n || 1, s && s.rk || "yuksek")) }; } const n = s && s.n || 1, o = { ...(ov || {}) };
+async function ciktiUret(d, kId, tur, s, ov){ if(tur === "png"){ const r = await ciktiUret(d, kId, "pdf", s, ov); return { ...r, ...(await pdfResim(r.blob, r.ad, s && s.rf, s && s.n || 1, s && s.rk || "yuksek", s && s.yuz)) }; } const n = s && s.n || 1, o = { ...(ov || {}) };
   if(s && s.delgec != null && n === 1) o.delgec = s.delgec;
   if(n > 1 && (tur === "docx" || n === 2 || n === 4) && !o.kagit) o.kagit = "A5";
   let { blob, ad, a } = await belgeCikti(d, kId, tur, o);
@@ -9752,7 +9760,8 @@ async function ciktiUret(d, kId, tur, s, ov){ if(tur === "png"){ const r = await
 const YERLESIM_AD = { 1: "Tek", 2: "2li", 3: "3lu", 4: "4lu", 6: "6li", 8: "8li" };
 document.querySelectorAll("[data-cikti]").forEach(b => b.addEventListener("click", async () => {
   const d = acikBelge(); if(!d || b.disabled) return; const tur = b.dataset.cikti;
-  const sec = d.tur === "izinb" ? { n: 1 } : await ciktiSec(d, SECIM.klasor, tur); if(!sec) return;
+  let sec = d.tur === "izinb" ? { n: 1 } : await ciktiSec(d, SECIM.klasor, tur); if(!sec) return;
+  if(d.tur === "izinb" && tur === "png" && izbArka){ const yuz = await izbYuzSor(); if(!yuz) return; sec = { ...sec, yuz }; }
   const eski = b.textContent; b.disabled = true; b.textContent = "Hazırlanıyor…";
   try {
     const ornekOnay = d.tur === "izinb" && b.dataset.ornek === "1";
