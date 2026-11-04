@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "341";
+  const SURUM = "342";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1498,7 +1498,7 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .sc-liste{display:flex;flex-direction:column;gap:4px}
 .sc-grup{font:700 10.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:8px 4px 2px}
 .sc-s{display:flex;align-items:center;justify-content:space-between;gap:10px;width:100%;min-height:44px;padding:8px 14px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);color:var(--fg);font:600 14px var(--f-ui);text-align:left;cursor:pointer}
-.sc-s span{overflow-wrap:anywhere} .sc-s.sec{background:#E9F0F8;border-color:#9FB6CC;color:#2C4A69} .sc-s i{font-style:normal;font-weight:800;color:#3F6487} .sc-s.bos{color:var(--muted);font-weight:500} .sc-s:disabled{opacity:.45}
+.sc-s span{overflow-wrap:anywhere} .sc-s.sec{background:#E9F0F8;border-color:#9FB6CC;color:#2C4A69} .sc-s i{font-style:normal;font-weight:800;color:#3F6487} .sc-s.bos{color:var(--muted);font-weight:500} .sc-s.bos span:empty::before{content:"Boş"} .sc-s:disabled{opacity:.45}
 .byk-yer{width:100%;box-sizing:border-box;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:var(--panel);font:600 13.5px var(--f-ui)}
 .byk-dv{display:flex;align-items:center;gap:8px;font:500 12.5px var(--f-ui);color:var(--muted);margin:0}
 .yk-gd-et{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:8px;font:600 11px var(--f-ui);background:#F1F3F6;color:#7A8592} .yk-gd-et.tamam{background:#E3F1E7;color:#2E6B41}
@@ -2599,7 +2599,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 341</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 342</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4920,12 +4920,12 @@ function gdBelgeCiz0(){
       return `<div class="gd-ayarlar">${tile("arti-bir", d1, "+1 gün", yaz(d1, a1), "", "ay-arti")}${tile("eksi-bir", d2, "−1 gün", yaz(d2, a2), "", "ay-eksi")}${tile("toplam-arti", d3, "+1 toplam", d3 ? "toplama eklendi" : "kapalı", "", "ay-top")}</div>
         <div class="gd-yon-sat"><span>−1 hangi tarihten düşsün?</span><span class="gd-yon" role="group" aria-label="−1 hangi tarihe uygulansın"><button type="button" data-gd-yon="don" aria-pressed="${yon === "don"}">↩ Dönüş</button><button type="button" data-gd-yon="git" aria-pressed="${yon === "git"}">↪ Gidiş</button></span></div>`; })()}
     <div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>S.Nu</th><th>Görev yeri</th><th>Gidiş tarihi</th><th>Dönüş tarihi</th><th>Durum</th><th>Kalış süresi</th><th>Düşünceler</th><th></th></tr></thead><tbody>
-      ${k.gorevler.map((g, i) => { const v = gdKalis(g); const devam = g.don === "-" && !g.son, tire = g.don === "-";
+      ${k.gorevler.map((g, i) => { const v = gdKalis(g); const devam = g.don === "-" && !g.son && !g.tire, tire = g.don === "-";
         return `<tr><td class="sn">${i + 1}</td>
           <td>${gdInp(`gd-g-${i}-yer`, "g", "yer", g.yer, { i, st: "min-width:280px", ad: "Görev yeri" })}</td>
           <td>${gdInp(`gd-g-${i}-git`, "g", "git", g.git, { i, tip: "date", ad: "Gidiş tarihi" })}</td>
           <td>${tire ? `<input disabled value="-" aria-label="Dönüş tarihi (devam)" style="text-align:center">` : gdInp(`gd-g-${i}-don`, "g", "don", g.don, { i, tip: "date", ad: "Dönüş tarihi" })}</td>
-          <td class="devam"><select id="gd-g-${i}-durum" data-t="g" data-a="durum" data-i="${i}" aria-label="Görev durumu" class="gd-durum${devam ? " d-devam" : g.son ? " d-son" : ""}"><option value="">—</option><option value="devam"${devam ? " selected" : ""}>Devam</option><option value="son"${!devam && g.son ? " selected" : ""}>Görev Sonu</option></select></td>
+          <td class="devam"><select id="gd-g-${i}-durum" data-t="g" data-a="durum" data-i="${i}" aria-label="Görev durumu" class="gd-durum${devam ? " d-devam" : g.son ? " d-son" : ""}"><option value=""></option><option value="tire"${g.tire && g.don === "-" ? " selected" : ""}>—</option><option value="devam"${devam ? " selected" : ""}>Devam</option><option value="son"${!devam && g.son ? " selected" : ""}>Görev Sonu</option></select></td>
           <td class="hesap gd-kalis"${typeof v === "number" && v < 0 ? ' style="color:var(--danger)"' : ""}><span>${esc(v)}</span>${tire ? "" : `<button class="mini gd-arti${gdArti(g) ? " acik" : ""}" type="button" data-gd-arti="${i}" aria-pressed="${gdArti(g)}" title="Bu satırın kalış süresine 1 gün ekle / çıkar">+1</button><button class="mini gd-eksi${g.eksi ? " acik" : ""}" type="button" data-gd-eksi="${i}" aria-pressed="${!!g.eksi}" title="${gdEksiYon(g) === "git" ? "Gidiş 1 gün ileri alındı · geri getir" : gdEksiYon(g) ? "Dönüş 1 gün geri alındı · geri getir" : gdKYon(k) === "git" ? "Gidiş tarihini 1 gün ileri al" : "Dönüş tarihini 1 gün geri al"}">−1${gdEksiYon(g) ? `<small>${gdEksiYon(g) === "git" ? "G" : "D"}</small>` : ""}</button>`}</td>
           <td>${gdInp(`gd-g-${i}-not`, "g", "not", g.not, { i, st: "min-width:100px", ad: "Düşünceler" })}</td>${gdIslem("g", i)}</tr>`; }).join("") ||
         `<tr><td colspan="8"><div class="bos" style="padding:10px">Görev yeri satırı yok</div></td></tr>`}
@@ -5039,7 +5039,9 @@ function gdAlan(el){
   if(t === "k" && k) k[a] = v;
   else if(t === "g" && k){ const g = k.gorevler[i]; if(!g) return;
     if(a === "durum"){ const eski = ["Devam","Görev Sonu"].includes(g.not) || !g.not;
+      delete g.tire;
       if(v === "devam"){ g.don = "-"; g.son = false; if(eski) g.not = "Devam"; }
+      else if(v === "tire"){ g.don = "-"; g.son = false; g.tire = true; if(eski) g.not = ""; }   // yalnız “-”: dönüşe tire, düşünceler boş
       else if(v === "son"){ g.don = "-"; g.son = true; if(eski) g.not = "Görev Sonu"; }
       else { if(g.don === "-") g.don = ""; g.son = false; if(eski) g.not = ""; } if(g.don === "-") delete g.eksi; }
     else { g[a] = v; if((a === "don" && gdEksiYon(g) === "don") || (a === "git" && gdEksiYon(g) === "git")) delete g.eksi; } }
