@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "314";
+  const SURUM = "315";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2442,6 +2442,10 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .dl-hepsi{align-self:center;display:inline-flex;align-items:center;gap:6px;margin-top:-4px;border:1px solid var(--line2);background:var(--panel);border-radius:16px;padding:5px 14px;font:700 12px var(--f-ui);color:#3D5F8C;cursor:pointer}
 .dl-hepsi b{font:800 11px var(--f-ui);background:#E6EEF7;border-radius:9px;padding:1px 7px} .dl-hepsi span{font-size:13px;line-height:1}
 .dl-sat .dl-tur{white-space:nowrap;max-width:none}
+
+#geri-al{display:none!important}
+#kayit-cubugu.tamam{border-color:#BCD6C5;background:#F1F8F3} #kayit-cubugu.tamam .k-metin{color:#2F6B47} #kayit-cubugu.tamam .k-metin i{background:#3E8A5C;box-shadow:0 0 0 3px #D6EBDD}
+#kayit-cubugu #k-geri{background:#fff;border:1px solid #BCD6C5;color:#2F6B47}
 </style>
 
 </head>
@@ -2479,7 +2483,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 314</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 315</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2536,7 +2540,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
       <button id="yapistir-btn" class="kopya yapistir" hidden type="button" aria-label="Panodakini kutuya yapıştır">⇣ Yapıştır</button>
       <div id="toast" class="toast" hidden role="status"></div>
       <div id="geri-al" class="geri-al" hidden role="status"><span id="geri-al-yazi">Kaydedildi</span><button type="button" id="geri-al-btn">↶ Geri al</button></div>
-      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><span id="k-metin" class="k-metin">Kaydedilmedi</span><button class="btn" id="k-vazgec" type="button">Vazgeç</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
+      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><span id="k-metin" class="k-metin">Kaydedilmedi</span><button class="btn" id="k-vazgec" type="button" hidden>Vazgeç</button><button class="btn" id="k-geri" type="button" hidden>↶ Geri al</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
       <section class="panel" id="v-belge" hidden role="dialog" aria-modal="true" aria-label="Belge düzenleyici">
         <div class="arac">
           <button class="btn kucuk" id="d-geri" aria-label="Belgeyi kapat">✕ Kapat</button>
@@ -2761,7 +2765,7 @@ function taslakGeriYukle(){ let t = null; try { t = JSON.parse(localStorage.getI
     else if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(i >= 0) S.belgeler[i] = v; else S.belgeler.push(v); kirli[y] = () => S.belgeler.find(x => x.id === id) || v; }
     else continue; surum[y] = (surum[y] || 0) + 1; n++; }
   if(!n) return; kayitCubugu(); agacCiz(); anaCiz(); if(SECIM.belge){ const d = acikBelge(); if(d) belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
-  uyar("Kaydedilmemiş değişiklikleriniz geri getirildi. Saklamak için “Kaydet”, atmak için “Vazgeç”."); }
+  uyar("Kaydedilmemiş değişiklikleriniz geri getirildi. Saklamak için alttaki “Kaydet”e basın."); }
 /* ===== otomatik kaydetme ve geri alma =====
    Her değişiklik yazmayı bıraktıktan kısa süre sonra kendiliğinden kaydedilir. Kaydedilmeden önceki hâl saklanır;
    “Geri al” son kaydı geri çevirir (art arda basılırsa daha öncekileri de). */
@@ -2778,7 +2782,9 @@ async function otoKaydet(){
     if(ok){ geriYigin.push({ zaman: Date.now(), once }); if(geriYigin.length > 40) geriYigin.shift(); geriGoster(); }
   } finally { otoCalisiyor = false; kayitCubugu(); }
 }
-function geriGoster(){ const g = $("#geri-al"); if(!g || $("#sil-geri.acik")) return; $("#geri-al-yazi").textContent = "Kaydedildi"; $("#geri-al-btn").hidden = false; g.hidden = !geriYigin.length; clearTimeout(geriGoster.z); geriGoster.z = setTimeout(() => g.hidden = true, 7000); }
+function cubukTamam(yazi, geri){ const c = $("#kayit-cubugu"); if(Object.keys(kirli).length) return; c.classList.add("tamam"); $("#k-metin").innerHTML = `<i></i>${yazi}`; $("#k-kaydet").hidden = true; $("#k-geri").hidden = !geri; c.hidden = false;
+  clearTimeout(geriGoster.z); geriGoster.z = setTimeout(() => { c.classList.remove("tamam"); kayitCubugu(); }, 4500); }
+function geriGoster(){ cubukTamam("Kaydedildi", geriYigin.length > 0); }
 async function dbdenYenile(yollar){
   for(const y of yollar){ if(!db) continue; const [kol, id] = y.split("/");
     try { const d = await db.doc(y).get();
@@ -2794,12 +2800,11 @@ async function geriAl(){
   const yollar = Object.keys(son.once).filter(y => son.once[y] !== undefined);
   for(const y of yollar){ try { if(son.once[y] === null) await db.doc(y).delete(); else await db.doc(y).set(son.once[y]); } catch(e){} }
   await dbdenYenile(yollar);
-  const g = $("#geri-al"); $("#geri-al-yazi").textContent = geriYigin.length ? "Geri alındı · bir öncekine de dönebilirsin" : "Geri alındı"; $("#geri-al-btn").hidden = !geriYigin.length;
-  g.hidden = false; clearTimeout(geriGoster.z); geriGoster.z = setTimeout(() => { g.hidden = true; $("#geri-al-btn").hidden = false; }, 6000);
+  cubukTamam(geriYigin.length ? "Geri alındı · bir öncekine de dönebilirsin" : "Geri alındı", geriYigin.length > 0);
 }
 document.addEventListener("visibilitychange", () => { if(document.hidden) taslakYaz(true); });
 function kayitCubugu(){
-  const n = Object.keys(kirli).length; const c = $("#kayit-cubugu"); c.hidden = !n;   // elle kayıt: değişiklik varken çubuk hep görünür
+  const n = Object.keys(kirli).length; const c = $("#kayit-cubugu"); if(n){ clearTimeout(geriGoster.z); c.classList.remove("tamam"); $("#k-kaydet").hidden = false; $("#k-geri").hidden = true; c.hidden = false; } else if(!c.classList.contains("tamam")) c.hidden = true;   // tek çubuk: değişiklik varken “Kaydet”, kaydedince kısa süre “Geri al”
   document.documentElement.classList.toggle("kayit-bekliyor", !!n);
   if(n){ $("#k-metin").innerHTML = `<i></i>Kaydedilmedi<small>${n} yerde değişiklik</small>`; durum("yaz","Kaydedilmedi"); }
   else if(db && yazabilir) durum("ok","Kaydedildi");
@@ -4136,7 +4141,7 @@ function ykKartCiz(){ const el = $("#yk-kart"); if(!el) return; const Y = YS(), 
             <div class="yk-dn-b">${(p.belge || []).map((x, bi) => `<span class="yk-ek"><button type="button" data-ykb-ac="${r.id}:${j}:${bi}" title="Belgeyi aç">${/pdf/.test(x.tur) ? "📄" : "🖼"} ${esc(x.ad)}</button><button type="button" class="yk-ek-sil" data-ykb-sil="${r.id}:${j}:${bi}" aria-label="Belgeyi kaldır">✕</button></span>`).join("")}<button type="button" class="yk-ek-ekle" data-ykb-ekle="${r.id}:${j}">📎 Beyan belgesi ekle <small>PDF · resim</small></button></div>
             <div class="yk-dn-y"><small>Yeri</small>${ykCip(r.id + ":" + j, "yer", p.yer || "TÜRKİYE", Y_YER.map(x => [x, x[0] + x.slice(1).toLocaleLowerCase("tr")]))}<input data-ykdy="${r.id}:${j}" placeholder="ya da yazın…" value="${p.yer && !Y_YER.includes(p.yer) ? esc(p.yer) : ""}" aria-label="Yeri elle yaz"></div></div>`).join("") || `<div class="yk-bos">Ayrılış yok · personel mevcut sayılır</div>`}
             <button type="button" class="tt-ekle" data-ykdn-ekle="${r.id}">＋ Ayrılış satırı ekle</button></div>
-          <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-yk-kaydet="${r.id}">✓ Kaydet</button><button type="button" class="mini" data-yki="${r.id}:yukari"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-yki="${r.id}:asagi"${i < L.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini sil" data-yki="${r.id}:sil">Sil</button></div></div>` : ""}</div>`; }).join("") : `<div class="yk-bos">${v === "GÜNDÜZ" ? "Gündüz" : "Gece"} personeli yok</div>`;
+          <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-yk-kaydet="${r.id}">✓ Tamam</button><button type="button" class="mini" data-yki="${r.id}:yukari"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-yki="${r.id}:asagi"${i < L.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini sil" data-yki="${r.id}:sil">Sil</button></div></div>` : ""}</div>`; }).join("") : `<div class="yk-bos">${v === "GÜNDÜZ" ? "Gündüz" : "Gece"} personeli yok</div>`;
     h += `</div>`; }
   h += `<div class="yk-ekle-l"><button type="button" class="tt-ekle" data-yk-liste="1">${ykListe ? "▴" : "＋"} İsim listesinden ekle${P.length ? ` (${P.length})` : ""}</button>${ykListe ? (P.length ? `<div class="kc-cips">${P.map(p => `<button type="button" data-yk-p="${esc(p.id)}">${esc(p.ad)}<small> ${esc(p.rutbe || "")}</small></button>`).join("")}</div>` : `<div class="yk-bos">İsim listesindeki herkes yoklamada.</div>`) : ""}</div>`;
   el.innerHTML = h; }
@@ -9686,7 +9691,7 @@ $("#b-dosyalar").addEventListener("click", async e => {
 });
 
 $("#k-kaydet").addEventListener("click", hepsiniKaydet);
-$("#geri-al-btn").addEventListener("click", geriAl);
+$("#geri-al-btn").addEventListener("click", geriAl); $("#k-geri").addEventListener("click", geriAl);
 $("#k-vazgec").addEventListener("click", e => { const b = e.currentTarget; if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misiniz? Geri al"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Vazgeç"; }, 3500); return; } b.dataset.onay = ""; b.textContent = "Vazgeç"; vazgec(); });
 document.addEventListener("keydown", e => { if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s"){ e.preventDefault(); hepsiniKaydet(); } });
 addEventListener("beforeunload", e => { if(Object.keys(kirli).length){ e.preventDefault(); e.returnValue = ""; } });
