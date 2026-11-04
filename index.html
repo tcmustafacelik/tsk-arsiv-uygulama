@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "320";
+  const SURUM = "321";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2510,7 +2510,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 320</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 321</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5295,7 +5295,10 @@ function izbCiz(c, yuz, V, foto){
   }
   izbFiligranCiz(c, yuz);   // en son: fotoğrafın da üstünde kalsın (orijinal çıktıdaki gibi)
 }
+/* her nüshanın sağ üst köşesinde küçük “ARŞİV KOPYASI” işareti: uygulamadan alınan çıktı PYBS çıktısıyla karışmasın */
+function izbArsivIsaret(c, yuz){ const o = izbOlcu(yuz); [0, 1].forEach(kop => c.text("ARŞİV KOPYASI", kop * (o.W1 + o.ara) + o.W1 - 1, 7.5, { fs: 6, al: "right", renk: [125, 125, 125] })); }
 function izbFiligranCiz(c, yuz){
+  izbArsivIsaret(c, yuz);
   const F = izbG().filigran, f = izbFil(yuz), kod = (f.kod || "").trim(), alt = (f.alt || "").trim(), ek = (f.ek || "").trim();
   const opS = Math.max(0, Math.min(100, +F.koyu || 0)) / 100, opE = Math.max(0, Math.min(100, +F.ekKoyu || 0)) / 100;
   const dondur = (cx, cy, px, py, a) => { const r = a * Math.PI / 180, dx = px - cx, dy = py - cy; return [cx + dx * Math.cos(r) - dy * Math.sin(r), cy + dx * Math.sin(r) + dy * Math.cos(r)]; };
@@ -5411,7 +5414,7 @@ async function izbExcel(L){
           ws.addImage(id, { tl: { col: 11 + dx + 0.1, row: 1.15 }, ext: { width: foto.w * sc, height: foto.h * sc } }); }
       }
       /* filigran: şeffaf resim olarak sayfanın üstüne (Excel'de metin kutusu yerine) */
-      const fil = izbFil(yuz); if((fil.kod || fil.alt || fil.ek || "").trim()){
+      { // filigran resmi (arşiv işareti her zaman bu katmanda)
         const px = 1.5, cv = document.createElement("canvas"); cv.width = Math.ceil(o.W / 0.75 * px); cv.height = Math.ceil(o.H / 0.75 * px);
         const c = izbTuvalCizici(cv.getContext("2d"), px / 0.75); izbFiligranCiz(c, yuz);
         const id = wb.addImage({ base64: cv.toDataURL("image/png").split(",")[1], extension: "png" }); ws.addImage(id, { tl: { col: 0, row: 0 }, ext: { width: o.W / 0.75, height: o.H / 0.75 } });
