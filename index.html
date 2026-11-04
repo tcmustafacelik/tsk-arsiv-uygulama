@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "319";
+  const SURUM = "320";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2510,7 +2510,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 319</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 320</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5224,7 +5224,7 @@ const izbSablonKaldi = () => { const F = izbG().filigran, A = F.arka, O = F.on; 
   return [O.kod, O.alt, O.ek, ...ark].some(v => /0{8,}|gg\.aa\.yyyy|ss:dd|:sn\b/.test(String(v || ""))); };
 function izbDuzelt(){
   const v = izbVarsayilan(); S.izinb = { ...v, ...(S.izinb || {}) };
-  S.izinb.filigran = { ...v.filigran, ...(S.izinb.filigran || {}) }; ["on", "arka"].forEach(y => S.izinb.filigran[y] = { ...v.filigran[y], ...(S.izinb.filigran[y] || {}) });
+  S.izinb.filigran = { ...v.filigran, ...(S.izinb.filigran || {}) }; ["on", "arka"].forEach(y => S.izinb.filigran[y] = { ...v.filigran[y], ...(S.izinb.filigran[y] || {}) }); delete S.izinb.filigran.harf;   // küçük harf seçeneği kaldırıldı
   S.izinb.kisiler = (S.izinb.kisiler || []).map(k => ({ ...izbKisiBos(), ...k })); S.izinb.tasvip ||= [];
 }
 const izbG = () => { if(!S.izinb) izbDuzelt(); return S.izinb; };
@@ -5251,8 +5251,7 @@ function izbDegerler(k){
 /* filigran: ön/arka için etkin metinler ("ön ve arka aynı" seçiliyse arka yüz ön yüzünkini kullanır) */
 function izbFil(yuz){
   const F = izbG().filigran, o = F.on, a = F.arka;
-  /* harf: varsayılan BÜYÜK (kod ve 32 haneli satır büyük harfe çevrilir); “küçük” seçilirse küçük harfe çevrilir */
-  const h = t => { t = String(t || ""); return F.harf === "kucuk" ? t.toLowerCase() : t.toUpperCase(); };
+  const h = t => String(t || "").toUpperCase();   // filigran her zaman büyük harf (kod ve 32 haneli satır)
   const r = yuz === "on" ? { kod: o.kod, alt: o.alt, yon: o.yon, ek: o.ek, ekYon: o.ekYon }
     : { kod: F.ayniKod ? o.kod : a.kod, alt: F.ayniAlt ? o.alt : a.alt, yon: a.yon, ek: F.ayniEk ? o.ek : a.ek, ekYon: a.ekYon };
   return { ...r, kod: h(r.kod).slice(0, 12), ek: h(r.ek).slice(0, 32) };   // sınır: kod 12, ek satır 32 karakter
@@ -5550,7 +5549,6 @@ function izbFiligranPanelCiz(){
   $("#izb-filigran").innerHTML = `<div class="izb-yeni">
     <div class="izb-fnot">Filigran metinleri elle girilir (ör. PYBS çıktısındaki kod ve tarih). Uygulama kod ya da tarih üretmez. Boş bırakılan filigran basılmaz.</div>
     <section class="dl-kart"><div class="dl-bas">Genel</div>
-      <div class="izb-ay-sat"><span>Harf</span><div class="dl-seg izb-kap" id="izb-harf"><button type="button" data-izb-harf="buyuk" aria-pressed="${F.harf !== "kucuk"}">BÜYÜK</button><button type="button" data-izb-harf="kucuk" aria-pressed="${F.harf === "kucuk"}">küçük</button></div></div>
       <label class="kp-tik"><input type="checkbox" data-izb="ayniKod"${F.ayniKod ? " checked" : ""}> Ön ve arka kod aynı</label>
       <label class="kp-tik"><input type="checkbox" data-izb="ayniAlt"${F.ayniAlt ? " checked" : ""}> Tarih satırı aynı</label>
       <label class="kp-tik"><input type="checkbox" data-izb="ayniEk"${F.ayniEk ? " checked" : ""}> Ek satır aynı</label>
@@ -5589,7 +5587,6 @@ $("#e-izinb").addEventListener("click", e => {
   const yb = e.target.closest("[data-izb-yol]"); if(yb){ const k = izbKisi(); if(k){ k.yol = yb.dataset.izbYol === "1"; kaydetBt("izinb"); izbBelgeCiz(); } return; }
   const gb = e.target.closest("[data-izb-git]"); if(gb){ izbSecili = gb.dataset.izbGit; izbSekme = "belge"; izbhCiz(); const el = document.querySelector("#izb-form .dl-kart"); if(el) el.scrollIntoView({ block: "start" }); return; }
   const kb = e.target.closest("[data-izb-kisi]"); if(kb){ izbSecili = kb.dataset.izbKisi; izbBelgeCiz(); return; }
-  const hb = e.target.closest("[data-izb-harf]"); if(hb){ const G = izbG(); G.filigran.harf = hb.dataset.izbHarf; kaydetBt("izinb"); izbFiligranPanelCiz(); bildir(G.filigran.harf === "kucuk" ? "Filigran küçük harfle basılacak" : "Filigran büyük harfle basılacak"); return; }
   const b = e.target.closest("[data-izb-is]"); if(!b) return; const G = izbG(), is = b.dataset.izbIs;
   if(is === "kisi-ekle"){ const k = izbKisiBos(); G.kisiler.push(k); izbSecili = k.id; kaydetBt("izinb"); izbhCiz(); document.querySelector('#izb-form [data-izb="ad"]')?.focus(); return; }
   if(is === "kisi-sil"){ const k = izbKisi(); if(!k) return; if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misin? Sil"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Bu personeli sil"; }, 3500); return; }
