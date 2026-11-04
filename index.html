@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "331";
+  const SURUM = "332";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2531,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 331</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 332</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9025,6 +9025,8 @@ function isaIcerik(d){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k) || 
     alt: [["Ayrılış Tarihi", trTarih(k.ayr)], ["Katılış Tarihi", trTarih(k.kat)], ["Tarih", trTarih(k.tarih)], ["İmza / Mühür", ""], ["Adı Soyadı", v.onay.ad || ""], ["Sınıfı, Rütbesi, Sicili", v.onay.rutbe || ""], ["Görevi", v.onay.gorev || ""]],
     sol: v.alt.sol || "", sag: v.alt.sag || "", arka: v.arka !== false, dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
 /* ölçüler (mm, sayfanın sol üstünden): kutu 10–197,6 · etiket 11,5 · iki nokta 58,7 · değer 60,8 · ikinci nüsha 137,7 mm aşağıda */
+/* Orijinalde "İmza / Mühür" satırında iki nokta yok */
+const isaIki = a => /^İmza/.test(a) ? "" : ":";
 const ISA_M = { BL: 13.1, BR: 194.75, X1: 13.8, XC: 59.45, XV: 61.7, SG: 130, SP: 3.19, ALT: 135.7, ALT2: 132.92, BB2: 267.57, CIZ: 142.77, FY: 281.3, FX: 10.7, FR: 193.6, FS: 8,
   T: [12.67, 15.98, 19.18], BT: 24.51, AY: 47.81, BB: 135.05,
   Y: { ust: [28.23, 33.3, 38.36, 46.35], orta: [51.41, 56.47, 61.53, 66.59, 71.65], alt: [102.82, 107.88, 112.94, 118.0, 123.06, 128.12, 133.18] } };   // düz PYBS taramasından (A4, mm)
@@ -9040,7 +9042,7 @@ function isaCizim(I, olc = (t, b) => isaOlcTuval(t, b)){ const M = ISA_M, L = []
   for(const dy of [0, M.ALT]){ const ikinci = dy > 0, bb = ikinci ? M.BB2 : M.BB;   // taramada ikinci nüshanın alt bölümü 2,8 mm daha yukarıda
     ISA_BAS.forEach((t, i) => L.push({ t, x: (M.BL + M.BR) / 2, y: M.T[i] + dy, b: 1, al: "c" }));
     L.push({ r: [M.BL, M.BT + dy, M.BR - M.BL, bb - M.BT - dy] }, { l: [M.BL, M.AY + dy, M.BR, M.AY + dy] });
-    for(const g of ["ust", "orta", "alt"]) I[g].forEach(([a, b], i) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy); L.push({ t: isaEt(a, ikinci), x: M.X1, y, b: 1 }, { t: ":", x: M.XC, y });
+    for(const g of ["ust", "orta", "alt"]) I[g].forEach(([a, b], i) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy); L.push({ t: isaEt(a, ikinci), x: M.X1, y, b: 1 }, { t: isaIki(a), x: M.XC, y });
       isaSar(b, M.SG, t => olc(t, false)).forEach((s2, n) => L.push({ t: s2, x: M.XV, y: y + n * M.SP })); }); }
   L.push({ k: [M.BL, M.CIZ, M.BR, M.CIZ] });
   if(I.sol) L.push({ t: I.sol, x: M.FX, y: M.FY }); if(I.sag) L.push({ t: I.sag, x: M.FR, y: M.FY, al: "r" });
@@ -9174,7 +9176,7 @@ async function isaWord(I){ const OL = await pdfOlcer(), M = ISA_M, A = ISA_ARKA_
     const satir = (g, i, a, b, ust, cizgi, son) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy), L2 = isaSar(b, M.SG, t => OL(t, false, M.FS));
       const h = sinir(y + (L2.length - 1) * M.SP) - alt, kut = { t: ust, b: cizgi };
       const ek = par("").repeat(L2.length - 1);   // çok satırlı değerde etiket ve iki nokta ilk satırda kalsın
-      rows += tr(h, hc(g1, par(R(isaEt(a, ikinci), { b: true }), { ind: tw(M.X1 - M.BL) }) + ek, { ...kut, l: 1 }) + hc(g2, par(R(":")) + ek, kut) + hc(g3, L2.map(t => par(R(t))).join(""), { ...kut, r: 1 }));
+      rows += tr(h, hc(g1, par(R(isaEt(a, ikinci), { b: true }), { ind: tw(M.X1 - M.BL) }) + ek, { ...kut, l: 1 }) + hc(g2, par(R(isaIki(a))) + ek, kut) + hc(g3, L2.map(t => par(R(t))).join(""), { ...kut, r: 1 }));
       alt += h; };
     const kenar = (yeni, o = {}) => { const h = yeni - alt; if(h > 0.05){ rows += tr(h, hc(g1, "", { l: 1, b: o.b }) + hc(g2, "", { b: o.b }) + hc(g3, "", { r: 1, b: o.b })); alt = yeni; } };
     I.ust.forEach(([a, b], i) => satir("ust", i, a, b, i === 0, 0)); kenar(M.AY + dy, { b: 1 });
@@ -9208,7 +9210,7 @@ async function isaExcel(I){ await yukle(CDN.exceljs); const OL = await pdfOlcer(
     if(M.BT + dy - alt > 0.05){ satirH(M.BT + dy); r++; }
     const ilk = r;
     const grup = g => I[g].forEach(([a, b], i) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy), L2 = isaSar(b, M.SG, t => OL(t, false, M.FS));
-      yaz(1, isaEt(a, ikinci) + "\n".repeat(L2.length - 1), { b: 1, ind: 0 }); yaz(2, ":" + "\n".repeat(L2.length - 1)); yaz(3, L2.join("\n")); satirH(sinir(y + (L2.length - 1) * M.SP)); kenar(r, { l: 1, r: 1, t: r === ilk }); r++; });
+      yaz(1, isaEt(a, ikinci) + "\n".repeat(L2.length - 1), { b: 1, ind: 0 }); yaz(2, isaIki(a) + "\n".repeat(L2.length - 1)); yaz(3, L2.join("\n")); satirH(sinir(y + (L2.length - 1) * M.SP)); kenar(r, { l: 1, r: 1, t: r === ilk }); r++; });
     const bosK = (yeni, o = {}) => { if(yeni - alt > 0.05){ satirH(yeni); kenar(r, { l: 1, r: 1, ...o }); r++; } };
     grup("ust"); bosK(M.AY + dy, { b: 1 }); grup("orta"); bosK(sinir(M.Y.alt[0] + (ikinci ? M.ALT2 : dy)) - 5.07); grup("alt"); bosK(ikinci ? M.BB2 : M.BB + dy, { b: 1 });
     if(!ikinci){ satirH(M.CIZ); kenar(r, { b: 1, kes: 1 }); r++; } }
