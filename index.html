@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "322";
+  const SURUM = "323";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2461,7 +2461,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .izb-dsat.izinde{border-color:#E6CF9E;background:#FFFAF0} .izb-d1{display:flex;align-items:center;gap:8px} .izb-d1 b{flex:1;min-width:0;font:700 13px var(--f-ui);color:var(--fg);overflow-wrap:anywhere} .izb-d1 i{font-style:normal;color:var(--muted);font-weight:700}
 .izb-d2{display:flex;justify-content:space-between;gap:8px;font:600 11.5px var(--f-ui);color:#2D557E;font-variant-numeric:tabular-nums} .izb-d2 span:last-child{color:var(--muted)}
 .izb-d3{display:flex;gap:5px} .izb-d3 span{flex:1;text-align:center;background:#F4F8F2;border:1px solid #DDE9D8;border-radius:8px;padding:3px 2px;font:600 10px var(--f-ui);color:var(--muted)} .izb-d3 b{color:#2F6B47;font-size:12px}
-.izb-mk{display:flex;flex-direction:column;gap:8px;padding:10px 0 4px;border-top:1px dashed var(--line2)} .izb-mk-b{display:flex;align-items:center;gap:9px} .izb-mk-b b{flex:1;min-width:0;font:700 13px var(--f-ui);color:var(--fg)} .izb-mk .ks-av{width:30px;height:30px;font-size:11px} .izb-mk .isa-tsil{width:32px;height:32px}
+.isa-yuz .kp-tik{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center} .isa-yuz .kp-tik small{grid-column:2;margin-top:-2px} .izb-mk{display:flex;flex-direction:column;gap:8px;padding:10px 0 4px;border-top:1px dashed var(--line2)} .izb-mk-b{display:flex;align-items:center;gap:9px} .izb-mk-b b{flex:1;min-width:0;font:700 13px var(--f-ui);color:var(--fg)} .izb-mk .ks-av{width:30px;height:30px;font-size:11px} .izb-mk .isa-tsil{width:32px;height:32px}
 #izb-filigran .izb-ts-s{display:flex;align-items:center;gap:4px;flex-wrap:nowrap} #izb-filigran .izb-ts select{min-width:66px;white-space:nowrap;height:36px} #izb-filigran .izb-ts-s{width:100%} #izb-filigran .izb-ts-s .sec-ac{width:auto!important;min-width:0!important;flex:1 1 0;white-space:nowrap} #izb-filigran .izb-ts-s .sec-ac span{white-space:nowrap} #izb-tasvip .dl-al .sec-ac,#izb-filigran .dl-al .sec-ac{width:100%}
 #izb-tasvip .dl-al select,#izb-filigran .dl-al select{width:100%;height:36px;border-radius:8px}
 .izb-fnot{font:500 11.5px/1.45 var(--f-ui);color:#5E5487;background:#F3F0F8;border:1px solid #E1DAEE;border-radius:10px;padding:8px 11px}
@@ -2510,7 +2510,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 322</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 323</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8935,19 +8935,70 @@ function isaIcerik(d){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k) || 
   return { ust: [["Adı Soyadı", p.ad || ""], ["Sınıf ve Rütbesi", p.rutbe || ""], ["Görevi", p.kita || (p.gorev ? p.gorev + (gar ? " \\" + String(gar).toLocaleUpperCase("tr") : "") : "")], ["Sicili", p.sicil || ""]],
     orta: [["İzin Türü", k.tur || ""], ["İzinden Ne Kadarını Kullandığı", k.kullan ?? ""], ["Verilen İzin Süresi", gun ? gun + " Gün" : ""], ["Telefon No", k.tel || isaTel(p)], ["İzinli Gideceği Adres ve Tarih", ad + ar]],
     alt: [["Ayrılış Tarihi", trTarih(k.ayr)], ["Katılış Tarihi", trTarih(k.kat)], ["Tarih", trTarih(k.tarih)], ["İmza / Mühür", ""], ["Adı Soyadı", v.onay.ad || ""], ["Sınıfı, Rütbesi, Sicili", v.onay.rutbe || ""], ["Görevi", v.onay.gorev || ""]],
-    sol: v.alt.sol || "", sag: v.alt.sag || "", dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
+    sol: v.alt.sol || "", sag: v.alt.sag || "", arka: v.arka !== false, dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
 /* ölçüler (mm, sayfanın sol üstünden): kutu 10–197,6 · etiket 11,5 · iki nokta 58,7 · değer 60,8 · ikinci nüsha 137,7 mm aşağıda */
-const ISA_M = { BL: 10, BR: 197.6, X1: 11.5, XC: 58.7, XV: 60.8, ALT: 137.7, CIZ: 146.3, FY: 289.5, FS: 8,
-  T: [14.9, 18.5, 21.6], BT: 24.0, AY: 48.0, BB: 140.1,
-  Y: { ust: [[26.9], [32.6], [37.4, 40.7], [45.6]], orta: [[52.6], [58.2], [63.2, 64.2], [68.0], [73.8, 74.9]], alt: [[104.7], [109.7], [114.7], [120.4], [125.4], [130.7], [135.9]] } };
+const ISA_M = { BL: 13.1, BR: 194.75, X1: 13.8, XC: 59.45, XV: 61.7, SG: 130, SP: 3.19, ALT: 135.7, ALT2: 132.92, BB2: 267.57, CIZ: 142.77, FY: 281.3, FX: 10.7, FR: 193.6, FS: 8,
+  T: [12.67, 15.98, 19.18], BT: 24.51, AY: 47.81, BB: 135.05,
+  Y: { ust: [28.23, 33.3, 38.36, 46.35], orta: [51.41, 56.47, 61.53, 66.59, 71.65], alt: [102.82, 107.88, 112.94, 118.0, 123.06, 128.12, 133.18] } };   // düz PYBS taramasından (A4, mm)
 const ISA_BAS = ["T.C.", "SİLAHLI KUVVETLER", "PERSONELİNE AİT İZİN BELGESİ"];
 /* her iki çıktının (önizleme, PDF) çizim listesi */
-function isaCizim(I){ const M = ISA_M, L = [];
-  for(const dy of [0, M.ALT]){ ISA_BAS.forEach((t, i) => L.push({ t, x: (M.BL + M.BR) / 2, y: M.T[i] + dy, b: 1, al: "c" }));
-    L.push({ r: [M.BL, M.BT + dy, M.BR - M.BL, M.BB - M.BT] }, { l: [M.BL, M.AY + dy, M.BR, M.AY + dy] });
-    for(const g of ["ust", "orta", "alt"]) I[g].forEach(([a, b], i) => { const [y, yv] = M.Y[g][i]; L.push({ t: a, x: M.X1, y: y + dy, b: 1 }, { t: ":", x: M.XC, y: (yv || y) + dy }, { t: b, x: M.XV, y: (yv || y) + dy, w: M.BR - M.XV - 1.5 }); }); }
+/* değer yazısı sütuna sığmazsa küçültülmez, alt satıra iner (PYBS çıktısındaki gibi); olc: (yazı, kalın) → mm */
+const isaOlcTuval = (() => { let c = null; return (t, b, fs = ISA_M.FS) => { c ||= document.createElement("canvas").getContext("2d"); c.font = `${b ? "bold " : ""}100px "TSK Serif", "Liberation Serif", "Times New Roman", serif`; return c.measureText(String(t)).width / 100 * fs * 0.3528; }; })();
+function isaSar(t, gen, olc){ const S2 = []; String(t || "").split("\n").forEach(par => { let sat = ""; par.split(/\s+/).filter(Boolean).forEach(w => { const d = sat ? sat + " " + w : w; if(sat && olc(d) > gen){ S2.push(sat); sat = w; } else sat = d; }); S2.push(sat); }); return S2; }
+const isaEt = (a, ikinci) => ikinci && a === "Sınıfı, Rütbesi, Sicili" ? "Sınıfı, Rütbesi ve Sicili" : a;   // PYBS'de ikinci nüshada böyle yazıyor
+function isaCizim(I, olc = (t, b) => isaOlcTuval(t, b)){ const M = ISA_M, L = [];
+  for(const dy of [0, M.ALT]){ const ikinci = dy > 0, bb = ikinci ? M.BB2 : M.BB;   // taramada ikinci nüshanın alt bölümü 2,8 mm daha yukarıda
+    ISA_BAS.forEach((t, i) => L.push({ t, x: (M.BL + M.BR) / 2, y: M.T[i] + dy, b: 1, al: "c" }));
+    L.push({ r: [M.BL, M.BT + dy, M.BR - M.BL, bb - M.BT - dy] }, { l: [M.BL, M.AY + dy, M.BR, M.AY + dy] });
+    for(const g of ["ust", "orta", "alt"]) I[g].forEach(([a, b], i) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy); L.push({ t: isaEt(a, ikinci), x: M.X1, y, b: 1 }, { t: ":", x: M.XC, y });
+      isaSar(b, M.SG, t => olc(t, false)).forEach((s2, n) => L.push({ t: s2, x: M.XV, y: y + n * M.SP })); }); }
   L.push({ k: [M.BL, M.CIZ, M.BR, M.CIZ] });
-  if(I.sol) L.push({ t: I.sol, x: M.BL, y: M.FY }); if(I.sag) L.push({ t: I.sag, x: M.BR, y: M.FY, al: "r" });
+  if(I.sol) L.push({ t: I.sol, x: M.FX, y: M.FY }); if(I.sag) L.push({ t: I.sag, x: M.FR, y: M.FY, al: "r" });
+  return L; }
+/* ---- arka yüz: “İZİN BELGESİ TALİMATI” (PYBS çıktısındaki satır kırılımları ve yerleri, 7 punto) ---- */
+const ISA_ARKA_M = { L: 14.8, G1: 22.15, G2: 25.9, P: 2.774, B0: 41.32, ALT: 123.86, CIZ: 144.2, FY: 279.5, FS: 7 };
+const ISA_ARKA = [   // [girinti (0: sol, 1: madde, 2: alt madde), kalın, metin]
+  [1, 0, "Madde 57 – Silahlı Kuvvetler mensuplarına izin işleri askeri izin kanununa ve bu kanunun tatbik usullerini gösteren izin nizamnamesine göre tanzim olunur."],
+  [2, 0, "İzinli bulunurken vaktinde kıt’asına veya memuriyetine dönmeyecek kadar sıhhi mazereti çıkanlar :"],
+  [2, 0, "a. Merkez Komutanlığı bulunan yerlerde bu komutanlığa müracaat edilerek askeri tabiplerce, merkez komutanlığı olmadığı yerlerde ise askerlik şubeleri başkanlığına"],
+  [0, 0, "müracaat edilerek askeri tabibe, askeri tabip yok ise hükümet tabibine muayene olup, mazereti tevsik edilir."],
+  [2, 0, "b. Aile fertlerinden birinin ağır hastalığı veya ölümü, kaza, doğum, yangın gibi beklenmeyen felaket karşısında kalanlar izninin uzatılması için keyfiyeti yazılı olarak en"],
+  [0, 0, "çabuk muhabere aracı ile ve ivedi olarak ilk Amirine (gemilerde gemi komutanı) bildirmeye ve yeniden izin almaya mecburdur. Amir tarafından izni uzatılmadığı takdirde izinli bu"],
+  [0, 0, "müracaatla alacağı cevap arasında geçen bu müddet için sorumlu tutulamaz. Bu müddet hiçbir suretle 6 günü geçemez. Bu süre içinde cevap alamayan şahıs derhal görevi başına"],
+  [0, 0, "döner. Şu kadar ki, izinli mahallin garnizon veya merkez komutanına, deniz üs komutanlığına, askerlik şubesi başkanlığına veya yoksa jandarma komutanlığına, müracaat"],
+  [0, 0, "mazeretlerini belgelemeye ve alacağı rapor ve belgeyi mezkûr makamlara tasdik ettirerek dönüşte izin belgesi ile birlikte amirine vermeye mecburdur. Bu suretle hareket etmeyerek"],
+  [0, 0, "izin müddetini geçirenler hakkında Askeri Ceza Kanununa göre işlem yapılır. Bu şekilde mazeretleri olanlar eğer senelik izinlerinin tamamını kullanmış bulunursa ve izni de"],
+  [0, 0, "uzatılacak ise İzin Kanununun 3’üncü maddesi mucibinde gelecek seneki istihkakına mahsuben izin verilir."],
+  [1, 0, "Madde 58 – Hava ve yol halleri, nakil vasıtasının vaziyeti sebebiyle vukua gelecek gecikmeler, alakadar nakil vasıtaları idarelerinin veya mahalli komutanın (garnizon,"],
+  [0, 0, "merkez deniz üs, jandarma) onanmış belgeleri ile tevsik edilmek lazımdır."],
+  [1, 0, "Madde 59 – Bir mahalle izinli giden her askeri şahıs; ayrılmadan evvel kendi kıt’a veya kurum amirine gideceği yerdeki adresini vermeye veya değiştirirse bildirmeye"],
+  [0, 0, "mecburdur."],
+  [1, 0, "Madde 60 – Yabancı memleketlere izinli gidenler sivil elbise giyerler, bunlar izinli giderken ayrıca usulüne göre pasaport muamelesine de tabidirler ve gittikleri yerlerdeki"],
+  [0, 0, "Türkiye Cumhuriyeti Elçiliğine, yoksa konsoloshanesine giderek ziyaret yapmaya, gittiği yerde bunlar yoksa en yakın elçilik veya konsolosluğa yazı ile yerini ve adresini"],
+  [0, 0, "bildirmeye mecburdurlar."],
+  [2, 0, "TARİH : ....../....../.........."],
+  [2, 0, "Özel aracımı kullanırken;"],
+  [2, 0, "1. Emniyet kemerimi bağlayacağım/bağlatacağım."],
+  [2, 0, "2. İçkili, uykusuz, gece ve uzun süreli araç kullanmayacağım."],
+  [2, 0, "3. Trafik kurallarına harfiyen uyacağım, aşırı sürat ve hatalı sollama yapmayacağım."],
+  [2, 0, "4. Aracımın teknik kontrollerini yola çıkmadan önce yapacağım"],
+  [2, 0, "5. Özel Aracımla  22:00 – 06:00 saatleri arasında yolculuk yapmayacağım."],
+  [2, 0, "6. Salgın hastalıklara dair tüm tedbirlere riayet edeceğim. Herhangi bir hastalık belirtimin olması durumunda, izin bitiminde kışlaya girmeden önce sıralı amirlerimi"],
+  [3, 0, "bilgilendireceğim."],
+  [2, 1, "Seyahat ederken;"],
+  [2, 1, "1. Emredilen yol günleri haricinde seyahat etmeyeceğim."],
+  [2, 1, "2. Bugünlerdeki seyahatlerimde belirlenen/planlanan yol güzergahı dışına çıkmayacağım ve yapılan planlamaya aykırı davranmayacağım."]];
+function isaArkaCizim(I){ const M = ISA_ARKA_M, L = [], X = [M.L, M.G1, M.G2, 21.6], fs = M.FS;
+  for(const dy of [0, M.ALT]){
+    L.push({ t: "İZİN BELGESİ TALİMATI", x: 104.44, y: 24.45 + dy, b: 1, al: "c", fs },
+      { t: "6413 Sayılı TSK Disiplin Kanunu", x: M.L, y: 26.75 + dy, b: 1, fs },
+      { t: "Madde 18 - i) Ulaşım güvenliğini ihlal etmek: İzin, istirahat, hava değişimi, terhis ve benzeri nedenlerle görev yerine gidiş ve dönüşlerde terörle mücadele", x: 21.6, y: 29.85 + dy, b: 1, fs },
+      { t: "kapsamında emredilen yol güzergâhının dışına çıkmak, belirlenen günler dışında seyahat etmek veya yapılan planlamaya aykırı seyahat etmektir.", x: M.L, y: 32.95 + dy, b: 1, fs },
+      { t: "TSK İç Hizmet Yönetmeliği", x: M.L, y: 37.85 + dy, b: 1, fs });
+    ISA_ARKA.forEach(([g, b, t], i) => L.push({ t, x: X[g], y: M.B0 + i * M.P + dy, b, fs }));
+    L.push({ t: "Arz ederim.", x: 35.2, y: 127.3 + dy, fs }, { t: "İMZA", x: 130.7, y: 129.99 + dy, fs }); }
+  L.push({ k: [ISA_M.BL, M.CIZ, ISA_M.BR, M.CIZ] });
+  if(I.sol) L.push({ t: I.sol, x: ISA_M.FX, y: M.FY }); if(I.sag) L.push({ t: I.sag, x: ISA_M.FR, y: M.FY, al: "r" });
   return L; }
 function isaOnHtml(d){ const L = isaCizim(isaIcerik(d)), mm = x => (x / 2.1).toFixed(3) + "cqw", fs = ISA_M.FS * .3528;
   return `<div class="dl-kagit isa-kagit">${L.map(o => o.r ? `<i class="isa-k" style="left:${mm(o.r[0])};top:${mm(o.r[1])};width:${mm(o.r[2])};height:${mm(o.r[3])}"></i>` : o.l ? `<i class="isa-c" style="left:${mm(o.l[0])};top:${mm(o.l[1])};width:${mm(o.l[2] - o.l[0])}"></i>` : o.k ? `<i class="isa-kes" style="left:${mm(o.k[0])};top:${mm(o.k[1])};width:${mm(o.k[2] - o.k[0])}"></i>`
@@ -8973,14 +9024,19 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
     <details class="dl-kart dl-bilgi"><summary><span>Sayfa altı yazıları</span><em class="dl-not">isteğe bağlı · elle</em></summary>
       <div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt</span><input data-isa-a="sol" value="${esc(v.alt.sol)}"></label><label class="dl-al tam"><span>Sağ alt</span><input data-isa-a="sag" value="${esc(v.alt.sag)}"></label></div>
       <small class="dl-not">PYBS çıktısındaki ekran adı, saat ve basan personel bilgisi uygulama tarafından üretilmez. Boş bırakılırsa basılmaz.</small></details>
+    <section class="dl-kart isa-yuz"><div class="izb-ay-sat"><span>Önizleme</span><div class="dl-seg izb-kap"><button type="button" data-isa-yuz="on" aria-pressed="${isaOnzYuz === "on"}">Ön yüz</button><button type="button" data-isa-yuz="arka" aria-pressed="${isaOnzYuz === "arka"}">Arka yüz</button></div></div>
+      <label class="kp-tik"><input type="checkbox" data-isa-arka${v.arka !== false ? " checked" : ""}> Çıktıya arka yüzü de ekle <small class="dl-not">İzin Belgesi Talimatı · 2. sayfa</small></label></section>
     <div class="kp-onizle dl-onz">${isaOnHtml(d)}</div>`;
   otoBoyHepsi($("#isa-govde")); isaTazele(d, true); }
+let isaOnzYuz = "on";
 const P0 = () => (S.personel.rows || []).filter(x => x.ad && isaSubayMi(x));
-const isaTazele = (d, hemen) => pdfOnizle($("#isa-govde .dl-onz"), () => isaPdf(isaIcerik(d)), hemen);
+const isaTazele = (d, hemen) => pdfOnizle($("#isa-govde .dl-onz"), () => isaPdf(isaIcerik(d), { yuz: isaOnzYuz }), hemen);
+document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches("#isa-govde [data-isa-arka]")) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; isaVeri(d).arka = el.checked; kaydetBelge(d); });
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#isa-govde")) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v);
   if(el.dataset.isaF) k[el.dataset.isaF] = el.value; else if(el.dataset.isaO) v.onay[el.dataset.isaO] = el.value; else if(el.dataset.isaA) v.alt[el.dataset.isaA] = el.value; else return;
   kaydetBelge(d); isaTazele(d); if(el.dataset.isaF === "ayr" || el.dataset.isaF === "kat"){ const g = $('#isa-govde [data-isa-f="gun"]'); if(g) g.placeholder = isaGun({ ...k, gun: "" }) || "otomatik"; } });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#isa-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v), yaz = () => { kaydetBelge(d); izinsaCiz(); };
+  if(b.dataset.isaYuz){ isaOnzYuz = b.dataset.isaYuz; document.querySelectorAll("#isa-govde [data-isa-yuz]").forEach(x => x.setAttribute("aria-pressed", x === b)); return isaTazele(d, true); }
   if(b.dataset.isaSec){ v.aktif = b.dataset.isaSec; return yaz(); }
   if(b.dataset.isaP){ k.pid = k.pid === b.dataset.isaP ? "" : b.dataset.isaP; return yaz(); }
   if(b.dataset.isaTur){ k.tur = b.dataset.isaTur === "Diğer" ? "" : b.dataset.isaTur; return yaz(); }
@@ -9004,35 +9060,75 @@ const iztSecHtml = su => `<div class="dl-seg izt-sec">${[["izinb", "Uzman · Sö
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-izt]"); if(!b) return; const t = b.dataset.izt, d = acikBelge(); if(d && d.tur === t) return; const h = S.belgeler.find(x => x.tur === t); if(h) belgeAc(h.id); else bildir("Bu belge henüz yok"); });
 /* ---- çıktılar ---- */
 async function izinsaCikti(d, a, tur){ const I = isaIcerik(d); return tur === "pdf" ? isaPdf(I) : tur === "xlsx" ? isaExcel(I) : isaWord(I); }
-async function isaPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), L = isaCizim(I); doc.setTextColor(0, 0, 0); doc.setDrawColor(0, 0, 0); doc.setFontSize(ISA_M.FS);
-  L.forEach(o => { if(o.r){ doc.setLineWidth(.3); doc.rect(...o.r); } else if(o.l){ doc.setLineWidth(.25); doc.line(...o.l); } else if(o.k){ doc.setLineWidth(.5); doc.setLineDashPattern([2.2, 1.6], 0); doc.line(...o.k); doc.setLineDashPattern([], 0); }
-    else if(o.t){ doc.setFont("LS", o.b ? "bold" : "normal"); let t = String(o.t); if(o.w){ let f = ISA_M.FS; while(doc.getTextWidth(t) > o.w && f > 5.5){ f -= .25; doc.setFontSize(f); } } doc.text(t, o.x, o.y, o.al === "c" ? { align: "center" } : o.al === "r" ? { align: "right" } : undefined); doc.setFontSize(ISA_M.FS); } });
+async function isaPdf(I, o = {}){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }); doc.setTextColor(0, 0, 0); doc.setDrawColor(0, 0, 0);
+  const olc = (t, b, fs = ISA_M.FS) => { doc.setFont("LS", b ? "bold" : "normal"); doc.setFontSize(fs); return doc.getTextWidth(String(t)); };
+  const ciz = L => L.forEach(o => { if(o.r){ doc.setLineWidth(.3); doc.rect(...o.r); } else if(o.l){ doc.setLineWidth(.25); doc.line(...o.l); } else if(o.k){ doc.setLineWidth(.5); doc.setLineDashPattern([2.2, 1.6], 0); doc.line(...o.k); doc.setLineDashPattern([], 0); }
+    else if(o.t){ doc.setFont("LS", o.b ? "bold" : "normal"); doc.setFontSize(o.fs || ISA_M.FS); doc.text(String(o.t), o.x, o.y, o.al === "c" ? { align: "center" } : o.al === "r" ? { align: "right" } : undefined); } });
+  const yuz = o.yuz || (I.arka ? "ikisi" : "on");
+  if(yuz !== "arka") ciz(isaCizim(I, olc));
+  if(yuz !== "on"){ if(yuz === "ikisi") doc.addPage("a4", "portrait"); ciz(isaArkaCizim(I)); }
   return new Blob([doc.output("arraybuffer")], { type: "application/pdf" }); }
-function isaWord(I){ const M = ISA_M, tw = x => Math.round(x * 56.7), R = (t, o = {}) => runXml(t, { sz: 16, b: false, k: "000000", ...o }), K = 'w:val="single" w:sz="6" w:space="0" w:color="000000"';
-  const g1 = tw(M.XC - M.BL), g2 = tw(M.BR - M.XC), sat0 = `<w:spacing w:before="0" w:after="0" w:line="240" w:lineRule="auto"/>`;
-  const p = (ic, o = {}) => `<w:p><w:pPr>${sat0}${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}${o.ind ? `<w:ind w:left="${o.ind}"/>` : ""}</w:pPr>${ic}</w:p>`;
-  /* her satır: yükseklik en az verilen (içerik uzarsa büyür), metin hücrenin altına yaslı — PYBS çıktısındaki gibi */
-  const sat = (a, b, h, o = {}) => { const kn = (sol, sag) => `<w:tcBorders><w:top ${o.ust ? K : 'w:val="nil"'}/><w:left ${sol ? K : 'w:val="nil"'}/><w:bottom ${o.alt ? K : 'w:val="nil"'}/><w:right ${sag ? K : 'w:val="nil"'}/></w:tcBorders>`;
-    return `<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${tw(h)}" w:hRule="atLeast"/></w:trPr><w:tc><w:tcPr><w:tcW w:w="${g1}" w:type="dxa"/>${kn(1, 0)}<w:vAlign w:val="bottom"/></w:tcPr>${p(a ? R(a, { b: true }) : "", { ind: tw(M.X1 - M.BL) })}</w:tc><w:tc><w:tcPr><w:tcW w:w="${g2}" w:type="dxa"/>${kn(0, 1)}<w:vAlign w:val="bottom"/></w:tcPr>${p(a ? R(": " + (b || "")) : "")}</w:tc></w:tr>`; };
-  const nusha = () => { let h = ISA_BAS.map(t => p(R(t, { b: true }), { jc: "center" })).join("") + `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="${tw(2)}" w:lineRule="exact"/></w:pPr></w:p>`;
-    let rows = ""; const N = I.ust.length;
-    I.ust.forEach(([a, b], i) => rows += sat(a, b, i === 2 ? 8.4 : 5.4, { ust: i === 0, alt: i === N - 1 }));
-    I.orta.forEach(([a, b], i) => rows += sat(a, b, i === I.orta.length - 1 ? 6.4 : 5.4));
-    rows += sat("", "", 26);
-    I.alt.forEach(([a, b], i) => rows += sat(a, b, 5.2, { alt: i === I.alt.length - 1 }));
-    return h + `<w:tbl><w:tblPr><w:tblW w:w="${g1 + g2}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:left w:w="0" w:type="dxa"/><w:right w:w="57" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${g1}"/><w:gridCol w:w="${g2}"/></w:tblGrid>${rows}</w:tbl>`; };
-  const kes = `<w:p><w:pPr><w:pBdr><w:bottom w:val="dashed" w:sz="12" w:space="1" w:color="000000"/></w:pBdr><w:spacing w:before="${tw(4)}" w:after="${tw(4)}"/></w:pPr></w:p>`;
-  const alt = I.sol || I.sag ? `<w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="${tw(M.BR - M.BL)}"/></w:tabs><w:spacing w:before="${tw(10)}" w:after="0"/></w:pPr>${R(I.sol)}<w:r><w:tab/></w:r>${R(I.sag)}</w:p>` : "";
-  return docxPaketle(nusha() + kes + nusha() + alt + `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.T[0] - 3)}" w:right="${tw(210 - M.BR)}" w:bottom="${tw(5)}" w:left="${tw(M.BL)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`); }
-async function isaExcel(I){ await yukle(CDN.exceljs); const wb = new ExcelJS.Workbook(), ws = wb.addWorksheet("İzin Belgesi", { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 1, margins: { left: 0.39, right: 0.49, top: 0.4, bottom: 0.3, header: 0, footer: 0 } } });
-  ws.columns = [{ width: 33 }, { width: 2 }, { width: 98 }]; const f = (b = false) => ({ name: "Times New Roman", size: 8, bold: b }), ince = { style: "thin", color: { argb: "FF000000" } }; let r = 1;
-  const yaz = (rr, cc, v, o = {}) => { const x = ws.getCell(rr, cc); x.value = v; x.font = f(o.b); x.alignment = { horizontal: o.a || "left", vertical: "bottom" }; return x; };
-  const nusha = () => { ISA_BAS.forEach(t => { ws.mergeCells(r, 1, r, 3); yaz(r, 1, t, { a: "center", b: 1 }); ws.getRow(r).height = 11; r++; }); r++;
-    const ilk = r; const grup = (g, cizgi) => I[g].forEach(([a, b], i) => { yaz(r, 1, a, { b: 1 }); yaz(r, 2, ":"); yaz(r, 3, b); ws.getRow(r).height = g === "ust" && i === 2 ? 22 : 14.5; if(cizgi && i === I[g].length - 1) [1, 2, 3].forEach(c => ws.getCell(r, c).border = { ...(ws.getCell(r, c).border || {}), bottom: ince }); r++; });
-    grup("ust", true); grup("orta"); ws.getRow(r).height = 80; r++; grup("alt");
-    for(let rr = ilk; rr < r; rr++){ ws.getCell(rr, 1).border = { ...(ws.getCell(rr, 1).border || {}), left: ince, ...(rr === ilk ? { top: ince } : {}), ...(rr === r - 1 ? { bottom: ince } : {}) }; ws.getCell(rr, 3).border = { ...(ws.getCell(rr, 3).border || {}), right: ince, ...(rr === ilk ? { top: ince } : {}), ...(rr === r - 1 ? { bottom: ince } : {}) }; if(rr === ilk || rr === r - 1) ws.getCell(rr, 2).border = { ...(ws.getCell(rr, 2).border || {}), ...(rr === ilk ? { top: ince } : { bottom: ince }) }; } };
-  nusha(); r++; [1, 2, 3].forEach(c => ws.getCell(r, c).border = { bottom: { style: "dashed", color: { argb: "FF000000" } } }); r += 2; nusha();
-  if(I.sol || I.sag){ r += 2; yaz(r, 1, I.sol); yaz(r, 3, I.sag, { a: "right" }); }
+function isaWord(I){ const M = ISA_M, A = ISA_ARKA_M, tw = x => Math.round(x * 56.7), K = 'w:val="single" w:sz="6" w:space="0" w:color="000000"', AS = 0.62;
+  const R = (t, o = {}) => runXml(t, { sz: (o.fs || M.FS) * 2, b: false, k: "000000", ...o });
+  const g1 = tw(M.XC - M.BL), g2 = tw(M.XV - M.XC), g3 = tw(M.BR - M.XV), T = g1 + g2 + g3;
+  const par = (ic, o = {}) => `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="${tw(o.lh || M.SP)}" w:lineRule="exact"/>${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}${o.ind != null ? `<w:ind w:left="${o.ind}"/>` : ""}</w:pPr>${ic}</w:p>`;
+  const kn = o => `<w:tcBorders><w:top ${o.t ? K : 'w:val="nil"'}/><w:left ${o.l ? K : 'w:val="nil"'}/><w:bottom ${o.b ? (o.kes ? 'w:val="dashed" w:sz="12" w:space="0" w:color="000000"' : K) : 'w:val="nil"'}/><w:right ${o.r ? K : 'w:val="nil"'}/></w:tcBorders>`;
+  const hc = (w, ic, o = {}) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${o.span ? `<w:gridSpan w:val="${o.span}"/>` : ""}${kn(o)}<w:vAlign w:val="bottom"/></w:tcPr>${ic || par("")}</w:tc>`;
+  const tr = (h, ic) => `<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${Math.max(1, tw(h))}" w:hRule="exact"/></w:trPr>${ic}</w:tr>`;
+  let rows = "", alt = M.T[0] + AS - 3.25; const sinir = y => y + AS;   // alt: şu ana kadar dolan yükseklik (sayfa üst kenar boşluğundan başlar)   // satırın alt kenarı = taban çizgisi + iniş payı
+  const bos = (yeni, o = {}) => { const h = yeni - alt; if(h > 0.05){ rows += tr(h, hc(T, "", { span: 3, ...o })); alt = yeni; } };
+  const tek = (y, ic, o = {}) => { rows += tr(sinir(y) - alt, hc(T, ic, { span: 3, ...o })); alt = sinir(y); };
+  for(const dy of [0, M.ALT]){ const ikinci = dy > 0;
+    ISA_BAS.forEach((t, i) => tek(M.T[i] + dy, par(R(t, { b: true }), { jc: "center", lh: 3.25 })));
+    bos(M.BT + dy);
+    const satir = (g, i, a, b, ust, cizgi, son) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy), L2 = isaSar(b, M.SG, t => isaOlcTuval(t, false));
+      const h = sinir(y + (L2.length - 1) * M.SP) - alt, kut = { t: ust, b: cizgi };
+      const ek = par("").repeat(L2.length - 1);   // çok satırlı değerde etiket ve iki nokta ilk satırda kalsın
+      rows += tr(h, hc(g1, par(R(isaEt(a, ikinci), { b: true }), { ind: tw(M.X1 - M.BL) }) + ek, { ...kut, l: 1 }) + hc(g2, par(R(":")) + ek, kut) + hc(g3, L2.map(t => par(R(t))).join(""), { ...kut, r: 1 }));
+      alt += h; };
+    const kenar = (yeni, o = {}) => { const h = yeni - alt; if(h > 0.05){ rows += tr(h, hc(g1, "", { l: 1, b: o.b }) + hc(g2, "", { b: o.b }) + hc(g3, "", { r: 1, b: o.b })); alt = yeni; } };
+    I.ust.forEach(([a, b], i) => satir("ust", i, a, b, i === 0, 0)); kenar(M.AY + dy, { b: 1 });
+    I.orta.forEach(([a, b], i) => satir("orta", i, a, b, 0, 0)); 
+    const ilkAlt = M.Y.alt[0] + (ikinci ? M.ALT2 : dy); kenar(sinir(ilkAlt) - (sinir(ilkAlt) - alt > 5.07 ? 5.07 : 0));
+    I.alt.forEach(([a, b], i) => satir("alt", i, a, b, 0, 0)); kenar(ikinci ? M.BB2 : M.BB + dy, { b: 1 });
+    if(!ikinci) bos(M.CIZ, { b: 1, kes: 1 }); }
+  if(I.sol || I.sag){ rows += tr(sinir(M.FY) - alt, hc(g1 + g2, par(R(I.sol), { ind: -tw(M.BL - M.FX) }), { span: 2 }) + hc(g3, par(R(I.sag), { jc: "right" }))); }
+  const tablo = `<w:tbl><w:tblPr><w:tblW w:w="${T}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${g1}"/><w:gridCol w:w="${g2}"/><w:gridCol w:w="${g3}"/></w:tblGrid>${rows}</w:tbl>`;
+  /* arka yüz: aynı yöntem (her satır taban çizgisinde biten tam yükseklikli tablo satırı), yeni sayfada */
+  let arka = "";
+  if(I.arka){ const L = isaArkaCizim(I).filter(o => o.t).sort((a, b) => a.y - b.y), AS2 = 0.55; let ar = "", al2 = M.T[0] + AS - 3.25 - 0.01, kesildi = false;
+    const satirA = (y, ic, o = {}) => { const h = y + AS2 - al2; ar += tr(h, hc(T, ic, { span: 3, ...o })); al2 = y + AS2; };
+    L.forEach(o => { if(!kesildi && o.y > A.CIZ){ const h = A.CIZ - al2; ar += tr(h, hc(T, "", { span: 3, b: 1, kes: 1 })); al2 = A.CIZ; kesildi = true; }
+      const sag = o.al === "r", ort = o.al === "c"; satirA(o.y, par(R(o.t, { b: !!o.b, fs: o.y > 270 ? M.FS : A.FS }), { lh: Math.min(o.y + AS2 - al2, 3.4), jc: sag ? "right" : ort ? "center" : null, ind: sag || ort ? null : tw(o.x - M.BL) })); });
+    arka = `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/></w:pPr><w:r><w:rPr><w:sz w:val="2"/></w:rPr><w:br w:type="page"/></w:r></w:p>`
+      + `<w:tbl><w:tblPr><w:tblW w:w="${T}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${g1}"/><w:gridCol w:w="${g2}"/><w:gridCol w:w="${g3}"/></w:tblGrid>${ar}</w:tbl>`; }
+  return docxPaketle(tablo + arka + `<w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(M.T[0] + AS - 3.25)}" w:right="${tw(210 - M.BR)}" w:bottom="${tw(4)}" w:left="${tw(M.BL)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`); }
+async function isaExcel(I){ await yukle(CDN.exceljs); const M = ISA_M, A = ISA_ARKA_M, wb = new ExcelJS.Workbook(), pt = mm => +(mm * 2.8346).toFixed(2), AS = 0.62;
+  const sayfa = ad => wb.addWorksheet(ad, { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "portrait", fitToPage: false, scale: 100, horizontalCentered: false, margins: { left: M.BL / 25.4, right: 0.2, top: (M.T[0] + AS - 3.25) / 25.4, bottom: 0.1, header: 0, footer: 0 } } });   // ölçek %100: satır aralıkları küçülmesin
+  const ws = sayfa("İzin Belgesi (ön)"); ws.columns = [{ width: (M.XC - M.BL) / 2.0 }, { width: (M.XV - M.XC) / 2.0 }, { width: (M.BR - M.XV) / 2.0 }];
+  const f = (b, fs = M.FS) => ({ name: "Times New Roman", size: fs, bold: !!b }), ince = { style: "thin", color: { argb: "FF000000" } };
+  let r = 1, alt = M.T[0] + AS - 3.25; const sinir = y => y + AS;
+  const yaz = (c, v, o = {}) => { const x = ws.getCell(r, c); x.value = v; x.font = f(o.b, o.fs); x.alignment = { horizontal: o.a || "left", vertical: "bottom", wrapText: true, indent: o.ind || 0 }; return x; };
+  const izg = mm => Math.round(mm * 2.8346 / 0.75) * 0.75;   // Excel satır yüksekliğini 0,75 pt adımlara yuvarlar: birikmesin diye toplam üzerinden yuvarla
+  const satirH = yeni => { ws.getRow(r).height = Math.max(0.75, +(izg(yeni) - izg(alt)).toFixed(2)); alt = yeni; };
+  const kenar = (rr, o) => { [1, 2, 3].forEach(c => { const x = ws.getCell(rr, c); x.border = { ...(x.border || {}), ...(c === 1 && o.l ? { left: ince } : {}), ...(c === 3 && o.r ? { right: ince } : {}), ...(o.t ? { top: ince } : {}), ...(o.b ? { bottom: o.kes ? { style: "dashed", color: { argb: "FF000000" } } : ince } : {}) }; }); };
+  for(const dy of [0, M.ALT]){ const ikinci = dy > 0;
+    ISA_BAS.forEach((t, i) => { ws.mergeCells(r, 1, r, 3); yaz(1, t, { a: "center", b: 1 }); satirH(sinir(M.T[i] + dy)); r++; });
+    if(M.BT + dy - alt > 0.05){ satirH(M.BT + dy); r++; }
+    const ilk = r;
+    const grup = g => I[g].forEach(([a, b], i) => { const y = M.Y[g][i] + (ikinci && g === "alt" ? M.ALT2 : dy), L2 = isaSar(b, M.SG, t => isaOlcTuval(t, false));
+      yaz(1, isaEt(a, ikinci) + "\n".repeat(L2.length - 1), { b: 1, ind: 0 }); yaz(2, ":" + "\n".repeat(L2.length - 1)); yaz(3, L2.join("\n")); satirH(sinir(y + (L2.length - 1) * M.SP)); kenar(r, { l: 1, r: 1, t: r === ilk }); r++; });
+    const bosK = (yeni, o = {}) => { if(yeni - alt > 0.05){ satirH(yeni); kenar(r, { l: 1, r: 1, ...o }); r++; } };
+    grup("ust"); bosK(M.AY + dy, { b: 1 }); grup("orta"); bosK(sinir(M.Y.alt[0] + (ikinci ? M.ALT2 : dy)) - 5.07); grup("alt"); bosK(ikinci ? M.BB2 : M.BB + dy, { b: 1 });
+    if(!ikinci){ satirH(M.CIZ); kenar(r, { b: 1, kes: 1 }); r++; } }
+  if(I.sol || I.sag){ ws.mergeCells(r, 1, r, 2); yaz(1, I.sol); yaz(3, I.sag, { a: "right" }); satirH(sinir(M.FY)); }
+  ws.pageSetup.printArea = `A1:C${r}`;
+  if(I.arka){ const w2 = sayfa("İzin Belgesi (arka)"); w2.columns = [{ width: (M.BR - M.BL) / 2.0 }]; let r2 = 1, a2 = M.T[0] + AS - 3.25, kes = false;
+    isaArkaCizim(I).filter(o => o.t).sort((a, b) => a.y - b.y).forEach(o => {
+      if(!kes && o.y > A.CIZ){ w2.getRow(r2).height = Math.max(0.75, +(izg(A.CIZ) - izg(a2)).toFixed(2)); a2 = A.CIZ; w2.getCell(r2, 1).border = { bottom: { style: "dashed", color: { argb: "FF000000" } } }; r2++; kes = true; }
+      const x = w2.getCell(r2, 1), sag = o.al === "r", ort = o.al === "c"; x.value = (sag || ort ? "" : " ".repeat(Math.max(0, Math.round((o.x - M.BL) / 0.62)))) + o.t; x.font = f(o.b, o.y > 270 ? M.FS : A.FS);
+      x.alignment = { horizontal: sag ? "right" : ort ? "center" : "left", vertical: "bottom" }; w2.getRow(r2).height = Math.max(0.75, +(izg(o.y + 0.55) - izg(a2)).toFixed(2)); a2 = o.y + 0.55; r2++; });
+    w2.pageSetup.printArea = `A1:A${r2}`; }
   return new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }); }
 
 /* ================= SİCİL AMİRLERİ (tur: "sicil") =================
@@ -9758,7 +9854,7 @@ const YERLESIM_AD = { 1: "Tek", 2: "2li", 3: "3lu", 4: "4lu", 6: "6li", 8: "8li"
 document.querySelectorAll("[data-cikti]").forEach(b => b.addEventListener("click", async () => {
   const d = acikBelge(); if(!d || b.disabled) return; const tur = b.dataset.cikti;
   let sec = d.tur === "izinb" ? { n: 1 } : await ciktiSec(d, SECIM.klasor, tur); if(!sec) return;
-  if(d.tur === "izinb" && tur === "png" && izbArka){ const yuz = await izbYuzSor(); if(!yuz) return; sec = { ...sec, yuz }; }
+  if(tur === "png" && ((d.tur === "izinb" && izbArka) || (d.tur === "izinsa" && isaVeri(d).arka !== false))){ const yuz = await izbYuzSor(); if(!yuz) return; sec = { ...sec, yuz }; }
   const eski = b.textContent; b.disabled = true; b.textContent = "Hazırlanıyor…";
   try {
     const ornekOnay = d.tur === "izinb" && b.dataset.ornek === "1";
