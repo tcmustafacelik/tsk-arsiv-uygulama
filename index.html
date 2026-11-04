@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "316";
+  const SURUM = "317";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2450,6 +2450,22 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 #kayit-cubugu button.k-metin{border:0;background:none;padding:2px 4px 2px 0;cursor:pointer;text-align:left} #kayit-cubugu.tamam button.k-metin{cursor:default}
 #kayit-cubugu .k-metin small{text-decoration:underline;text-decoration-color:#E3C88F;text-underline-offset:2px}
 .ks-av.deg-av{background:#FBEFD8;color:#7A5214;font-weight:800} .deg-not{margin:10px 2px 0;font:500 11.5px var(--f-ui);color:var(--muted)}
+
+.dl-ust .km-s{background:#E4F0F1;color:#2F6670} .km-ozet{margin-left:auto}
+.km-filtre{grid-template-columns:1fr 1fr} .km-sat{grid-template-columns:auto 1fr auto!important;grid-template-rows:auto auto} .km-sat .ks-av{grid-row:1 / 3;width:32px;height:32px;font-size:11px} .km-sat small{grid-column:2} .km-sat em{grid-row:1 / 3;grid-column:3}
+.km-kart{scroll-margin-top:10px} .km-ek em{font-size:10.5px}
+.izb-aktar small{font-weight:500;color:#5F8F95;margin-left:4px} .izb-aktar{align-self:flex-start;border:1px solid #BFD8DA;background:#EEF6F6;color:#2F6670;border-radius:14px;padding:4px 11px;font:700 11.5px var(--f-ui);cursor:pointer}
+
+.izb-durum-l{display:flex;flex-direction:column;gap:7px}
+.izb-dsat{display:flex;flex-direction:column;gap:5px;text-align:left;padding:9px 11px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);cursor:pointer}
+.izb-dsat.izinde{border-color:#E6CF9E;background:#FFFAF0} .izb-d1{display:flex;align-items:center;gap:8px} .izb-d1 b{flex:1;min-width:0;font:700 13px var(--f-ui);color:var(--fg);overflow-wrap:anywhere} .izb-d1 i{font-style:normal;color:var(--muted);font-weight:700}
+.izb-d2{display:flex;justify-content:space-between;gap:8px;font:600 11.5px var(--f-ui);color:#2D557E;font-variant-numeric:tabular-nums} .izb-d2 span:last-child{color:var(--muted)}
+.izb-d3{display:flex;gap:5px} .izb-d3 span{flex:1;text-align:center;background:#F4F8F2;border:1px solid #DDE9D8;border-radius:8px;padding:3px 2px;font:600 10px var(--f-ui);color:var(--muted)} .izb-d3 b{color:#2F6B47;font-size:12px}
+.izb-mk{display:flex;flex-direction:column;gap:8px;padding:10px 0 4px;border-top:1px dashed var(--line2)} .izb-mk-b{display:flex;align-items:center;gap:9px} .izb-mk-b b{flex:1;min-width:0;font:700 13px var(--f-ui);color:var(--fg)} .izb-mk .ks-av{width:30px;height:30px;font-size:11px} .izb-mk .isa-tsil{width:32px;height:32px}
+#izb-filigran .izb-ts-s{display:flex;align-items:center;gap:4px;flex-wrap:nowrap} #izb-filigran .izb-ts select{min-width:66px;white-space:nowrap;height:36px} #izb-filigran .izb-ts-s{width:100%} #izb-filigran .izb-ts-s .sec-ac{width:auto!important;min-width:0!important;flex:1 1 0;white-space:nowrap} #izb-filigran .izb-ts-s .sec-ac span{white-space:nowrap} #izb-tasvip .dl-al .sec-ac,#izb-filigran .dl-al .sec-ac{width:100%}
+#izb-tasvip .dl-al select,#izb-filigran .dl-al select{width:100%;height:36px;border-radius:8px}
+.izb-fnot{font:500 11.5px/1.45 var(--f-ui);color:#5E5487;background:#F3F0F8;border:1px solid #E1DAEE;border-radius:10px;padding:8px 11px}
+.izb-fk.arka{background:#FAFAFC} #izb-filigran .izb-ts{gap:5px} #izb-filigran .izb-ts input[type=date]{min-width:0!important;flex:1}
 </style>
 
 </head>
@@ -2487,7 +2503,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 316</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 317</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2646,6 +2662,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
         <div id="e-spor" hidden style="display:flex;flex-direction:column;gap:10px"><div id="sp-govde" class="kp-govde"></div></div>
         <div id="e-liste" hidden style="display:flex;flex-direction:column;gap:10px"><div id="lt-govde" class="kp-govde"></div></div>
         <div id="e-sicil" hidden style="display:flex;flex-direction:column;gap:10px"><div id="sa-govde" class="kp-govde"></div></div>
+        <div id="e-kimlik" hidden style="display:flex;flex-direction:column;gap:10px"><div id="km-govde" class="kp-govde"></div></div>
         <div id="e-dilekce" hidden style="display:flex;flex-direction:column;gap:10px"><div id="dl-govde" class="kp-govde"></div></div>
         <div id="e-izinsa" hidden style="display:flex;flex-direction:column;gap:10px"><div id="isa-govde" class="kp-govde"></div></div>
         <div id="e-tebtut" hidden style="display:flex;flex-direction:column;gap:10px"><div id="tt-govde" class="kp-govde"></div></div>
@@ -2801,11 +2818,22 @@ function degFark(a, b, yol, o){ if(o.length > 5 || JSON.stringify(a) === JSON.st
 const degOzet = F => { const M = new Map(); F.forEach(x => { const i = x.lastIndexOf(" · "), k = i < 0 ? "" : x.slice(0, i), v = i < 0 ? x : x.slice(i + 3); M.set(k, [...(M.get(k) || []), v]); });
   return [...M].map(([k, v]) => (k ? k + ": " : "") + [...new Set(v)].join(", ")).join(" · "); };
 const DEG_BT = { personel: ["personel", "Personel"], izin: ["izin", "İzin çizelgesi"], yoklama: ["yoklama", "Yoklama"], yoklama30: ["yoklama", "Yoklama (30 kişilik)"], gdhg: ["gdhg", "GDHG onay"], gdhgSet: ["gdhg", "GDHG ayarları"], izinb: ["izinb", "Uzman · sözleşmeli izin belgesi"], hedef: ["hedef", "Hedefler"], yapi: [null, "Klasör ve bölüm düzeni"] };
+/* ilk değişen satırın kimliği (kişi, kayıt): oraya gidince o seçili gelsin */
+function degIlk(a, b){ for(const kk of ["kisiler", "kayitlar", "rows"]){ const A = a && a[kk], B = b && b[kk]; if(!Array.isArray(B)) continue; const am = new Map((Array.isArray(A) ? A : []).map(x => [x && x.id, x]));
+    for(const x of B){ if(!x || !x.id) continue; const o = am.get(x.id); if(!o) return { id: x.id, alanlar: [] }; if(JSON.stringify(o) !== JSON.stringify(x)) return { id: x.id, alanlar: [...new Set([...Object.keys(o), ...Object.keys(x)])].filter(z => JSON.stringify(o[z]) !== JSON.stringify(x[z])) }; } }
+  for(const kk of ["dl", "isa"]) if(a && b && a[kk] && b[kk]) { const r = degIlk(a[kk], b[kk]); if(r) return r; } return null; }
 async function degisenlerAc(){ const yollar = Object.keys(kirli); if(!yollar.length) return; const L = [];
   for(const y of yollar){ const [kol, id] = y.split("/"); let once = null; try { const d = await db.doc(y).get(); once = d.exists ? d.data() : null; } catch(e){}
     const simdi = kopya(kirli[y]() ?? null), F = once ? degFark(once, simdi, "", []) : ["yeni oluşturuldu"];
     if(once && !F.length){ delete kirli[y]; continue; }   // aslında değişmemiş
-    let ad, git; if(kol === "belgeler"){ const d = S.belgeler.find(x => x.id === id); ad = d ? d.ad : "Belge"; git = d && (() => belgeGit(d)); } else { const [t, a] = DEG_BT[id] || [null, id]; ad = a; const d = t && belgeTur(t); git = d ? () => belgeGit(d) : (id === "yapi" ? () => { belgeKapat && belgeKapat(); } : null); }
+    const ilk = degIlk(once, simdi); let ad, git;
+    if(kol === "belgeler"){ const d = S.belgeler.find(x => x.id === id); ad = d ? d.ad : "Belge"; git = d && (() => { const v = d.dl || d.isa; if(ilk && v && (v.kayitlar || []).some(x => x.id === ilk.id)) v.aktif = ilk.id; belgeGit(d); }); }
+    else { const [t, a] = DEG_BT[id] || [null, id]; ad = a; let d = t && belgeTur(t);
+      if(id === "personel" && ilk && ilk.alanlar.length && ilk.alanlar.every(z => KM_ALAN.some(x => x[0] === z)) && belgeTur("kimlik")){ d = belgeTur("kimlik"); ad = "Personel kimliği"; }
+      git = d ? () => { if(ilk){ if(d.tur === "izinb") izbSecili = ilk.id; if(d.tur === "kimlik"){ kmSecili = ilk.id; kmFiltre = "hepsi"; } }
+          belgeGit(d); if(ilk && d.tur === "yoklama"){ ykAcik = ilk.id; yoklamaCiz(); }
+          setTimeout(() => { const el = document.querySelector(`#v-belge .dl-sat.on, #v-belge [aria-current="true"], #v-belge .km-kart`); if(el) el.scrollIntoView({ block: "center" }); }, 250); }
+        : (id === "yapi" ? () => { belgeKapat && belgeKapat(); } : null); }
     L.push({ ad, F, git }); }
   kayitCubugu(); taslakYaz(true); if(!L.length){ bildir("Kaydedilmemiş değişiklik kalmadı"); return; }
   altPencere("ks-perde", "KAYDEDİLMEMİŞ", "Değişen yerler", () => `<div class="ap-liste">${L.map((x, i) => apSatir(`data-ks="${i}"`, `<span class="ks-av deg-av">${i + 1}</span>`, esc(x.ad), "", { alt: esc(degOzet(x.F) + (x.F.length > 5 ? " …" : "")) })).join("")}</div><p class="deg-not">Dokununca o belge açılır. Hepsini saklamak için alttaki “Kaydet”e basın.</p>`,
@@ -3180,7 +3208,7 @@ function goster(v){
 }
 function belgeKapat(){ SECIM.belge = null; if($("#ara").value.trim().length >= 2){ goster("ara"); araYap(); return; } goster(SECIM.bolum ? "bolum" : "ana"); if(SECIM.bolum) bolumCiz(); }
 /* ana sayfa: sade kategori kartları (sayı ve kâğıt bilgisi yok) */
-const PANO_SIMGE = { dilekce: `<path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10.5a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5z"/><path d="M9 11h6M9 14.5h6M9 18h3.5"/>`, baslik: `<path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/>`, spor: `<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/><path d="M6 6c2.5 2 3.6 3.8 3.6 6S8.5 16 6 18M18 6c-2.5 2-3.6 3.8-3.6 6s1.1 4 3.6 6"/>`,
+const PANO_SIMGE = { kimlik: `<rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16.2a3.2 3.2 0 0 1 6 0M14 10h4.5M14 13.5h3"/>`, dilekce: `<path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10.5a.5.5 0 0 1-.5-.5V4a.5.5 0 0 1 .5-.5z"/><path d="M9 11h6M9 14.5h6M9 18h3.5"/>`, baslik: `<path d="M4 7V5h16v2"/><path d="M12 5v14"/><path d="M9 19h6"/>`, spor: `<circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v17M3.5 12h17"/><path d="M6 6c2.5 2 3.6 3.8 3.6 6S8.5 16 6 18M18 6c-2.5 2-3.6 3.8-3.6 6s1.1 4 3.6 6"/>`,
   personel: '<circle cx="9" cy="8" r="3.2"/><path d="M3.5 19a5.5 5.5 0 0 1 11 0"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 14.2A4.5 4.5 0 0 1 21 18.5"/>',
   izin: '<rect x="3.5" y="5" width="17" height="15" rx="2.5"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14h4m-4 3h7"/>',
   yoklama: '<rect x="5" y="4" width="14" height="17" rx="2"/><path d="M9 4V3h6v1"/><path d="m8.5 11 1.6 1.6 3-3M8.5 16.5h7"/>',
@@ -3189,7 +3217,7 @@ const PANO_SIMGE = { dilekce: `<path d="M7 3.5h7l4 4V20a.5.5 0 0 1-.5.5h-10.5a.5
   hedef: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r=".8" fill="currentColor"/>',
   sema: '<rect x="9" y="3" width="6" height="4" rx="1"/><rect x="3" y="15" width="6" height="4" rx="1"/><rect x="15" y="15" width="6" height="4" rx="1"/><path d="M12 7v4M6 15v-2h12v2"/>'
 };
-const PANO_TEMA = { dilekce: ["#E2F1E7", "#2F6B47"], personel: ["#E6EAF3", "#4A5F86"], izin: ["#F3EBDA", "#86672C"], yoklama: ["#E3EEF0", "#2E6A62"], gdhg: ["#E1EAF4", "#3F6587"], izinb: ["#ECE7F3", "#5E5487"], hedef: ["#F1E6DE", "#8A5A3A"], sema: ["#ECEAE5", "#6A6255"], baslik: ["#EAE8F3", "#4F4A7A"], spor: ["#E3F0E7", "#3A6B4A"] };
+const PANO_TEMA = { kimlik: ["#E4F0F1", "#2F6670"], dilekce: ["#E2F1E7", "#2F6B47"], personel: ["#E6EAF3", "#4A5F86"], izin: ["#F3EBDA", "#86672C"], yoklama: ["#E3EEF0", "#2E6A62"], gdhg: ["#E1EAF4", "#3F6587"], izinb: ["#ECE7F3", "#5E5487"], hedef: ["#F1E6DE", "#8A5A3A"], sema: ["#ECEAE5", "#6A6255"], baslik: ["#EAE8F3", "#4F4A7A"], spor: ["#E3F0E7", "#3A6B4A"] };
 const ANA_SIMGE = {
   klasor: '<path d="M3 7.5A2.5 2.5 0 0 1 5.5 5h4l2 2h7A2.5 2.5 0 0 1 21 9.5v7a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 16.5z"/><path d="M3 10h18"/>',
   onay: '<path d="M7 3h7l5 5v11a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2z"/><path d="M14 3v5h5"/><path d="m9 14 2 2 4-4"/>',
@@ -3289,11 +3317,11 @@ function anaCiz(){
       <span class="pd-bar"><i style="width:${Math.round(gec / top * 100)}%"></i></span><span class="pd-alt"><span>${esc(trTarih(bas))}</span><span>${Math.round(gec / top * 100)}%</span><span>${esc(trTarih(son))}</span></span></button>`; }
   /* konu kutuları: doğrudan belgeye */
   const izinde = (S.personel.rows || []).filter(p => ((S.izin.kayit || {})[p.id]?.i || []).some(i => i.a && i.k && i.a <= bugun && bugun < i.k)).length;
-  const say = { dilekce: d => { try { const v = dlVeri(d); return `${v.kayitlar.length} dilekçe`; } catch(e){ return "Dilekçe yaz"; } }, personel: () => `${(S.personel.rows || []).filter(x => x.ad).length} personel`, izin: () => izinde ? `${izinde} kişi izinde` : "İzinde kimse yok",
+  const say = { kimlik: () => { const P = (S.personel.rows || []).filter(x => x.ad), e = P.filter(p => kmEksik(p).length).length; return e ? `${e} kişide eksik` : `${P.length} kişi · tamam`; }, dilekce: d => { try { const v = dlVeri(d); return `${v.kayitlar.length} dilekçe`; } catch(e){ return "Dilekçe yaz"; } }, personel: () => `${(S.personel.rows || []).filter(x => x.ad).length} personel`, izin: () => izinde ? `${izinde} kişi izinde` : "İzinde kimse yok",
     yoklama: () => `${(S.yoklama.rows || []).length} kişi`, gdhg: () => `${(S.gdhg?.kisiler || []).filter(k => k.ad).length} kişi · ${1 + ((S.gdhgSet?.liste || []).length)} kayıt`,
     izinb: () => `${(S.izinb?.kisiler || []).filter(k => k.ad).length} belge`, hedef: () => `${(S.hedef.rows || []).length} hedef`, sema: d => `${((d && d.sema && d.sema.kutular) || []).length} kutu`, baslik: d => `${((d && d.bs && d.bs.sayfalar) || []).length} başlık`, spor: d => { const G = spGenel(spVeri(d)); return G.bas + G.bsz ? `%${spSayiYaz(G.oran)} başarı` : `${spVeri(d).kisiler.length} kişi`; } };
-  const AD = { dilekce: "Dilekçe", personel: "Personel", izin: "İzin çizelgesi", yoklama: "Yoklama", gdhg: "GDHG onay", izinb: "İzin belgeleri", hedef: "Hedefler", sema: "Teşkilat", baslik: "Başlık yap", spor: "Spor testi" };
-  const hzGiz = hzGizli(), turHep = ["personel", "izin", "gdhg", "izinb", "dilekce", "hedef", "yoklama", "sema", "spor", "baslik"].map(t => ({ t, d: S.belgeler.find(x => x.tur === t) })).filter(o => o.d), turler = hzDuzen ? turHep : turHep.filter(o => !hzGiz.includes(o.t));
+  const AD = { kimlik: "Personel kimliği", dilekce: "Dilekçe", personel: "Personel", izin: "İzin çizelgesi", yoklama: "Yoklama", gdhg: "GDHG onay", izinb: "İzin belgeleri", hedef: "Hedefler", sema: "Teşkilat", baslik: "Başlık yap", spor: "Spor testi" };
+  const hzGiz = hzGizli(), turHep = ["personel", "kimlik", "izin", "gdhg", "izinb", "dilekce", "hedef", "yoklama", "sema", "spor", "baslik"].map(t => ({ t, d: S.belgeler.find(x => x.tur === t) })).filter(o => o.d), turler = hzDuzen ? turHep : turHep.filter(o => !hzGiz.includes(o.t));
   $("#ana-pano").innerHTML = donem + (turler.length ? kkKart("hizli", "#E3ECF5", "Hızlı erişim", "", `<div class="hz-izgara">${turler.map(({ t, d }) => { const [z, rk] = PANO_TEMA[t];
     return `<button type="button" class="hz${hzDuzen && hzGiz.includes(t) ? " hz-gizli" : ""}" ${hzDuzen ? `data-hz-t="${t}" aria-pressed="${!hzGiz.includes(t)}"` : `data-pano-d="${esc(d.id)}"`} style="--z:${z};--rk:${rk}">${hzDuzen ? `<i class="hz-tik">${hzGiz.includes(t) ? "" : "✓"}</i>` : ""}<span class="hz-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PANO_SIMGE[t]}</svg></span><span class="hz-y"><b>${esc(AD[t])}</b><small>${esc(say[t](d))}</small></span></button>`; }).join("")}</div>${hzDuzen ? `<p class="hz-ip">Ana sayfada görmek istediklerinize dokunun; işaretli olanlar kalır.</p><button type="button" class="hz-duz hz-bitti" data-hz-duz>✓ Bitti</button>` : `<button type="button" class="hz-duz" data-hz-duz>⚙ Kutuları seç</button>`}`, { sayi: turler.length }) : "");
   /* uyarılar (dönem şeridinde gösterilen dönem uyarısı tekrar edilmez) */
@@ -3619,7 +3647,7 @@ function ayarYaz(d, kId, alan, deger){
 }
 const ayarOzet = a => `${a.kagit} ${a.yon === "yatay" ? "yatay" : "dikey"} · delgeç ${a.delgec ? (a.yon === "yatay" ? "üstte" : "solda") : "yok"}${(a.yerlesim || 1) > 1 ? ` · A4'e ${a.yerlesim}'${yerEk(a.yerlesim)}` : ""}`;
 /* yönü kendi düzenine bağlı belgeler: ayar panelinde yalnız delgeç payı gösterilir */
-const SABIT_YON = { sportakip: "dikey", spor: "yatay", mevzi: "yatay", candostu: "yatay", karsilama: "yatay", kadro: "dikey" };
+const SABIT_YON = { kimlik: "yatay", sportakip: "dikey", spor: "yatay", mevzi: "yatay", candostu: "yatay", karsilama: "yatay", kadro: "dikey" };
 document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target.matches && e.target.matches("textarea[data-kp-bad]")){ e.preventDefault(); e.target.blur(); } });
 let dAyarAcik = (() => { try { return localStorage.getItem("dAyarAcik") === "1"; } catch(e){ return false; } })();
 document.addEventListener("click", e => { if(!e.target.closest || !e.target.closest("#d-ayar-ac")) return; dAyarAcik = !dAyarAcik; try { localStorage.setItem("dAyarAcik", dAyarAcik ? "1" : "0"); } catch(_){} ayarCiz(); });
@@ -3669,12 +3697,12 @@ $("#d-ayar").addEventListener("change", e => {
 const acikBelge = () => S.belgeler.find(d => d.id === SECIM.belge);
 function belgeAc(id){
   const d = S.belgeler.find(x => x.id === id); if(!d) return; if(SECIM.belge !== id) bulKapat(); SECIM.belge = id; if(SECIM.klasor && SECIM.bolum) sonEkle({ k: SECIM.klasor, b: SECIM.bolum, d: id }); goster("belge");
-  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip","dilekce","izinsa"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
+  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip","dilekce","izinsa","kimlik"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
   $("#d-ayar").hidden = d.tur === "dilekce" || d.tur === "izinsa" || d.tur === "izinb" || d.tur === "tazminat" || d.tur === "kapak" || d.tur === "baslik" || d.tur === "teblig" || d.tur === "tebtut" || d.tur === "tarama"; $("#d-ayar").classList.toggle("sade", !!SABIT_YON[d.tur]); document.querySelector('[data-cikti="docx"]').hidden = d.tur === "izinb" || d.tur === "tarama"; document.querySelector('[data-cikti="xlsx"]').hidden = d.tur === "tarama";
   $("#d-sil").hidden = d.tur !== "grid";
   ayarCiz();
   if(d.tur === "grid"){ secim = { r1: 0, c1: 0, r2: 0, c2: 0 }; gridCiz(); }
-  if(d.tur === "personel") personelCiz(); if(d.tur === "izin") izinCiz(); if(d.tur === "hedef"){ hedefCiz(); hedefAyarCiz(); } if(d.tur === "yoklama"){ YK = d.bt || "yoklama"; S[YK] ||= { tarih: "", rows: [] }; S[YK].rows ||= []; if(S[YK].tarih !== bugun()){ S[YK].tarih = bugun(); kaydetBt(YK); } ykAcik = null; yoklamaCiz(); } /* günlük yoklama: açılınca bugünün tarihi */ if(d.tur === "gdhg") gdhgCiz(); if(d.tur === "izinb") izbhCiz(); if(d.tur === "sema") semaCiz(); if(d.tur === "cevrim") cevrimCiz(); if(d.tur === "tazminat") tazminatCiz(); if(d.tur === "kapak"){ kpSayfaNo = 0; kapakCiz(); } if(d.tur === "teblig"){ tbNo = 0; tebligCiz(); } if(d.tur === "tebtut") tebtutCiz(); if(d.tur === "mevzi"){ mzAcik = null; mevziCiz(); } if(d.tur === "candostu") candostuCiz(); if(d.tur === "tarama") taramaCiz(); if(d.tur === "karsilama"){ koAcik = null; karsilamaCiz(); } if(d.tur === "kadro"){ kcAcikBlok = kcAcikSatir = null; kadroCiz(); } if(d.tur === "sicil"){ saAcik = null; sicilCiz(); } if(d.tur === "dilekce"){ dlAcik = null; dilekceCiz(); } if(d.tur === "izinsa") izinsaCiz(); if(d.tur === "liste"){ ltAcik = ltBlokAcik = null; listeCiz(); } if(d.tur === "spor"){ spAcik = spBransAcik = null; sporCiz(); } if(d.tur === "baslik"){ bsAcik = null; baslikCiz(); } if(d.tur === "sportakip"){ stAcik = null; sportakipCiz(); }
+  if(d.tur === "personel") personelCiz(); if(d.tur === "izin") izinCiz(); if(d.tur === "hedef"){ hedefCiz(); hedefAyarCiz(); } if(d.tur === "yoklama"){ YK = d.bt || "yoklama"; S[YK] ||= { tarih: "", rows: [] }; S[YK].rows ||= []; if(S[YK].tarih !== bugun()){ S[YK].tarih = bugun(); kaydetBt(YK); } ykAcik = null; yoklamaCiz(); } /* günlük yoklama: açılınca bugünün tarihi */ if(d.tur === "gdhg") gdhgCiz(); if(d.tur === "izinb") izbhCiz(); if(d.tur === "sema") semaCiz(); if(d.tur === "cevrim") cevrimCiz(); if(d.tur === "tazminat") tazminatCiz(); if(d.tur === "kapak"){ kpSayfaNo = 0; kapakCiz(); } if(d.tur === "teblig"){ tbNo = 0; tebligCiz(); } if(d.tur === "tebtut") tebtutCiz(); if(d.tur === "mevzi"){ mzAcik = null; mevziCiz(); } if(d.tur === "candostu") candostuCiz(); if(d.tur === "tarama") taramaCiz(); if(d.tur === "karsilama"){ koAcik = null; karsilamaCiz(); } if(d.tur === "kadro"){ kcAcikBlok = kcAcikSatir = null; kadroCiz(); } if(d.tur === "sicil"){ saAcik = null; sicilCiz(); } if(d.tur === "dilekce"){ dlAcik = null; dilekceCiz(); } if(d.tur === "kimlik") kimlikCiz(); if(d.tur === "izinsa") izinsaCiz(); if(d.tur === "liste"){ ltAcik = ltBlokAcik = null; listeCiz(); } if(d.tur === "spor"){ spAcik = spBransAcik = null; sporCiz(); } if(d.tur === "baslik"){ bsAcik = null; baslikCiz(); } if(d.tur === "sportakip"){ stAcik = null; sportakipCiz(); }
   $("#v-belge").scrollTop = 0;
 }
 $("#d-geri").addEventListener("click", belgeKapat);
@@ -4610,7 +4638,7 @@ function gdhgCiz(){
   if(gdSekme === "belge" || gdSekme === "soz") gdBelgeCiz(); else if(gdSekme === "liste") gdListeCiz(); else gdImzaCiz();
 }
 /* ===== belge geçmişi (bulut kayıtlarından) ===== */
-function belgeYollari(d){ const ek = { personel: ["bt/personel"], izin: ["bt/izin", "bt/personel"], yoklama: ["bt/yoklama"], hedef: ["bt/hedef"], gdhg: ["bt/gdhg", "bt/gdhgSet"], izinb: ["bt/izinb"] }[d.tur] || []; return ["belgeler/" + d.id, ...ek]; }
+function belgeYollari(d){ const ek = { kimlik: ["bt/personel"], personel: ["bt/personel"], izin: ["bt/izin", "bt/personel"], yoklama: ["bt/yoklama"], hedef: ["bt/hedef"], gdhg: ["bt/gdhg", "bt/gdhgSet"], izinb: ["bt/izinb"] }[d.tur] || []; return ["belgeler/" + d.id, ...ek]; }
 function gecmisOzet(d, veri){
   const v = p => veri[p];
   try {
@@ -5422,6 +5450,7 @@ function izbBelgeCiz(){
         ${al("Yıllık hak", izbInp("topYil", k.topYil, { tip: "number", min: 0, ad: "Toplam yıllık izin hakkı" }))}${al("Mazeret hak", izbInp("topMaz", k.topMaz, { tip: "number", min: 0, ad: "Toplam mazeret izni hakkı" }))}${al("Yol hak", izbInp("topYol", k.topYol, { tip: "number", min: 0, ad: "Toplam yol izni hakkı" }))}
         ${al("Şimdiye kadar aldığı izinler toplamı", izbInp("onceki", k.onceki, { ph: "boş bırakılabilir" }), 1)}
       </div></details>
+    ${kmKisi(k) ? `<button type="button" class="izb-aktar" data-izb-is="kimlikten">⤓ Personel kimliğinden al <small>boş kutular dolar</small></button>` : ""}
     <details class="dl-kart dl-bilgi"><summary><span>Kimlik</span><em class="dl-not">${esc([k.sicil, k.foto ? "fotoğraflı" : "fotoğraf yok"].filter(Boolean).join(" · "))}</em></summary>
       <div class="dl-alanlar">
         ${al("Adı, Soyadı", izbInp("ad", k.ad), 1)}${al("Sınıf ve rütbesi", izbInp("rutbe", k.rutbe))}${al("Sicil no", izbInp("sicil", k.sicil))}
@@ -5452,25 +5481,34 @@ function izbOnizle(k){
   }, 120);
 }
 function izbDurumCiz(){
-  const G = izbG();
-  $("#izb-durum").innerHTML = `<div class="tablo-kap"><table class="liste gd-tablo izb-tablo"><thead><tr><th>Rütbe ve Adı, Soyadı</th><th>İzin türü</th><th>Ayrılış</th><th>Katılış</th><th>Yıllık</th><th>Mazeret</th><th>Yol izni</th><th>Yol</th><th>Top. yıllık</th><th>Top. mazeret</th><th>Top. yol</th><th>Kalan yıllık</th><th>Kalan mazeret</th><th>Kalan yol</th></tr></thead><tbody>
-    ${G.kisiler.map((k, i) => { const h = izbHesap(k); return `<tr><td>${esc(k.rutbe)} ${esc(k.ad)}</td><td>${izbSec("tur", k.tur, IZB_TURLER, { i, ad: "İzin türü" })}</td><td>${izbInp("ayr", k.ayr, { i, tip: "date", ad: "Ayrılış" })}</td><td class="hesap">${izbTr(h.kat)}</td>
-      <td>${izbInp("yilGun", k.yilGun, { i, tip: "number", min: 0, st: "width:58px", ad: "Yıllık gün" })}</td><td>${izbInp("mazGun", k.mazGun, { i, tip: "number", min: 0, st: "width:58px", ad: "Mazeret gün" })}</td>
-      <td>${izbSec("yol", k.yol ? "1" : "0", [["1", "✔ Var"], ["0", "✘ Yok"]], { i, ad: "Yol izni" })}</td><td class="hesap">${h.yol}</td>
-      <td>${izbInp("topYil", k.topYil, { i, tip: "number", min: 0, st: "width:54px" })}</td><td>${izbInp("topMaz", k.topMaz, { i, tip: "number", min: 0, st: "width:54px" })}</td><td>${izbInp("topYol", k.topYol, { i, tip: "number", min: 0, st: "width:54px" })}</td>
-      <td class="hesap">${h.kalanYil}</td><td class="hesap">${h.kalanMaz}</td><td class="hesap">${h.kalanYol}</td></tr>`; }).join("") || `<tr><td colspan="14"><div class="bos">Personel yok</div></td></tr>`}
-  </tbody></table></div><div class="uclar">Katılış = ayrılış + (Yıllık İzin ise yıllık gün, değilse mazeret gün) + yol izni (var ise 2 gün). Kalan = toplam hak − kullanacağı.</div>`;
+  const G = izbG(), mz = t => t !== "Yıllık İzin", L = G.kisiler;
+  const gun = iso => iso ? Math.round((new Date(iso + "T12:00:00Z") - new Date(bugun() + "T12:00:00Z")) / 864e5) : null;
+  const izinde = L.filter(k => { const h = izbHesap(k), a = gun(k.ayr), b = gun(h.kat); return a != null && b != null && a <= 0 && b > 0; }).length;
+  $("#izb-durum").innerHTML = `<div class="izb-yeni">
+    <div class="dl-ust"><span class="dl-ust-s isa-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v15H4z M4 10h16 M9 3v4 M15 3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><b>İzin durumu</b><small>${L.length}</small><em class="km-ozet ${izinde ? "dl-eksik" : "dl-tam"}">${izinde ? izinde + " kişi izinde" : "izinde kimse yok"}</em></div>
+    <div class="izb-durum-l">${L.map(k => { const h = izbHesap(k), a = gun(k.ayr), b = gun(h.kat), simdi = a != null && b != null && a <= 0 && b > 0;
+      return `<button type="button" class="izb-dsat${simdi ? " izinde" : ""}" data-izb-git="${esc(k.id)}">
+        <span class="izb-d1"><span class="dl-tur ${mz(k.tur) ? "t-mazeret" : "t-izin"}">${mz(k.tur) ? "Mazeret" : "Yıllık"}</span><b>${esc(k.rutbe || "")} ${esc(k.ad || "(adsız)")}</b><i>›</i></span>
+        <span class="izb-d2"><span>${k.ayr ? `${izbTr(k.ayr)} → <b>${izbTr(h.kat)}</b>` : "tarih girilmedi"}</span><span>süre ${esc(h.sure)}${k.yol ? " · yol 2" : ""}</span></span>
+        <span class="izb-d3"><span>Kalan yıllık <b>${h.kalanYil}</b></span><span>mazeret <b>${h.kalanMaz}</b></span><span>yol <b>${h.kalanYol}</b></span></span></button>`; }).join("") || '<div class="bos">Personel yok</div>'}</div>
+    <small class="dl-not">Dokununca o kişinin belgesi açılır. Katılış = ayrılış + (yıllık izinse yıllık gün, değilse mazeret gün) + yol izni (varsa 2 gün). Kalan = toplam hak − kullanacağı.</small></div>`;
 }
 function izbTasvipCiz(){
-  const G = izbG(), adlar = [["", "— seçin —"], ...G.tasvip.filter(t => t.ad).map(t => [t.ad, t.ad])];
-  $("#izb-tasvip").innerHTML = `<div class="gd-imza-kutu"><div><b>İZNİ TASVİP EDEN MAKAM</b> <span class="uclar">· belgedeki “İlk Amiri” ve “Komutan” imza alanları</span></div>
-    <div class="gd-form ayar-izgara"><label>İlk amiri${izbSec("ilkAmir", G.ilkAmir, adlar, { ad: "İlk amiri" })}<small>${esc([izbMakam(G.ilkAmir).rutbe, izbMakam(G.ilkAmir).gorev].filter(Boolean).join(" · "))}</small></label>
-      <label>Komutan${izbSec("komutan", G.komutan, adlar, { ad: "Komutan" })}<small>${esc([izbMakam(G.komutan).rutbe, izbMakam(G.komutan).gorev].filter(Boolean).join(" · "))}</small></label>
-      <label>Belge başlığı${izbInp("baslik", G.baslik)}</label><label>Alt bilgi etiketi${izbInp("etiket", G.etiket)}<small>Alt bilgide gerçek düzenleme tarihi ve saatiyle yazılır</small></label></div>
-    <h3>Tasvip eden makamlar</h3>
-    <div class="tablo-kap"><table class="liste gd-tablo"><thead><tr><th>Adı Soyadı</th><th>Sınıfı ve Rütbesi</th><th>Görevi</th><th></th></tr></thead><tbody>
-      ${G.tasvip.map((t, i) => `<tr><td>${izbInp("t-ad", t.ad, { i, ad: "Adı soyadı" })}</td><td>${izbInp("t-rutbe", t.rutbe, { i, ad: "Rütbe", ph: izbMakam(t.ad).rutbe || "" })}</td><td>${izbInp("t-gorev", t.gorev, { i, ad: "Görev" })}</td><td class="islem"><button class="mini sil" type="button" data-izb-is="t-sil" data-i="${i}" aria-label="Sil">✕</button></td></tr>`).join("")}
-    </tbody></table></div><div class="arac"><button class="btn kucuk" type="button" data-izb-is="t-ekle">+ Makam ekle</button><span class="uclar">Rütbe boşsa personel listesindeki rütbe kullanılır.</span></div></div>`;
+  const G = izbG(), adlar = [["", "— seçin —"], ...G.tasvip.filter(t => t.ad).map(t => [t.ad, t.ad])], alt = ad => esc([izbMakam(ad).rutbe, izbMakam(ad).gorev].filter(Boolean).join(" · "));
+  $("#izb-tasvip").innerHTML = `<div class="izb-yeni">
+    <section class="dl-kart"><div class="dl-bas">İzni tasvip eden makam <small class="isa-not">belgedeki “İlk Amiri” ve “Komutan” imza alanları</small></div>
+      <div class="dl-alanlar">
+        <label class="dl-al tam"><span>İlk amiri</span>${izbSec("ilkAmir", G.ilkAmir, adlar, { ad: "İlk amiri" })}<small class="dl-not">${alt(G.ilkAmir)}</small></label>
+        <label class="dl-al tam"><span>Komutan</span>${izbSec("komutan", G.komutan, adlar, { ad: "Komutan" })}<small class="dl-not">${alt(G.komutan)}</small></label>
+        <label class="dl-al tam"><span>Belge başlığı</span>${izbInp("baslik", G.baslik)}</label>
+        <label class="dl-al tam"><span>Alt bilgi etiketi</span>${izbInp("etiket", G.etiket)}<small class="dl-not">Alt bilgide gerçek düzenleme tarihi ve saatiyle yazılır</small></label>
+      </div></section>
+    <section class="dl-kart"><div class="dl-ust"><b>Tasvip eden makamlar</b><small>${G.tasvip.length}</small><button type="button" class="dl-yeni" data-izb-is="t-ekle"><span>＋</span>Ekle</button></div>
+      ${G.tasvip.map((t, i) => `<div class="izb-mk"><div class="izb-mk-b"><span class="ks-av">${esc(ksBas(t.ad) || "?")}</span><b>${esc(t.ad || "Yeni makam")}</b><button class="isa-tsil" type="button" data-izb-is="t-sil" data-i="${i}" aria-label="Sil">✕</button></div><div class="dl-alanlar">
+          <label class="dl-al tam"><span>Adı soyadı</span>${izbInp("t-ad", t.ad, { i, ad: "Adı soyadı" })}</label>
+          <label class="dl-al tam"><span>Sınıfı ve rütbesi</span>${izbInp("t-rutbe", t.rutbe, { i, ad: "Rütbe", ph: izbMakam(t.ad).rutbe || "" })}</label>
+          <label class="dl-al tam"><span>Görevi</span>${izbInp("t-gorev", t.gorev, { i, ad: "Görev" })}</label></div></div>`).join("") || '<div class="yk-bos">Makam eklenmedi</div>'}
+      <small class="dl-not">Rütbe boşsa personel listesindeki rütbe kullanılır.</small></section></div>`;
 }
 /* filigran tarih satırı: “ön ek + gün.ay.yıl saat:dakika” parça parça seçilir (tarih için takvim, saat ve dakika için liste) */
 function izbTsCoz(t){ const m = /^(.*?)[\s-]*(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}|ss):(\d{2}|dd)(?::(\d{2}|sn))?)?\s*$/.exec(String(t || ""));
@@ -5496,17 +5534,23 @@ function izbFiligranPanelCiz(){
   const F = izbG().filigran;
   const yon = (y, a, v) => izbSec(`f-${y}-${a}`, v, [["sag", "Sağ çapraz ↗"], ["sol", "Sol çapraz ↘"]], { ad: "Yön" });
   const kutu = y => { const f = F[y], on = y === "on";
-    return `<div class="gd-imza-kutu${on ? "" : " s"}"><div><b>${on ? "ÖN YÜZ" : "ARKA YÜZ"}</b></div><div class="gd-form ayar-izgara">
-      <label>Kod (büyük satır · en çok 12)${izbInp(`f-${y}-kod`, on || !F.ayniKod ? f.kod : F.on.kod, { ad: "Kod", ph: "en çok 12 karakter", dis: !on && F.ayniKod, uz: 12 })}${!on && F.ayniKod ? "<small>Ön yüzle aynı</small>" : ""}</label>
-      <div class="izb-ts-kap"><span class="izb-ts-et">Tarih / alt satır</span>${izbTsAlan(y, on || !F.ayniAlt ? f.alt : F.on.alt, !on && F.ayniAlt)}${!on && F.ayniAlt ? "<small>Ön yüzle aynı</small>" : ""}</div>
-      <label>12'li filigran yönü${yon(y, "yon", f.yon)}</label>
-      <label>Ek satır · 32 haneli (4 adet)${izbInp(`f-${y}-ek`, on || !F.ayniEk ? f.ek : F.on.ek, { ad: "Ek satır", ph: "isteğe bağlı · 32 karakter", dis: !on && F.ayniEk, uz: 32 })}${!on && F.ayniEk ? "<small>Ön yüzle aynı</small>" : ""}</label>
-      <label>Ek satır yönü${yon(y, "ekYon", f.ekYon)}</label></div></div>`; };
-  $("#izb-filigran").innerHTML = `<div class="mesaj">Filigran metinleri elle girilir (ör. PYBS çıktısındaki kod ve tarih). Uygulama kod ya da tarih üretmez. Boş bırakılan filigran basılmaz.</div>
-    <div class="izb-ayni"><span class="etiket">Harf</span><div class="grup" id="izb-harf"><button class="btn kucuk" type="button" data-izb-harf="buyuk" aria-pressed="${F.harf !== "kucuk"}">BÜYÜK</button><button class="btn kucuk" type="button" data-izb-harf="kucuk" aria-pressed="${F.harf === "kucuk"}">küçük</button></div><label class="kutu"><input type="checkbox" data-izb="ayniKod"${F.ayniKod ? " checked" : ""}> Ön ve arka kod aynı</label><label class="kutu"><input type="checkbox" data-izb="ayniAlt"${F.ayniAlt ? " checked" : ""}> Tarih satırı aynı</label><label class="kutu"><input type="checkbox" data-izb="ayniEk"${F.ayniEk ? " checked" : ""}> Ek satır aynı</label>
-      <label class="kutu">12'li koyuluk ${izbInp("koyu", F.koyu, { tip: "number", min: 0, st: "width:62px" })} %</label><label class="kutu">Ek satır koyuluğu ${izbInp("ekKoyu", F.ekKoyu, { tip: "number", min: 0, st: "width:62px" })} %</label>
-      <button class="btn kucuk" type="button" data-izb-is="f-sablon">Örnek şablonu koy</button><button class="btn kucuk" type="button" data-izb-is="f-temizle">Filigranları temizle</button></div>
-    ${kutu("on")}${kutu("arka")}<div class="uclar">Orijinaldeki gibi: 12'li filigran %3 koyulukta (Excel'de %97 şeffaf), ek satır gri ve %35 koyulukta. Önizlemeyi “Belge” sekmesinde görebilirsiniz.</div>`;
+    return `<section class="dl-kart izb-fk${on ? "" : " arka"}"><div class="dl-bas">${on ? "Ön yüz" : "Arka yüz"}</div><div class="dl-alanlar">
+      <label class="dl-al tam"><span>Kod · büyük satır (en çok 12)${!on && F.ayniKod ? " <i>ön yüzle aynı</i>" : ""}</span>${izbInp(`f-${y}-kod`, on || !F.ayniKod ? f.kod : F.on.kod, { ad: "Kod", ph: "en çok 12 karakter", dis: !on && F.ayniKod, uz: 12 })}</label>
+      <div class="izb-ts-kap tam"><span class="izb-ts-et">Tarih / alt satır${!on && F.ayniAlt ? " · ön yüzle aynı" : ""}</span>${izbTsAlan(y, on || !F.ayniAlt ? f.alt : F.on.alt, !on && F.ayniAlt)}</div>
+      <label class="dl-al tam"><span>12'li filigran yönü</span>${yon(y, "yon", f.yon)}</label>
+      <label class="dl-al tam"><span>Ek satır · 32 haneli (4 adet)${!on && F.ayniEk ? " <i>ön yüzle aynı</i>" : ""}</span>${izbInp(`f-${y}-ek`, on || !F.ayniEk ? f.ek : F.on.ek, { ad: "Ek satır", ph: "isteğe bağlı · 32 karakter", dis: !on && F.ayniEk, uz: 32 })}</label>
+      <label class="dl-al tam"><span>Ek satır yönü</span>${yon(y, "ekYon", f.ekYon)}</label></div></section>`; };
+  $("#izb-filigran").innerHTML = `<div class="izb-yeni">
+    <div class="izb-fnot">Filigran metinleri elle girilir (ör. PYBS çıktısındaki kod ve tarih). Uygulama kod ya da tarih üretmez. Boş bırakılan filigran basılmaz.</div>
+    <section class="dl-kart"><div class="dl-bas">Genel</div>
+      <div class="izb-ay-sat"><span>Harf</span><div class="dl-seg izb-kap" id="izb-harf"><button type="button" data-izb-harf="buyuk" aria-pressed="${F.harf !== "kucuk"}">BÜYÜK</button><button type="button" data-izb-harf="kucuk" aria-pressed="${F.harf === "kucuk"}">küçük</button></div></div>
+      <label class="kp-tik"><input type="checkbox" data-izb="ayniKod"${F.ayniKod ? " checked" : ""}> Ön ve arka kod aynı</label>
+      <label class="kp-tik"><input type="checkbox" data-izb="ayniAlt"${F.ayniAlt ? " checked" : ""}> Tarih satırı aynı</label>
+      <label class="kp-tik"><input type="checkbox" data-izb="ayniEk"${F.ayniEk ? " checked" : ""}> Ek satır aynı</label>
+      <div class="dl-alanlar"><label class="dl-al"><span>12'li koyuluk (%)</span>${izbInp("koyu", F.koyu, { tip: "number", min: 0 })}</label><label class="dl-al"><span>Ek satır koyuluğu (%)</span>${izbInp("ekKoyu", F.ekKoyu, { tip: "number", min: 0 })}</label></div>
+      <div class="dl-is"><button class="mini" type="button" data-izb-is="f-sablon">Örnek şablonu koy</button><button class="mini sil" type="button" data-izb-is="f-temizle">Filigranları temizle</button></div></section>
+    ${kutu("on")}${kutu("arka")}
+    <small class="dl-not">Orijinaldeki gibi: 12'li filigran %3 koyulukta (Excel'de %97 şeffaf), ek satır gri ve %35 koyulukta. Önizleme “Belge” sekmesinde.</small></div>`;
 }
 /* olaylar */
 function izbDegis(el){
@@ -5536,6 +5580,7 @@ $("#e-izinb").addEventListener("click", e => {
   const kp = e.target.closest("[data-izb-kap]"); if(kp){ izbKapsam = kp.dataset.izbKap; try { localStorage.setItem("izbKapsam", izbKapsam); } catch(x){} izbhCiz(); return; }
   const tb = e.target.closest("[data-izb-tur]"); if(tb){ const k = izbKisi(); if(k){ k.tur = tb.dataset.izbTur; kaydetBt("izinb"); izbBelgeCiz(); } return; }
   const yb = e.target.closest("[data-izb-yol]"); if(yb){ const k = izbKisi(); if(k){ k.yol = yb.dataset.izbYol === "1"; kaydetBt("izinb"); izbBelgeCiz(); } return; }
+  const gb = e.target.closest("[data-izb-git]"); if(gb){ izbSecili = gb.dataset.izbGit; izbSekme = "belge"; izbhCiz(); const el = document.querySelector("#izb-form .dl-kart"); if(el) el.scrollIntoView({ block: "start" }); return; }
   const kb = e.target.closest("[data-izb-kisi]"); if(kb){ izbSecili = kb.dataset.izbKisi; izbBelgeCiz(); return; }
   const hb = e.target.closest("[data-izb-harf]"); if(hb){ const G = izbG(); G.filigran.harf = hb.dataset.izbHarf; kaydetBt("izinb"); izbFiligranPanelCiz(); bildir(G.filigran.harf === "kucuk" ? "Filigran küçük harfle basılacak" : "Filigran büyük harfle basılacak"); return; }
   const b = e.target.closest("[data-izb-is]"); if(!b) return; const G = izbG(), is = b.dataset.izbIs;
@@ -5543,6 +5588,9 @@ $("#e-izinb").addEventListener("click", e => {
   if(is === "kisi-sil"){ const k = izbKisi(); if(!k) return; if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misin? Sil"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Bu personeli sil"; }, 3500); return; }
     G.kisiler = G.kisiler.filter(x => x !== k); izbSecili = null; kaydetBt("izinb"); izbhCiz(); bildir(`${k.ad || "Personel"} silindi`); return; }
   if(is === "foto"){ $("#izb-foto-dosya").click(); return; }
+  if(is === "kimlikten"){ const k = izbKisi(), p = k && kmKisi(k); if(!p) return bildir("Personel kimliğinde bu kişi yok"); let n = 0;
+    [["kita", p.kita], ["sicil", p.sicil], ["tel", p.tel], ["adres", p.adres], ["kan", p.kan], ["yakinAd", p.yakinAd], ["yakinTel", p.yakinTel]].forEach(([a, v]) => { if(v && !String(k[a] || "").trim()){ k[a] = v; n++; } });
+    if(!n) return bildir("Aktarılacak yeni bilgi yok (dolu kutulara dokunulmaz)"); kaydetBt("izinb"); izbBelgeCiz(); return bildir(`${n} bilgi kimlikten alındı`); }
   if(is === "foto-sil"){ const k = izbKisi(); if(k){ k.foto = ""; kaydetBt("izinb"); izbBelgeCiz(); } return; }
   if(is === "t-ekle"){ G.tasvip.push({ ad: "", rutbe: "", gorev: "" }); kaydetBt("izinb"); izbTasvipCiz(); return; }
   if(is === "t-sil"){ G.tasvip.splice(+b.dataset.i, 1); kaydetBt("izinb"); izbTasvipCiz(); return; }
@@ -8611,6 +8659,45 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.stAc != null){ stAcik = stAcik === +b.dataset.stAc ? null : +b.dataset.stAc; return sportakipCiz(); }
   if(b.dataset.stT){ const id = b.dataset.stT; v.haric = v.haric.includes(id) ? v.haric.filter(x => x !== id) : [...v.haric, id]; kaydetBelge(d); return sportakipCiz(); } });
 
+/* ================= PERSONEL KİMLİĞİ (tur: "kimlik") =================
+   Herkesin kimlik bilgileri tek yerde; veri personel kaydında durur (S.personel.rows), dilekçe ve izin belgeleri buradan alır. */
+const KM_ALAN = [["kita", "Kıt'ası", "tam"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi", "t"], ["duhul", "Duhulü", "t"], ["nasip", "Nasbı", "t"], ["sicil", "Sicili", "n"], ["ems", "EMS no.", "n"], ["tc", "T.C. kimlik no.", "n"], ["kan", "Kan grubu"], ["tel", "Telefon", "n"], ["adres", "Adres", "tam"], ["yakinAd", "Yakını adı soyadı"], ["yakinTel", "Yakını telefonu", "n"]];
+const KM_ZORUNLU = ["kita", "baba", "memleket", "dogum", "duhul", "nasip", "sicil", "ems", "tc", "kan", "tel", "adres"];
+let kmSecili = null, kmFiltre = "hepsi";
+const kmDeger = (p, a) => a === "kita" ? (p.kita || p.gorev || "") : (p[a] || "");
+const kmEksik = p => KM_ZORUNLU.filter(a => !String(kmDeger(p, a)).trim()).map(a => KM_ALAN.find(x => x[0] === a)[1]);
+const kmTel = p => { try { return isaTel(p) || ""; } catch(e){ return ""; } };
+function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return; const P = (S.personel.rows || []).filter(x => x.ad);
+  if(!P.some(p => p.id === kmSecili)) kmSecili = (P.find(p => kmEksik(p).length) || P[0] || {}).id || null;
+  const p = P.find(x => x.id === kmSecili), eksikK = P.filter(x => kmEksik(x).length).length, L = kmFiltre === "eksik" ? P.filter(x => kmEksik(x).length || x.id === kmSecili) : P;
+  const sat = x => { const e = kmEksik(x); return `<button type="button" class="dl-sat km-sat${x.id === kmSecili ? " on" : ""}" data-km-sec="${esc(x.id)}"><span class="ks-av">${esc(ksBas(x.ad))}</span><b>${esc(x.ad)}</b><small>${esc(x.rutbe || "")}</small><em class="${e.length ? "dl-eksik" : "dl-tam"}" data-km-say="${esc(x.id)}">${e.length ? e.length + " eksik" : "tamam"}</em></button>`; };
+  $("#km-govde").innerHTML = `
+    <div class="dl-ust"><span class="dl-ust-s km-s"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.kimlik.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.8"')}</svg></span><b>Personel kimliği</b><small>${P.length}</small><em class="km-ozet ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em></div>
+    <div class="dl-seg km-filtre"><button type="button" data-km-f="hepsi" aria-pressed="${kmFiltre === "hepsi"}">Herkes</button><button type="button" data-km-f="eksik" aria-pressed="${kmFiltre === "eksik"}">Eksiği olanlar${eksikK ? ` (${eksikK})` : ""}</button></div>
+    <div class="dl-liste">${L.map(sat).join("") || '<div class="yk-bos">Eksiği olan kimse yok</div>'}</div>
+    ${p ? `<section class="dl-kart km-kart">
+      <div class="izb-kisi"><span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small></span><span class="km-ek" data-km-ek>${kmEksik(p).length ? `<em class="dl-eksik">${kmEksik(p).length} eksik</em>` : '<em class="dl-tam">tamam</em>'}</span></div>
+      <div class="dl-alanlar">${KM_ALAN.map(([a, t, o]) => { const v = p[a] || "", bos = KM_ZORUNLU.includes(a) && !String(kmDeger(p, a)).trim(), cl = `dl-al${o === "tam" ? " tam" : ""}${bos ? " dl-bos" : ""}`;
+          if(o === "t" && (!v || dlIso(v))) return `<label class="${cl}"><span>${t}</span><input type="date" data-km-k="${a}" value="${esc(dlIso(v))}"></label>`;
+          const ph = a === "kita" ? (p.gorev || "") : a === "tel" ? kmTel(p) : "";
+          return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-km-k="${a}"${o === "n" ? ' inputmode="numeric"' : ""} placeholder="${esc(ph)}">${esc(v)}</textarea></label>`; }).join("")}</div>
+      <small class="dl-not">Buraya yazılanlar dilekçeye kendiliğinden gelir; izin belgelerinde “Kimlikten al” ile aktarılır. Adı ve rütbesi Personel listesinden değişir.</small></section>` : ""}`;
+  otoBoyHepsi($("#km-govde")); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#km-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kimlik") return;
+  if(b.dataset.kmSec){ kmSecili = b.dataset.kmSec; kimlikCiz(); const k = $("#km-govde .km-kart"); if(k) k.scrollIntoView({ block: "start", behavior: "smooth" }); return; }
+  if(b.dataset.kmF){ kmFiltre = b.dataset.kmF; kimlikCiz(); } });
+document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#km-govde") || !el.dataset.kmK) return; const p = (S.personel.rows || []).find(x => x.id === kmSecili); if(!p) return;
+  const a = el.dataset.kmK, v = el.type === "date" ? dlTrT(el.value) : el.value.replace(/\s*\n\s*/g, " "); if(v.trim()) p[a] = v; else delete p[a]; kaydetBt("personel");
+  el.closest(".dl-al")?.classList.toggle("dl-bos", KM_ZORUNLU.includes(a) && !String(kmDeger(p, a)).trim());
+  const n = kmEksik(p).length, h = n ? `<em class="dl-eksik">${n} eksik</em>` : '<em class="dl-tam">tamam</em>', ek = $("#km-govde [data-km-ek]"); if(ek) ek.innerHTML = h;
+  const sy = document.querySelector(`#km-govde [data-km-say="${CSS.escape(p.id)}"]`); if(sy){ sy.className = n ? "dl-eksik" : "dl-tam"; sy.textContent = n ? n + " eksik" : "tamam"; } });
+const TEMA_KIMLIK = { ana: "5F8F95", bas: "DDEDEE", basYazi: "214A50", bant: "EAF4F5", bantYazi: "2C5C62", serit: "F5FAFA", cizgi: "B9D2D4", soluk: "67858A", vurgu: "E6F0E4", vurguYazi: "2F5A3A", topSut: "EEF6F6", ustBand: "F0F7F7" };
+function tanimKimlik(){ const T = TEMA_KIMLIK, bh = t => H(t, { fill: T.bas, k: T.basYazi }), P = (S.personel.rows || []).filter(x => x.ad);
+  const body = P.map((p, i) => { const z = i % 2 ? T.serit : null, c = t => H(t || "", { fill: z }); return [H(i + 1, { fill: z, k: T.soluk }), c(`${p.rutbe || ""}\n${p.ad || ""}`.trim()), c(p.sicil), c(p.baba), c(p.memleket), c(p.dogum), c(p.duhul), c(p.nasip), c(p.ems), c(p.tc), c(p.kan), c(p.tel || kmTel(p))]; });
+  return { tema: T, dosya: "Personel_Kimlik_Bilgileri", baslik: "PERSONEL KİMLİK BİLGİLERİ", oran: [4, 17, 8, 9, 10, 8, 8, 8, 8, 10, 6, 10],
+    head: [["S/N", "RÜTBE / ADI SOYADI", "SİCİL", "BABA ADI", "MEMLEKETİ", "DOĞUM T.", "DUHUL", "NASIP", "EMS NO", "T.C. KİMLİK NO", "KAN", "TELEFON"].map(bh)], body, satirH: 12, xSatir: 30, xYazi: 10, xBasYazi: 9.5, xBaslikYazi: 15 }; }
+/* izin belgelerine aktarım: yalnız boş kutuları doldurur (çıktı biçimi değişmez) */
+const kmKisi = x => { const R = S.personel.rows || []; return (x.pid && R.find(p => p.id === x.pid)) || R.find(p => pAd(p.ad) === pAd(x.ad)) || null; };
 /* ================= DİLEKÇE (tur: "dilekce") =================
    d.dl = { garnizon, aktif, kayitlar: [{ id, pid, tur: "izin"|"mazeret"|"diger", tarih, bas, gun, sebep, ozu, metin, elle, imza }] }
    Kimlik bloğu personel kartından gelir (rütbe, ad, sicil, görev, doğum + dilekçe için eklenen baba adı, memleket, duhul, nasıp, T.C. kimlik nu.).
@@ -8850,6 +8937,7 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
       <div class="dl-alanlar">
         <label class="dl-al"><span>Ayrılış tarihi</span><input type="date" data-isa-f="ayr" value="${esc(k.ayr)}"></label><label class="dl-al"><span>Katılış tarihi</span><input type="date" data-isa-f="kat" value="${esc(k.kat)}"></label>
         <label class="dl-al"><span>Verilen izin süresi (gün)</span><input data-isa-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="${esc(isaGun({ ...k, gun: "" }) || "otomatik")}"></label><label class="dl-al"><span>Ne kadarını kullandığı</span><input data-isa-f="kullan" value="${esc(k.kullan ?? "")}"></label>
+        ${p && kmKisi(p) && (p.adres || p.tel) ? '<button type="button" class="izb-aktar tam" data-isa="kimlikten">⤓ Kimlikten al <small>adres, telefon</small></button>' : ""}
         <label class="dl-al tam"><span>İzinli gideceği adres</span><textarea class="oto-boy isa-adres" data-tek rows="1" data-isa-f="adres" placeholder="Mahalle, sokak, no, ilçe/il">${esc(k.adres)}</textarea></label>
         <label class="dl-al"><span>Telefon no</span><input data-isa-f="tel" inputmode="tel" value="${esc(k.tel)}" placeholder="${esc(isaTel(p))}"></label><label class="dl-al"><span>Belge tarihi</span><input type="date" data-isa-f="tarih" value="${esc(k.tarih)}"></label></div>
       <div class="dl-is"><button type="button" class="mini" data-isa="kopya">⧉ Kopyasını oluştur</button>${v.kayitlar.length > 1 ? '<button type="button" class="mini sil" data-isa="sil">Sil</button>' : ""}</div></section>
@@ -8870,6 +8958,8 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.isaSec){ v.aktif = b.dataset.isaSec; return yaz(); }
   if(b.dataset.isaP){ k.pid = k.pid === b.dataset.isaP ? "" : b.dataset.isaP; return yaz(); }
   if(b.dataset.isaTur){ k.tur = b.dataset.isaTur === "Diğer" ? "" : b.dataset.isaTur; return yaz(); }
+  if(b.dataset.isa === "kimlikten"){ const p = isaKisi(k); if(!p) return; let n = 0; if(p.adres && !String(k.adres || "").trim()){ k.adres = p.adres; n++; } if(p.tel && !String(k.tel || "").trim()){ k.tel = p.tel; n++; }
+    if(!n) return bildir("Aktarılacak yeni bilgi yok (dolu kutulara dokunulmaz)"); bildir(`${n} bilgi kimlikten alındı`); return yaz(); }
   if(b.dataset.isa === "tursec"){ const L = () => [...ISA_TUR, ...v.turler];
     return altPencere("ks-perde", "İZİN TÜRÜ", "Hangi izin", () => `<div class="ap-liste">${L().map((t, i) => { const sabit = i < ISA_TUR.length; return `<div class="isa-tsat">${apSatir(`data-ks="${i}"`, `<span class="ks-av isa-tav${sabit ? "" : " ek"}">${esc(isaTurAd(t)[0])}</span>`, esc(isaTurAd(t)), t === k.tur ? '<em class="ks-tik">✓</em>' : "")}${sabit ? "" : `<button type="button" class="isa-tsil" data-tsil="${i - ISA_TUR.length}" aria-label="${esc(t)} türünü kaldır">✕</button>`}</div>`; }).join("")}</div>
       <div class="isa-tekle"><input id="isa-tyeni" placeholder="Yeni izin türü yaz (ör. Doğum İzni)" enterkeyhint="done"><button type="button" data-tekle="1">＋ Ekle</button></div>`,
@@ -9543,7 +9633,7 @@ async function belgeCikti(d, kId, tur, ov, tumu){
   else if(d.tur === "cevrim"){ blob = tur === "pdf" ? await cevrimPdf(d, a) : tur === "xlsx" ? await cevrimExcel(d, a) : await cevrimWord(d, a); ad = `${dosyaAdi(d.ad)}_${ek}.${tur}`; }
   else if(d.tur === "sema"){ blob = tur === "pdf" ? await semaPdf(d, a) : tur === "xlsx" ? await semaExcel(d, a) : await semaWord(d, a); ad = `${dosyaAdi(d.ad)}_${ek}.${tur}`; }
   else if(d.tur === "grid"){ blob = tur === "pdf" ? await gridPdf(d, a) : tur === "xlsx" ? await gridExcel(d, a) : await gridWord(d, a); ad = `${dosyaAdi(d.ad)}_${ek}.${tur}`; }
-  else { const tf = { personel: tanimPersonel, izin: tanimIzin, hedef: () => tanimHedef(a), yoklama: () => { YK = d.bt || "yoklama"; return tanimYoklama(); } }[d.tur];
+  else { const tf = { kimlik: tanimKimlik, personel: tanimPersonel, izin: tanimIzin, hedef: () => tanimHedef(a), yoklama: () => { YK = d.bt || "yoklama"; return tanimYoklama(); } }[d.tur];
     if(!tf) throw new Error("bu belge türünü uygulamanın bu sürümü tanımıyor; sayfayı yenileyip tekrar deneyin"); const sp = tf();
     if(!sp.body.length) throw new Error("çıktı alınacak satır yok");
     blob = tur === "pdf" ? await tabloPdf(sp, a) : tur === "xlsx" ? await tabloExcel(sp, a) : await tabloWord(sp, a); ad = `${sp.dosya}_${ek}.${tur}`; }
