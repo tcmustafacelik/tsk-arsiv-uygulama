@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "334";
+  const SURUM = "335";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2531,7 +2531,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 334</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 335</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6620,7 +6620,7 @@ async function gridPdf(d, a){
           sat.forEach((ln, i) => doc.text(ln, bx + i * lh, Y + Hc / 2 + doc.getTextWidth(ln) / 2, { angle: 90 })); }
         else {
           const va = x.va === "t" ? Y + pad + lh * 0.8 : x.va === "b" ? Y + Hc - pad - blok + lh * 0.8 : Y + (Hc - blok) / 2 + lh * 0.8;
-          const tx = hz === "left" ? X + pad : hz === "right" ? X + Wc - pad : X + Wc / 2;
+          const ek = g.tema && Wc > 12 ? 0.9 : 0, tx = hz === "left" ? X + pad + ek : hz === "right" ? X + Wc - pad - ek : X + Wc / 2;
           sat.forEach((ln, i) => doc.text(ln, tx, va + i * lh, { align: hz }));
         }
       }
@@ -8185,8 +8185,8 @@ function koTekGrid(d){ const v = koVeri(d), { R, T } = koHesap(v), W = 12, I = {
   const alt1 = f => [B("Kadro", { b: 1, f, s: 9.5 }), { f, br: I }, B("Mevcut", { b: 1, f, s: 9.5 }), { f, br: I }, B("Karşılama Oranı", { b: 1, f, s: 9.5 })];
   r = satir(20, [{ f: H1, br: I }, ...alt1(H1), {}, ...alt1(H2)]); g.m.push([r1, 0, r, 0]); yay(r, 1, 2); yay(r, 3, 4); yay(r, 7, 8); yay(r, 9, 10);
   [...R, T].forEach((x, i) => { const top = i === R.length, f = top ? TOP : undefined, b = top ? 1 : 0;
-    r = satir(22, [B(x.ad, { a: "l", b: 1, s: 10.5, f }), B(x.k1, { f, b }), { f, br: I }, B(x.m, { f, b }), { f, br: I }, B(koOranYaz(x.o1), { b: 1, f: top ? f : koRenk(x.o1) }), {},
-      B(x.k2, { f, b }), { f, br: I }, B(x.m, { f, b }), { f, br: I }, B(koOranYaz(x.o2), { b: 1, f: top ? f : koRenk(x.o2) })]);
+    r = satir(22, [B(x.ad, { a: "l", b: 1, s: 10.5, f }), B(x.k1, { f, b }), { f, br: I }, B(x.m, { f, b }), { f, br: I }, B(koOranYaz(x.o1), { b: 1, f, rz: koRenk(x.o1) }), {},
+      B(x.k2, { f, b }), { f, br: I }, B(x.m, { f, b }), { f, br: I }, B(koOranYaz(x.o2), { b: 1, f, rz: koRenk(x.o2) })]);
     yay(r, 1, 2); yay(r, 3, 4); yay(r, 7, 8); yay(r, 9, 10); });
   satir(14, bos());
   /* tablo 2: ADESTİM dahil — Fırtına · Ade. · Toplam kadro · Mevcut · Oran */
@@ -8194,11 +8194,11 @@ function koTekGrid(d){ const v = koVeri(d), { R, T } = koHesap(v), W = 12, I = {
   const alt2 = f => ["Fırtına", "Ade.", "Toplam Kadro", "Mevcut", "Karşılama Oranı"].map(t => B(t, { b: 1, f, s: 9 }));
   r = satir(22, [{ f: H1, br: I }, ...alt2(H1), {}, ...alt2(H2)]); g.m.push([r1, 0, r, 0]);
   [...R, T].forEach((x, i) => { const top = i === R.length, f = top ? TOP : undefined, b = top ? 1 : 0;
-    satir(22, [B(x.ad, { a: "l", b: 1, s: 10.5, f }), B(x.k1, { f, b }), B(x.a1, { f, b }), B(x.d1, { f, b: 1 }), B(x.mA, { f, b }), B(koOranYaz(x.od1), { b: 1, f: top ? f : koRenk(x.od1) }), {},
-      B(x.k2, { f, b }), B(x.a2, { f, b }), B(x.d2, { f, b: 1 }), B(x.mA, { f, b }), B(koOranYaz(x.od2), { b: 1, f: top ? f : koRenk(x.od2) })]); });
+    satir(22, [B(x.ad, { a: "l", b: 1, s: 10.5, f }), B(x.k1, { f, b }), B(x.a1, { f, b }), B(x.d1, { f, b: 1 }), B(x.mA, { f, b }), B(koOranYaz(x.od1), { b: 1, f, rz: koRenk(x.od1) }), {},
+      B(x.k2, { f, b }), B(x.a2, { f, b }), B(x.d2, { f, b: 1 }), B(x.mA, { f, b }), B(koOranYaz(x.od2), { b: 1, f, rz: koRenk(x.od2) })]); });
   if(v.not){ satir(10, bos()); r = satir(18, [{ v: v.not, a: "l", s: 8.5, k: "5A6470" }, ...Array.from({ length: W - 1 }, () => ({}))]); yay(r, 0, W - 1); }
   return g; }
-async function karsilamaCikti(d, a, tur){ const g = koTekGrid(d), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: 1, yazi: 1 }, sahte = { ...d, grid: g };
+async function karsilamaCikti(d, a, tur){ const g = gridTema(koTekGrid(d), { seritYok: true }), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: 1, yazi: 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
 function koOnHtml(d){ const g = koTekGrid(d), kap = kapsananlar(g), TW = g.w.reduce((a, b) => a + b, 0); let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / TW * 100).toFixed(2)}%">`).join("")}</colgroup>`;
   g.c.forEach((row, r) => { h += `<tr style="height:${(g.h[r] * .07).toFixed(2)}cqw">`; for(let c = 0; c < g.w.length; c++){ const kk = kap[r + ":" + c]; if(kk === 1) continue; const x = row[c] || {}, sp = Array.isArray(kk) ? ` colspan="${kk[3] - kk[1] + 1}" rowspan="${kk[2] - kk[0] + 1}"` : "", br = x.br || {};
@@ -8222,10 +8222,10 @@ function karsilamaCiz(){ const d = acikBelge(); if(!d || d.tur !== "karsilama") 
           <div class="ko-is"><button type="button" class="mini" data-ko-tasi="${s.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-ko-tasi="${s.id}:1"${i < v.satirlar.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini sil" data-ko-sil="${s.id}">Sil</button></div></div>` : ""}</div>`; }).join("")}
       <button type="button" class="tt-ekle" data-ko-i="ekle">＋ Sınıf ekle</button></div>
     <div class="tz-not2">Toplamlar ve oranlar kendiliğinden hesaplanır. "Mevcut (Ade. dahil)" boş bırakılırsa mevcut ile aynı sayılır. Oran rengi: %90 ve üstü yeşil, %60–89 sarı, altı kiremit.</div>
-    <div class="kp-onizle"><div class="mz-kagit">${koOnHtml(d)}</div></div>
+    <div class="kp-onizle ko-pdf"></div>
     ${kkKart("ko-bas", "#EEF2F6", "Başlık ve not", "", `<div class="kp-alanlar"><label class="ko-al ko-tam"><span>Başlık</span><input data-ko-baslik value="${esc(v.baslik)}"></label><label class="ko-al ko-tam"><span>Alt not</span><textarea class="oto-boy" data-ko-not rows="2">${esc(v.not || "")}</textarea></label></div>`, { kume: koKapali })}`;
-  otoBoyHepsi($("#ko-govde")); }
-const koOnizle = d => { const k = $("#ko-govde .mz-kagit"); if(k) k.innerHTML = koOnHtml(d); };
+  otoBoyHepsi($("#ko-govde")); koOnizle(d, true); }
+const koOnizle = (d, hemen) => { const k = $("#ko-govde .ko-pdf"); if(k) pdfOnizle(k, async () => (await belgeCikti(d, SECIM.klasor, "pdf", {})).blob, hemen); };
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#ko-govde")) return; const d = acikBelge(); if(!d || d.tur !== "karsilama") return; const v = koVeri(d);
   if(el.hasAttribute("data-ko-baslik")) v.baslik = el.value; else if(el.hasAttribute("data-ko-not")) v.not = el.value;
   else if(el.dataset.ko){ const [id, k] = el.dataset.ko.split(":"), s = v.satirlar.find(x => x.id === id); if(!s) return; if(k === "ad") s.ad = el.value; else { const t = el.value.replace(/[^\d]/g, ""); if(t !== el.value) el.value = t; s[k] = t === "" ? "" : +t; } }
@@ -9163,7 +9163,7 @@ async function isaPdf(I, o = {}){ const doc = await yeniPdf({ yon: "dikey", kagi
 async function isaWord(I){ const OL = await pdfOlcer(), M = ISA_M, A = ISA_ARKA_M, tw = x => Math.round(x * 56.7), K = 'w:val="single" w:sz="6" w:space="0" w:color="000000"', AS = 0.62;
   const R = (t, o = {}) => runXml(t, { sz: (o.fs || M.FS) * 2, b: false, k: "000000", ...o });
   const g1 = tw(M.XC - M.BL), g2 = tw(M.XV - M.XC), g3 = tw(M.BR - M.XV), T = g1 + g2 + g3;
-  const par = (ic, o = {}) => `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="${tw(o.lh || M.SP)}" w:lineRule="exact"/>${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}${o.ind != null ? `<w:ind w:left="${o.ind}"/>` : ""}</w:pPr>${ic}</w:p>`;
+  const par = (ic, o = {}) => `<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="${tw(o.lh || M.SP)}" w:lineRule="exact"/>${o.jc ? `<w:jc w:val="${o.jc}"/>` : ""}${o.ind != null ? `<w:ind w:left="${o.ind}"/>` : ""}${o.sagG ? `<w:ind w:right="${o.sagG}"/>` : ""}</w:pPr>${ic}</w:p>`;
   const kn = o => `<w:tcBorders><w:top ${o.t ? K : 'w:val="nil"'}/><w:left ${o.l ? K : 'w:val="nil"'}/><w:bottom ${o.b ? (o.kes ? 'w:val="dashed" w:sz="12" w:space="0" w:color="000000"' : K) : 'w:val="nil"'}/><w:right ${o.r ? K : 'w:val="nil"'}/></w:tcBorders>`;
   const hc = (w, ic, o = {}) => `<w:tc><w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${o.span ? `<w:gridSpan w:val="${o.span}"/>` : ""}${kn(o)}<w:vAlign w:val="bottom"/></w:tcPr>${ic || par("")}</w:tc>`;
   const tr = (h, ic) => `<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="${Math.max(1, tw(h))}" w:hRule="exact"/></w:trPr>${ic}</w:tr>`;
@@ -9184,7 +9184,7 @@ async function isaWord(I){ const OL = await pdfOlcer(), M = ISA_M, A = ISA_ARKA_
     const ilkAlt = M.Y.alt[0] + (ikinci ? M.ALT2 : dy); kenar(sinir(ilkAlt) - (sinir(ilkAlt) - alt > 5.07 ? 5.07 : 0));
     I.alt.forEach(([a, b], i) => satir("alt", i, a, b, 0, 0)); kenar(ikinci ? M.BB2 : M.BB + dy, { b: 1 });
     if(!ikinci) bos(M.CIZ, { b: 1, kes: 1 }); }
-  if(I.sol || I.sag){ rows += tr(sinir(M.FY) - alt, hc(g1 + g2, par(R(I.sol), { ind: -tw(M.BL - M.FX) }), { span: 2 }) + hc(g3, par(R(I.sag), { jc: "right" }))); }
+  if(I.sol || I.sag){ rows += tr(sinir(M.FY) - alt, hc(g1 + g2, par(R(I.sol), { ind: -tw(M.BL - M.FX) }), { span: 2 }) + hc(g3, par(R(I.sag), { jc: "right", sagG: tw(M.BR - M.FR) }))); }
   const tablo = `<w:tbl><w:tblPr><w:tblW w:w="${T}" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${g1}"/><w:gridCol w:w="${g2}"/><w:gridCol w:w="${g3}"/></w:tblGrid>${rows}</w:tbl>`;
   /* arka yüz: aynı yöntem (her satır taban çizgisinde biten tam yükseklikli tablo satırı), yeni sayfada */
   let arka = "";
