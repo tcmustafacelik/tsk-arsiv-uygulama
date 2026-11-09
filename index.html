@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "353";
+  const SURUM = "354";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2656,7 +2656,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 353</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 354</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2710,7 +2710,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
       <button id="yapistir-btn" class="kopya yapistir" hidden type="button" aria-label="Panodakini kutuya yapıştır">⇣ Yapıştır</button>
       <div id="toast" class="toast" hidden role="status"></div>
       <div id="geri-al" class="geri-al" hidden role="status"><span id="geri-al-yazi">Kaydedildi</span><button type="button" id="geri-al-btn">↶ Geri al</button></div>
-      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><button type="button" id="k-metin" class="k-metin">Kaydedilmedi</button><button class="btn" id="k-vazgec" type="button" hidden>Vazgeç</button><button class="btn" id="k-geri" type="button" hidden>↶ Geri al</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
+      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><button type="button" id="k-metin" class="k-metin">Kaydedilmedi</button><button class="btn" id="k-vazgec" type="button" hidden>Vazgeç</button><button class="btn" id="k-geri" type="button" hidden>↶ Geri al</button><button class="btn" id="k-sgeri" type="button" hidden>↶ Geri al</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
       <section class="panel" id="v-belge" hidden role="dialog" aria-modal="true" aria-label="Belge düzenleyici">
         <div class="arac">
           <button class="btn kucuk" id="d-geri" aria-label="Belgeyi kapat">✕ Kapat</button>
@@ -3668,16 +3668,25 @@ async function arsivIndir(){ const K = S.yapi.klasorler, isler = [], tem = s => 
   catch(e){ P.kapat(); uyar("Arşiv hazırlanamadı: " + (e.message || e), true); } }
 document.addEventListener("click", e => { if(e.target.closest && e.target.closest("#arsiv-indir")) arsivIndir(); });
 /* ===== silmeden önce onay: sistemdeki bütün sil düğmeleri önce bu pencereyi açar ===== */
-const SIL_SEC = '[data-yi-sil], button.sil:not([data-bkm="elle"]):not([data-tr]), button.imz-sil:not([data-bkm="elle"]), .yk-ek-sil, .tz-sil-arka, .tt-sil, [data-ap-sil], [data-mz-sil], [data-is="sil"], #bl-kes, #bl-sifirla';
-function silAd(b){ const k = b.closest(".kart, .yk-k, tr, .kc-sat, .bs-k, .kp-b, .sp-cr, .ap-kart, .tb-k, li, .gi-blok, .akk"); if(!k) return "";
+/* sistemde tek onay yolu: silmeler ve geri dönüşü zor işler hep bu pencereyle, bir kez sorulur (düğmede “Emin misin?” çift dokunuşu yok) */
+const ONAY_SEC = { "#h-renk-sifirla": ["Renk grupları sıfırlansın mı?", "Eklediğiniz renk grupları silinir, varsayılan gruplar gelir.", "Sıfırla"],
+  ".gc-dugme": ["Eski sürüm geri yüklensin mi?", "Belgenin şimdiki hali bu sürümle değişir.", "Geri yükle"],
+  '[data-gd="olustur-hepsi"]': ["Bütün personel için oluşturulsun mu?", "Her kişinin görev satırları dönem ve izinlerden yeniden oluşur; elle yaptığınız düzeltmeler gider.", "Oluştur"],
+  "#k-vazgec": ["Değişikliklerden vazgeçilsin mi?", "Kaydedilmemiş bütün değişiklikler geri alınır.", "Vazgeç"] };
+const SIL_SEC = '[data-hs-p="sil"], #d-sil, [data-izb-is="kisi-sil"], [data-tt-i="sil"], [data-lt-sut-sil], #gd-set-sil, ' + Object.keys(ONAY_SEC).join(", ") + ', [data-yi-sil], button.sil:not([data-bkm="elle"]):not([data-tr]), button.imz-sil:not([data-bkm="elle"]), .yk-ek-sil, .tz-sil-arka, .tt-sil, [data-ap-sil], [data-mz-sil], [data-is="sil"], #bl-kes, #bl-sifirla';
+function silAd(b){ if(b.dataset.silAd) return b.dataset.silAd; const k = b.closest(".kart, .yk-k, tr, .kc-sat, .bs-k, .kp-b, .sp-cr, .ap-kart, .tb-k, li, .gi-blok, .akk"); if(!k) return "";
   const a = k.querySelector(".ad, .p-oy b, .kc-sy b, .bkk-sy .ad, h3, b, strong"); const x = a ? (a.querySelector("input,textarea") ? a.querySelector("input,textarea").value : a.textContent) : ""; return String(x || "").trim().slice(0, 70); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(SIL_SEC); if(!b || b.disabled || b.__onayli) return; e.preventDefault(); e.stopImmediatePropagation();
+  const on = Object.entries(ONAY_SEC).find(([q]) => b.matches(q));
+  if(on){ const [baslik, metin, evet] = on[1]; altPencere("sil-perde", "ONAY", baslik, () => `<p class="sil-not" style="margin-top:0">${esc(metin)}</p>
+      <div class="sil-is"><button type="button" class="btn" data-sil-c="0">Hayır</button><button type="button" class="btn ana" data-sil-c="1">${esc(evet)}</button></div>`,
+    (c, kapat) => { if(c.dataset.silC == null) return; kapat(); if(c.dataset.silC === "1"){ b.__onayli = true; b.dataset.onay = "1"; try { b.click(); } finally { setTimeout(() => { b.__onayli = false; b.dataset.onay = ""; }, 0); } } }, { z: "E6EEF5", r: "3D5F8C" }); return; }
   const ad = silAd(b), ne = (b.getAttribute("aria-label") || b.title || b.textContent || "").replace(/[✕🗑]/g, "").trim();
   altPencere("sil-perde", "SİLME ONAYI", "Silinsin mi?", () => `<div class="sil-ust"><span class="sil-ik"><svg viewBox="0 0 24 24"><path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/><path d="M10 11v5M14 11v5"/></svg></span>
       <div>${ad ? `<b>${esc(ad)}</b>` : ""}<small>${esc(/sil|kes|temizle|sıfırla/i.test(ne) && ne.length < 40 && !/^sil$/i.test(ne) ? ne : ad ? "Bu kayıt silinecek" : "Bu öğe silinecek")}</small></div></div>
       <p class="sil-not">Sildikten sonra birkaç saniye içinde altta çıkan <b>↶ Geri al</b> ile geri getirebilirsiniz.</p>
       <div class="sil-is"><button type="button" class="btn" data-sil-c="0">Vazgeç</button><button type="button" class="btn sil-evet" data-sil-c="1">Sil</button></div>`,
-    (c, kapat) => { if(c.dataset.silC == null) return; kapat(); if(c.dataset.silC === "1"){ b.__onayli = true; b.dataset.onay = "1"; try { b.click(); } finally { setTimeout(() => { b.__onayli = false; }, 0); } } }, { z: "F8E6E2", r: "A3412F" }); }, true);
+    (c, kapat) => { if(c.dataset.silC == null) return; kapat(); if(c.dataset.silC === "1"){ b.__onayli = true; b.dataset.onay = "1"; try { b.click(); } finally { setTimeout(() => { b.__onayli = false; b.dataset.onay = ""; }, 0); } } }, { z: "F8E6E2", r: "A3412F" }); }, true);
 /* ===== uzun açılır kutular → uygulamanın kendi seçim penceresi (telefonun açılır listesi çıkmaz) ===== */
 const scEtiket = s => { const a = s.getAttribute("aria-label"); if(a) return a; const l = s.closest("label"); if(l){ const k = l.cloneNode(true); k.querySelectorAll("select,input,small,textarea,button,.sec-ac").forEach(x => x.remove()); const t = k.textContent.trim(); if(t) return t.slice(0, 40); } return "Seçin"; };
 function acYaz(s){ const b = s.__ac; if(!b) return; const o = s.options[s.selectedIndex]; b.querySelector("span").textContent = o ? o.text : "— seçin —"; b.classList.toggle("bos", !s.value); b.disabled = s.disabled; }
@@ -3761,7 +3770,7 @@ $("#b-belgeler").addEventListener("click", e => {
   const s = e.target.closest("[data-kart-sil]");
   if(s){ /* listeden hızlı silme: ilk dokunuşta onay sorar, ikincide siler */
     const d = S.belgeler.find(x => x.id === s.dataset.kartSil); if(!d) return;
-    if(s.dataset.onay !== "1"){ s.dataset.onay = "1"; s.textContent = "Emin misin? Sil"; s.classList.add("onayla"); clearTimeout(s._z); s._z = setTimeout(() => { s.dataset.onay = ""; s.textContent = "Sil"; s.classList.remove("onayla"); }, 3500); return; }
+    
     belgeBolumdenSil(d); return; }
   const cg = e.target.closest("[data-cogalt]"); if(cg){ const d0 = S.belgeler.find(x => x.id === cg.dataset.cogalt); if(!d0) return;
     const y = kopya(d0), ad0 = d0.ad.replace(/\s*\(kopya( \d+)?\)$/, "").replace(/\s*\(çoğaltarak kullan\)$/i, ""); y.id = (d0.tur === "grid" ? "g" : d0.tur.slice(0, 3) + "-") + yeniId(); y.sira = (d0.sira ?? 0) + .001; y.olusturma = new Date().toISOString().slice(0, 10); y.yerler = [{ k: SECIM.klasor, b: SECIM.bolum }]; delete y.sablon;
@@ -3881,7 +3890,7 @@ $("#d-ad").addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDe
 addEventListener("resize", () => { const el = $("#d-ad"); if(el && el.offsetParent) otoBoy(el); });
 $("#d-sil").addEventListener("click", async e => {
   const b = e.currentTarget, d = acikBelge(); if(!d) return;
-  if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misiniz? Belgeyi sil"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Belgeyi sil"; }, 3500); return; }
+  
   await belgeBolumdenSil(d); belgeKapat();
 });
 
@@ -4660,14 +4669,14 @@ function hdSetPencere(tur){ const cog = tur === "cogalt";
     ${cog ? `<p class="ap-not">Açık liste (<b>${esc(hdSetAd())}</b>) olduğu gibi kopyalanır ve yeni kayıt açılır. Eski liste kayıtlarda durur; üstten dokunarak geçebilirsin.</p>` : ""}
     <label class="hs-al"><span>Kayıt adı</span><input id="hs-ad" value="${esc(cog ? (1 + S.hedefSet.liste.length + 1) + ". Liste" : hdSetAd())}" placeholder="ör. 2. Mevzi"></label>
     ${cog ? `<label class="kutu"><input type="checkbox" id="hs-bos"> Boş liste olarak aç <small style="color:var(--muted)">(renk grupları ve başlık kalır, hedefler kopyalanmaz)</small></label>` : ""}
-    <div class="mn-alt">${cog ? "" : `<button type="button" class="mn-is hs-sil" data-hs-p="sil"${S.hedefSet.liste.length ? "" : " disabled"}>Bu kaydı sil</button>`}<button type="button" class="mn-is hs-tamam" data-hs-p="tamam">${cog ? "Çoğalt ve aç" : "Kaydet"}</button></div>`,
+    <div class="mn-alt">${cog ? "" : `<button type="button" class="mn-is hs-sil" data-hs-p="sil" data-sil-ad="${esc(hdSetAd())}" aria-label="Bu hedef listesi kaydını sil"${S.hedefSet.liste.length ? "" : " disabled"}>Bu kaydı sil</button>`}<button type="button" class="mn-is hs-tamam" data-hs-p="tamam">${cog ? "Çoğalt ve aç" : "Kaydet"}</button></div>`,
     (b, kapat) => { const ad = ($("#hs-ad").value || "").trim();
       if(b.dataset.hsP === "tamam"){
         if(!cog){ S.hedef.setAd = ad || hdSetAd(); kaydetBt("hedef"); kapat(); hdSetCiz(); return bildir("Kayıt adı değişti"); }
         const eski = kopya(S.hedef), yeni = kopya(S.hedef); if(!eski.setAd) eski.setAd = hdSetAd(); yeni.setId = "hs" + yeniId().slice(0, 6); yeni.setAd = ad || (S.hedefSet.liste.length + 2) + ". Liste"; if($("#hs-bos").checked) yeni.rows = [];
         S.hedefSet.liste.push({ id: eski.setId, ad: eski.setAd, veri: eski }); S.hedef = yeni; hAcik = null; tsSec.hedef = null;
         kaydetBt("hedef"); kaydetBt("hedefSet"); kapat(); hedefCiz(); hedefAyarCiz(); hdSetCiz(); return bildir(`“${yeni.setAd}” oluşturuldu`); }
-      if(b.dataset.hsP === "sil"){ if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misin? Sil"; return; }
+      if(b.dataset.hsP === "sil"){ 
         const L = S.hedefSet.liste; if(!L.length) return; const ad0 = hdSetAd(), eskiH = kopya(S.hedef), eskiL = kopya(L), son = L.shift(); S.hedef = kopya(son.veri); S.hedef.setId = son.id; S.hedef.setAd = son.ad; S.hedef.rows ||= [];
         kaydetBt("hedef"); kaydetBt("hedefSet"); kapat(); hedefCiz(); hedefAyarCiz(); hdSetCiz();
         return geriAlinabilir(`“${ad0}” silindi`, () => { S.hedef = eskiH; S.hedefSet.liste = eskiL; kaydetBt("hedef"); kaydetBt("hedefSet"); hedefCiz(); hedefAyarCiz(); hdSetCiz(); }); } },
@@ -4724,7 +4733,7 @@ $("#h-ayar").addEventListener("click", e => {
     else return; }
   else if(b.id === "h-grup-ekle"){ G.push({ id: "g" + yeniId(), alan: "barut", deger: "", ad: "YENİ GRUP", renk: SERBEST_RENK() }); }
   else if(b.dataset.oneriAlan){ const d = b.dataset.oneriDeger; G.push({ id: "g" + yeniId(), alan: b.dataset.oneriAlan, deger: d, ad: d.toLocaleUpperCase("tr"), renk: SERBEST_RENK() }); }
-  else if(b.id === "h-renk-sifirla"){ if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Eklediğiniz gruplar silinecek, emin misiniz?"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Varsayılan gruplara dön"; }, 3500); return; }
+  else if(b.id === "h-renk-sifirla"){ 
     delete S.hedef.gruplar; S.hedef.lejant = {}; S.hedef.renk = {}; gruplar(); acikPalet = null; }
   else return;
   hedefAyarCiz(); hedefCiz(); kaydetBt("hedef");
@@ -5045,7 +5054,7 @@ document.addEventListener("click", async e => {
     try { const veri = await window.TSK_GECMIS.oku(o.dataset.sha); oz.innerHTML = `${esc(gecmisOzet(d, veri))}<span class="gc-dugme">Bu hâline geri yükle</span>`; o._veri = veri; o.classList.add("acik"); }
     catch(err){ oz.textContent = "okunamadı: " + (err.message || err); o.dataset.yuklu = ""; } return; }
   const gy = e.target.closest(".gc-dugme"); if(gy){ const o2 = gy.closest(".gc-oge"); const d = acikBelge(); if(!d || !o2._veri) return;
-    if(gy.dataset.onay !== "1"){ gy.dataset.onay = "1"; gy.textContent = "Emin misin? Geri yükle"; return; }
+    
     clearTimeout(otoZaman); if(Object.keys(kirli).length) await otoKaydet();
     const yollar = belgeYollari(d).filter(y => !(y === "bt/personel" && d.tur === "izin")); const once = {};
     for(const y of yollar){ const c = await db.doc(y).get(); once[y] = c.exists ? kopya(c.data()) : null; }
@@ -5098,7 +5107,7 @@ function gdSetPencere(tur){
     S.gdhgSet.liste.push({ id: eski.setId, ad: eski.setAd, veri: eski }); S.gdhg = yeni; gdDuzelt();
     gdSecili = null; kaydetBt("gdhg"); kaydetBt("gdhgSet"); p.hidden = true; gdhgCiz(); bildir(`“${ad}” oluşturuldu`); };
   const sil = p.querySelector("#gd-set-sil");
-  if(sil) sil.onclick = () => { if(sil.dataset.onay !== "1"){ sil.dataset.onay = "1"; sil.textContent = "Emin misin? Sil"; sil.classList.add("onayla"); return; }
+  if(sil) sil.onclick = () => { 
     const L = S.gdhgSet.liste; if(!L.length) return; const ad0 = S.gdhg.setAd; const sonraki = L.shift();
     S.gdhg = kopya(sonraki.veri); S.gdhg.setId = sonraki.id; S.gdhg.setAd = sonraki.ad; gdDuzelt(); gdSecili = null;
     kaydetBt("gdhg"); kaydetBt("gdhgSet"); p.hidden = true; gdhgCiz(); bildir(`“${ad0}” silindi; “${sonraki.ad}” açıldı`); };
@@ -5965,7 +5974,7 @@ $("#e-izinb").addEventListener("click", e => {
   const kb = e.target.closest("[data-izb-kisi]"); if(kb){ izbSecili = kb.dataset.izbKisi; izbBelgeCiz(); return; }
   const b = e.target.closest("[data-izb-is]"); if(!b) return; const G = izbG(), is = b.dataset.izbIs;
   if(is === "kisi-ekle"){ const k = izbKisiBos(); G.kisiler.push(k); izbSecili = k.id; kaydetBt("izinb"); izbhCiz(); document.querySelector('#izb-form [data-izb="ad"]')?.focus(); return; }
-  if(is === "kisi-sil"){ const k = izbKisi(); if(!k) return; if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misin? Sil"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Bu personeli sil"; }, 3500); return; }
+  if(is === "kisi-sil"){ const k = izbKisi(); if(!k) return; 
     G.kisiler = G.kisiler.filter(x => x !== k); izbSecili = null; kaydetBt("izinb"); izbhCiz(); bildir(`${k.ad || "Personel"} silindi`); return; }
   if(is === "foto"){ $("#izb-foto-dosya").click(); return; }
   if(is === "kimlikten"){ const k = izbKisi(), p = k && kmKisi(k); if(!p) return bildir("Personel kimliğinde bu kişi yok");
@@ -8719,7 +8728,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
     const id = "c" + yeniId().slice(0, 5); ayni.forEach(x => { const sa = Math.max(...x.sutunlar.map(son)); x.sutunlar.forEach(s0 => { if(son(s0) === sa && sa < W){} }); x.sutunlar.push({ id, ad: "YENİ SÜTUN", c: W, tip: "metin", b: 1, s: (x.sutunlar[0] && x.sutunlar[0].s) || 9 }); });
     if(v.baslik) {} kaydetBelge(d); listeCiz(); const t = document.querySelector(`#lt-govde [data-lt-sad="${bl.id}:${id}"]`); if(t){ t.focus(); t.select(); } return bildir("Sütun eklendi · adını yazın"); }
   if(b.dataset.ltSutSil){ const [bi, si] = b.dataset.ltSutSil.split(":"), bl = ltBlok(v, bi), s0 = bl && bl.sutunlar.find(x => x.id === si); if(!s0) return;
-    if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Sil?"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "✕"; }, 3000); return; }
+    
     const c = s0.c, n = s0.cs || 1, eski = kopya(v);
     v.bloklar.forEach(x => { const k = x.sutunlar.find(y => y.c === c && (y.cs || 1) === n); if(k){ x.sutunlar = x.sutunlar.filter(y => y !== k); x.satirlar.forEach(st => delete st.v[k.id]); if(x.renk && x.renk.sutun === k.id) delete x.renk; }
       x.sutunlar.forEach(y => { if(y.c > c) y.c -= n; }); });
@@ -10063,7 +10072,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.ttKapsam){ ttKapsam = b.dataset.ttKapsam; return tebtutCiz(); }
   if(b.dataset.ttI === "yeni" || b.dataset.ttI === "cogalt"){ const y = b.dataset.ttI === "yeni" ? ttYeni(v, k) : { ...kopya(k), id: "t" + yeniId().slice(0, 8) }; v.kayitlar.push(y); v.secili = y.id; ttKapali.delete("tt-emir"); ttKapali.kaydet(); kaydetBelge(d); tebtutCiz(); bildir(b.dataset.ttI === "yeni" ? "Yeni tebliğ açıldı" : "Tebliğ kopyalandı");
     if(b.dataset.ttI === "yeni") setTimeout(() => $('#tt-govde [data-tt-e="0:sayi"]')?.focus(), 50); return; }
-  if(b.dataset.ttI === "sil"){ if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misin? Sil"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Bu tebliği sil"; }, 3500); return; }
+  if(b.dataset.ttI === "sil"){ 
     const eski = kopya(v.kayitlar), es = v.secili; v.kayitlar = v.kayitlar.filter(x => x !== k); v.secili = null; ttVeri(d); kaydetBelge(d); tebtutCiz(); return geriAlinabilir("Tebliğ silindi", () => { v.kayitlar = eski; v.secili = es; kaydetBelge(d); tebtutCiz(); }); }
   if(b.dataset.ttMakam != null){ k.emirler[+b.dataset.ttMakam].makam = b.dataset.m; kaydetBelge(d); return tebtutCiz(); }
   if(b.dataset.ttI === "emir"){ k.emirler.push({ makam: (k.emirler[k.emirler.length - 1] || {}).makam || "", sayi: "", tarih: "", konu: "" }); kaydetBelge(d); tebtutCiz(); $(`#tt-govde [data-tt-e="${k.emirler.length - 1}:sayi"]`)?.focus(); return; }
@@ -10353,7 +10362,7 @@ $("#b-dosyalar").addEventListener("click", async e => {
     inp.addEventListener("keydown", e2 => { if(e2.key === "Enter"){ e2.preventDefault(); bitir(true); } else if(e2.key === "Escape") bitir(false); });
     inp.addEventListener("blur", () => bitir(true));
   } else if(b.dataset.is === "sil"){
-    if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misiniz? Sil"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Sil"; }, 3500); return; }
+    
     try { if(a.asset && assets) await assets.delete(a.asset); for(let i = 0; i < (a.parca || 0); i++) await db.doc(`arsivparca/${a.id}_${i}`).delete(); await db.doc("arsiv/" + a.id).delete(); uyar(`${a.ad} silindi.`); }
     catch(err){ uyar("Silinemedi: " + (err.message || err.code || err), true); }
   }
@@ -10361,7 +10370,7 @@ $("#b-dosyalar").addEventListener("click", async e => {
 
 $("#k-kaydet").addEventListener("click", hepsiniKaydet);
 $("#geri-al-btn").addEventListener("click", geriAl); $("#k-geri").addEventListener("click", geriAl); $("#k-metin").addEventListener("click", () => { if(Object.keys(kirli).length) degisenlerAc(); });
-$("#k-vazgec").addEventListener("click", e => { const b = e.currentTarget; if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misiniz? Geri al"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Vazgeç"; }, 3500); return; } b.dataset.onay = ""; b.textContent = "Vazgeç"; vazgec(); });
+$("#k-vazgec").addEventListener("click", e => { const b = e.currentTarget; b.dataset.onay = ""; b.textContent = "Vazgeç"; vazgec(); });
 document.addEventListener("keydown", e => { if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s"){ e.preventDefault(); hepsiniKaydet(); } });
 addEventListener("beforeunload", e => { if(Object.keys(kirli).length){ e.preventDefault(); e.returnValue = ""; } });
 
@@ -10370,6 +10379,14 @@ let kopyaHedef = null;
 /* silme: sorma yok, hemen siler; altta birkaç saniye “Geri al” çıkar */
 function anlik(o){ const y = JSON.parse(JSON.stringify(o)); return () => { if(Array.isArray(o)) o.splice(0, o.length, ...y); else { for(const k of Object.keys(o)) delete o[k]; Object.assign(o, y); } }; }
 function geriAlinabilir(mesaj, geri){
+  /* kaydedilmemiş değişiklik çubuğu açıksa “geri al” aynı çubukta çıkar (altta iki ayrı şerit olmasın) */
+  const c = $("#kayit-cubugu");
+  if(Object.keys(kirli).length && c && !c.hidden && !c.classList.contains("tamam")){
+    let g = $("#k-sgeri"); if(!g){ g = document.createElement("button"); g.type = "button"; g.id = "k-sgeri"; g.className = "btn"; g.textContent = "↶ Geri al"; $("#k-kaydet").before(g); }
+    g.hidden = false; $("#k-metin").innerHTML = `<i></i>${esc(mesaj)}<small>Kaydet'e basınca kalıcı olur</small>`;
+    const bit = () => { clearTimeout(geriAlinabilir.z); g.hidden = true; kayitCubugu(); };
+    clearTimeout(geriAlinabilir.z); geriAlinabilir.z = setTimeout(bit, 8000);
+    g.onclick = () => { bit(); geri(); bildir("Geri alındı"); }; return; }
   let el = $("#sil-geri"); if(!el){ el = document.createElement("div"); el.id = "sil-geri"; el.setAttribute("role", "status"); document.body.appendChild(el); }
   el.innerHTML = `<span class="ga-m">🗑 ${esc(mesaj)}</span><button type="button" class="ga-b">↶ Geri al</button><i class="ga-c"></i>`;
   el.classList.remove("acik"); void el.offsetWidth; el.classList.add("acik"); $("#toast").hidden = true; $("#geri-al").hidden = true;
