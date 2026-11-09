@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "358";
+  const SURUM = "359";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2641,6 +2641,12 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .kpk-sk-ust{display:grid;grid-template-columns:minmax(0,1fr) 30px;gap:6px;align-items:center}
 .kpk-kisi{display:flex;align-items:center;gap:9px;width:100%;padding:7px 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel);text-align:left;cursor:pointer} .kpk-kisi>span:last-child{display:flex;flex-direction:column;min-width:0} .kpk-kisi b{font:700 13.5px var(--f-ui);color:var(--fg)} .kpk-kisi small{font:500 11.5px var(--f-ui);color:var(--muted)} .kpk-kisi.bos b{color:#3F6B4C}
 .kpk-iki{display:grid;grid-template-columns:1fr 1fr;gap:6px} .kpk-elle{align-self:flex-start;height:28px;font-size:12px} .kpk-ekle{align-self:flex-start}
+/* renk seçici */
+.rs-liste{display:flex;flex-wrap:wrap;gap:6px}
+.rs-k{position:relative;display:flex;align-items:center;gap:6px;height:32px;padding:0 10px 0 6px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer}
+.rs-k i{width:20px;height:20px;border-radius:6px;border:1px solid rgba(0,0,0,.12);flex:none}
+.rs-k[aria-pressed="true"],.rs-k.acik{border-color:#5B7A99;box-shadow:0 0 0 2px rgba(91,122,153,.18)}
+.rs-k input[type=color]{position:absolute;inset:0;opacity:0;width:100%;height:100%;cursor:pointer;border:0;padding:0}
 </style>
 
 </head>
@@ -2678,7 +2684,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 358</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 359</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8947,6 +8953,11 @@ const spSayi = (b, t) => { t = String(t ?? "").trim().replace(",", "."); if(!t) 
 function spCetvelPuan(v, b, k){ const x = spSayi(b, (k.s[b.id] || {}).d); if(x == null) return null; const g = spYasGrup(v, k), R = b.cetvel.filter(r => r.puan !== "" && r.deger !== "" && (!r.yas || r.yas === g)); if(!R.length) return null;
   const uy = R.filter(r => { const e = spSayi(b, r.deger); return e != null && (b.birim === "sure" ? x <= e : x >= e); }); return uy.length ? Math.max(...uy.map(r => +r.puan || 0)) : 0; }
 /* standart: branşın yaş grubuna göre istenen en az değer (tahtadaki kırmızı rakamlar). b.std = { "17-25": "40", … } */
+const SP_PALET = { deniz: { ad: "Deniz", bas: "D3EAE6", yazi: "1E4A47", genel: "CBE4E0", zebra: "F4FAF9" }, mavi: { ad: "Mavi", bas: "DCE8F4", yazi: "1F3550", genel: "D6E6F5", zebra: "F5F8FB" },
+  cam: { ad: "Çam", bas: "D8EAD9", yazi: "24452B", genel: "D0E4D2", zebra: "F5FAF5" }, zeytin: { ad: "Zeytin", bas: "E5E8CF", yazi: "45482A", genel: "DDE1C3", zebra: "FAFAF3" },
+  kum: { ad: "Kum", bas: "F0E5CF", yazi: "5A4626", genel: "EADCC2", zebra: "FCF9F2" }, lavanta: { ad: "Lavanta", bas: "E3E0F2", yazi: "37345C", genel: "DAD6EE", zebra: "F8F7FC" }, gri: { ad: "Gri", bas: "E1E5EA", yazi: "2F3A45", genel: "D9DEE4", zebra: "F6F7F9" } };
+Object.values(SP_PALET).forEach(x => { x.ornek = [x.bas, x.yazi]; });
+const spRenk = v => { if(v.renk === "ozel" && /^[0-9A-F]{6}$/i.test(v.renkOzel || "")){ const h = v.renkOzel.toUpperCase(), b = renkAcik(h) ? h : renkKar(h, "FFFFFF", .78); return { bas: b, yazi: renkKar(h, "000000", .62), genel: renkKar(b, "000000", .05), zebra: renkKar(b, "FFFFFF", .8) }; } return SP_PALET[v.renk] || SP_PALET.deniz; };
 const spStd = (v, b, k) => { const g = spYasGrup(v, k), x = (b.std || {})[g]; return x == null ? "" : String(x); };
 const spStdVar = v => v.branslar.some(b => Object.values(b.std || {}).some(x => String(x).trim() !== ""));
 const spStdAlti = (v, b, k) => { const st = spSayi(b, spStd(v, b, k)), x = spSayi(b, (k.s[b.id] || {}).d); if(st == null || x == null) return null; return b.birim === "sure" ? x > st : x < st; };
@@ -8960,19 +8971,19 @@ function spGenel(v){ const H = v.kisiler.map(k => spKisiHesap(v, k)), kat = v.ki
 const spSayiYaz = n => n == null ? "" : String(n).replace(".", ",");
 const spTarihYaz = v => v.tarih ? v.tarih.split("-").reverse().join(" / ") : `.... / .... / ${new Date().getFullYear()}`;
 /* ---- çıktı: ızgara (PDF / Excel / Word) ---- */
-function spGrid(d){ const v = spVeri(d), nb = v.branslar.length, SK = spStdVar(v) ? 3 : 2, W = 9 + nb * SK, KS = "B5523F", I = { t: 1, b: 1, l: 1, r: 1 }, FB = "E4EEF7", FG = "EAF3EC", FR = "F8E9E6", BAS = "DCE8F4";
+function spGrid(d){ const v = spVeri(d), nb = v.branslar.length, SK = spStdVar(v) ? 3 : 2, W = 9 + nb * SK, KS = "B5523F", I = { t: 1, b: 1, l: 1, r: 1 }, FB = "E4EEF7", FG = "EAF3EC", FR = "F8E9E6", BAS = spRenk(v).bas, PR = spRenk(v);
   const w = [6.5, 15, 19, 11.5, 7, 7.5, ...v.branslar.flatMap(() => SK === 3 ? [7.5, 7.5, 7] : [8, 7.5]), 10, 11, 15], g = { w, h: [], c: [], m: [] };
   const bos = () => Array.from({ length: W }, () => ({})), sat = h => { g.h.push(h); g.c.push(bos()); return g.c.length - 1; };
   const C = (val, o = {}) => ({ v: val ?? "", a: "c", va: "m", s: 8.5, k: "222222", br: I, ...o });
   const koy = (r, c, cs, rs, x) => { g.c[r][c] = x; for(let i = 0; i < rs; i++) for(let j = 0; j < cs; j++) if(i || j) g.c[r + i][c + j] = { br: x.br }; if(cs > 1 || rs > 1) g.m.push([r, c, r + rs - 1, c + cs - 1]); };
   { const L = [v.ust, v.baslik].filter(Boolean), r = sat(14 + L.length * 15); koy(r, 0, W, 1, { v: L.join("\n"), a: "c", va: "m", s: 11, b: 1, k: "1F1F1F", sar: 1, lh: 1.6 }); }   // başlık satırlarının hepsi tek bantta
   { const r = sat(18); koy(r, W - 4, 4, 1, { v: `Test tarihi: ${spTarihYaz(v)}`, a: "r", va: "m", s: 9.5, b: 1, k: "3A4A5C" }); }   // test tarihi bandın altında, sağda
-  const r1 = sat(18), r2 = sat(16), H = { b: 1, f: BAS, s: 8.5, k: "1F3550" };
+  const r1 = sat(18), r2 = sat(16), H = { b: 1, f: BAS, s: 8.5, k: PR.yazi };
   [["Sıra No", 0], ["Rütbesi", 1], ["Adı Soyadı", 2], ["Sicili", 3], ["Doğum", 4], ["Yaş", 5]].forEach(([t, c]) => koy(r1, c, 1, 2, C(t, H)));
   v.branslar.forEach((b, i) => { const c = 6 + i * SK; koy(r1, c, SK, 1, C(b.ad, H)); if(SK === 3) g.c[r2][c] = C("Standart", { ...H, b: 0, s: 7.5, k: KS }); const o = SK - 2; g.c[r2][c + o] = C(SP_BIRIM[b.birim] || "Tekrar", { ...H, b: 0, s: 8 }); g.c[r2][c + o + 1] = C("Puan", { ...H, b: 0, s: 8 }); });
   [["ORTALAMA PUAN", W - 3], ["DURUM", W - 2], ["AÇIKLAMA", W - 1]].forEach(([t, c]) => koy(r1, c, 1, 2, C(t, H)));
   const G = spGenel(v), ilk = g.c.length, harf = c => ltHarf(c);
-  v.kisiler.forEach((k, i) => { const h = G.H[i], r = sat(18), f = i % 2 ? "F7FAFC" : undefined;
+  v.kisiler.forEach((k, i) => { const h = G.H[i], r = sat(18), f = i % 2 ? PR.zebra : undefined;
     [i + 1, k.rutbe, k.ad, k.sicil, spDYil(k) || "", spYasGrup(v, k)].forEach((x, c) => g.c[r][c] = C(x === 0 ? 0 : x || "", { f, ...(c === 2 ? { b: 1 } : {}) }));
     v.branslar.forEach((b, j) => { const c0 = 6 + j * SK, c = c0 + SK - 2, ham = (k.s[b.id] || {}).d ?? "", n = b.birim === "sure" ? null : spSayi(b, ham);
       if(SK === 3){ const st = spStd(v, b, k), sn = b.birim === "sure" ? null : spSayi(b, st); g.c[r][c0] = C(st === "" ? "" : sn != null && !/:/.test(st) ? sn : st, { f, k: KS, b: 1 }); }
@@ -8982,10 +8993,10 @@ function spGrid(d){ const v = spVeri(d), nb = v.branslar.length, SK = spStdVar(v
     g.c[r][W - 2] = C(h.durum, { f, ...(h.durum === "BAŞARILI" ? { rz: FG } : h.durum === "BAŞARISIZ" ? { rz: FR } : {}), b: 1, s: 8, k: h.durum === "BAŞARILI" ? "2E6B41" : h.durum === "BAŞARISIZ" ? "9A3A2E" : "6A6A6A" });
     g.c[r][W - 1] = C(k.aciklama || "", { f, s: 8 }); });
   sat(14); const c0 = 2, ls = Math.max(3, Math.floor((W - 4) / 2)), vs = Math.max(2, W - 4 - ls - 0), vs2 = Math.min(vs, ls);
-  { const r = sat(19); koy(r, c0, ls + vs2, 1, C("GENEL BAŞARI DURUMU", { b: 1, f: "D6E6F5", k: "1F3550", s: 10 })); }
+  { const r = sat(19); koy(r, c0, ls + vs2, 1, C("GENEL BAŞARI DURUMU", { b: 1, f: PR.genel, k: PR.yazi, s: 10 })); }
   const son = ilk + v.kisiler.length;
   [["Toplam Katılan Personel", G.kat], ["Testi Tamamlayan", G.tam], ["Başarılı Personel Sayısı", G.bas], ["Başarısız Personel Sayısı", G.bsz], ["Başarı Oranı (%)", G.oran ?? ""], ["Genel Puan Ortalaması", G.ort ?? ""]].forEach(([t, x], i) => { const r = sat(17);
-    koy(r, c0, ls, 1, C(t, { a: "l", b: 1, s: 8.5, f: i % 2 ? "F5F8FB" : undefined })); koy(r, c0 + ls, vs2, 1, C(x, { b: 1, s: 9, f: i % 2 ? "F5F8FB" : undefined, ...(i === 5 && G.ort != null && v.kisiler.length ? { fx: `=SUM(${harf(W - 3)}${ilk + 1}:${harf(W - 3)}${son})/${G.H.filter(h => h.ort != null).length}` } : {}) })); });
+    koy(r, c0, ls, 1, C(t, { a: "l", b: 1, s: 8.5, f: i % 2 ? PR.zebra : undefined })); koy(r, c0 + ls, vs2, 1, C(x, { b: 1, s: 9, f: i % 2 ? PR.zebra : undefined, ...(i === 5 && G.ort != null && v.kisiler.length ? { fx: `=SUM(${harf(W - 3)}${ilk + 1}:${harf(W - 3)}${son})/${G.H.filter(h => h.ort != null).length}` } : {}) })); });
   hesapla(g); return g; }
 async function sporCikti(d, a, tur){ const g = gridTema(spGrid(d), { seritYok: true }), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
@@ -9006,6 +9017,7 @@ function sporCiz(){ const d = acikBelge(); if(!d || d.tur !== "spor") return; co
     <div class="sp-genel" id="sp-genel">${spGenelHtml(v)}</div>
     <label class="ko-al ko-tam"><span>Birlik</span><textarea class="oto-boy" rows="1" data-sp-g="ust">${esc(v.ust || "")}</textarea></label>
     <label class="ko-al ko-tam"><span>Başlık</span><textarea class="oto-boy" rows="1" data-sp-g="baslik">${esc(v.baslik || "")}</textarea></label>
+    <div class="ko-al ko-tam"><span>Renk</span>${renkSecHtml("data-sp-renk", SP_PALET, v.renk === "ozel" ? "ozel" : (SP_PALET[v.renk] ? v.renk : "deniz"), v.renkOzel)}</div>
     <div class="sp-iki"><label class="ko-al"><span>Test tarihi</span><input type="date" data-sp-g="tarih" value="${esc(v.tarih || "")}"></label><label class="ko-al"><span>Başarı için ortalama en az</span><input inputmode="decimal" data-sp-g="esik" value="${esc(v.esik ?? "")}"></label></div>
     <div class="sa-blok"><div class="yk-gbas"><b>Branşlar</b><small>${v.branslar.length} branş</small></div>
       ${v.branslar.map((b, i) => { const ac = spBransAcik === b.id;
@@ -9051,6 +9063,7 @@ document.addEventListener("change", e => { const el = e.target; if(el.matches &&
 document.addEventListener("focusout", e => { const el = e.target; if(!el.closest || !el.closest("#sp-govde") || !(el.dataset.spK || el.dataset.spB || el.dataset.spG === "esik")) return; setTimeout(() => { if(!odakIcinde("#sp-govde")) sporCiz(); }, 120); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#sp-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d), B = v.branslar, L = v.kisiler, ds = b.dataset;
   const yaz = () => { kaydetBelge(d); sporCiz(); }, yid = p => p + yeniId().slice(0, 6), tas = (A, id, y) => { const i = A.findIndex(x => x.id === id), j = i + +y; if(i < 0 || j < 0 || j >= A.length) return false; [A[i], A[j]] = [A[j], A[i]]; return true; };
+  if(ds.spRenk){ v.renk = ds.spRenk; return yaz(); }
   if(ds.spAc){ spAcik = spAcik === ds.spAc ? null : ds.spAc; return sporCiz(); }
   if(ds.spBac){ spBransAcik = spBransAcik === ds.spBac ? null : ds.spBac; return sporCiz(); }
   if(ds.sp === "kapat"){ spAcik = null; return yaz(); } if(ds.sp === "bkapat"){ spBransAcik = null; return yaz(); }
@@ -9841,11 +9854,21 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.kk){ cdKapali.degis(b.dataset.kk); return candostuCiz(); }
   if(b.dataset.cdI === "oto"){ const eski = kopya(v.elle); v.elle = {}; kaydetBelge(d); candostuCiz(); return geriAlinabilir("Can dostları yeniden dağıtıldı", () => { v.elle = eski; kaydetBelge(d); candostuCiz(); }); } });
 /*CANDOSTU-SON*/
+/* ===== ortak renk seçici: hazır soluk renkler + "Özel" (kendi rengin; diğer tonlar ondan türetilir) ===== */
+const renkAcik = h => { const [r, g, b] = rgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > .62; };
+function renkSecHtml(at, P, secili, ozel){ const oz = /^[0-9A-F]{6}$/i.test(ozel || "") ? ozel.toUpperCase() : "7A8FA6";
+  return `<div class="rs-liste">${Object.entries(P).map(([k, x]) => `<button type="button" class="rs-k" ${at}="${k}" aria-pressed="${secili === k}" title="${esc(x.ad)}"><i style="background:linear-gradient(135deg,#${x.ornek[0]} 50%,#${x.ornek[1]} 50%)"></i><span>${esc(x.ad)}</span></button>`).join("")}<label class="rs-k${secili === "ozel" ? " acik" : ""}" title="Kendi rengin"><input type="color" ${at}-ozel value="#${oz}" aria-label="Özel renk"><i style="background:#${oz}"></i><span>Özel</span></label></div>`; }
 /* ================= KÖPEK TANITMA KARTI (tur: "kopek") =================
    d.kpk = { baslik, ara, iletisim, alanlar: [{ id, et, v, tip? ("cins" | "tarih") }], sorumlu: [{ id, et, pid, ad, rutbe, tel }] }
    Sorumlu personelden seçilirse ad ve rütbe personel listesinden canlı gelir; seçilmezse elle yazılır.
    Çıktı ölçüleri asıl karttan (A4 dikey, 166,7 mm genişlik, Liberation Serif): satır yükseklikleri pt, yazı boyları pt. */
-const KPK_ANA = "1F4E79", KPK_ZEMIN = "E8EFF7", KPK_YAZI = "222222";
+const KPK_YAZI = "222222";
+const KPK_PALET = { asil: { ad: "Lacivert", ana: "1F4E79", yazi: "FFFFFF", zemin: "E8EFF7" }, mavi: { ad: "Açık mavi", ana: "CADCEE", yazi: "1F3A55", zemin: "EEF4FA", cizgi: "6E8DAA" },
+  deniz: { ad: "Deniz", ana: "CDE6E2", yazi: "1E4A47", zemin: "EDF6F4", cizgi: "6A9690" }, cam: { ad: "Çam", ana: "D2E5D4", yazi: "24452B", zemin: "EFF6EF", cizgi: "74967A" },
+  zeytin: { ad: "Zeytin", ana: "E0E3C6", yazi: "45482A", zemin: "F6F7EC", cizgi: "989B6C" }, kum: { ad: "Kum", ana: "ECDFC5", yazi: "5A4626", zemin: "FAF5EB", cizgi: "A88F64" },
+  lavanta: { ad: "Lavanta", ana: "DCD8EE", yazi: "37345C", zemin: "F4F3FA", cizgi: "8580B0" }, gri: { ad: "Gri", ana: "DCE0E5", yazi: "2F3A45", zemin: "F3F5F7", cizgi: "848E99" } };
+Object.values(KPK_PALET).forEach(x => { x.cizgi ||= x.ana; x.ornek = [x.ana, x.zemin]; });
+const kpkRenk = v => { if(v.renk === "ozel" && /^[0-9A-F]{6}$/i.test(v.renkOzel || "")){ const h = v.renkOzel.toUpperCase(), a = renkAcik(h); return { ana: h, yazi: a ? renkKar(h, "000000", .72) : "FFFFFF", zemin: renkKar(h, "FFFFFF", .87), cizgi: a ? renkKar(h, "000000", .4) : h }; } return KPK_PALET[v.renk] || KPK_PALET.asil; };
 const kpkId = () => "k" + yeniId().slice(-6);
 const KPK_VARSAY = () => ({ baslik: "KÖPEK TANITMA KARTI", ara: "SORUMLU PERSONEL", iletisim: "İLETİŞİM",
   alanlar: [{ id: kpkId(), et: "ADI", v: "" }, { id: kpkId(), et: "CİNSİYET", v: "", tip: "cins" }, { id: kpkId(), et: "DOĞUM TARİHİ", v: "", tip: "tarih" }, { id: kpkId(), et: "BRANŞI", v: "SENSÖR KÖPEK" }],
@@ -9855,10 +9878,10 @@ const kpkKisi = s => { const p = s.pid ? (S.personel.rows || []).find(x => x.id 
 const kpkAdi = v => ((v.alanlar.find(a => /^ADI$/i.test((a.et || "").trim())) || v.alanlar[0] || {}).v || "").trim();
 const kpkTel = t => { const n = String(t || "").replace(/\D/g, ""); return n.length === 11 && n[0] === "0" ? `${n[0]} ${n.slice(1, 4)} ${n.slice(4, 7)} ${n.slice(7, 9)} ${n.slice(9)}` : n.length === 10 && n[0] === "5" ? `0 ${n.slice(0, 3)} ${n.slice(3, 6)} ${n.slice(6, 8)} ${n.slice(8)}` : String(t || "").trim(); };
 const kpkTarih = t => { const n = String(t || "").replace(/\D/g, "").slice(0, 8); return [n.slice(0, 2), n.slice(2, 4), n.slice(4)].filter(Boolean).join("."); };
-function kpkGrid(d){ const v = kpkVeri(d), B = { t: 1, b: 1, l: 1, r: 1 }, g = { w: [43.86, 43.86], h: [], c: [], m: [] };
+function kpkGrid(d){ const v = kpkVeri(d), RK = kpkRenk(v), KPK_ANA = RK.ana, KPK_ZEMIN = RK.zemin, B = { t: 1, b: 1, l: 1, r: 1 }, g = { w: [43.86, 43.86], h: [], c: [], m: [] };
   const sat = (h, a, b) => { g.h.push(h); g.c.push([a, b === undefined ? { br: a.br } : b]); if(b === undefined) g.m.push([g.c.length - 1, 0, g.c.length - 1, 1]); };
   const H = (t, o = {}) => ({ v: t ?? "", a: "c", va: "m", s: 14.25, k: KPK_YAZI, br: B, ...o });
-  const bant = (t, s) => H(t, { f: KPK_ANA, k: "FFFFFF", b: 1, s });
+  const bant = (t, s) => H(t, { f: KPK_ANA, k: RK.yazi, b: 1, s });
   g.h.push(25.5); g.c.push([{}, {}]);   // üst boşluk: kart sayfanın 30,7 mm'sinden başlar
   sat(61.5, bant(v.baslik, 18.75));
   v.alanlar.forEach(a => sat(66, H((a.et || "").trim() ? `${a.et.trim()} :` : "", { a: "l", gl: 3.6, b: 1, f: KPK_ZEMIN }), H(a.v)));
@@ -9866,16 +9889,16 @@ function kpkGrid(d){ const v = kpkVeri(d), B = { t: 1, b: 1, l: 1, r: 1 }, g = {
     v.sorumlu.forEach((s, i) => { const k = kpkKisi(s);
       sat(48, H(s.et, { b: 1, f: KPK_ZEMIN }), H(i === 0 ? v.iletisim : "", { b: 1, f: KPK_ZEMIN }));
       sat(96, H([k.ad, k.rutbe].filter(Boolean).join("\n"), { lh: 1.47 }), H(kpkTel(s.tel))); }); }
-  g.tema = { ana: KPK_ANA, cizgi: KPK_ANA, ince: 0.26, cerceve: 0.45, rd: 1.8 };
+  g.tema = { ana: RK.cizgi, cizgi: RK.cizgi, ince: 0.26, cerceve: 0.45, rd: 1.8 };
   return g; }
 async function kopekCikti(d, a, tur){ const a2 = { ...a, yon: "dikey", kagit: "A4", sigdir: "tek", baslikSatir: 0, satir: 1, yazi: 1, kenar: 21.7, kenarSol: 21.7, kenarAlt: undefined, delgec: false, doldur: false, altBilgi: null }, sahte = { ...d, grid: kpkGrid(d) };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
-function kpkOnHtml(d){ const g = kpkGrid(d), k = .19, son = g.c.length - 1;   // 1 pt ≈ 0,19 cqw (kart 472 pt ≈ kağıdın %90'ı)
+function kpkOnHtml(d){ const g = kpkGrid(d), KPK_ANA = g.tema.cizgi, k = .19, son = g.c.length - 1;   // 1 pt ≈ 0,19 cqw (kart 472 pt ≈ kağıdın %90'ı)
   let h = ""; g.c.forEach((row, r) => { if(!r) return; const birlesik = g.m.some(m => m[0] === r); h += `<tr style="height:${(g.h[r] * k).toFixed(2)}cqw">`;
     row.forEach((x, c) => { if(birlesik && c) return; const sag = !birlesik && c === 0, alt = r < son;
       h += `<td${birlesik ? ' colspan="2"' : ""} style="${x.f ? `background:#${x.f};` : ""}${sag ? `border-right:.13cqw solid #${KPK_ANA};` : ""}${alt ? `border-bottom:.13cqw solid #${KPK_ANA};` : ""}font-weight:${x.b ? 700 : 400};text-align:${x.a === "l" ? "left" : "center"};${x.a === "l" ? `padding-left:${(5.3 / 166.7 * 100).toFixed(2)}cqw;` : ""}color:#${x.k || KPK_YAZI};font-size:${((x.s || 14.25) * k).toFixed(2)}cqw;line-height:${x.lh || 1.15}">${esc(x.v ?? "").replace(/\n/g, "<br>")}</td>`; });
     h += "</tr>"; });
-  return `<div class="kpk-kart"><table>${h}</table></div>`; }
+  return `<div class="kpk-kart" style="border-color:#${KPK_ANA}"><table>${h}</table></div>`; }
 const kpkKapali = kkKume("kpkKapali", ["kpk-bas"]);
 function kopekCiz(){ const d = acikBelge(); if(!d || d.tur !== "kopek") return; const v = kpkVeri(d);
   const deger = (a, i) => a.tip === "cins" ? `<div class="kpk-seg">${["ERKEK", "DİŞİ"].map(t => `<button type="button" data-kpk-cins="${i}" data-v="${t}" aria-pressed="${a.v === t}">${t === "ERKEK" ? "Erkek" : "Dişi"}</button>`).join("")}</div>`
@@ -9890,6 +9913,7 @@ function kopekCiz(){ const d = acikBelge(); if(!d || d.tur !== "kopek") return; 
     <div class="kp-onizle"><div class="mz-kagit kpk-kagit">${kpkOnHtml(d)}</div></div>
     ${kkKart("kpk-bilgi", "#E4EDF6", "Köpek bilgileri", `${v.alanlar.length} alan`, `<div class="kpk-alanlar">${alanlar}<button type="button" class="tz-hafif kpk-ekle" data-kpk-i="alan">＋ Alan ekle</button></div>`, { kume: kpkKapali })}
     ${kkKart("kpk-sor", "#E6F0E8", "Sorumlu personel", `${v.sorumlu.length} kişi`, `<div class="kpk-alanlar">${sorumlu}<button type="button" class="tz-hafif kpk-ekle" data-kpk-i="sorumlu">＋ Sorumlu ekle</button></div>`, { kume: kpkKapali })}
+    ${kkKart("kpk-renk", "#EEF0F6", "Renk", v.renk === "ozel" ? "özel renk" : (KPK_PALET[v.renk] || KPK_PALET.asil).ad, `<div class="kp-alanlar">${renkSecHtml("data-kpk-renk", KPK_PALET, v.renk === "ozel" ? "ozel" : (KPK_PALET[v.renk] ? v.renk : "asil"), v.renkOzel)}</div>`, { kume: kpkKapali })}
     ${kkKart("kpk-bas", "#F2F4F7", "Başlıklar", "", `<div class="kp-alanlar"><label class="ko-al"><span>Kart başlığı</span><input data-kpk-g="baslik" value="${esc(v.baslik || "")}"></label><label class="ko-al"><span>Ara başlık</span><input data-kpk-g="ara" value="${esc(v.ara || "")}"></label><label class="ko-al"><span>İletişim sütunu</span><input data-kpk-g="iletisim" value="${esc(v.iletisim || "")}"></label></div>`, { kume: kpkKapali })}`; }
 const kpkOnizleYenile = d => { const k = $("#kpk-govde .kpk-kagit"); if(k) k.innerHTML = kpkOnHtml(d); };
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#kpk-govde")) return; const d = acikBelge(); if(!d || d.tur !== "kopek") return; const v = kpkVeri(d), ds = el.dataset;
@@ -9899,10 +9923,13 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
   else if(ds.kpkS){ const [i, k] = ds.kpkS.split(":"), s = v.sorumlu[+i]; if(!s) return; s[k] = el.value; }
   else if(ds.kpkG){ v[ds.kpkG] = el.value; }
   else return; kaydetBelge(d); kpkOnizleYenile(d); });
+document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#kpk-govde [data-kpk-renk-ozel]")) return; const d = acikBelge(); if(!d || d.tur !== "kopek") return; const v = kpkVeri(d); v.renk = "ozel"; v.renkOzel = el.value.replace("#", "").toUpperCase(); el.nextElementSibling.style.background = el.value; kaydetBelge(d); kpkOnizleYenile(d); });
+document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches("#kpk-govde [data-kpk-renk-ozel]")) return; if(acikBelge()?.tur === "kopek") kopekCiz(); });
 document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches('#kpk-govde [data-kpk-s$=":tel"]')) return; const d = acikBelge(); if(!d || d.tur !== "kopek") return; const s = kpkVeri(d).sorumlu[+el.dataset.kpkS.split(":")[0]]; if(!s) return; s.tel = el.value = kpkTel(el.value); kaydetBelge(d); kpkOnizleYenile(d); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#kpk-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kopek") return; const v = kpkVeri(d), ds = b.dataset;
   if(ds.kk){ kpkKapali.degis(ds.kk); return kopekCiz(); }
-  if(ds.kpkCins != null){ const a = v.alanlar[+ds.kpkCins]; if(!a) return; a.v = a.v === ds.v ? "" : ds.v; }
+  if(ds.kpkRenk){ v.renk = ds.kpkRenk; }
+  else if(ds.kpkCins != null){ const a = v.alanlar[+ds.kpkCins]; if(!a) return; a.v = a.v === ds.v ? "" : ds.v; }
   else if(ds.kpkI === "alan"){ v.alanlar.push({ id: kpkId(), et: "", v: "" }); kaydetBelge(d); kopekCiz(); return setTimeout(() => { const L = document.querySelectorAll("#kpk-govde [data-kpk-et]"); L[L.length - 1]?.focus(); }, 30); }
   else if(ds.kpkI === "sorumlu"){ v.sorumlu.push({ id: kpkId(), et: "SORUMLU", pid: "", ad: "", rutbe: "", tel: "" }); }
   else if(ds.kpkSil != null){ const i = +ds.kpkSil, eski = v.alanlar[i]; if(!eski) return; v.alanlar.splice(i, 1); kaydetBelge(d); kopekCiz(); return geriAlinabilir(`${eski.et || "Alan"} silindi`, () => { v.alanlar.splice(i, 0, eski); kaydetBelge(d); kopekCiz(); }); }
@@ -9913,6 +9940,8 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
       if(!eskiTel){ const t = S.belgeler.filter(x => x.tur === "kopek" && x.kpk).flatMap(x => x.kpk.sorumlu || []).find(y => y.pid === pid && y.tel); if(t) s.tel = t.tel; }   // aynı kişinin başka karttaki telefonu
       kaydetBelge(d); kopekCiz(); }); }
   else return; kaydetBelge(d); kopekCiz(); });
+document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#sp-govde [data-sp-renk-ozel]")) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d); v.renk = "ozel"; v.renkOzel = el.value.replace("#", "").toUpperCase(); el.nextElementSibling.style.background = el.value; kaydetBelge(d); });
+document.addEventListener("change", e => { const el = e.target; if(el.matches && el.matches("#sp-govde [data-sp-renk-ozel]") && acikBelge()?.tur === "spor") sporCiz(); });
 /*KOPEK-SON*/
 
 /*TEBLIG*/
