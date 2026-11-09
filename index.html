@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "348";
+  const SURUM = "349";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -957,7 +957,7 @@ input.bul-isik,textarea.bul-isik,td.bul-isik input,td.bul-isik textarea,.bul-isi
 html.imz-acik,html.imz-acik body{overflow:hidden}
 .prc-kart{width:min(560px,100%)}
    
-#tr-perde{z-index:130!important} #sc-perde{z-index:130}
+#tr-perde{z-index:130!important} #sc-perde{z-index:130} #sil-perde{z-index:200!important}   /* onay penceresi, onu açan pencerenin hep üstünde */
 #g-tablo td.bkm{cursor:pointer} #g-tablo td.bkm:hover{outline:2px solid #9FB6CC;outline-offset:-2px}
 .bkm-turler{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px;margin-bottom:12px}
 .bkm-turler button{display:flex;flex-direction:column;align-items:flex-start;gap:2px;padding:12px;border-radius:14px;border:1px solid var(--line);background:var(--panel);font:inherit;color:var(--fg);cursor:pointer;position:relative;text-align:left;transition:all .18s}
@@ -2629,7 +2629,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 348</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 349</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3640,7 +3640,7 @@ async function arsivIndir(){ const K = S.yapi.klasorler, isler = [], tem = s => 
   catch(e){ P.kapat(); uyar("Arşiv hazırlanamadı: " + (e.message || e), true); } }
 document.addEventListener("click", e => { if(e.target.closest && e.target.closest("#arsiv-indir")) arsivIndir(); });
 /* ===== silmeden önce onay: sistemdeki bütün sil düğmeleri önce bu pencereyi açar ===== */
-const SIL_SEC = '[data-yi-sil], button.sil:not([data-bkm="elle"]), button.imz-sil:not([data-bkm="elle"]), .yk-ek-sil, .tz-sil-arka, .tt-sil, [data-ap-sil], [data-mz-sil], [data-is="sil"], #bl-kes, #bl-sifirla';
+const SIL_SEC = '[data-yi-sil], button.sil:not([data-bkm="elle"]):not([data-tr]), button.imz-sil:not([data-bkm="elle"]), .yk-ek-sil, .tz-sil-arka, .tt-sil, [data-ap-sil], [data-mz-sil], [data-is="sil"], #bl-kes, #bl-sifirla';
 function silAd(b){ const k = b.closest(".kart, .yk-k, tr, .kc-sat, .bs-k, .kp-b, .sp-cr, .ap-kart, .tb-k, li, .gi-blok, .akk"); if(!k) return "";
   const a = k.querySelector(".ad, .p-oy b, .kc-sy b, .bkk-sy .ad, h3, b, strong"); const x = a ? (a.querySelector("input,textarea") ? a.querySelector("input,textarea").value : a.textContent) : ""; return String(x || "").trim().slice(0, 70); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(SIL_SEC); if(!b || b.disabled || b.__onayli) return; e.preventDefault(); e.stopImmediatePropagation();
