@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "355";
+  const SURUM = "356";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2656,7 +2656,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 355</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 356</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6978,8 +6978,8 @@ async function gridPdf(d, a){
         const dikey = !!x.rot; const genis = dikey ? Hc - 2 * pad : Wc - 2 * pad, yuksek = dikey ? Wc - 2 * pad : Hc - 2 * pad;
         /* yazı küçültülür: hem yüksekliğe sığsın hem hiçbir kelime ortadan bölünmesin (en uzun kelime hücre genişliğine sığana kadar) */
         const kelime = String(t).split(/[\s\n]+/).filter(Boolean);
-        let sat; for(let deneme = 0; deneme < 40; deneme++){ doc.setFontSize(fs); sat = doc.splitTextToSize(t, Math.max(1, genis)); const kw = Math.max(0, ...kelime.map(k => doc.getTextWidth(k))); if((sat.length * fs * 0.3528 * 1.12 <= yuksek + 0.3 && kw <= genis + 0.05) || fs < 3.5) break; fs *= 0.94; }
-        const lh = fs * 0.3528 * 1.12, blok = sat.length * lh; const hz = { l: "left", r: "right" }[x.a] || (x.a ? "center" : (typeof x.v === "number" ? "right" : "left"));
+        let sat; for(let deneme = 0; deneme < 40; deneme++){ doc.setFontSize(fs); sat = doc.splitTextToSize(t, Math.max(1, genis)); const kw = Math.max(0, ...kelime.map(k => doc.getTextWidth(k))); if((sat.length * fs * 0.3528 * (x.lh || 1.12) <= yuksek + 0.3 && kw <= genis + 0.05) || fs < 3.5) break; fs *= 0.94; }
+        const lh = fs * 0.3528 * (x.lh || 1.12), blok = sat.length * lh; const hz = { l: "left", r: "right" }[x.a] || (x.a ? "center" : (typeof x.v === "number" ? "right" : "left"));
         if(!dikey && (x.vr || x.u)){ pdfZengin(doc, x, t, X, Y, Wc, Hc, pad, (x.s || 11) * s * a.yazi, hz); }
         else if(dikey){ const bx = X + Wc / 2 - blok / 2 + lh * 0.78;   // jsPDF açılı yazıda "align" uygulamaz: ortalamayı elle yap; ilk satır solda (aşağıdan yukarı okunur)
           sat.forEach((ln, i) => doc.text(ln, bx + i * lh, Y + Hc / 2 + doc.getTextWidth(ln) / 2, { angle: 90 })); }
@@ -8933,9 +8933,8 @@ function spGrid(d){ const v = spVeri(d), nb = v.branslar.length, W = 9 + nb * 2,
   const bos = () => Array.from({ length: W }, () => ({})), sat = h => { g.h.push(h); g.c.push(bos()); return g.c.length - 1; };
   const C = (val, o = {}) => ({ v: val ?? "", a: "c", va: "m", s: 8.5, k: "222222", br: I, ...o });
   const koy = (r, c, cs, rs, x) => { g.c[r][c] = x; for(let i = 0; i < rs; i++) for(let j = 0; j < cs; j++) if(i || j) g.c[r + i][c + j] = { br: x.br }; if(cs > 1 || rs > 1) g.m.push([r, c, r + rs - 1, c + cs - 1]); };
-  if(v.ust){ const r = sat(22); koy(r, 0, W, 1, { v: v.ust, a: "c", va: "m", s: 12.5, b: 1, k: "1F1F1F" }); }
-  { const r = sat(20); koy(r, 0, W, 1, { v: v.baslik, a: "c", va: "m", s: 11.5, b: 1, k: "1F1F1F" }); }
-  sat(8); { const r = sat(18); koy(r, 0, W, 1, { v: `TEST TARİHİ: ${spTarihYaz(v)}`, a: "c", va: "m", s: 10, b: 1, k: "1F1F1F" }); } sat(8);
+  { const L = [v.ust, v.baslik].filter(Boolean), r = sat(14 + L.length * 15); koy(r, 0, W, 1, { v: L.join("\n"), a: "c", va: "m", s: 11, b: 1, k: "1F1F1F", sar: 1, lh: 1.6 }); }   // başlık satırlarının hepsi tek bantta
+  { const r = sat(18); koy(r, W - 4, 4, 1, { v: `Test tarihi: ${spTarihYaz(v)}`, a: "r", va: "m", s: 9.5, b: 1, k: "3A4A5C" }); }   // test tarihi bandın altında, sağda
   const r1 = sat(18), r2 = sat(16), H = { b: 1, f: BAS, s: 8.5, k: "1F3550" };
   [["Sıra No", 0], ["Rütbesi", 1], ["Adı Soyadı", 2], ["Sicili", 3], ["Doğum", 4], ["Yaş", 5]].forEach(([t, c]) => koy(r1, c, 1, 2, C(t, H)));
   v.branslar.forEach((b, i) => { const c = 6 + i * 2; koy(r1, c, 2, 1, C(b.ad, H)); g.c[r2][c] = C(SP_BIRIM[b.birim] || "Tekrar", { ...H, b: 0, s: 8 }); g.c[r2][c + 1] = C("Puan", { ...H, b: 0, s: 8 }); });
