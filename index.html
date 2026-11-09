@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "360";
+  const SURUM = "361";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2685,7 +2685,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 360</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 361</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3844,9 +3844,10 @@ function yeniTablo(){
 }
 
 /* ================= sayfa ayarları ================= */
+const VARSAY_YON = { spor: "yatay" };   // seçilmemişse bu yönle başlar (değiştirilebilir)
 function etkinAyar(d, kId){
   const k = klasorBul(kId) || {}; const a = d.ayar || {}; const o = (a.k || {})[kId] || {};
-  return { kagit: "A4", yon: o.yon || a.yon || "dikey", delgec: o.delgec ?? k.delgec ?? false,
+  return { kagit: "A4", yon: o.yon || a.yon || VARSAY_YON[d.tur] || "dikey", delgec: o.delgec ?? k.delgec ?? false,
     sigdir: a.sigdir || "tek", baslikSatir: a.baslikSatir ?? 0, yazi: a.yazi || 1, satir: a.satir || 1, hsayfa: a.hsayfa ?? 0,
     yerlesim: o.yerlesim || k.yerlesim || 1, kesme: o.kesme ?? true, cogalt: o.cogalt ?? false };
 }
@@ -3855,7 +3856,7 @@ function ayarYaz(d, kId, alan, deger){
 }
 const ayarOzet = a => `${a.kagit} ${a.yon === "yatay" ? "yatay" : "dikey"} · delgeç ${a.delgec ? (a.yon === "yatay" ? "üstte" : "solda") : "yok"}${(a.yerlesim || 1) > 1 ? ` · A4'e ${a.yerlesim}'${yerEk(a.yerlesim)}` : ""}`;
 /* yönü kendi düzenine bağlı belgeler: ayar panelinde yalnız delgeç payı gösterilir */
-const SABIT_YON = { kimlik: "yatay", sportakip: "dikey", spor: "yatay", mevzi: "yatay", candostu: "yatay", karsilama: "yatay", kadro: "dikey" };
+const SABIT_YON = { kimlik: "yatay", sportakip: "dikey", mevzi: "yatay", candostu: "yatay", karsilama: "yatay", kadro: "dikey" };
 document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target.matches && e.target.matches("textarea[data-kp-bad]")){ e.preventDefault(); e.target.blur(); } });
 let dAyarAcik = (() => { try { return localStorage.getItem("dAyarAcik") === "1"; } catch(e){ return false; } })();
 document.addEventListener("click", e => { if(!e.target.closest || !e.target.closest("#d-ayar-ac")) return; dAyarAcik = !dAyarAcik; try { localStorage.setItem("dAyarAcik", dAyarAcik ? "1" : "0"); } catch(_){} ayarCiz(); });
@@ -6970,7 +6971,7 @@ async function gridPdf(d, a){
   const cw = g.w.map(w => w * 1.9), rh = g.h.map(h => h * 0.3528 * a.satir);
   const TW = cw.reduce((x, y) => x + y, 0), TH = rh.reduce((x, y) => x + y, 0);
   let s = uw / TW; if(a.sigdir === "tek") s = Math.min(s, uh / TH);
-  if((a.sigdir === "tek" || (TH * s <= uh && !(g.sb || []).length)) && a.doldur !== false){ const e = Math.min(1.8, uh / (TH * s)); if(e > 1.03) for(let i = 0; i < rh.length; i++) rh[i] *= e * 0.985; }   // geniş tablo sayfanın yarısında kalmasın: satırları sayfa boyuna yay (yazı aynı)
+  if((a.sigdir === "tek" || (TH * s <= uh && !(g.sb || []).length)) && a.doldur !== false){ const e = Math.min(a.doldurMax || 1.8, uh / (TH * s)); if(e > 1.03) for(let i = 0; i < rh.length; i++) rh[i] *= e * 0.985; }   // geniş tablo sayfanın yarısında kalmasın: satırları sayfa boyuna yay (yazı aynı)
   const kap = kapsananlar(g); const hr = a.sigdir === "bol" ? Math.min(a.baslikSatir || 0, g.c.length) : 0;
   // sayfa bölme: birleşik hücre bölünmeden
   const bolunur = r => !(g.m || []).some(([r1, , r2]) => r1 < r && r <= r2);
@@ -8999,7 +9000,7 @@ function spGrid(d){ const v = spVeri(d), nb = v.branslar.length, SK = spStdVar(v
   [["Toplam Katılan Personel", G.kat], ["Testi Tamamlayan", G.tam], ["Başarılı Personel Sayısı", G.bas], ["Başarısız Personel Sayısı", G.bsz], ["Başarı Oranı (%)", G.oran ?? ""], ["Genel Puan Ortalaması", G.ort ?? ""]].forEach(([t, x], i) => { const r = sat(17);
     koy(r, c0, ls, 1, C(t, { a: "l", b: 1, s: 8.5, f: i % 2 ? PR.zebra : undefined })); koy(r, c0 + ls, vs2, 1, C(x, { b: 1, s: 9, f: i % 2 ? PR.zebra : undefined, ...(i === 5 && G.ort != null && v.kisiler.length ? { fx: `=SUM(${harf(W - 3)}${ilk + 1}:${harf(W - 3)}${son})/${G.H.filter(h => h.ort != null).length}` } : {}) })); });
   hesapla(g); return g; }
-async function sporCikti(d, a, tur){ const g = gridTema(spGrid(d), { seritYok: true }), a2 = { ...a, yon: "yatay", sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
+async function sporCikti(d, a, tur){ const g = gridTema(spGrid(d), { seritYok: true }), a2 = { ...a, yon: a.yon || "yatay", doldurMax: a.yon === "dikey" ? 2.6 : 1.8, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
 /* ---- puan cetveli: satır = puan, sütun = yaş grubu, hücre = gereken tekrar / süre / mesafe ---- */
 const spSeviye = b => [...new Set([...(b.puanlar || []), ...b.cetvel.map(r => +r.puan)].filter(x => isFinite(x)))].sort((a, c) => c - a);
