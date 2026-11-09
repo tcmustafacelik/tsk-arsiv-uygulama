@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "371";
+  const SURUM = "372";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2684,6 +2684,8 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .rk-cub input{-webkit-appearance:none;appearance:none;width:100%;height:22px;border-radius:8px;background:var(--tr);border:1px solid rgba(0,0,0,.08);margin:0}
 .rk-cub input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:26px;border-radius:6px;background:#fff;border:2px solid #4A5868;box-shadow:0 1px 3px rgba(0,0,0,.2)} .rk-cub input::-moz-range-thumb{width:16px;height:24px;border-radius:6px;background:#fff;border:2px solid #4A5868}
 .rk-tamam{width:100%;margin-top:14px;height:44px;border:0;border-radius:10px;background:#4A5868;color:#fff;font:700 14.5px var(--f-ui);cursor:pointer}
+.yk-top .sq-ac,.yk-top .ts-ac{justify-self:start;width:auto} .sq-ac{white-space:nowrap}
+.sq-ik{width:30px;height:30px;border-radius:8px;background:#EEF0F6;display:inline-flex;align-items:center;justify-content:center;font:700 14px var(--f-ui);color:#4A5868;flex:none}
 </style>
 
 </head>
@@ -2721,7 +2723,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 371</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 372</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4267,7 +4269,39 @@ function tsUygula(){ for(const [key, c] of Object.entries(TS)){ const kap = docu
     const tum = R.map(c.id).filter(x => x != null), n = sec.size, h = `<button type="button" class="btn kucuk" data-ts-hepsi="${key}">${tum.length && tum.every(x => sec.has(x)) ? "Hiçbirini seçme" : "Tümünü seç"}</button>${c.bos ? `<button type="button" class="btn kucuk" data-ts-bos="${key}">Boş olanlar</button>` : ""}<span>${n} ${c.ad} seçili</span>${(c.ek || []).map(([t], j) => `<button type="button" class="btn kucuk" data-ts-ek="${key}:${j}"${n ? "" : " disabled"}>${t}</button>`).join("")}<button type="button" class="btn sil kucuk" data-ts-sil="${key}"${n ? "" : " disabled"} aria-label="Seçilen ${n} ${c.ad} silinecek">Seçilenleri sil${n ? ` (${n})` : ""}</button>`;
     if(!bar || !bar.isConnected){ const [bs, by] = c.bar || [c.kap, "beforebegin"], by2 = document.querySelector(bs) || kap; by2.insertAdjacentHTML(by, `<div class="ts-bar" data-ts="${key}"></div>`); bar = document.querySelector(`.ts-bar[data-ts="${key}"]`); }
     if(bar.__h !== h){ bar.__h = h; bar.innerHTML = h; } } }
-let tsZaman = 0; new MutationObserver(() => { if(tsZaman) return; tsZaman = requestAnimationFrame(() => { tsZaman = 0; try { tsUygula(); } catch(e){} }); }).observe(document.body, { childList: true, subtree: true });
+/* ===== sıra kısayolları (ortak): "⇅ Sırala" → rütbe ve kıdeme göre sırala · varsayılana dön · bu sırayı varsayılan yap ve kilitle =====
+   Yeni bir listeye bağlamak için SQ'ye bir satır eklemek yeter: { dizi(), tut() (varsayılan/kilit orada saklanır), kaydet(), ciz(), dugme: [seçici, konum] } */
+const sqTur = tur => { const d = acikBelge(); return d && d.tur === tur ? d : null; };
+const SQ = {
+  yoklama: { dizi: () => YS().rows, tut: () => YS(), kaydet: () => ykKaydet(), ciz: () => yoklamaCiz(), dugme: ["#yk-kart .yk-top", "beforeend"] },
+  izinb: { dizi: () => S.izinb.kisiler || [], tut: () => S.izinb, kaydet: () => kaydetBt("izinb"), ciz: () => izbhCiz(), dugme: ["#izb-kisiler .dl-ust .dl-yeni", "beforebegin"] },
+  gdhg: { dizi: () => S.gdhg.kisiler || [], tut: () => S.gdhg, kaydet: () => kaydetBt("gdhg"), ciz: () => gdBelgeCiz(), dugme: ['#gd-kisiler [data-gd="kisi-ekle"]', "beforebegin"] },
+  spor: { dizi: () => spVeri(sqTur("spor")).kisiler, tut: () => spVeri(sqTur("spor")), kaydet: () => kaydetBelge(sqTur("spor")), ciz: () => sporCiz(), dugme: ['#sp-govde [data-sp="ekle"]', "beforebegin"], var: () => !!sqTur("spor") },
+  sicil: { dizi: () => saVeri(sqTur("sicil")).kisiler, tut: () => saVeri(sqTur("sicil")), kaydet: () => kaydetBelge(sqTur("sicil")), ciz: () => sicilCiz(), dugme: ['#sa-govde [data-sa="ekle"], [data-sa="ekle"]', "beforebegin"], var: () => !!sqTur("sicil") } };
+/* sıralama için kişinin rütbe ve sicili: satırda yoksa personel listesinden */
+const sqKisi = x => { const p = (S.personel.rows || []).find(y => (x.pid && y.id === x.pid) || (x.ad && y.ad && pAd(y.ad) === pAd(x.ad))) || {}; return { ...x, rutbe: x.rutbe || p.rutbe || "", sicil: x.sicil || p.sicil || "", ad: x.ad || p.ad || "" }; };
+const sqKars = (a, b) => cdKidem(sqKisi(a), sqKisi(b));
+function sqUygula(){ for(const [k, c] of Object.entries(SQ)){ if(c.var && !c.var()) continue; const yer = document.querySelector(c.dugme[0]); if(!yer) continue;
+    let b = document.querySelector(`[data-sq-ac="${k}"]`); const T = c.tut() || {}, t = T.srKilit ? "🔒 Sıra" : "⇅ Sırala";
+    if(!b || !b.isConnected){ yer.insertAdjacentHTML(c.dugme[1], `<button type="button" class="btn kucuk sq-ac" data-sq-ac="${k}"></button>`); b = document.querySelector(`[data-sq-ac="${k}"]`); }
+    if(b && b.textContent !== t) b.textContent = t; } }
+function sqPencere(k){ const c = SQ[k]; if(!c) return;
+  const durum = () => { const T = c.tut(), A = c.dizi(), V = T.srVar || [], ids = A.map(x => x.id); return { T, A, V, kilit: !!T.srKilit, ayniVar: V.length && V.join() === ids.filter(id => V.includes(id)).join(), rutbede: ids.join() === [...A].sort(sqKars).map(x => x.id).join() }; };
+  altPencere("sq-perde", "SIRALAMA", () => { const D = durum(); return D.kilit ? "Sıra kilitli" : D.rutbede ? "Liste rütbe sırasında" : "Listenin sırası"; }, () => { const D = durum();
+    return `<div class="ap-liste">${apSatir('data-sq="rutbe"', '<span class="sq-ik">⇅</span>', "Rütbe ve kıdeme göre sırala", "", { alt: D.kilit ? "önce kilidi aç" : D.rutbede ? "liste zaten bu sırada" : "rütbe → sicil (eski önce) → ad", kapali: D.kilit || D.rutbede })}
+      ${apSatir('data-sq="don"', '<span class="sq-ik">↺</span>', "Varsayılan sıraya dön", "", { alt: !D.V.length ? "henüz varsayılan sıra kaydedilmedi" : D.ayniVar ? "liste zaten varsayılan sırada" : "kaydettiğin sıraya geri döner", kapali: !D.V.length || D.kilit || D.ayniVar })}
+      ${apSatir('data-sq="kilit"', `<span class="sq-ik">${D.kilit ? "🔓" : "🔒"}</span>`, D.kilit ? "Sıra kilidini aç" : "Bu sırayı varsayılan yap ve kilitle", "", { alt: D.kilit ? "varsayılan sıra saklı kalır" : "yeni kişiler eklense de bu sıra hatırlanır" })}</div>
+      <div class="tz-not2">Satırları elle taşıyıp istediğin sırayı da varsayılan yapabilirsin; "Varsayılan sıraya dön" her zaman o sıraya getirir.</div>`; }, (b, kapat, yenile) => {
+    const D = durum(), A = D.A, T = D.T, geri = anlik(A), ilk = A.map(x => x.id).join();
+    if(b.dataset.sq === "kilit"){ if(T.srKilit) delete T.srKilit; else { T.srKilit = 1; T.srVar = A.map(x => x.id); } c.kaydet(); c.ciz(); kapat(); return bildir(T.srKilit ? "Bu sıra varsayılan olarak kaydedildi ve kilitlendi" : "Sıra kilidi açıldı · varsayılan sıra saklı"); }
+    if(D.kilit) return;
+    if(b.dataset.sq === "rutbe") A.sort(sqKars);
+    else if(b.dataset.sq === "don"){ const V = T.srVar || [], sira = id => { const i = V.indexOf(id); return i < 0 ? 1e6 : i; }; A.sort((x, y) => sira(x.id) - sira(y.id)); }
+    else return;
+    if(A.map(x => x.id).join() === ilk){ kapat(); return bildir("Liste zaten bu sırada"); }
+    c.kaydet(); c.ciz(); kapat(); geriAlinabilir(b.dataset.sq === "rutbe" ? "Rütbe ve kıdeme göre sıralandı" : "Varsayılan sıraya dönüldü", () => { geri(); c.kaydet(); c.ciz(); }); }, { z: "EEF0F6", r: "4A5868" }); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-sq-ac]"); if(!b) return; e.preventDefault(); e.stopPropagation(); sqPencere(b.dataset.sqAc); }, true);
+let tsZaman = 0; new MutationObserver(() => { if(tsZaman) return; tsZaman = requestAnimationFrame(() => { tsZaman = 0; try { tsUygula(); } catch(e){} try { sqUygula(); } catch(e){} }); }).observe(document.body, { childList: true, subtree: true });
 document.addEventListener("click", e => { const t = e.target; if(!t.closest) return;
   const ac = t.closest("[data-ts-ac]"); if(ac){ e.preventDefault(); e.stopPropagation(); const k = ac.dataset.tsAc; tsSec[k] = tsSec[k] ? null : new Set(); for(const x in tsSec) if(x !== k) tsSec[x] = null; tsUygula(); return; }
   const hp = t.closest("[data-ts-hepsi]"); if(hp){ const k = hp.dataset.tsHepsi, c = TS[k], kap = document.querySelector(c.kap), tum = [...kap.querySelectorAll(c.satir)].map(c.id).filter(x => x != null); tsSec[k] = tum.every(x => tsSec[k].has(x)) ? new Set() : new Set(tum); tsUygula(); return; }
@@ -5211,8 +5245,8 @@ function gdSecici(k, soz){ const L = gdGrupListe(), i = L.indexOf(k); if(!k) ret
     <button type="button" class="gd-ok"${s ? ` data-kisi="${esc(s.id)}"` : " disabled"} aria-label="Sonraki kişi">›</button></div><div class="gd-nok" aria-label="${i + 1}. kişi / ${L.length}">${nok}</div></div>`; }
 document.addEventListener("click", e => { if(!e.target.closest || !e.target.closest("[data-gd-liste]")) return; const soz = gdSekme === "soz", k = gdKisi(), L = gdGrupListe();
   altPencere("gk-perde", "PERSONEL", `${L.length} kişi`, () => `<div class="ap-liste">${L.map((x, j) => { const { gun, u } = gdKisiGun(x, soz); return apSatir(`data-gk="${esc(x.id)}"`, `<span class="gd-av${x === k ? " sec" : ""}">${esc(gdBas(x.ad))}</span>`, esc(x.ad || "(adsız)") + (u ? ` <i class="gd-uy">!</i>` : ""), `<span class="ap-say">${esc(gun)} gün</span>`, { alt: esc(x.rutbe || "") + (x === k ? " · seçili" : "") }); }).join("")}</div>
-      <button type="button" class="ag-yeni-kat" data-gk-ekle>＋ Personel ekle</button>`,
-    (b, kapat) => { if(b.dataset.gk){ kapat(); gdSecili = b.dataset.gk; gdBelgeCiz(); return; } if(b.dataset.gkEkle != null){ kapat(); const e2 = document.querySelector('#gd-kisiler [data-gd="kisi-ekle"]'); if(e2) e2.click(); } }); });
+      <button type="button" class="ag-yeni-kat" data-gk-ekle>＋ Personel ekle</button><button type="button" class="ag-yeni-kat" data-gk-sira>${S.gdhg.srKilit ? "🔒 Sıra kilitli" : "⇅ Sırala"}</button>`,
+    (b, kapat) => { if(b.dataset.gk){ kapat(); gdSecili = b.dataset.gk; gdBelgeCiz(); return; } if(b.dataset.gkSira != null){ kapat(); return sqPencere("gdhg"); } if(b.dataset.gkEkle != null){ kapat(); const e2 = document.querySelector('#gd-kisiler [data-gd="kisi-ekle"]'); if(e2) e2.click(); } }); });
 const gdInp = (id, t, a, v, o = {}) => `<input id="${id}" data-t="${t}" data-a="${a}"${o.i != null ? ` data-i="${o.i}"` : ""} type="${o.tip || "text"}"${o.list ? ` list="${o.list}"` : ""}${o.dis ? " disabled" : ""} value="${esc(v)}" aria-label="${esc(o.ad || a)}"${o.st ? ` style="${o.st}"` : ""}>`;
 const gdIslem = (t, i) => `<td class="islem"><button class="mini" type="button" data-gis="yukari" data-t="${t}" data-i="${i}" aria-label="Yukarı taşı">↑</button><button class="mini" type="button" data-gis="asagi" data-t="${t}" data-i="${i}" aria-label="Aşağı taşı">↓</button><button class="mini sil" type="button" data-gis="sil" data-t="${t}" data-i="${i}" aria-label="Satırı sil">✕</button></td>`;
 /* tablo yeniden çizilince yatay kaydırma başa dönmesin */
