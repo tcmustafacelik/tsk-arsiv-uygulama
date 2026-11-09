@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "370";
+  const SURUM = "371";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -126,8 +126,8 @@
         bildirim("Bu cihazdaki kayıtlar eksikti; buluttan yeniden yüklendi"); return; }
       const uzakDegisti = u.sha && u.sha !== meta.sha;
       if(meta.yerelDegisti){
-        if(uzakDegisti && u.veri && imza(u.veri) !== meta.imza){ const M = birlestir(mem, u.veri); meta.sha = u.sha; await uzakYaz(M, `TSK ARŞİV kayıt (${cihaz()})`); yerelDegistir(M); esit(M); meta.yerelDegisti = false; meta.sonGonder = Date.now(); bildirim("Diğer cihazdaki değişikliklerle birleştirildi"); }
-        else { if(u.sha) meta.sha = u.sha; await uzakYaz(mem, `TSK ARŞİV kayıt (${cihaz()})`); esit(mem); meta.yerelDegisti = false; meta.sonGonder = Date.now(); }
+        if(uzakDegisti && u.veri && imza(u.veri) !== meta.imza){ const M = birlestir(mem, u.veri); meta.sha = u.sha; await uzakYaz(M, `TSK ARŞİV kayıt (${cihaz()} · s${SURUM})`); yerelDegistir(M); esit(M); meta.yerelDegisti = false; meta.sonGonder = Date.now(); bildirim("Diğer cihazdaki değişikliklerle birleştirildi"); }
+        else { if(u.sha) meta.sha = u.sha; await uzakYaz(mem, `TSK ARŞİV kayıt (${cihaz()} · s${SURUM})`); esit(mem); meta.yerelDegisti = false; meta.sonGonder = Date.now(); }
       } else if(uzakDegisti && u.veri){ meta.sha = u.sha; const i = imza(u.veri); if(i !== imza(mem)){ esit(u.veri); yerelDegistir(u.veri); bildirim("Diğer cihazdaki değişiklikler alındı"); } meta.sonAl = Date.now(); }
       else meta.sonAl = Date.now();
       durumHata = ""; meta.anahtar = Object.keys(mem).length;
@@ -147,7 +147,7 @@
     if(!u.veri){ meta.sha = null; await uzakYaz(mem, "TSK ARŞİV ilk yükleme"); esit(mem); meta.yerelDegisti = false; meta.sonGonder = Date.now(); }
     else if(yerelBos || imza(u.veri) === imza(mem)){ meta.sha = u.sha; esit(u.veri); meta.yerelDegisti = false; if(yerelBos) yerelDegistir(u.veri); meta.sonAl = Date.now(); }
     else { const s2 = await sor("Bulutta veri bulundu", "Bulutta da bu cihazda da veri var ve aynı değiller. Hangisi kullanılsın?", "Buluttakini al", "Bendekini gönder");
-      meta.sha = u.sha; if(s2 === 1){ esit(u.veri); meta.yerelDegisti = false; yerelDegistir(u.veri); meta.sonAl = Date.now(); } else { await uzakYaz(mem, `TSK ARŞİV kayıt (${cihaz()})`); esit(mem); meta.yerelDegisti = false; meta.sonGonder = Date.now(); } }
+      meta.sha = u.sha; if(s2 === 1){ esit(u.veri); meta.yerelDegisti = false; yerelDegistir(u.veri); meta.sonAl = Date.now(); } else { await uzakYaz(mem, `TSK ARŞİV kayıt (${cihaz()} · s${SURUM})`); esit(mem); meta.yerelDegisti = false; meta.sonGonder = Date.now(); } }
     durumHata = ""; await metaYaz(); durumCiz(); zamanlayiciKur();
   }
   function kes(){ meta.bagli = false; meta.sha = null; token = ""; try { localStorage.removeItem("tsk-gh-token"); localStorage.removeItem("tsk-gh-sifre"); } catch(e){} metaYaz(); durumCiz(); }
@@ -2676,6 +2676,14 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .kp-tsr{height:34px} .kp-tsr button{font-size:13px}
 .kp-tsat{display:flex;flex-direction:column;gap:5px} .kp-tsat>small{font:600 11px var(--f-ui);color:var(--muted);letter-spacing:.3px}
 .kp-kisa{max-width:160px}
+/* renk seçici penceresi */
+.rk-on{display:flex;align-items:center;gap:10px;margin-bottom:10px} .rk-onz{width:44px;height:44px;border-radius:10px;border:1px solid rgba(0,0,0,.12)} .rk-on b{display:block;font:700 13px var(--f-ui)} .rk-on small{font:500 12px var(--f-ui);color:var(--muted)}
+.rk-et{display:block;font:600 11px var(--f-ui);color:var(--muted);margin:10px 0 6px} .rk-izg{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:5px}
+.rk-k{aspect-ratio:1;border:1px solid rgba(0,0,0,.1);border-radius:7px;cursor:pointer;padding:0} .rk-k.on{box-shadow:0 0 0 2px #fff,0 0 0 4px #4A5868}
+.rk-cub{display:grid;grid-template-columns:58px 1fr;align-items:center;gap:8px;margin:6px 0} .rk-cub span{font:600 12px var(--f-ui);color:var(--fg)}
+.rk-cub input{-webkit-appearance:none;appearance:none;width:100%;height:22px;border-radius:8px;background:var(--tr);border:1px solid rgba(0,0,0,.08);margin:0}
+.rk-cub input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:26px;border-radius:6px;background:#fff;border:2px solid #4A5868;box-shadow:0 1px 3px rgba(0,0,0,.2)} .rk-cub input::-moz-range-thumb{width:16px;height:24px;border-radius:6px;background:#fff;border:2px solid #4A5868}
+.rk-tamam{width:100%;margin-top:14px;height:44px;border:0;border-radius:10px;background:#4A5868;color:#fff;font:700 14.5px var(--f-ui);cursor:pointer}
 </style>
 
 </head>
@@ -2713,7 +2721,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 370</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 371</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9144,6 +9152,7 @@ document.addEventListener("focusout", e => { const el = e.target; if(!el.closest
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#sp-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d), B = v.branslar, L = v.kisiler, ds = b.dataset;
   const yaz = () => { kaydetBelge(d); sporCiz(); }, yid = p => p + yeniId().slice(0, 6), tas = (A, id, y) => { const i = A.findIndex(x => x.id === id), j = i + +y; if(i < 0 || j < 0 || j >= A.length) return false; [A[i], A[j]] = [A[j], A[i]]; return true; };
   if(ds.kk){ spKapali.degis(ds.kk); return sporCiz(); }
+  if(ds.spRenkOzel != null) return renkPenceresi(v.renk === "ozel" ? v.renkOzel : spRenk(v).bas, x => { v.renk = "ozel"; v.renkOzel = x; yaz(); });
   if(ds.spRenk){ v.renk = ds.spRenk; return yaz(); }
   if(ds.spGb){ if(ds.spGb === "deger") delete v.genel; else v.genel = ds.spGb; return yaz(); }
   if(ds.spYasEkle != null){ const Y = spYaslar(v), son = spYasAralik(Y[Y.length - 1]), yeni = son && son[1] < 999 ? `${son[1] + 1}+` : ""; v.yaslar = [...Y, yeni]; yaz(); return setTimeout(() => { const L = document.querySelectorAll("#sp-govde [data-sp-yas]"); L[L.length - 1]?.focus(); }, 30); }
@@ -9946,7 +9955,26 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 /* ===== ortak renk seçici: hazır soluk renkler + "Özel" (kendi rengin; diğer tonlar ondan türetilir) ===== */
 const renkAcik = h => { const [r, g, b] = rgb(h); return (0.299 * r + 0.587 * g + 0.114 * b) / 255 > .62; };
 function renkSecHtml(at, P, secili, ozel){ const oz = /^[0-9A-F]{6}$/i.test(ozel || "") ? ozel.toUpperCase() : "7A8FA6";
-  return `<div class="rs-liste">${Object.entries(P).map(([k, x]) => `<button type="button" class="rs-k" ${at}="${k}" aria-pressed="${secili === k}" title="${esc(x.ad)}"><i style="background:linear-gradient(135deg,#${x.ornek[0]} 50%,#${x.ornek[1]} 50%)"></i><span>${esc(x.ad)}</span></button>`).join("")}<label class="rs-k${secili === "ozel" ? " acik" : ""}" title="Kendi rengin"><input type="color" ${at}-ozel value="#${oz}" aria-label="Özel renk"><i style="background:#${oz}"></i><span>Özel</span></label></div>`; }
+  return `<div class="rs-liste">${Object.entries(P).map(([k, x]) => `<button type="button" class="rs-k" ${at}="${k}" aria-pressed="${secili === k}" title="${esc(x.ad)}"><i style="background:linear-gradient(135deg,#${x.ornek[0]} 50%,#${x.ornek[1]} 50%)"></i><span>${esc(x.ad)}</span></button>`).join("")}<button type="button" class="rs-k${secili === "ozel" ? " acik" : ""}" ${at}-ozel="${oz}" aria-pressed="${secili === "ozel"}" title="Kendi rengin"><i style="background:${secili === "ozel" ? "#" + oz : "conic-gradient(#CFE3F1,#D9EAD7,#EFE3C8,#E2DCF0,#CFE3F1)"}"></i><span>Özel</span></button></div>`; }
+/* uygulama içi renk seçici: soluk hazır tonlar + ton/açıklık çubukları; açılınca şimdiki rengi gösterir, son seçilenleri hatırlar */
+const hexHsl = h => { let [r, g, b] = rgb(h).map(x => x / 255); const M = Math.max(r, g, b), m = Math.min(r, g, b), l = (M + m) / 2; let H = 0, S2 = 0; if(M !== m){ const d = M - m; S2 = l > .5 ? d / (2 - M - m) : d / (M + m); H = M === r ? (g - b) / d + (g < b ? 6 : 0) : M === g ? (b - r) / d + 2 : (r - g) / d + 4; H *= 60; } return [Math.round(H), Math.round(S2 * 100), Math.round(l * 100)]; };
+const hslHex = (H, S2, L) => { S2 /= 100; L /= 100; const k = n => (n + H / 30) % 12, a = S2 * Math.min(L, 1 - L), f = n => L - a * Math.max(-1, Math.min(k(n) - 3, 9 - k(n), 1)); return [f(0), f(8), f(4)].map(x => Math.round(x * 255).toString(16).padStart(2, "0")).join("").toUpperCase(); };
+const RK_TON = [205, 188, 168, 145, 118, 85, 48, 32, 250, 272], RK_ACIK = [90, 82, 72];
+let rkDurum = null;
+function renkPenceresi(bas, cb){ const h0 = /^[0-9A-F]{6}$/i.test(bas || "") ? bas.toUpperCase() : "CFE3F1"; const [H, S0, L] = hexHsl(h0); rkDurum = { hex: h0, H, S: Math.max(18, Math.min(60, S0 || 30)), L: Math.max(55, Math.min(95, L)), cb };
+  let son = []; try { son = JSON.parse(localStorage.getItem("sonRenkler") || "[]"); } catch(e){}
+  const kutu = x => `<button type="button" class="rk-k${x === rkDurum.hex ? " on" : ""}" data-rk="${x}" style="background:#${x}" aria-label="#${x}"></button>`;
+  altPencere("rk-perde", "RENK", "Renk seç", () => `<div class="rk-on"><span class="rk-onz" id="rk-onz" style="background:#${rkDurum.hex}"></span><span><b>Seçilen renk</b><small id="rk-hex">#${rkDurum.hex}</small></span></div>
+    ${son.length ? `<small class="rk-et">Son kullanılan</small><div class="rk-izg">${son.map(kutu).join("")}</div>` : ""}
+    <small class="rk-et">Soluk tonlar</small><div class="rk-izg">${RK_ACIK.flatMap(l => RK_TON.map(t => hslHex(t, l > 85 ? 38 : 32, l))).map(kutu).join("")}${["F3F4F6", "E3E7EB", "C9CFD6", "9AA4AE"].map(kutu).join("")}</div>
+    <small class="rk-et">İnce ayar</small><label class="rk-cub"><span>Ton</span><input type="range" min="20" max="290" value="${Math.max(20, Math.min(290, rkDurum.H))}" data-rk-c="H" style="--tr:linear-gradient(90deg,${[20, 50, 80, 110, 140, 170, 200, 230, 260, 290].map(t => "#" + hslHex(t, 45, 72)).join(",")})"></label>
+    <label class="rk-cub"><span>Açıklık</span><input type="range" min="55" max="95" value="${rkDurum.L}" data-rk-c="L" id="rk-l" style="--tr:linear-gradient(90deg,#${hslHex(rkDurum.H, rkDurum.S, 55)},#${hslHex(rkDurum.H, rkDurum.S, 95)})"></label>
+    <button type="button" class="tz-btn ana rk-tamam" data-rk-ok>Uygula</button>`, (b, kapat, yenile) => {
+    if(b.dataset.rk){ rkDurum.hex = b.dataset.rk; [rkDurum.H, , rkDurum.L] = hexHsl(rkDurum.hex); return yenile(); }
+    if(b.hasAttribute("data-rk-ok")){ const x = rkDurum.hex; try { localStorage.setItem("sonRenkler", JSON.stringify([x, ...son.filter(y => y !== x)].slice(0, 10))); } catch(e){} kapat(); rkDurum.cb(x); } }, { z: "EEF0F6", r: "4A5868" }); }
+document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#rk-perde [data-rk-c]") || !rkDurum) return; rkDurum[el.dataset.rkC] = +el.value; rkDurum.hex = hslHex(rkDurum.H, rkDurum.S, rkDurum.L);
+  const o = $("#rk-onz"), t = $("#rk-hex"), l = $("#rk-l"); if(o) o.style.background = "#" + rkDurum.hex; if(t) t.textContent = "#" + rkDurum.hex; if(l) l.style.setProperty("--tr", `linear-gradient(90deg,#${hslHex(rkDurum.H, rkDurum.S, 55)},#${hslHex(rkDurum.H, rkDurum.S, 95)})`);
+  document.querySelectorAll("#rk-perde .rk-k.on").forEach(x => x.classList.remove("on")); });
 /* ================= KÖPEK TANITMA KARTI (tur: "kopek") =================
    d.kpk = { baslik, ara, iletisim, alanlar: [{ id, et, v, tip? ("cins" | "tarih") }], sorumlu: [{ id, et, pid, ad, rutbe, tel }] }
    Sorumlu personelden seçilirse ad ve rütbe personel listesinden canlı gelir; seçilmezse elle yazılır.
@@ -10012,11 +10040,10 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
   else if(ds.kpkS){ const [i, k] = ds.kpkS.split(":"), s = v.sorumlu[+i]; if(!s) return; s[k] = el.value; }
   else if(ds.kpkG){ v[ds.kpkG] = el.value; }
   else return; kaydetBelge(d); kpkOnizleYenile(d); });
-document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#kpk-govde [data-kpk-renk-ozel]")) return; const d = acikBelge(); if(!d || d.tur !== "kopek") return; const v = kpkVeri(d); v.renk = "ozel"; v.renkOzel = el.value.replace("#", "").toUpperCase(); el.nextElementSibling.style.background = el.value; kaydetBelge(d); kpkOnizleYenile(d); });
-document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches("#kpk-govde [data-kpk-renk-ozel]")) return; if(acikBelge()?.tur === "kopek") kopekCiz(); });
 document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches('#kpk-govde [data-kpk-s$=":tel"]')) return; const d = acikBelge(); if(!d || d.tur !== "kopek") return; const s = kpkVeri(d).sorumlu[+el.dataset.kpkS.split(":")[0]]; if(!s) return; s.tel = el.value = kpkTel(el.value); kaydetBelge(d); kpkOnizleYenile(d); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#kpk-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kopek") return; const v = kpkVeri(d), ds = b.dataset;
   if(ds.kk){ kpkKapali.degis(ds.kk); return kopekCiz(); }
+  if(ds.kpkRenkOzel != null) return renkPenceresi(v.renk === "ozel" ? v.renkOzel : kpkRenk(v).ana, x => { v.renk = "ozel"; v.renkOzel = x; kaydetBelge(d); kopekCiz(); });
   if(ds.kpkRenk){ v.renk = ds.kpkRenk; }
   else if(ds.kpkCins != null){ const a = v.alanlar[+ds.kpkCins]; if(!a) return; a.v = a.v === ds.v ? "" : ds.v; }
   else if(ds.kpkI === "alan"){ v.alanlar.push({ id: kpkId(), et: "", v: "" }); kaydetBelge(d); kopekCiz(); return setTimeout(() => { const L = document.querySelectorAll("#kpk-govde [data-kpk-et]"); L[L.length - 1]?.focus(); }, 30); }
@@ -10029,8 +10056,6 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
       if(!eskiTel){ const t = S.belgeler.filter(x => x.tur === "kopek" && x.kpk).flatMap(x => x.kpk.sorumlu || []).find(y => y.pid === pid && y.tel); if(t) s.tel = t.tel; }   // aynı kişinin başka karttaki telefonu
       kaydetBelge(d); kopekCiz(); }); }
   else return; kaydetBelge(d); kopekCiz(); });
-document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#sp-govde [data-sp-renk-ozel]")) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d); v.renk = "ozel"; v.renkOzel = el.value.replace("#", "").toUpperCase(); el.nextElementSibling.style.background = el.value; kaydetBelge(d); });
-document.addEventListener("change", e => { const el = e.target; if(el.matches && el.matches("#sp-govde [data-sp-renk-ozel]") && acikBelge()?.tur === "spor") sporCiz(); });
 document.addEventListener("input", e => { const el = e.target; if(el.matches && el.matches("#sp-govde [data-sp-yas]")) el.style.width = Math.max(4.5, el.value.length + 1.2) + "ch"; });
 document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches("#sp-govde [data-sp-yas]")) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d), Y = spYaslar(v), i = +el.dataset.spYas, eski = Y[i], yeni = el.value.replace(/\s+/g, "").replace("–", "-");
   if(yeni === eski) return; if(!yeni || Y.some((g, j) => j !== i && g === yeni)){ el.value = eski; el.classList.add("sp-yas-red"); setTimeout(() => el.classList.remove("sp-yas-red"), 900); return; }
