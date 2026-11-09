@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "349";
+  const SURUM = "350";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2592,6 +2592,26 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .ts-acik .tz-sil-arka{display:none}
 .hs-al{display:flex;flex-direction:column;gap:4px;font:600 12px var(--f-ui);color:var(--muted)} .hs-al input{height:42px;padding:0 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font:600 15px var(--f-ui);color:var(--fg)}
 .mn-is.hs-tamam{background:#3D5F8C;border-color:#3D5F8C;color:#fff} .mn-is.hs-sil{color:#A3412F}
+/* sertifikalar */
+.sr-s{background:#EEF0E2;color:#5E6B35}
+.sr-not{margin:0;font:500 11.5px/1.45 var(--f-ui);color:var(--muted)}
+.sr-seg{margin:0}
+.sr-grup{display:flex;flex-direction:column;gap:6px;margin-bottom:6px}
+.sr-gb{display:flex;align-items:center;gap:8px;padding:2px 2px 0} .sr-gb b{font:700 13.5px var(--f-ui);color:var(--fg)} .sr-gb small{font:500 11.5px var(--f-ui);color:var(--muted);margin-right:auto}
+.sr-ic{display:flex;flex-direction:column;gap:5px}
+.sr-hepsi{width:100%;margin-top:4px}
+.sr-o{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1px solid var(--line2);border-left:6px solid #D5DDBE;border-radius:9px;background:var(--panel);margin-bottom:8px}
+ .sr-o-bas{display:flex;flex-direction:column;gap:1px} .sr-o-bas b{font:650 13px var(--f-ui);overflow-wrap:anywhere} .sr-o-bas small{font:500 11.5px var(--f-ui);color:#5E6B35}
+ .sr-o label{display:flex;flex-direction:column;gap:3px;font:600 11.5px var(--f-ui);color:var(--muted)}
+ .sr-o input{width:100%;min-width:0;box-sizing:border-box;height:38px;padding:0 10px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font:500 14px var(--f-ui);color:var(--fg)}
+ .sr-o-iki{display:grid;grid-template-columns:1fr 1fr;gap:8px} .sr-o-cip{display:flex;flex-wrap:wrap;gap:5px}
+.sr-is-ust{display:flex;flex-direction:column;gap:2px;margin-bottom:8px} .sr-is-ust b{font:700 14px var(--f-ui)} .sr-is-ust small{font:500 12px var(--f-ui);color:var(--muted)}
+.sirt-sat.sr-sil>b{color:#A3412F}
+.ts-acik .sirt-sat{padding-left:44px}
+.ts-acik .sirt-sat::after{content:"";position:absolute;left:17px;top:50%;width:18px;height:18px;margin-top:-9px;border:1.5px solid #9AA6B4;border-radius:5px;background:var(--panel)}
+.ts-acik .sirt-sat.ts-secili::after{background:#B5523F url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/13px no-repeat;border-color:#B5523F}
+.ts-acik .sirt-sat.ts-secili{background:#FBEFEC}
+.ts-acik .sirt-sat.ts-secili::before{background:#E8CFC6;border:0;border-radius:0;width:8px;height:auto;margin:0;top:0;bottom:0;left:0}
 </style>
 
 </head>
@@ -2629,7 +2649,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 349</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 350</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2787,6 +2807,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
         <div id="e-liste" hidden style="display:flex;flex-direction:column;gap:10px"><div id="lt-govde" class="kp-govde"></div></div>
         <div id="e-sicil" hidden style="display:flex;flex-direction:column;gap:10px"><div id="sa-govde" class="kp-govde"></div></div>
         <div id="e-kimlik" hidden style="display:flex;flex-direction:column;gap:10px"><div id="km-govde" class="kp-govde"></div></div>
+        <div id="e-sertifika" hidden style="display:flex;flex-direction:column;gap:10px"><div id="sr-govde" class="kp-govde"></div></div>
         <div id="e-dilekce" hidden style="display:flex;flex-direction:column;gap:10px"><div id="dl-govde" class="kp-govde"></div></div>
         <div id="e-izinsa" hidden style="display:flex;flex-direction:column;gap:10px"><div id="isa-govde" class="kp-govde"></div></div>
         <div id="e-tebtut" hidden style="display:flex;flex-direction:column;gap:10px"><div id="tt-govde" class="kp-govde"></div></div>
@@ -3691,7 +3712,7 @@ function bolumCiz(){
       <button class="bkk-kalem bkk-tasi" type="button" data-tasi="b:${esc(d.id)}" aria-label="Başka bölüme taşı" title="Başka bölüme taşı">⇄</button><button class="bkk-kalem" type="button" data-kart-ad="${esc(d.id)}" aria-label="${esc(d.ad)} adını değiştir" title="Adını değiştir">✎</button>${(b.alt || []).length ? altAyracSec(d, k.id, b) : ""}
       <div class="alt bkk-is"><button class="btn ana" data-ac="${esc(d.id)}">Aç ve düzenle</button>${COGALTILIR.has(d.tur) ? `<button class="btn" type="button" data-cogalt="${esc(d.id)}" aria-label="${esc(d.ad)} belgesini çoğalt" title="Çoğalt">⧉ Çoğalt</button>` : ""}<button class="btn sil" type="button" data-kart-sil="${esc(d.id)}" aria-label="${esc(d.ad)} belgesini sil">Sil</button></div></div>`; }).join("")
     : kpK ? "" : ""); $("#b-bsay").textContent = bel.length + (kpK ? 1 : 0) || ""; $("#b-bsay").parentNode.hidden = !(bel.length || kpK);
-  const dos = dosyalariBul(k.id, b.id).sort((x, y) => x.ad.localeCompare(y.ad, "tr"));
+  const dos = dosyalariBul(k.id, b.id).filter(a => !a.sert).sort((x, y) => x.ad.localeCompare(y.ad, "tr"));   // sertifikalar kendi belgesinde listelenir
   requestAnimationFrame(() => document.querySelectorAll("#b-dosyalar [data-dsy-img]").forEach(async im => { const a = S.arsiv.find(x => x.id === im.dataset.dsyImg); if(a) try { im.src = await dosyaUrl(a); } catch(_){ im.replaceWith(Object.assign(document.createElement("b"), { textContent: (a.ad.split(".").pop() || "").toUpperCase().slice(0, 4) })); } }));
   $("#b-dosyalar").innerHTML = dos.length ? dos.map(a => { const uz = (a.ad.split(".").pop() || "").toUpperCase();
     const rs = /^image\//.test(a.tur || "") || /\.svg$/i.test(a.ad), tk = /^PDF$/.test(uz) ? "pdf" : /^XLS[XM]?$/.test(uz) ? "xlsx" : /^DOCX?$/.test(uz) ? "docx" : /^image\//.test(a.tur || "") ? "resim" : "diger";
@@ -3836,12 +3857,13 @@ $("#d-ayar").addEventListener("change", e => {
 const acikBelge = () => S.belgeler.find(d => d.id === SECIM.belge);
 function belgeAc(id){
   const d = S.belgeler.find(x => x.id === id); if(!d) return; if(SECIM.belge !== id) bulKapat(); SECIM.belge = id; if(SECIM.klasor && SECIM.bolum) sonEkle({ k: SECIM.klasor, b: SECIM.bolum, d: id }); goster("belge");
-  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip","dilekce","izinsa","kimlik"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
-  $("#d-ayar").hidden = d.tur === "dilekce" || d.tur === "izinsa" || d.tur === "izinb" || d.tur === "tazminat" || d.tur === "kapak" || d.tur === "baslik" || d.tur === "teblig" || d.tur === "tebtut" || d.tur === "tarama"; $("#d-ayar").classList.toggle("sade", !!SABIT_YON[d.tur]); document.querySelector('[data-cikti="docx"]').hidden = d.tur === "izinb" || d.tur === "tarama"; document.querySelector('[data-cikti="xlsx"]').hidden = d.tur === "tarama";
+  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip","dilekce","izinsa","kimlik","sertifika"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
+  $("#d-ayar").hidden = d.tur === "sertifika" || d.tur === "dilekce" || d.tur === "izinsa" || d.tur === "izinb" || d.tur === "tazminat" || d.tur === "kapak" || d.tur === "baslik" || d.tur === "teblig" || d.tur === "tebtut" || d.tur === "tarama"; $("#d-ayar").classList.toggle("sade", !!SABIT_YON[d.tur]); document.querySelector('[data-cikti="docx"]').hidden = d.tur === "izinb" || d.tur === "tarama"; document.querySelector('[data-cikti="xlsx"]').hidden = d.tur === "tarama";
   $("#d-sil").hidden = d.tur !== "grid";
   ayarCiz();
   if(d.tur === "grid"){ secim = { r1: 0, c1: 0, r2: 0, c2: 0 }; gridCiz(); }
   if(d.tur === "personel") personelCiz(); if(d.tur === "izin") izinCiz(); if(d.tur === "hedef"){ hedefCiz(); hedefAyarCiz(); } if(d.tur === "yoklama"){ YK = d.bt || "yoklama"; S[YK] ||= { tarih: "", rows: [] }; S[YK].rows ||= []; if(S[YK].tarih !== bugun()){ S[YK].tarih = bugun(); kaydetBt(YK); } ykAcik = null; yoklamaCiz(); } /* günlük yoklama: açılınca bugünün tarihi */ if(d.tur === "gdhg") gdhgCiz(); if(d.tur === "izinb") izbhCiz(); if(d.tur === "sema") semaCiz(); if(d.tur === "cevrim") cevrimCiz(); if(d.tur === "tazminat") tazminatCiz(); if(d.tur === "kapak"){ kpSayfaNo = 0; kapakCiz(); } if(d.tur === "teblig"){ tbNo = 0; tebligCiz(); } if(d.tur === "tebtut") tebtutCiz(); if(d.tur === "mevzi"){ mzAcik = null; mevziCiz(); } if(d.tur === "candostu") candostuCiz(); if(d.tur === "tarama") taramaCiz(); if(d.tur === "karsilama"){ koAcik = null; karsilamaCiz(); } if(d.tur === "kadro"){ kcAcikBlok = kcAcikSatir = null; kadroCiz(); } if(d.tur === "sicil"){ saAcik = null; sicilCiz(); } if(d.tur === "dilekce"){ dlAcik = null; dilekceCiz(); } if(d.tur === "kimlik") kimlikCiz(); if(d.tur === "izinsa") izinsaCiz(); if(d.tur === "liste"){ ltAcik = ltBlokAcik = null; listeCiz(); } if(d.tur === "spor"){ spAcik = spBransAcik = null; sporCiz(); } if(d.tur === "baslik"){ bsAcik = null; baslikCiz(); } if(d.tur === "sportakip"){ stAcik = null; sportakipCiz(); }
+  if(d.tur === "sertifika"){ tsSec.sertifika = null; sertifikaCiz(); }
   $("#v-belge").scrollTop = 0;
 }
 $("#d-geri").addEventListener("click", belgeKapat);
@@ -4151,7 +4173,7 @@ function tsUygula(){ for(const [key, c] of Object.entries(TS)){ const kap = docu
     R.forEach(el => { const id = c.id(el); if(id == null) return; const s = !!(sec && sec.has(id)); if(el.classList.contains("ts-secili") !== s) el.classList.toggle("ts-secili", s); });
     let bar = document.querySelector(`.ts-bar[data-ts="${key}"]`);
     if(!sec){ if(bar) bar.remove(); continue; }
-    const tum = R.map(c.id).filter(x => x != null), n = sec.size, h = `<button type="button" class="btn kucuk" data-ts-hepsi="${key}">${tum.length && tum.every(x => sec.has(x)) ? "Hiçbirini seçme" : "Tümünü seç"}</button>${c.bos ? `<button type="button" class="btn kucuk" data-ts-bos="${key}">Boş olanlar</button>` : ""}<span>${n} ${c.ad} seçili</span><button type="button" class="btn sil kucuk" data-ts-sil="${key}"${n ? "" : " disabled"} aria-label="Seçilen ${n} ${c.ad} silinecek">Seçilenleri sil${n ? ` (${n})` : ""}</button>`;
+    const tum = R.map(c.id).filter(x => x != null), n = sec.size, h = `<button type="button" class="btn kucuk" data-ts-hepsi="${key}">${tum.length && tum.every(x => sec.has(x)) ? "Hiçbirini seçme" : "Tümünü seç"}</button>${c.bos ? `<button type="button" class="btn kucuk" data-ts-bos="${key}">Boş olanlar</button>` : ""}<span>${n} ${c.ad} seçili</span>${(c.ek || []).map(([t], j) => `<button type="button" class="btn kucuk" data-ts-ek="${key}:${j}"${n ? "" : " disabled"}>${t}</button>`).join("")}<button type="button" class="btn sil kucuk" data-ts-sil="${key}"${n ? "" : " disabled"} aria-label="Seçilen ${n} ${c.ad} silinecek">Seçilenleri sil${n ? ` (${n})` : ""}</button>`;
     if(!bar || !bar.isConnected){ const [bs, by] = c.bar || [c.kap, "beforebegin"], by2 = document.querySelector(bs) || kap; by2.insertAdjacentHTML(by, `<div class="ts-bar" data-ts="${key}"></div>`); bar = document.querySelector(`.ts-bar[data-ts="${key}"]`); }
     if(bar.__h !== h){ bar.__h = h; bar.innerHTML = h; } } }
 let tsZaman = 0; new MutationObserver(() => { if(tsZaman) return; tsZaman = requestAnimationFrame(() => { tsZaman = 0; try { tsUygula(); } catch(e){} }); }).observe(document.body, { childList: true, subtree: true });
@@ -4159,9 +4181,130 @@ document.addEventListener("click", e => { const t = e.target; if(!t.closest) ret
   const ac = t.closest("[data-ts-ac]"); if(ac){ e.preventDefault(); e.stopPropagation(); const k = ac.dataset.tsAc; tsSec[k] = tsSec[k] ? null : new Set(); for(const x in tsSec) if(x !== k) tsSec[x] = null; tsUygula(); return; }
   const hp = t.closest("[data-ts-hepsi]"); if(hp){ const k = hp.dataset.tsHepsi, c = TS[k], kap = document.querySelector(c.kap), tum = [...kap.querySelectorAll(c.satir)].map(c.id).filter(x => x != null); tsSec[k] = tum.every(x => tsSec[k].has(x)) ? new Set() : new Set(tum); tsUygula(); return; }
   const bs = t.closest("[data-ts-bos]"); if(bs){ const k = bs.dataset.tsBos, c = TS[k], kap = document.querySelector(c.kap); tsSec[k] = new Set([...kap.querySelectorAll(c.satir)].map(c.id).filter(x => x != null && c.bos(x))); tsUygula(); if(!tsSec[k].size) bildir("Boş satır yok"); return; }
+  const ek = t.closest("[data-ts-ek]"); if(ek){ const [k, j] = ek.dataset.tsEk.split(":"); const ids = tsSec[k]; if(ids && ids.size) TS[k].ek[+j][1](new Set(ids)); return; }
   const sl = t.closest("[data-ts-sil]"); if(sl){ const k = sl.dataset.tsSil, c = TS[k], ids = tsSec[k]; if(!ids || !ids.size) return; const n = ids.size, geri = c.sil(ids); tsSec[k] = null; c.ciz(); tsUygula(); geriAlinabilir(`${n} ${c.ad} silindi`, () => { geri(); c.ciz(); }); return; }
   for(const [k, c] of Object.entries(TS)){ if(!tsSec[k]) continue; const kap = t.closest(c.kap); if(!kap) continue; const el = t.closest(c.satir); if(!el || !kap.contains(el)) continue; const id = c.id(el); if(id == null) continue;
     e.preventDefault(); e.stopPropagation(); tsSec[k].has(id) ? tsSec[k].delete(id) : tsSec[k].add(id); tsUygula(); return; } }, true);
+/* ================= SERTİFİKALAR (tur: "sertifika") =================
+   Sertifikalar bölümün dosyaları olarak (S.arsiv) saklanır; her dosyada sert = { pid, ad, rutbe, konu, tarih, no } durur.
+   PDF yüklenince içindeki yazıdan ad, eğitim konusu, tarih ve sertifika no okunur; kişi personel listesinden eşleştirilir.
+   Personel ya da konu bazlı görülür; bir kişinin / konunun / seçilenlerin sertifikaları tek PDF'te birleştirilir. */
+let srGorunum = (() => { try { return localStorage.getItem("srGorunum") || "kisi"; } catch(e){ return "kisi"; } })(), srAra = "";
+const srYer = d => { const y = (d.yerler || [])[0] || {}; return { k: y.k || SECIM.klasor, b: y.b || SECIM.bolum }; };
+const srHepsi = d => { const { k, b } = srYer(d); return S.arsiv.filter(a => a.sert && a.klasor === k && a.bolum === b); };
+const srKisi = a => { const R = S.personel.rows || []; return (a.sert.pid && R.find(p => p.id === a.sert.pid)) || R.find(p => p.ad && pAd(p.ad) === pAd(a.sert.ad)) || null; };
+const srAdi = a => { const p = srKisi(a); return p ? p.ad : (a.sert.ad || "Kişi seçilmedi"); };
+const srRutbe = a => { const p = srKisi(a); return p ? p.rutbe || "" : (a.sert.rutbe || ""); };
+const srTarihSira = t => { const m = /^(\d\d)\.(\d\d)\.(\d{4})$/.exec(t || ""); return m ? m[3] + m[2] + m[1] : (t || "99999999"); };
+function srListe(d){ const q = normMetin(srAra); return srHepsi(d).filter(a => !q || normMetin(srAdi(a) + " " + a.sert.konu + " " + (a.sert.tarih || "")).includes(q))
+  .sort((x, y) => (srGorunum === "konu" ? (x.sert.konu || "").localeCompare(y.sert.konu || "", "tr") || srAdi(x).localeCompare(srAdi(y), "tr") : srAdi(x).localeCompare(srAdi(y), "tr") || srTarihSira(x.sert.tarih).localeCompare(srTarihSira(y.sert.tarih))) || 0); }
+function srGruplar(L){ const G = new Map(); for(const a of L){ const anah = srGorunum === "konu" ? (a.sert.konu || "Konu girilmedi") : srAdi(a); if(!G.has(anah)) G.set(anah, []); G.get(anah).push(a); } return [...G]; }
+/* PDF yazısından sertifika bilgilerini oku (BTK Akademi ve benzer "KATILIM SERTİFİKASI" kalıpları) */
+async function srPdfOku(file){ const o = { ad: "", konu: "", tarih: "", no: "" };
+  try { await yukle(PDFJS); const lib = window.pdfjsLib; lib.GlobalWorkerOptions.workerSrc = PDFJS_W; const doc = await lib.getDocument({ data: new Uint8Array(await file.arrayBuffer()) }).promise;
+    const sayfa = await doc.getPage(1), tc = await sayfa.getTextContent(); const sat = []; let son = null;
+    tc.items.filter(t => t.str && t.str.trim()).forEach(t => { const y = Math.round(t.transform[5]); if(son && Math.abs(son.y - y) < 3) son.t += (t.hasEOL ? " " : "") + t.str; else { son = { y, t: t.str }; sat.push(son); } });
+    const ikiz = x => { const h = x.length / 2; return x.length > 5 && x.length % 2 === 0 && x.slice(0, h) === x.slice(h) ? x.slice(0, h) : x; };   // gölgeli yazılar iki kez gelir
+    const S2 = sat.map(x => ikiz(x.t.replace(/\s+/g, " ").trim())).filter(Boolean), tum = S2.join("\n");
+    const duz = tc.items.map(t => t.str).join("").replace(/\s+/g, ""), uu = /[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}/i.exec(duz);
+    if(uu) o.no = uu[0]; else { const no = /Sertifika\s*No\s*:?\s*([A-Z0-9][\w./-]{3,40})/i.exec(tum); if(no) o.no = no[1]; }
+    const tir = [...tum.matchAll(/["“”«»]([^"“”«»\n]{2,90})["“”«»]/g)].map(m => m[1].trim());
+    o.tarih = (tir.find(x => /^\d{1,2}[./]\d{1,2}[./]\d{4}$/.test(x)) || (/(\d{2}\.\d{2}\.\d{4})/.exec(tum) || [])[1] || "").replace(/\//g, ".");
+    o.konu = tir.find(x => !/^\d{1,2}[./]\d{1,2}[./]\d{4}$/.test(x)) || "";
+    const i = S2.findIndex(x => /SERT[İI]F[İI]KA(SI)?$/i.test(x) && !/No/i.test(x));
+    if(i >= 0){ const ad = S2.slice(i + 1).find(x => !/["“”]/.test(x) && /^[A-Za-zÇĞİÖŞÜçğıöşü .'-]{4,60}$/.test(x)); if(ad) o.ad = ad; }
+    if(!o.ad){ const P = (S.personel.rows || []).filter(p => p.ad); const n = pAd(tum); const p = P.find(p => n.includes(pAd(p.ad))); if(p) o.ad = p.ad; }
+  } catch(e){}
+  return o; }
+const srKisiBul = ad => { const R = (S.personel.rows || []).filter(p => p.ad), n = pAd(ad); return n ? R.find(p => pAd(p.ad) === n) || R.find(p => n.includes(pAd(p.ad)) || pAd(p.ad).includes(n)) || null : null; };
+const srKonular = d => [...new Set([...(d.srt?.konular || []), ...srHepsi(d).map(a => a.sert.konu).filter(Boolean)])].sort((a, b) => a.localeCompare(b, "tr"));
+/* PDF birleştirme: PDF sayfaları aynen, resimler sayfaya sığdırılarak */
+async function srBirlestirBlob(L){ if(!L.length) throw new Error("birleştirilecek sertifika yok");
+  try { await yukle(CDN.pdflib); } catch(e){ await yukle(CDN.pdflib2); } const { PDFDocument } = window.PDFLib; const cikti = await PDFDocument.create();
+  for(const a of L){ const bl = await arsivBlob(a), by = new Uint8Array(await bl.arrayBuffer()), t = (a.tur || bl.type || "").toLowerCase();
+    if(t.includes("pdf") || /\.pdf$/i.test(a.ad)){ const kay = await PDFDocument.load(by, { ignoreEncryption: true }); (await cikti.copyPages(kay, kay.getPageIndices())).forEach(p => cikti.addPage(p)); }
+    else { const im = /png/.test(t) || /\.png$/i.test(a.ad) ? await cikti.embedPng(by) : await cikti.embedJpg(by); const yat = im.width > im.height, W = yat ? 841.89 : 595.28, H = yat ? 595.28 : 841.89, k = Math.min((W - 40) / im.width, (H - 40) / im.height);
+      const p = cikti.addPage([W, H]); p.drawImage(im, { x: (W - im.width * k) / 2, y: (H - im.height * k) / 2, width: im.width * k, height: im.height * k }); } }
+  return new Blob([await cikti.save()], { type: "application/pdf" }); }
+async function srBirlestir(L, ad){ try { bildir("PDF hazırlanıyor…"); const bl = await srBirlestirBlob(L); await dosyaVer(dosyaAdi(ad) + ".pdf", bl, { ham: true }); } catch(e){ uyar("Birleştirilemedi: " + (e.message || e), true); } }
+function tanimSertifika(){ const d = acikBelge(), L = d ? srListe(d) : [], T = TEMA_KIMLIK, bh = t => H(t, { fill: T.bas, k: T.basYazi });
+  return { tema: T, dosya: "Sertifika_Listesi", baslik: "PERSONEL SERTİFİKA LİSTESİ", oran: [5, 14, 20, 34, 11, 16], head: [["S/N", "RÜTBESİ", "ADI SOYADI", "EĞİTİM KONUSU", "TARİHİ", "SERTİFİKA NO"].map(bh)],
+    body: L.map((a, i) => { const z = i % 2 ? T.serit : null, c = (t, o = {}) => H(t || "", { fill: z, ...o }); return [c(i + 1, { k: T.soluk }), c(srRutbe(a)), c(srAdi(a), { sol: 1 }), c(a.sert.konu, { sol: 1 }), c(a.sert.tarih), c(a.sert.no)]; }),
+    satirH: 11, xSatir: 26, xYazi: 9.5, xBasYazi: 9.5, xBaslikYazi: 13 }; }
+function sertifikaCiz(){ const d = acikBelge(); if(!d || d.tur !== "sertifika") return; const kap = $("#sr-govde"); if(!kap) return;
+  if(odakIcinde("#sr-govde .sr-ara")) { srListeCiz(d); return; }
+  const n = srHepsi(d).length;
+  kap.innerHTML = `<div class="dl-ust"><span class="dl-ust-s sr-s"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="9" r="5"/><path d="m9 13.2-1.5 7.3L12 18l4.5 2.5-1.5-7.3"/></svg></span><b>Sertifikalar</b><span class="dl-say">${n}</span><span class="bosluk"></span><button type="button" class="dl-yeni" data-sr="yukle">＋ Yükle</button></div>
+    <p class="sr-not">PDF yüklenince ad, konu ve tarih kendiliğinden okunur; yükle penceresinde hepsini (kişi, konu, tarih, no, dosya adı) elle değiştirebilirsin. Resimler (JPG/PNG) de yüklenir, bilgileri elle girilir.</p>
+    <input type="file" id="sr-dosya" accept=".pdf,.jpg,.jpeg,.png,application/pdf,image/*" multiple hidden>
+    <div class="an-seg sr-seg" role="tablist"><button type="button" role="tab" data-sr-g="kisi" aria-selected="${srGorunum === "kisi"}">Personel bazlı</button><button type="button" role="tab" data-sr-g="konu" aria-selected="${srGorunum === "konu"}">Konu bazlı</button></div>
+    <label class="hd-ara sr-ara"><span aria-hidden="true">⌕</span><input type="search" value="${esc(srAra)}" placeholder="Süz: ad, konu, tarih…" aria-label="Sertifikaları süz" autocomplete="off"></label>
+    <div id="sr-liste"></div>
+    ${n ? `<button type="button" class="mn-is sr-hepsi" data-sr="hepsi">⇩ Görünen bütün sertifikaları tek PDF yap</button>` : ""}`;
+  srListeCiz(d); }
+function srListeCiz(d){ const el = $("#sr-liste"); if(!el) return; const L = srListe(d);
+  if(!srHepsi(d).length){ el.innerHTML = `<div class="an-bos">Henüz sertifika yok.<br>“＋ Yükle” ile PDF ya da resim seçin; PDF'lerde ad, konu ve tarih kendiliğinden okunur.</div>`; return; }
+  if(!L.length){ el.innerHTML = `<div class="an-bos">Aramaya uyan sertifika yok</div>`; return; }
+  el.innerHTML = srGruplar(L).map(([g, A], gi) => `<section class="sr-grup"><div class="sr-gb"><b>${esc(g)}</b><small>${A.length} sertifika</small><button type="button" class="mini" data-sr-bir="${gi}">⇩ Birleştir</button></div>
+    <div class="sr-ic">${A.map(a => `<button type="button" class="sirt-sat iki sr-sat" data-sr-id="${esc(a.id)}" style="--sr:${SIRT[gi % SIRT.length]}"><b>${esc(srGorunum === "konu" ? [srRutbe(a), srAdi(a)].filter(Boolean).join(" ") : a.sert.konu || "Konu girilmedi")}</b><small>${esc([a.sert.tarih, /pdf/i.test(a.tur || a.ad) ? "PDF" : "Resim", a.sert.no ? "No " + a.sert.no.slice(0, 8) + "…" : ""].filter(Boolean).join(" · "))}</small></button>`).join("")}</div></section>`).join("");
+  el.__gruplar = srGruplar(L); }
+/* yükleme: dosyaları oku → onay penceresinde kişi / konu / tarih düzeltilir → kaydedilir */
+async function srYukle(files){ const d = acikBelge(); if(!d || !files.length) return; if(!db){ uyar("Yüklemek için bağlantı gerekiyor.", true); return; }
+  bildir("Sertifikalar okunuyor…"); const L = [];
+  for(const f of files){ const uz = (f.name.split(".").pop() || "").toLowerCase(), o = uz === "pdf" ? await srPdfOku(f) : { ad: "", konu: f.name.replace(/\.[^.]+$/, "").replace(/[_-]+/g, " "), tarih: "", no: "" };
+    const p = srKisiBul(o.ad); L.push({ f, uz, ...o, pid: p ? p.id : "" }); }
+  srOnay(d, L); }
+function srOnay(d, L, duzenle){ const P = (S.personel.rows || []).filter(p => p.ad), K = srKonular(d);
+  const kisiSec = (x, i) => `<select data-sro-p="${i}"><option value="">— kişi seçin —</option>${P.map(p => `<option value="${esc(p.id)}"${p.id === x.pid ? " selected" : ""}>${esc([p.rutbe, p.ad].filter(Boolean).join(" "))}</option>`).join("")}</select>`;
+  altPencere("sr-perde", "SERTİFİKA", duzenle ? "Sertifikayı düzenle" : `${L.length} sertifika yüklenecek`, () => `
+    ${L.map((x, i) => `<div class="sr-o">
+      <div class="sr-o-bas"><b>${esc(duzenle ? x.dosyaAd : x.f.name)}</b>${!duzenle && x.ad ? `<small>PDF'te okunan: ${esc(x.ad)}</small>` : ""}</div>
+      <label><span>Personel</span>${kisiSec(x, i)}</label>
+      <label><span>Dosya adı</span><input data-sro-a="${i}" value="${esc(x.dosya || "")}" placeholder="boş bırakılırsa: Ad Soyad - Konu"></label>
+      <label><span>Eğitim konusu</span><input data-sro-k="${i}" value="${esc(x.konu)}" placeholder="ör. Siber Güvenliğe Giriş"></label>
+      ${K.length ? `<div class="sr-o-cip">${K.slice(0, 12).map(k => `<button type="button" class="mini" data-sro-kc="${i}" data-k="${esc(k)}">${esc(k)}</button>`).join("")}</div>` : ""}
+      <div class="sr-o-iki"><label><span>Tarih</span><input data-sro-t="${i}" value="${esc(x.tarih)}" placeholder="gg.aa.yyyy" inputmode="numeric"></label><label><span>Sertifika no</span><input data-sro-n="${i}" value="${esc(x.no)}" placeholder="isteğe bağlı"></label></div></div>`).join("")}
+    <div class="mn-alt"><button type="button" class="mn-is hs-tamam" data-sro="kaydet">${duzenle ? "Kaydet" : "Yükle ve kaydet"}</button></div>`,
+    async (b, kapat, yenile) => {
+      if(b.dataset.sroKc != null){ const i = +b.dataset.sroKc, inp = document.querySelector(`[data-sro-k="${i}"]`); if(inp) inp.value = b.dataset.k; return; }
+      if(b.dataset.sro !== "kaydet") return;
+      L.forEach((x, i) => { x.pid = (document.querySelector(`[data-sro-p="${i}"]`) || {}).value || ""; x.konu = ((document.querySelector(`[data-sro-k="${i}"]`) || {}).value || "").trim(); x.tarih = ((document.querySelector(`[data-sro-t="${i}"]`) || {}).value || "").trim(); x.no = ((document.querySelector(`[data-sro-n="${i}"]`) || {}).value || "").trim(); x.dosya = ((document.querySelector(`[data-sro-a="${i}"]`) || {}).value || "").trim().replace(/\.(pdf|jpe?g|png)$/i, ""); });
+      b.disabled = true; b.textContent = "Kaydediliyor…";
+      const { k, b: bl } = srYer(d); let tamam = 0;
+      for(const x of L){ const p = (S.personel.rows || []).find(r => r.id === x.pid), sert = { pid: x.pid, ad: p ? p.ad : x.ad, rutbe: p ? p.rutbe || "" : "", konu: x.konu, tarih: x.tarih, no: x.no };
+        try { if(duzenle){ const a = S.arsiv.find(y => y.id === x.id); if(!a) continue; a.sert = sert; const uz0 = (a.ad.split(".").pop() || "pdf"); if(x.dosya) a.ad = dosyaAdDuzelt(x.dosya + "." + uz0, uz0); await db.doc("arsiv/" + a.id).set({ ...a }); tamam++; continue; }
+          if(!assets) throw new Error("bu görünümde dosya yükleme kapalı"); const f = x.f; if(f.size > DOSYA_SINIR.resim * 1048576) throw new Error(DOSYA_SINIR.resim + " MB'tan büyük");
+          const s = await assets.upload(f, { type: VARLIK_TUR[x.uz] || f.type || "application/pdf" }), id = yeniId();
+          const ad = dosyaAdDuzelt(`${x.dosya || [sert.ad, sert.konu].filter(Boolean).join(" - ") || f.name.replace(/\.[^.]+$/, "")}.${x.uz}`, x.uz);
+          await db.doc("arsiv/" + id).set({ id, ad, klasor: k, bolum: bl, boyut: f.size, tur: VARLIK_TUR[x.uz] || f.type, tarih: new Date().toISOString(), asset: s.id, sert }); tamam++;
+        } catch(e){ uyar(`${duzenle ? x.dosyaAd : x.f.name} kaydedilemedi: ${e.message || e}`, true); } }
+      kapat(); if(tamam) bildir(duzenle ? "Sertifika güncellendi" : `${tamam} sertifika eklendi`); sertifikaCiz(); },
+    { z: "EEF0E2", r: "5E6B35" }); }
+function srIslem(d, a){ altPencere("sr-is", "SERTİFİKA", srAdi(a), () => `<div class="sr-is-ust"><b>${esc(a.sert.konu || "Konu girilmedi")}</b><small>${esc([srRutbe(a), srAdi(a), a.sert.tarih].filter(Boolean).join(" · "))}</small>${a.sert.no ? `<small>Sertifika no: ${esc(a.sert.no)}</small>` : ""}</div>
+    <div class="an-ic">${[["ac", "Aç / indir", "Dosyayı olduğu gibi indir"], ["duz", "Düzenle", "Kişi, konu, tarih, dosya adı"], ["kisi", "Bu kişinin bütün sertifikaları", "Tek PDF"], ["konu", "Bu konudaki bütün sertifikalar", "Tek PDF"]].map(([k, t, s2], i) => `<button type="button" class="sirt-sat" data-sri="${k}" style="--sr:${SIRT[i]}"><b>${t}</b><small>${s2}</small></button>`).join("")}
+      <button type="button" class="sirt-sat sil sr-sil" data-sri="sil" style="--sr:#E8CFC6" aria-label="Sertifikayı sil"><b>Sil</b><small>geri alınabilir</small></button></div>`,
+    async (b, kapat) => { const k = b.dataset.sri; if(!k) return;
+      if(k === "ac"){ kapat(); try { const bl = await arsivBlob(a); await dosyaVer(a.ad, bl, { ham: true }); } catch(e){ uyar("Açılamadı: " + (e.message || e), true); } return; }
+      if(k === "duz"){ kapat(); return srOnay(d, [{ id: a.id, dosyaAd: a.ad, dosya: a.ad.replace(/\.[^.]+$/, ""), pid: (srKisi(a) || {}).id || "", ad: a.sert.ad, konu: a.sert.konu, tarih: a.sert.tarih, no: a.sert.no }], true); }
+      if(k === "kisi"){ kapat(); const L = srHepsi(d).filter(x => srAdi(x) === srAdi(a)).sort((x, y) => srTarihSira(x.sert.tarih).localeCompare(srTarihSira(y.sert.tarih))); return srBirlestir(L, `Sertifikalar_${srAdi(a)}`); }
+      if(k === "konu"){ kapat(); const L = srHepsi(d).filter(x => x.sert.konu === a.sert.konu).sort((x, y) => srAdi(x).localeCompare(srAdi(y), "tr")); return srBirlestir(L, `Sertifikalar_${a.sert.konu || "Konu"}`); }
+      if(k === "sil"){ kapat(); const geri = srSil([a]); geriAlinabilir("Sertifika silindi", geri); } }, { z: "EEF0E2", r: "5E6B35" }); }
+/* silme: kayıt hemen kalkar, dosyanın kendisi 15 sn sonra silinir (geri alınırsa kayıt geri yazılır) */
+function srSil(A){ const kopyalar = A.map(a => ({ ...a })); let iptal = false;
+  A.forEach(a => { db.doc("arsiv/" + a.id).delete().catch(() => {}); }); S.arsiv = S.arsiv.filter(x => !A.includes(x)); sertifikaCiz();
+  setTimeout(() => { if(iptal) return; kopyalar.forEach(a => { if(a.asset && assets) assets.delete(a.asset).catch?.(() => {}); }); }, 15000);
+  return () => { iptal = true; kopyalar.forEach(a => db.doc("arsiv/" + a.id).set(a)); S.arsiv.push(...kopyalar.filter(a => !S.arsiv.some(x => x.id === a.id))); sertifikaCiz(); }; }
+document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#sr-govde .sr-ara")) return; srAra = el.value; const d = acikBelge(); if(d) srListeCiz(d); });
+document.addEventListener("change", e => { if(e.target.id !== "sr-dosya") return; const f = [...e.target.files]; e.target.value = ""; srYukle(f); });
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#sr-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "sertifika") return;
+  if(b.dataset.sr === "yukle"){ $("#sr-dosya").click(); return; }
+  if(b.dataset.srG){ srGorunum = b.dataset.srG; try { localStorage.setItem("srGorunum", srGorunum); } catch(_){} tsSec.sertifika = null; sertifikaCiz(); return; }
+  if(b.dataset.srBir != null){ const G = $("#sr-liste").__gruplar || [], [g, A] = G[+b.dataset.srBir] || []; if(A) srBirlestir(A, `Sertifikalar_${g}`); return; }
+  if(b.dataset.sr === "hepsi"){ srBirlestir(srListe(d), `Sertifikalar_${srGorunum === "konu" ? "Konu_Bazli" : "Personel_Bazli"}`); return; }
+  if(b.dataset.srId){ const a = S.arsiv.find(x => x.id === b.dataset.srId); if(a) srIslem(d, a); return; } });
+TS.sertifika = { ad: "sertifika", kap: "#sr-liste", satir: "[data-sr-id]", id: el => el.dataset.srId, dugme: ["#sr-govde .dl-ust .dl-yeni", "beforebegin"],
+  ek: [["⇩ Birleştir", ids => { const d = acikBelge(); srBirlestir(srListe(d).filter(a => ids.has(a.id)), "Sertifikalar_Secilenler"); }]],
+  sil: ids => srSil(S.arsiv.filter(a => ids.has(a.id))), ciz: () => sertifikaCiz() };
 function personelCiz(){ pKisaCiz(); { const pb = $("#p-bas"); if(pb && !odakIcinde("#p-bas")){ pb.innerHTML = basAlanHtml("personel"); otoBoyHepsi(pb); } }
   const tb = $("#p-tablo tbody"); const rows = S.personel.rows;
   if(!rows.length){ tb.innerHTML = `<tr><td colspan="7"><div class="bos"><strong>${S.yuklendi.personel ? "Personel listesi boş" : "Yükleniyor…"}</strong>“+ Personel ekle” ile girin.</div></td></tr>`; return; }
@@ -10006,7 +10149,8 @@ async function belgeCikti(d, kId, tur, ov, tumu){
   else if(d.tur === "cevrim"){ blob = tur === "pdf" ? await cevrimPdf(d, a) : tur === "xlsx" ? await cevrimExcel(d, a) : await cevrimWord(d, a); ad = `${dosyaAdi(d.ad)}_${ek}.${tur}`; }
   else if(d.tur === "sema"){ blob = tur === "pdf" ? await semaPdf(d, a) : tur === "xlsx" ? await semaExcel(d, a) : await semaWord(d, a); ad = `${dosyaAdi(d.ad)}_${ek}.${tur}`; }
   else if(d.tur === "grid"){ blob = tur === "pdf" ? await gridPdf(d, a) : tur === "xlsx" ? await gridExcel(d, a) : await gridWord(d, a); ad = `${dosyaAdi(d.ad)}_${ek}.${tur}`; }
-  else { const tf = { kimlik: tanimKimlik, personel: tanimPersonel, izin: tanimIzin, hedef: () => tanimHedef(a), yoklama: () => { YK = d.bt || "yoklama"; return tanimYoklama(); } }[d.tur];
+  else if(d.tur === "sertifika" && tur === "pdf"){ const L = srListe(d); blob = await srBirlestirBlob(L); ad = `${dosyaAdi(d.ad)}_${srGorunum === "konu" ? "Konu_Bazli" : "Personel_Bazli"}.pdf`; }
+  else { const tf = { sertifika: tanimSertifika, kimlik: tanimKimlik, personel: tanimPersonel, izin: tanimIzin, hedef: () => tanimHedef(a), yoklama: () => { YK = d.bt || "yoklama"; return tanimYoklama(); } }[d.tur];
     if(!tf) throw new Error("bu belge türünü uygulamanın bu sürümü tanımıyor; sayfayı yenileyip tekrar deneyin"); const sp = tf();
     if(!sp.body.length) throw new Error("çıktı alınacak satır yok");
     blob = tur === "pdf" ? await tabloPdf(sp, a) : tur === "xlsx" ? await tabloExcel(sp, a) : await tabloWord(sp, a); ad = `${sp.dosya}_${ek}.${tur}`; }
@@ -10300,7 +10444,7 @@ function yerGeriYukle(){ if(SECIM.klasor || !OTURUM_DEVAM) return; try { const y
     agacCiz(); anaCiz(); if(SECIM.belge){ const d = acikBelge(); if(!d){ belgeKapat(); } else if(d.tur === "grid" && !odakIcinde("#e-grid") && !kirli["belgeler/" + d.id]) gridCiz(); } else if(SECIM.bolum) bolumCiz();
   }, () => durum("hata","Belgeler okunamadı"));
   setTimeout(function taslakBekle(){ if(["yapi", "personel", "izin", "yoklama", "gdhg", "izinb", "hedef", "belgeler"].every(x => S.yuklendi[x])) taslakGeriYukle(); else setTimeout(taslakBekle, 400); }, 600);
-  db.collection("arsiv").onSnapshot(s => { S.yuklendi.arsiv = true; S.arsiv = s.docs.map(d => d.data()); agacCiz(); anaCiz(); if(SECIM.bolum && !SECIM.belge) bolumCiz(); }, () => durum("hata","Arşiv okunamadı"));
+  db.collection("arsiv").onSnapshot(s => { S.yuklendi.arsiv = true; S.arsiv = s.docs.map(d => d.data()); if(acikBelge()?.tur === "sertifika" && !document.querySelector("#sr-perde:not([hidden])")) sertifikaCiz(); agacCiz(); anaCiz(); if(SECIM.bolum && !SECIM.belge) bolumCiz(); }, () => durum("hata","Arşiv okunamadı"));
 })();
 </script>
 
