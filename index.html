@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "369";
+  const SURUM = "370";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2713,7 +2713,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 369</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 370</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8269,7 +8269,7 @@ function kpSayfalar(v, kId, sadece){ const lgKutu = (cx, y, W, H, key) => { cons
     P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, f: kenar, rd: 8 }, { t: "r", x: 14, y: 14, w: 182, h: 269, f: "FFFFFF", rd: 5.2 }, { t: "r", x: 18, y: 18, w: 174, h: 261, k: ince, lw: .3, rd: 3.4 }); };
   /* başlık bandı: uygulamadaki çıktı başlıkları gibi — soluk zemin, ince kenar, solda küçük koyu çubuk */
   const bant = (P, y, h, koyu, acik) => { P.push({ t: "r", x: 28, y, w: 154, h, f: renkKar(acik, "FFFFFF", .45), k: renkKar(acik, koyu, .3), lw: .25, rd: 3.2 }, { t: "r", x: 32.4, y: y + h * .27, w: 1.7, h: h * .46, f: koyu, rd: .85 }); };
-  const fgYeni = (P, y, H) => { const FG = kpFg(v); if(!FG) return; const yer = v.fgYer || "alt", K = { alt: [214, 62, 84], orta: [y, H, 156], logo: [70, 96, 120] }[yer] || [214, 62, 84]; y = K[0]; H = K[1]; const o = FG.o || 148 / 161.6, W = K[2]; let w = W, h = W * o; if(h > H){ h = H; w = H / o; } P.push({ t: "i", x: 105 - w / 2, y: y + (H - h) / 2, w, h, src: "ay" }); };
+  const fgYeni = (P, y, H, klasik) => { const FG = kpFg(v); if(!FG) return; const yer = v.fgYer || "alt", K = klasik ? [122, 148, 161.6] : ({ alt: [214, 62, 84], orta: [y, H, 156], logo: [70, 96, 120] }[yer] || [214, 62, 84]); y = K[0]; H = K[1]; const o = FG.o || 148 / 161.6, W = K[2]; let w = W, h = W * o; if(h > H){ h = H; w = H / o; } P.push({ t: "i", x: 105 - w / 2, y: y + (H - h) / 2, w, h, src: "ay" }); };
   const ayracY = (baslik, alt, koyu, acik, key, liste) => { const P = [], yazi = renkKar(koyu, "1F1F1F", .55);
     cerceve(P, acik, koyu); if(v.fgAyrac) fgYeni(P, 140, 130);
     ust(P, 105, 42, false);
@@ -8280,7 +8280,7 @@ function kpSayfalar(v, kId, sadece){ const lgKutu = (cx, y, W, H, key) => { cons
     if(liste && liste.length){ const y0 = by + bh + 14, ar = Math.min(6.4, (262 - y0) / liste.length); liste.forEach((x, i) => P.push({ t: "t", x: 105, y: y0 + i * ar, s: x, fs: Math.min(10, ar * 1.7), b: 1, f: "a", k: yazi, al: "c" })); }
     return P; };
   const ayracK = (baslik, alt, koyu, acik, key, liste) => { const P = [];
-    P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, k: "2B2B2B", lw: 1 }, { t: "r", x: 13, y: 13, w: 184, h: 271, k: "2B2B2B", lw: .3 });
+    P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, k: "2B2B2B", lw: 1 }, { t: "r", x: 13, y: 13, w: 184, h: 271, k: "2B2B2B", lw: .3 }); if(v.fgAyrac) fgYeni(P, 0, 0, true);
     ust(P, 105, 40.5, false); P.push({ t: "l", x1: 62, y1: 83.6, x2: 148, y2: 83.6, k: koyu, lw: .35 });
     lgEkle(P, 105, 93, 46.4, 58, key);
     P.push({ t: "r", x: 22, y: 186.6, w: 166, h: 40.1, f: acik }, { t: "l", x1: 22, y1: 184.7, x2: 188, y2: 184.7, k: koyu, lw: .3 }, { t: "l", x1: 22, y1: 186.6, x2: 188, y2: 186.6, k: koyu, lw: 1 },
@@ -8402,7 +8402,8 @@ function kapakCiz(){ const d = acikBelge(); if(!d || d.tur !== "kapak") return; 
       ${S.length && S[kpSayfaNo].key ? (() => { const L = kpLogo(v, S[kpSayfaNo].key), dur = (v.lgS || {})[S[kpSayfaNo].key] === "yok" ? "Logo yok" : L && L.ozel ? "Bu sayfaya özel" : L ? "Varsayılan" : "Logo yok"; return `<button type="button" class="kp-sl" data-kp-i="slogo"><span class="kp-sl-res">${L ? `<img src="${esc(L.u)}" alt="">` : "—"}</span><span><small>Bu sayfanın logosu</small><b>${dur}</b></span><em>Değiştir</em></button>`; })() : ""}</div>
     ${kkKart("kp-tasarim", "#EEF0F6", "Tasarım", v.tasarim === "yeni" ? "yeni" + (v.renk && KP_RENK[v.renk] ? " · " + KP_RENK[v.renk][2] : " · bölüm renkleri") : "klasik", `<div class="kp-alanlar"><div class="kpk-seg kp-tsr"><button type="button" data-kp-tsr="klasik" aria-pressed="${v.tasarim !== "yeni"}">Klasik</button><button type="button" data-kp-tsr="yeni" aria-pressed="${v.tasarim === "yeni"}">Yeni</button></div>
       ${v.tasarim === "yeni" ? `<div class="kp-tsat"><small>Renk</small><div class="rs-kucuk"><div class="rs-liste"><button type="button" class="rs-k" data-kp-rk="" aria-pressed="${!(v.renk && KP_RENK[v.renk])}"><i style="background:conic-gradient(#D6ECF0 0 25%,#ECE2CC 0 50%,#E2DFF2 0 75%,#D9E9DB 0)"></i><span>Bölüm renkleri</span></button>${Object.entries(KP_RENK).map(([id, r]) => `<button type="button" class="rs-k" data-kp-rk="${id}" aria-pressed="${v.renk === id}"><i style="background:linear-gradient(135deg,#${r[1]} 50%,#${r[0]} 50%)"></i><span>${r[2]}</span></button>`).join("")}</div></div></div>
-      <div class="kp-tsat"><small>Ayraçta filigran</small><div class="kpk-seg kp-tsr kp-kisa"><button type="button" data-kp-fga="1" aria-pressed="${!!v.fgAyrac}">Var</button><button type="button" data-kp-fga="0" aria-pressed="${!v.fgAyrac}">Yok</button></div></div><div class="kp-tsat"><small>Filigran yeri</small><div class="kpk-seg kp-tsr">${[["alt", "Altta"], ["orta", "Ortada"], ["logo", "Logoda"]].map(([k, t]) => `<button type="button" data-kp-fgy="${k}" aria-pressed="${(v.fgYer || "alt") === k}">${t}</button>`).join("")}</div></div><div class="tz-not2">Yazı, logo ve filigranlar aşağıdaki kartlardan değişir. Sırt yazısı yalnız klasikte basılır.</div>` : `<div class="tz-not2">Klasik: şimdiye kadar kullanılan kapaklar. "Yeni"ye geçince istediğin an geri dönebilirsin; bilgiler kaybolmaz.</div>`}</div>`, { kume: kpKapali })}
+<div class="tz-not2">Yazı, logo ve filigranlar aşağıdaki kartlardan değişir. Sırt yazısı yalnız klasikte basılır.</div>` : ""}
+      <div class="kp-tsat"><small>Ayraçta filigran</small><div class="kpk-seg kp-tsr kp-kisa"><button type="button" data-kp-fga="1" aria-pressed="${!!v.fgAyrac}">Var</button><button type="button" data-kp-fga="0" aria-pressed="${!v.fgAyrac}">Yok</button></div></div>${v.tasarim !== "yeni" ? "" : `<div class="kp-tsat"><small>Filigran yeri</small><div class="kpk-seg kp-tsr">${[["alt", "Altta"], ["orta", "Ortada"], ["logo", "Logoda"]].map(([k, t]) => `<button type="button" data-kp-fgy="${k}" aria-pressed="${(v.fgYer || "alt") === k}">${t}</button>`).join("")}</div></div>`}${v.tasarim === "yeni" ? "" : `<div class="tz-not2">Klasik: şimdiye kadar kullanılan kapaklar. Ön kapakta filigran hep yerinde kalır; burası ayraç sayfaları içindir.</div>`}</div>`, { kume: kpKapali })}
     ${kkKart("kp-cikti", "#E3ECF5", "Çıkacak sayfalar", `${S.length} sayfa`, `<div class="kp-tikler">${tik("kapak", "Ön kapak")}${tik("icAyrac", "İçindekiler ayracı")}${tik("icListe", "İçindekiler listesi")}${tik("bolum", "Bölüm ayraçları")}</div>`, { kume: kpKapali })}
     ${kkKart("kp-ust", "#F3E6CF", "Başlık yazıları", "", `<div class="kp-alanlar">${al("tc", "Üst başlık", v.tc)}<label class="gi-alan"><span>Alt satırlar <i>(her satır ayrı)</i></span><textarea class="oto-boy" data-kp="satirlar" rows="4">${esc((v.satirlar || []).join("\n"))}</textarea></label>${al("sirt", "Kapak sırt yazısı (sol şerit)", v.sirt)}</div>`, { kume: kpKapali })}
     ${kkKart("kp-sahip", "#E8E2F4", "Klasör sahibi", "ön kapakta", `<div class="kp-alanlar kp-iki">${al("rutbe", "Rütbesi", v.rutbe, "TOPÇU ÜSTEĞMEN")}${al("ad", "Adı soyadı", v.ad, "Ad SOYAD")}</div>`, { kume: kpKapali })}
