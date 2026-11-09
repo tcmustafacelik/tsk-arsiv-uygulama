@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "363";
+  const SURUM = "364";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2654,6 +2654,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .sp-yas-k button{width:24px;height:100%;border:0;border-left:1px solid var(--line2);background:transparent;color:#9A4A3E;font:700 14px var(--f-ui);cursor:pointer;padding:0}
 .sp-yas-ekle{height:32px;width:36px;padding:0}
 .kp-tsr{max-width:320px} .kp-tsr button{padding:0 10px}
+.sp-gb{max-width:360px} .sp-gb button{font-size:12.5px;padding:0 6px}
 </style>
 
 </head>
@@ -2691,7 +2692,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 363</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 364</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8972,7 +8973,7 @@ document.addEventListener("click", async e => { const b = e.target.closest && e.
             kisiler: [{ id, pid, rutbe, ad, sicil, dogum, s: { bransId: { d: değer, p: elle puan } }, yok: bool, aciklama }] }
    Yaş grubu, test yılı ile doğum yılından bulunur. Branşın puan cetveli doluysa puan oradan gelir (tekrar/mesafe: değer ≥ eşik; süre: değer ≤ eşik,
    o yaş grubundaki en yüksek puan); cetvel yoksa ya da elle puan yazılmışsa o kullanılır. Ortalama = girilen puanların ortalaması; eşik ve üstü BAŞARILI. */
-const SP_YAS = ["17-25", "26-30", "31-35", "36-40", "41-45", "46+"];
+const SP_YAS = ["17-25", "26-30", "31-35", "36-39", "40+"];
 const SP_BIRIM = { tekrar: "Tekrar", sure: "Süre", mesafe: "Mesafe" };
 /* branş ekleme: hazır branşlar alttan açılan pencerede */
 const SP_BIRIM_AD = { tekrar: "tekrar", sure: "süre", mesafe: "mesafe" };
@@ -8988,7 +8989,7 @@ const spYil = v => +(String(v.tarih || "").slice(0, 4)) || new Date().getFullYea
 const spDYil = k => { const t = String(k.dogum || ((S.personel.rows || []).find(p => (k.pid && p.id === k.pid) || pAd(p.ad) === pAd(k.ad)) || {}).dogum || ""), m = t.match(/(19|20)\d{2}/); return m ? +m[0] : 0; };
 /* yaş grupları teste özel ve düzenlenebilir (v.yaslar); ad değişince cetvel ve standartlar birlikte değişir. "17-25" → 17..25, "46+" → 46 ve üstü */
 const spYaslar = v => Array.isArray(v.yaslar) && v.yaslar.length ? v.yaslar : SP_YAS;
-const spYasAralik = t => { const s = String(t || "").replace(/\s/g, ""), a = s.match(/^(\d+)[-–](\d+)$/), b = s.match(/^(\d+)\+$/), c = s.match(/^[-–](\d+)$/); return a ? [+a[1], +a[2]] : b ? [+b[1], 999] : c ? [0, +c[1]] : null; };
+const spYasAralik = t => { const s = String(t || "").replace(/\s/g, ""), a = s.match(/^(\d+)[-–](\d+)$/), b = s.match(/^(\d+)(?:\+|[-–]?(?:sonra|ve(?:sonrası|üstü|üzeri)|üstü|üzeri|sonrası))$/i), c = s.match(/^[-–](\d+)$/); return a ? [+a[1], +a[2]] : b ? [+b[1], 999] : c ? [0, +c[1]] : null; };
 const spYasGrup = (v, k) => { const dy = spDYil(k), y = spYil(v) - dy; if(!dy || !(y > 0 && y < 100)) return ""; return spYaslar(v).find(g => { const r = spYasAralik(g); return r && y >= r[0] && y <= r[1]; }) || ""; };
 function spYasDegis(v, eski, yeni){ v.yaslar = spYaslar(v).map(g => g === eski ? yeni : g); v.branslar.forEach(b => { (b.cetvel || []).forEach(r => { if(r.yas === eski) r.yas = yeni; }); if(b.std && eski in b.std){ b.std[yeni] = b.std[eski]; delete b.std[eski]; } }); }
 /* "3:25" / "3.25" / "205" → saniye; tekrar/mesafe → sayı */
@@ -9035,11 +9036,12 @@ function spGrid(d){ const v = spVeri(d), nb = v.branslar.length, SK = spStdVar(v
     g.c[r][W - 3] = C(h.ort ?? "", { f, b: 1, ...(pc.length && !k.yok ? { fx: `=SUM(${pc.join(",")})/${pc.length}` } : {}) });
     g.c[r][W - 2] = C(h.durum, { f, ...(h.durum === "BAŞARILI" ? { rz: FG } : h.durum === "BAŞARISIZ" ? { rz: FR } : {}), b: 1, s: 8, k: h.durum === "BAŞARILI" ? "2E6B41" : h.durum === "BAŞARISIZ" ? "9A3A2E" : "6A6A6A" });
     g.c[r][W - 1] = C(k.aciklama || "", { f, s: 8 }); });
+  const GB = v.genel || "deger"; if(GB === "yok"){ hesapla(g); return g; }   // genel başarı kutusu: değerli / boş (elle doldurulur) / yok
   sat(14); const c0 = 2, ls = Math.max(3, Math.floor((W - 4) / 2)), vs = Math.max(2, W - 4 - ls - 0), vs2 = Math.min(vs, ls);
   { const r = sat(19); koy(r, c0, ls + vs2, 1, C("GENEL BAŞARI DURUMU", { b: 1, f: PR.genel, k: PR.yazi, s: 10 })); }
   const son = ilk + v.kisiler.length;
   [["Toplam Katılan Personel", G.kat], ["Testi Tamamlayan", G.tam], ["Başarılı Personel Sayısı", G.bas], ["Başarısız Personel Sayısı", G.bsz], ["Başarı Oranı (%)", G.oran ?? ""], ["Genel Puan Ortalaması", G.ort ?? ""]].forEach(([t, x], i) => { const r = sat(17);
-    koy(r, c0, ls, 1, C(t, { a: "l", b: 1, s: 8.5, f: i % 2 ? PR.zebra : undefined })); koy(r, c0 + ls, vs2, 1, C(x, { b: 1, s: 9, f: i % 2 ? PR.zebra : undefined, ...(i === 5 && G.ort != null && v.kisiler.length ? { fx: `=SUM(${harf(W - 3)}${ilk + 1}:${harf(W - 3)}${son})/${G.H.filter(h => h.ort != null).length}` } : {}) })); });
+    koy(r, c0, ls, 1, C(t, { a: "l", b: 1, s: 8.5, f: i % 2 ? PR.zebra : undefined })); koy(r, c0 + ls, vs2, 1, C(GB === "bos" ? "" : x, { b: 1, s: 9, f: i % 2 ? PR.zebra : undefined, ...(GB !== "bos" && i === 5 && G.ort != null && v.kisiler.length ? { fx: `=SUM(${harf(W - 3)}${ilk + 1}:${harf(W - 3)}${son})/${G.H.filter(h => h.ort != null).length}` } : {}) })); });
   hesapla(g); return g; }
 async function sporCikti(d, a, tur){ const g = gridTema(spGrid(d), { seritYok: true }), a2 = { ...a, yon: a.yon || "yatay", doldurMax: a.yon === "dikey" ? 2.6 : 1.8, sigdir: "tek", baslikSatir: 0, satir: a.satir || 1, yazi: a.yazi || 1 }, sahte = { ...d, grid: g };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
@@ -9058,6 +9060,7 @@ function sporCiz(){ const d = acikBelge(); if(!d || d.tur !== "spor") return; co
   const P = (S.personel.rows || []).filter(p => p.ad && !v.kisiler.some(k => k.pid === p.id || pAd(k.ad) === pAd(p.ad)));
   $("#sp-govde").innerHTML = `
     <div class="sp-genel" id="sp-genel">${spGenelHtml(v)}</div>
+    <div class="ko-al ko-tam"><span>Çıktıda genel başarı durumu</span><div class="kpk-seg sp-gb">${[["deger", "Değerleriyle"], ["bos", "Değerler boş"], ["yok", "Basılmasın"]].map(([k, t]) => `<button type="button" data-sp-gb="${k}" aria-pressed="${(v.genel || "deger") === k}">${t}</button>`).join("")}</div></div>
     <div class="sp-temiz"><button type="button" class="tz-hafif sil" data-sp-temizle data-sil-ad="Bütün sonuçlar, katılmadı işaretleri, açıklamalar ve test tarihi"${v.tarih || v.kisiler.some(k => k.yok || (k.aciklama || "").trim() || Object.values(k.s || {}).some(x => x && Object.values(x).some(y => String(y ?? "").trim() !== ""))) ? "" : " disabled"}>⟲ Değerleri temizle</button><small>Kişiler, branşlar, cetvel ve standartlar kalır</small></div>
     <label class="ko-al ko-tam"><span>Birlik</span><textarea class="oto-boy" rows="1" data-sp-g="ust">${esc(v.ust || "")}</textarea></label>
     <label class="ko-al ko-tam"><span>Başlık</span><textarea class="oto-boy" rows="1" data-sp-g="baslik">${esc(v.baslik || "")}</textarea></label>
@@ -9109,6 +9112,7 @@ document.addEventListener("focusout", e => { const el = e.target; if(!el.closest
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#sp-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d), B = v.branslar, L = v.kisiler, ds = b.dataset;
   const yaz = () => { kaydetBelge(d); sporCiz(); }, yid = p => p + yeniId().slice(0, 6), tas = (A, id, y) => { const i = A.findIndex(x => x.id === id), j = i + +y; if(i < 0 || j < 0 || j >= A.length) return false; [A[i], A[j]] = [A[j], A[i]]; return true; };
   if(ds.spRenk){ v.renk = ds.spRenk; return yaz(); }
+  if(ds.spGb){ if(ds.spGb === "deger") delete v.genel; else v.genel = ds.spGb; return yaz(); }
   if(ds.spYasEkle != null){ const Y = spYaslar(v), son = spYasAralik(Y[Y.length - 1]), yeni = son && son[1] < 999 ? `${son[1] + 1}+` : ""; v.yaslar = [...Y, yeni]; yaz(); return setTimeout(() => { const L = document.querySelectorAll("#sp-govde [data-sp-yas]"); L[L.length - 1]?.focus(); }, 30); }
   if(ds.spYasSil != null){ const Y = [...spYaslar(v)], i = +ds.spYasSil, g = Y[i]; if(g == null) return; const eski = kopya({ yaslar: v.yaslar, B: B.map(b => ({ cetvel: b.cetvel, std: b.std })) });
     v.yaslar = Y.filter((_, j) => j !== i); B.forEach(b => { b.cetvel = (b.cetvel || []).filter(r => r.yas !== g); if(b.std) delete b.std[g]; }); yaz();
