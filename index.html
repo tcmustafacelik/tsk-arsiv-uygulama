@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "364";
+  const SURUM = "365";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2655,6 +2655,16 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .sp-yas-ekle{height:32px;width:36px;padding:0}
 .kp-tsr{max-width:320px} .kp-tsr button{padding:0 10px}
 .sp-gb{max-width:360px} .sp-gb button{font-size:12.5px;padding:0 6px}
+.sp-yas-k input{width:auto;min-width:4.5ch;max-width:14ch;padding:0 6px} .sp-yas-k{height:30px} .sp-yas-k button{width:22px} .sp-yas-ekle{height:30px;width:30px;border:1px dashed var(--line);border-radius:8px;background:transparent;color:var(--muted);font:600 15px var(--f-ui);cursor:pointer;padding:0}
+.sp-ipucu{font-style:normal;color:var(--muted);opacity:.8}
+.rs-kucuk .rs-liste{gap:6px} .rs-kucuk .rs-k{height:auto;padding:4px;border-radius:9px} .rs-kucuk .rs-k span{display:none} .rs-kucuk .rs-k i{width:24px;height:24px;border-radius:6px}
+.rs-kucuk .rs-k[aria-pressed="true"] span,.rs-kucuk .rs-k.acik span{display:inline;padding-right:4px}
+.sp-temiz{margin:2px 0 8px}
+/* puan cetveli: telefonda yana kaymadan sığsın */
+.sp-ctab{overflow:hidden} .sp-ctab table{width:100%;table-layout:fixed} .sp-ctab th,.sp-ctab td{padding:3px 2px} .sp-ctab thead th{font-size:10px;line-height:1.15;word-break:break-word;padding:6px 2px}
+.sp-ctab tbody th{position:static} .sp-ctab tbody th input,.sp-ctab td input{width:100%;min-width:0;box-sizing:border-box;padding:0 2px;font-size:12.5px}
+.sp-ctab thead th:first-child,.sp-ctab tbody th{width:15%} .sp-ctab thead th:last-child,.sp-ctab tbody td:last-child{width:26px}
+.sp-std{gap:4px} .sp-std small{font-size:10px;line-height:1.15;min-height:2.3em;display:flex;align-items:flex-end;justify-content:center;word-break:break-word}
 </style>
 
 </head>
@@ -2692,7 +2702,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 364</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 365</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9056,17 +9066,20 @@ let spAcik = null, spBransAcik = null;
 const spRozet = h => h.durum ? `<span class="sp-roz ${h.durum === "BAŞARILI" ? "iyi" : h.durum === "BAŞARISIZ" ? "kot" : "gri"}">${h.ort != null ? spSayiYaz(h.ort) + " · " : ""}${h.durum}</span>` : `<span class="sp-roz gri">girilmedi</span>`;
 function spGenelHtml(v){ const G = spGenel(v);
   return [["Katılan", G.kat], ["Tamamlayan", G.tam], ["Başarılı", G.bas], ["Başarısız", G.bsz], ["Başarı oranı", G.oran == null ? "—" : "%" + spSayiYaz(G.oran)], ["Genel ortalama", G.ort == null ? "—" : spSayiYaz(G.ort)]].map(([t, x]) => `<div><b>${x}</b><small>${t}</small></div>`).join(""); }
+const spKapali = kkKume("spKapali", ["sp-gor"]);
 function sporCiz(){ const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d), G = spGenel(v);
   const P = (S.personel.rows || []).filter(p => p.ad && !v.kisiler.some(k => k.pid === p.id || pAd(k.ad) === pAd(p.ad)));
   $("#sp-govde").innerHTML = `
     <div class="sp-genel" id="sp-genel">${spGenelHtml(v)}</div>
-    <div class="ko-al ko-tam"><span>Çıktıda genel başarı durumu</span><div class="kpk-seg sp-gb">${[["deger", "Değerleriyle"], ["bos", "Değerler boş"], ["yok", "Basılmasın"]].map(([k, t]) => `<button type="button" data-sp-gb="${k}" aria-pressed="${(v.genel || "deger") === k}">${t}</button>`).join("")}</div></div>
     <div class="sp-temiz"><button type="button" class="tz-hafif sil" data-sp-temizle data-sil-ad="Bütün sonuçlar, katılmadı işaretleri, açıklamalar ve test tarihi"${v.tarih || v.kisiler.some(k => k.yok || (k.aciklama || "").trim() || Object.values(k.s || {}).some(x => x && Object.values(x).some(y => String(y ?? "").trim() !== ""))) ? "" : " disabled"}>⟲ Değerleri temizle</button><small>Kişiler, branşlar, cetvel ve standartlar kalır</small></div>
-    <label class="ko-al ko-tam"><span>Birlik</span><textarea class="oto-boy" rows="1" data-sp-g="ust">${esc(v.ust || "")}</textarea></label>
-    <label class="ko-al ko-tam"><span>Başlık</span><textarea class="oto-boy" rows="1" data-sp-g="baslik">${esc(v.baslik || "")}</textarea></label>
-    <div class="ko-al ko-tam"><span>Renk</span>${renkSecHtml("data-sp-renk", SP_PALET, v.renk === "ozel" ? "ozel" : (SP_PALET[v.renk] ? v.renk : "deniz"), v.renkOzel)}</div>
-    <div class="ko-al ko-tam"><span>Yaş grupları · cetvel ve standartlar birlikte değişir</span><div class="sp-yas">${spYaslar(v).map((y, i) => `<span class="sp-yas-k${spYasAralik(y) ? "" : " hata"}"><input data-sp-yas="${i}" value="${esc(y)}" aria-label="Yaş grubu" placeholder="örn. 36-40"><button type="button" class="sil" data-sp-yas-sil="${i}" data-sil-ad="${esc(y)} yaş grubu (cetvel ve standart değerleriyle)" aria-label="Yaş grubunu sil">×</button></span>`).join("")}<button type="button" class="tz-hafif sp-yas-ekle" data-sp-yas-ekle>＋</button></div></div>
-    <div class="sp-iki"><label class="ko-al"><span>Test tarihi</span><input type="date" data-sp-g="tarih" value="${esc(v.tarih || "")}"></label><label class="ko-al"><span>Başarı için ortalama en az</span><input inputmode="decimal" data-sp-g="esik" value="${esc(v.esik ?? "")}"></label></div>
+    ${kkKart("sp-bilgi", "#E3EEF0", "Test bilgileri", [spTarihYaz(v).includes("..") ? "" : spTarihYaz(v), spYaslar(v).length + " yaş grubu", "eşik " + (v.esik ?? "—")].filter(Boolean).join(" · "), `<div class="kp-alanlar">
+      <label class="ko-al ko-tam"><span>Birlik</span><textarea class="oto-boy" rows="1" data-sp-g="ust">${esc(v.ust || "")}</textarea></label>
+      <label class="ko-al ko-tam"><span>Başlık</span><textarea class="oto-boy" rows="1" data-sp-g="baslik">${esc(v.baslik || "")}</textarea></label>
+      <div class="sp-iki"><label class="ko-al"><span>Test tarihi</span><input type="date" data-sp-g="tarih" value="${esc(v.tarih || "")}"></label><label class="ko-al"><span>Başarı için ortalama en az</span><input inputmode="decimal" data-sp-g="esik" value="${esc(v.esik ?? "")}"></label></div>
+      <div class="ko-al ko-tam"><span>Yaş grupları <i class="sp-ipucu">· cetvel ve standartlar birlikte değişir</i></span><div class="sp-yas">${spYaslar(v).map((y, i) => `<span class="sp-yas-k${spYasAralik(y) ? "" : " hata"}"><input data-sp-yas="${i}" value="${esc(y)}" style="width:${Math.max(4.5, String(y).length + 1.2)}ch" aria-label="Yaş grubu" placeholder="36-40"><button type="button" class="sil" data-sp-yas-sil="${i}" data-sil-ad="${esc(y)} yaş grubu (cetvel ve standart değerleriyle)" aria-label="Yaş grubunu sil">×</button></span>`).join("")}<button type="button" class="sp-yas-ekle" data-sp-yas-ekle aria-label="Yaş grubu ekle">＋</button></div></div></div>`, { kume: spKapali })}
+    ${kkKart("sp-gor", "#EEF0F6", "Çıktı görünümü", [v.renk === "ozel" ? "özel renk" : (SP_PALET[v.renk] || SP_PALET.deniz).ad, { deger: "", bos: "genel başarı boş", yok: "genel başarı yok" }[v.genel || "deger"]].filter(Boolean).join(" · "), `<div class="kp-alanlar">
+      <div class="ko-al ko-tam"><span>Renk</span><div class="rs-kucuk">${renkSecHtml("data-sp-renk", SP_PALET, v.renk === "ozel" ? "ozel" : (SP_PALET[v.renk] ? v.renk : "deniz"), v.renkOzel)}</div></div>
+      <div class="ko-al ko-tam"><span>Genel başarı durumu</span><div class="kpk-seg sp-gb">${[["deger", "Değerleriyle"], ["bos", "Değerler boş"], ["yok", "Basılmasın"]].map(([k, t]) => `<button type="button" data-sp-gb="${k}" aria-pressed="${(v.genel || "deger") === k}">${t}</button>`).join("")}</div></div></div>`, { kume: spKapali })}
     <div class="sa-blok"><div class="yk-gbas"><b>Branşlar</b><small>${v.branslar.length} branş</small></div>
       ${v.branslar.map((b, i) => { const ac = spBransAcik === b.id;
         return `<div class="yk-k${ac ? " acik" : ""}"><button type="button" class="yk-s" data-sp-bac="${b.id}"><span class="yk-n">${i + 1}</span><span class="kc-sy"><b>${esc(b.ad || "Yeni branş")}</b><small>${SP_BIRIM[b.birim] || "Tekrar"} · ${b.cetvel.length ? `puan cetveli · ${spSeviye(b).length} puan seviyesi${b.ornek ? " · ÖRNEK DEĞERLER" : ""}` : "puan elle girilir"}</small></span></button>
@@ -9111,6 +9124,7 @@ document.addEventListener("change", e => { const el = e.target; if(el.matches &&
 document.addEventListener("focusout", e => { const el = e.target; if(!el.closest || !el.closest("#sp-govde") || !(el.dataset.spK || el.dataset.spB || el.dataset.spG === "esik")) return; setTimeout(() => { if(!odakIcinde("#sp-govde")) sporCiz(); }, 120); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#sp-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d), B = v.branslar, L = v.kisiler, ds = b.dataset;
   const yaz = () => { kaydetBelge(d); sporCiz(); }, yid = p => p + yeniId().slice(0, 6), tas = (A, id, y) => { const i = A.findIndex(x => x.id === id), j = i + +y; if(i < 0 || j < 0 || j >= A.length) return false; [A[i], A[j]] = [A[j], A[i]]; return true; };
+  if(ds.kk){ spKapali.degis(ds.kk); return sporCiz(); }
   if(ds.spRenk){ v.renk = ds.spRenk; return yaz(); }
   if(ds.spGb){ if(ds.spGb === "deger") delete v.genel; else v.genel = ds.spGb; return yaz(); }
   if(ds.spYasEkle != null){ const Y = spYaslar(v), son = spYasAralik(Y[Y.length - 1]), yeni = son && son[1] < 999 ? `${son[1] + 1}+` : ""; v.yaslar = [...Y, yeni]; yaz(); return setTimeout(() => { const L = document.querySelectorAll("#sp-govde [data-sp-yas]"); L[L.length - 1]?.focus(); }, 30); }
@@ -9998,6 +10012,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   else return; kaydetBelge(d); kopekCiz(); });
 document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#sp-govde [data-sp-renk-ozel]")) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d); v.renk = "ozel"; v.renkOzel = el.value.replace("#", "").toUpperCase(); el.nextElementSibling.style.background = el.value; kaydetBelge(d); });
 document.addEventListener("change", e => { const el = e.target; if(el.matches && el.matches("#sp-govde [data-sp-renk-ozel]") && acikBelge()?.tur === "spor") sporCiz(); });
+document.addEventListener("input", e => { const el = e.target; if(el.matches && el.matches("#sp-govde [data-sp-yas]")) el.style.width = Math.max(4.5, el.value.length + 1.2) + "ch"; });
 document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches("#sp-govde [data-sp-yas]")) return; const d = acikBelge(); if(!d || d.tur !== "spor") return; const v = spVeri(d), Y = spYaslar(v), i = +el.dataset.spYas, eski = Y[i], yeni = el.value.replace(/\s+/g, "").replace("–", "-");
   if(yeni === eski) return; if(!yeni || Y.some((g, j) => j !== i && g === yeni)){ el.value = eski; el.classList.add("sp-yas-red"); setTimeout(() => el.classList.remove("sp-yas-red"), 900); return; }
   spYasDegis(v, eski, yeni); kaydetBelge(d); sporCiz(); });
