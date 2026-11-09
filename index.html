@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "367";
+  const SURUM = "368";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2713,7 +2713,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 367</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 368</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8269,7 +8269,7 @@ function kpSayfalar(v, kId, sadece){ const lgKutu = (cx, y, W, H, key) => { cons
     P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, f: kenar, rd: 8 }, { t: "r", x: 14, y: 14, w: 182, h: 269, f: "FFFFFF", rd: 5.2 }, { t: "r", x: 18, y: 18, w: 174, h: 261, k: ince, lw: .3, rd: 3.4 }); };
   /* başlık bandı: uygulamadaki çıktı başlıkları gibi — soluk zemin, ince kenar, solda küçük koyu çubuk */
   const bant = (P, y, h, koyu, acik) => { P.push({ t: "r", x: 28, y, w: 154, h, f: renkKar(acik, "FFFFFF", .45), k: renkKar(acik, koyu, .3), lw: .25, rd: 3.2 }, { t: "r", x: 32.4, y: y + h * .27, w: 1.7, h: h * .46, f: koyu, rd: .85 }); };
-  const fgYeni = (P, y, H) => { const FG = v.fgAyrac !== false && kpFg(v); if(!FG) return; const o = FG.o || 1, W = 150; let w = W, h = W * o; if(h > H){ h = H; w = H / o; } P.push({ t: "i", x: 105 - w / 2, y: y + (H - h) / 2, w, h, src: "ay" }); };
+  const fgYeni = (P, y, H) => { const FG = kpFg(v); if(!FG) return; const o = FG.o || 148 / 161.6, W = 156; let w = W, h = W * o; if(h > H){ h = H; w = H / o; } P.push({ t: "i", x: 105 - w / 2, y: y + (H - h) / 2, w, h, src: "ay" }); };
   const ayracY = (baslik, alt, koyu, acik, key, liste) => { const P = [], yazi = renkKar(koyu, "1F1F1F", .55);
     cerceve(P, acik, koyu); if(v.fgAyrac) fgYeni(P, 140, 130);
     ust(P, 105, 42, false);
