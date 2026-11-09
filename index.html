@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "373";
+  const SURUM = "374";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2722,7 +2722,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 373</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 374</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4186,7 +4186,7 @@ function personelEsitle(kaynaklar = ["ilk"]){
   for(const [kk, L] of [["gdhg", S.gdhg?.kisiler], ["izinb", S.izinb?.kisiler], ["yoklama", S.yoklama?.rows]]){
     if(!kaynaklar.includes(kk) || !L) continue;
     for(const x of L){ const p = x.pid && S.personel.rows.find(r => r.id === x.pid); if(!p || !x.ad) continue;
-      if(kk === "yoklama" && pAd(x.ad) !== pAd(p.ad)){ delete x.pid; degisen.add("yoklama"); continue; }   // yoklamada başka biri yazıldı: isim listesindeki kişiyi değiştirme, bağı kopar
+      if(pAd(x.ad) !== pAd(p.ad)){ delete x.pid; degisen.add(kk); continue; }   // GDHG, izin belgesi ya da yoklamada aynı satıra başka biri yazıldı (başka bir GDHG kaydı da olabilir): isim listesindeki kişiyi asla değiştirme, yalnız bağı kopar
       const sc = sicilYalin(x.sicil); if(p.ad !== x.ad || p.rutbe !== x.rutbe || (sc && p.sicil !== sc)){ p.ad = x.ad; p.rutbe = x.rutbe; if(sc) p.sicil = sc; degisen.add("personel"); } } }
   const ileri = ilet || degisen.has("personel");
   const bul = (L, p) => L.find(x => x.pid === p.id) || L.find(x => !x.pid && pAd(x.ad) === pAd(p.ad));
@@ -5168,6 +5168,7 @@ function gdSetGec(id){
   if(!S.gdhg || id === S.gdhg.setId) return; const L = S.gdhgSet.liste; const i = L.findIndex(x => x.id === id); if(i < 0) return;
   const hedef = L[i]; L.splice(i, 1, { id: S.gdhg.setId, ad: S.gdhg.setAd, veri: kopya(S.gdhg) });
   S.gdhg = kopya(hedef.veri); S.gdhg.setId = hedef.id; S.gdhg.setAd = hedef.ad; gdDuzelt();
+  (S.gdhg.kisiler || []).forEach(k => { const p = k.pid && (S.personel.rows || []).find(r => r.id === k.pid); if(k.pid && (!p || pAd(p.ad) !== pAd(k.ad))) delete k.pid; });   // bu kayıttaki başka kişiler isim listesindekilere bağlı kalmasın
   gdSecili = null; kaydetBt("gdhg"); kaydetBt("gdhgSet"); gdhgCiz(); bildir(`“${hedef.ad}” açıldı`);
 }
 function gdSetPencere(tur){
