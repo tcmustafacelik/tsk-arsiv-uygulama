@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "374";
+  const SURUM = "375";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1135,26 +1135,16 @@ table.liste td[style*="background"] input:not([type="checkbox"]):not([type="radi
 @media (prefers-color-scheme:dark){.by-kisi-ok{background:#22302A;border-color:#355241;color:var(--fg)}.by-kisi-soru{background:#33301F;border-color:#5A5030;color:var(--fg)}}
 
 
-.gd-setler{display:flex;flex-direction:column;gap:8px;padding:10px 12px;border:1px solid var(--line);border-radius:14px;background:var(--panel2)}
-.gd-set-bas{display:flex;align-items:center;gap:6px;font-size:11.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted)} .gd-set-bas .btn{text-transform:none;letter-spacing:0}
-.gd-set-liste{display:flex;gap:8px;overflow-x:auto;padding-bottom:2px;scrollbar-width:thin}
-.gd-set{flex:none;display:flex;flex-direction:column;gap:1px;text-align:left;padding:8px 12px;border:1px solid var(--line);border-radius:12px;background:var(--panel);color:var(--fg);font:inherit;cursor:pointer;min-width:140px}
-.gd-set b{font-size:13.5px} .gd-set small{font-size:11.5px;color:var(--muted);white-space:nowrap}
-.gd-set[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 3px 0 0 var(--accent);background:var(--accent-soft)}
+.gd-setler{display:block}
 .gd-set-kart{width:min(480px,100%)} .gd-set-govde{padding:12px 16px;display:flex;flex-direction:column;gap:12px;overflow:auto}
 .gd-set-govde input[type=date],.gd-set-govde #gd-set-ad{width:100%} .gd-set-govde #gd-set-ad{padding:10px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font:600 15px var(--f-ui);color:var(--fg)}
 .btn.sil.onayla{background:var(--danger);border-color:var(--danger);color:#fff}
 /* ===== dokunma görünümü: telefonun mavi köşeli vurgusu ve uzun basınca metin seçimi yok; yerine yumuşak, köşeleri yuvarlak basılma efekti ===== */
 html{-webkit-tap-highlight-color:transparent}
-button,.btn,[role="button"],[role="tab"],label.kutu,.gd-kisi,.gd-set,.sc-sec,summary,.chip,a{-webkit-tap-highlight-color:transparent;-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-button:focus:not(:focus-visible),.btn:focus:not(:focus-visible),[role="button"]:focus:not(:focus-visible){outline:none}
-button,.btn,.gd-kisi,.gd-set{transition:transform .12s ease,background-color .15s ease,box-shadow .15s ease,border-color .15s ease}
-.btn:active,.gd-kisi:active,.gd-set:active,.sc-sec:active{transform:scale(.97)}
-
-::selection{background:color-mix(in srgb,var(--accent) 22%,transparent)}
+button,.btn,[role="button"],[role="tab"],label.kutu,.gd-kisi,button:focus:not(:focus-visible),.btn:focus:not(:focus-visible),[role="button"]:focus:not(:focus-visible){outline:none}
+button,.btn,.gd-kisi,.btn:active,.gd-kisi:active,::selection{background:color-mix(in srgb,var(--accent) 22%,transparent)}
 /* yatay kayan şeritlerde kaba kaydırma çubuğu görünmesin */
-#gd-sekme,.gd-set-liste,#gd-kisiler{scrollbar-width:none} #gd-sekme::-webkit-scrollbar,.gd-set-liste::-webkit-scrollbar,#gd-kisiler::-webkit-scrollbar{display:none}
-.geri-al{position:fixed;z-index:66;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;border-radius:8px;background:var(--fg);color:var(--bg);font:600 13px var(--f-ui);box-shadow:0 6px 20px rgba(0,0,0,.18);animation:scSol .2s ease-out}
+#gd-sekme,#gd-sekme::-webkit-scrollbar,.geri-al{position:fixed;z-index:66;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));display:flex;align-items:center;gap:10px;padding:6px 6px 6px 14px;border-radius:8px;background:var(--fg);color:var(--bg);font:600 13px var(--f-ui);box-shadow:0 6px 20px rgba(0,0,0,.18);animation:scSol .2s ease-out}
 .geri-al button{border:0;border-radius:8px;padding:7px 14px;background:color-mix(in srgb,var(--bg) 18%,transparent);color:var(--bg);font:600 13px var(--f-ui);cursor:pointer}
 .gc-kart{width:min(520px,100%)} .gc-govde{padding:10px 14px 4px;overflow:auto;display:flex;flex-direction:column;gap:8px}
 .gc-liste{display:flex;flex-direction:column;gap:6px}
@@ -2685,6 +2675,18 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .rk-tamam{width:100%;margin-top:14px;height:44px;border:0;border-radius:10px;background:#4A5868;color:#fff;font:700 14.5px var(--f-ui);cursor:pointer}
 #yk-kart .yk-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center} .yk-top .sq-ac,.yk-top .ts-ac{width:auto;flex:none} .sq-ac{white-space:nowrap}
 .sq-ik{width:30px;height:30px;border-radius:8px;background:#EEF0F6;display:inline-flex;align-items:center;justify-content:center;font:700 14px var(--f-ui);color:#4A5868;flex:none}
+/* kayıt çubuğu ve penceresi */
+.ky-cub{display:flex;align-items:center;gap:10px;width:100%;padding:9px 12px;border:1px solid var(--line);border-radius:10px;background:var(--panel);cursor:pointer;text-align:left}
+.ky-et{font:700 10px var(--f-ui);letter-spacing:.8px;text-transform:uppercase;color:#4A5868;background:#EEF0F6;border-radius:6px;padding:3px 7px;flex:none}
+.ky-ad{display:flex;flex-direction:column;min-width:0;flex:1} .ky-ad b{font:700 14px var(--f-ui);color:var(--fg);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .ky-ad small{font:500 11.5px var(--f-ui);color:var(--muted)}
+.ky-ok{color:var(--muted);font-size:13px}
+.ky-liste{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:12px;overflow:hidden}
+.ky-sat{display:flex;align-items:center;gap:4px;padding:4px 6px 4px 4px;border-bottom:1px solid var(--line2);background:var(--panel)} .ky-sat:last-child{border-bottom:0} .ky-sat.on{background:#F4F7FA}
+.ky-ac{flex:1;min-width:0;display:flex;align-items:center;gap:8px;padding:8px 6px;border:0;background:transparent;text-align:left;cursor:pointer}
+.ky-tik{width:22px;height:22px;border-radius:6px;display:inline-flex;align-items:center;justify-content:center;font:700 12px var(--f-ui);color:#fff;background:transparent;border:1px solid var(--line);flex:none} .ky-sat.on .ky-tik{background:#4A5868;border-color:#4A5868}
+.ky-ik{width:34px;height:34px;border:1px solid var(--line2);border-radius:8px;background:transparent;font-size:14px;cursor:pointer;flex:none;padding:0} .ky-ik:disabled{opacity:.3} .ky-ik.ok{background:#4A5868;color:#fff;border-color:#4A5868}
+.ky-sat.duz{padding:6px} .ky-sat.duz input{flex:1;min-width:0;height:36px;border:1px solid var(--line);border-radius:8px;padding:0 10px;font:600 14px var(--f-ui)}
+.ky-cog{width:100%;margin-top:10px;height:42px;border:1px dashed var(--line);border-radius:10px;background:transparent;font:600 13.5px var(--f-ui);color:#4A5868;cursor:pointer}
 </style>
 
 </head>
@@ -2722,7 +2724,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 374</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 375</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4749,10 +4751,37 @@ function hedefOnHtml(){ const W = H_ORAN.reduce((a, b) => a + b, 0), n = araNorm
 /* ===== Atış Esasları kayıtları: aynı belgede birden çok hedef listesi (ör. farklı mevzi / dönem) =====
    Etkin liste S.hedef'te (bt/hedef) durur; diğerleri bt/hedefSet içinde saklanır. Kayıt değiştirince yer değiştirirler. */
 const hdSetAd = () => S.hedef.setAd || "1. Liste";
-function hdSetCiz(){ const el = $("#hd-setler"); if(!el) return; S.hedefSet ||= { liste: [] }; S.hedefSet.liste ||= []; S.hedef.setId ||= "hs" + yeniId().slice(0, 6);
-  const hepsi = [{ id: S.hedef.setId, ad: hdSetAd(), veri: S.hedef, aktif: true }, ...S.hedefSet.liste];
-  el.innerHTML = `<div class="gd-set-bas"><span>Hedef listesi kayıtları</span><span class="bosluk"></span><button class="btn kucuk" type="button" data-hs="ayar">✎ Adlandır / sil</button><button class="btn kucuk ana" type="button" data-hs="cogalt">⧉ Çoğalt</button></div>
-    <div class="gd-set-liste">${hepsi.map(x => `<button type="button" class="gd-set" data-hs-gec="${esc(x.id)}" aria-pressed="${!!x.aktif}"><b>${esc(x.ad || "Liste")}</b><small>${(x.veri.rows || []).length} hedef</small></button>`).join("")}</div>`; }
+function hdSetCiz(){ const el = $("#hd-setler"); if(!el) return; S.hedefSet ||= { liste: [] }; S.hedefSet.liste ||= []; S.hedef.setId ||= "hs" + yeniId().slice(0, 6); el.innerHTML = kyCubuk("hedef"); }
+/* ===== kayıtlar (ortak): sayfada tek satır; dokununca bütün kayıtlar listelenir — dokun: aç · ✎: adlandır (yerinde) · 🗑: sil (onaylı, geri alınabilir) · alta: çoğalt =====
+   Yeni bir belgeye bağlamak için KY'ye bir satır eklemek yeter. */
+const KY = {
+  hedef: { ad: "Hedef listesi", bas: "ATIŞ ESASLARI", hepsi: () => [{ id: S.hedef.setId, ad: hdSetAd(), alt: `${(S.hedef.rows || []).length} hedef`, aktif: true }, ...S.hedefSet.liste.map(x => ({ id: x.id, ad: x.ad, alt: `${(x.veri.rows || []).length} hedef` }))],
+    gec: id => hdSetGec(id), adVer: (id, ad) => { if(id === S.hedef.setId) S.hedef.setAd = ad; else { const x = S.hedefSet.liste.find(y => y.id === id); if(x){ x.ad = ad; x.veri.setAd = ad; } } kaydetBt("hedef"); kaydetBt("hedefSet"); hdSetCiz(); },
+    anlik: () => { const h = kopya(S.hedef), l = kopya(S.hedefSet); return () => { S.hedef = h; S.hedefSet = l; kaydetBt("hedef"); kaydetBt("hedefSet"); hAcik = null; hedefCiz(); hedefAyarCiz(); hdSetCiz(); }; },
+    sil: id => { const L = S.hedefSet.liste; if(id === S.hedef.setId){ const n = L.shift(); S.hedef = kopya(n.veri); S.hedef.setId = n.id; S.hedef.setAd = n.ad; S.hedef.rows ||= []; hAcik = null; tsSec.hedef = null; } else S.hedefSet.liste = L.filter(x => x.id !== id);
+      kaydetBt("hedef"); kaydetBt("hedefSet"); hedefCiz(); hedefAyarCiz(); hdSetCiz(); }, cogalt: () => hdSetPencere("cogalt") },
+  gdhg: { ad: "GDHG", bas: "GDHG", hepsi: () => [{ id: S.gdhg.setId, ad: S.gdhg.setAd || "GDHG", alt: gdSetDonem(S.gdhg), aktif: true, bas: (S.gdhg.donem || {}).bas }, ...S.gdhgSet.liste.map(x => ({ id: x.id, ad: x.ad, alt: gdSetDonem(x.veri), bas: (x.veri.donem || {}).bas }))].sort((a, b) => (a.bas || "9999").localeCompare(b.bas || "9999") || String(a.ad).localeCompare(String(b.ad), "tr")),
+    gec: id => gdSetGec(id), adVer: (id, ad) => { if(id === S.gdhg.setId) S.gdhg.setAd = ad; else { const x = S.gdhgSet.liste.find(y => y.id === id); if(x){ x.ad = ad; x.veri.setAd = ad; } } kaydetBt("gdhg"); kaydetBt("gdhgSet"); gdSetCiz(); },
+    anlik: () => { const g = kopya(S.gdhg), l = kopya(S.gdhgSet); return () => { S.gdhg = g; S.gdhgSet = l; gdDuzelt(); gdSecili = null; kaydetBt("gdhg"); kaydetBt("gdhgSet"); gdhgCiz(); }; },
+    sil: id => { const L = S.gdhgSet.liste; if(id === S.gdhg.setId){ const n = L.shift(); S.gdhg = kopya(n.veri); S.gdhg.setId = n.id; S.gdhg.setAd = n.ad; gdDuzelt(); gdSecili = null; } else S.gdhgSet.liste = L.filter(x => x.id !== id);
+      kaydetBt("gdhg"); kaydetBt("gdhgSet"); gdhgCiz(); }, cogalt: () => gdSetPencere("cogalt") } };
+let kyDuzen = null;
+function kyCubuk(k){ const c = KY[k], H = c.hepsi(), a = H.find(x => x.aktif) || {};
+  return `<button type="button" class="ky-cub" data-ky-ac="${k}"><span class="ky-et">Kayıt</span><span class="ky-ad"><b>${esc(a.ad || c.ad)}</b><small>${esc(a.alt || "")}${H.length > 1 ? ` · ${H.length} kayıt` : ""}</small></span><span class="ky-ok">▾</span></button>`; }
+function kyPencere(k){ const c = KY[k]; kyDuzen = null;
+  altPencere("ky-perde", c.bas, "Kayıtlar", () => { const H = c.hepsi(), tek = H.length < 2;
+    return `<div class="ky-liste">${H.map(x => kyDuzen === x.id ? `<div class="ky-sat duz"><input id="ky-ad" value="${esc(x.ad || "")}" aria-label="Kayıt adı" maxlength="60"><button type="button" class="ky-ik ok" data-ky-adkay="${esc(x.id)}" aria-label="Adı kaydet">✓</button><button type="button" class="ky-ik" data-ky-vaz aria-label="Vazgeç">✕</button></div>`
+        : `<div class="ky-sat${x.aktif ? " on" : ""}"><button type="button" class="ky-ac" data-ky-gec="${esc(x.id)}"><span class="ky-tik">${x.aktif ? "✓" : ""}</span><span class="ky-ad"><b>${esc(x.ad || c.ad)}</b><small>${esc(x.alt || "")}${x.aktif ? " · açık" : ""}</small></span></button><button type="button" class="ky-ik" data-ky-ad="${esc(x.id)}" aria-label="Adlandır">✎</button><button type="button" class="ky-ik sil" data-ky-sil="${esc(x.id)}" data-sil-ad="“${esc(x.ad || c.ad)}” kaydı" aria-label="Kaydı sil"${tek ? " disabled" : ""}>🗑</button></div>`).join("")}</div>
+      <button type="button" class="ky-cog" data-ky-cog>⧉ Açık kaydı çoğalt</button>${tek ? `<div class="tz-not2">Tek kayıt silinemez; önce çoğaltıp yenisini aç.</div>` : ""}`; },
+    (b, kapat, yenile) => { const ds = b.dataset;
+      if(ds.kyGec){ kapat(); return c.gec(ds.kyGec); }
+      if(ds.kyAd){ kyDuzen = ds.kyAd; yenile(); setTimeout(() => { const i = $("#ky-ad"); if(i){ i.focus(); i.select(); } }, 30); return; }
+      if(ds.kyVaz != null){ kyDuzen = null; return yenile(); }
+      if(ds.kyAdkay){ const ad = ($("#ky-ad").value || "").trim(); if(!ad) return bildir("Kayıt adı boş olamaz"); c.adVer(ds.kyAdkay, ad); kyDuzen = null; yenile(); return bildir("Kayıt adı değişti"); }
+      if(ds.kySil){ const H = c.hepsi(); if(H.length < 2) return; const x = H.find(y => y.id === ds.kySil); const geri = c.anlik(); c.sil(ds.kySil); yenile(); return geriAlinabilir(`“${(x && x.ad) || "Kayıt"}” silindi`, geri); }
+      if(ds.kyCog != null){ kapat(); return c.cogalt(); } }, { z: "EEF0F6", r: "4A5868" }); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-ky-ac]"); if(!b) return; kyPencere(b.dataset.kyAc); });
+document.addEventListener("keydown", e => { if(e.key === "Enter" && e.target && e.target.id === "ky-ad"){ e.preventDefault(); document.querySelector("#ky-perde [data-ky-adkay]")?.click(); } });
 function hdSetGec(id){ if(id === S.hedef.setId) return; const L = S.hedefSet.liste, i = L.findIndex(x => x.id === id); if(i < 0) return;
   const h = L[i]; L.splice(i, 1, { id: S.hedef.setId, ad: hdSetAd(), veri: kopya(S.hedef) }); S.hedef = kopya(h.veri); S.hedef.setId = h.id; S.hedef.setAd = h.ad; S.hedef.rows ||= [];
   hAcik = null; tsSec.hedef = null; kaydetBt("hedef"); kaydetBt("hedefSet"); hedefCiz(); hedefAyarCiz(); hdSetCiz(); bildir(`“${h.ad}” açıldı`); }
@@ -4773,7 +4802,6 @@ function hdSetPencere(tur){ const cog = tur === "cogalt";
         kaydetBt("hedef"); kaydetBt("hedefSet"); kapat(); hedefCiz(); hedefAyarCiz(); hdSetCiz();
         return geriAlinabilir(`“${ad0}” silindi`, () => { S.hedef = eskiH; S.hedefSet.liste = eskiL; kaydetBt("hedef"); kaydetBt("hedefSet"); hedefCiz(); hedefAyarCiz(); hdSetCiz(); }); } },
     { z: "E6EEF3", r: "3F6587" }); }
-document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#hd-setler button"); if(!b) return; if(b.dataset.hsGec) return hdSetGec(b.dataset.hsGec); if(b.dataset.hs) hdSetPencere(b.dataset.hs); });
 function hedefCiz(){
   try { hdSetCiz(); } catch(e){} hedefOzet(); const L = $("#h-tablo"); const ara = araNorm($("#h-ara").value);
   const on = $("#h-on"); if(on){ on.open = hOnAcik; const k = $("#h-on-kap"); if(hOnAcik){ k.innerHTML = hedefOnHtml(); ltOnSigdir(k); onIsikGit(k); } else { k.innerHTML = ""; $("#h-on .hd-on-bas")?.remove(); } }
@@ -5157,13 +5185,7 @@ document.addEventListener("click", async e => {
 /* ===== GDHG kayıtları: aynı personele farklı dönemlerde / farklı imzalarla birden çok GDHG =====
    Etkin kayıt S.gdhg'de (bt/gdhg) durur; diğerleri bt/gdhgSet içinde saklanır. Kayıt değiştirince ikisi yer değiştirir. */
 function gdSetDonem(v){ const d = (v && v.donem) || {}; return d.bas && d.son ? `${trTarih(d.bas)} – ${trTarih(d.son)}` : "dönem girilmemiş"; }
-function gdSetCiz(){
-  const el = $("#gd-setler"); if(!el || !S.gdhg) return; S.gdhgSet ||= { liste: [] }; S.gdhgSet.liste ||= [];
-  const hepsi = [{ id: S.gdhg.setId, ad: S.gdhg.setAd, veri: S.gdhg, aktif: true }, ...S.gdhgSet.liste];
-  hepsi.sort((a, b) => ((a.veri.donem || {}).bas || "9999").localeCompare((b.veri.donem || {}).bas || "9999") || String(a.ad).localeCompare(String(b.ad), "tr"));
-  el.innerHTML = `<div class="gd-set-bas"><span>GDHG kayıtları</span><span class="bosluk"></span><button class="btn kucuk" type="button" id="gd-set-ayar">✎ Adlandır / sil</button><button class="btn kucuk ana" type="button" id="gd-set-cogalt">⧉ Çoğalt</button></div>
-    <div class="gd-set-liste">${hepsi.map(x => `<button type="button" class="gd-set" data-set="${esc(x.id)}" aria-pressed="${!!x.aktif}"><b>${esc(x.ad || "GDHG")}</b><small>${esc(gdSetDonem(x.veri))}</small></button>`).join("")}</div>`;
-}
+function gdSetCiz(){ const el = $("#gd-setler"); if(!el || !S.gdhg) return; S.gdhgSet ||= { liste: [] }; S.gdhgSet.liste ||= []; el.innerHTML = kyCubuk("gdhg"); }
 function gdSetGec(id){
   if(!S.gdhg || id === S.gdhg.setId) return; const L = S.gdhgSet.liste; const i = L.findIndex(x => x.id === id); if(i < 0) return;
   const hedef = L[i]; L.splice(i, 1, { id: S.gdhg.setId, ad: S.gdhg.setAd, veri: kopya(S.gdhg) });
@@ -5207,8 +5229,7 @@ function gdSetPencere(tur){
 }
 function gdSetYeniAd(){ const n = 1 + (S.gdhgSet.liste || []).length + 1; return `${n}. GDHG`; }
 document.addEventListener("click", e => {
-  const s = e.target.closest("#gd-setler .gd-set"); if(s){ gdSetGec(s.dataset.set); return; }
-  if(e.target.closest("#gd-set-cogalt")) gdSetPencere("cogalt"); else if(e.target.closest("#gd-set-ayar")) gdSetPencere("ayar"); });
+  if(e.target.closest("#gd-set-cogalt")) gdSetPencere("cogalt"); });
 function gdKisilerCiz(){
   const k = gdKisi();
   const soz = gdSekme === "soz";
