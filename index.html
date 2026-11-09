@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "372";
+  const SURUM = "373";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1509,7 +1509,6 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .sc-s span{overflow-wrap:anywhere} .sc-s.sec{background:#E9F0F8;border-color:#9FB6CC;color:#2C4A69} .sc-s i{font-style:normal;font-weight:800;color:#3F6487} .sc-s.bos{color:var(--muted);font-weight:500} .sc-s.bos span:empty::before{content:"Boş"} .sc-s:disabled{opacity:.45}
 .byk-yer{width:100%;box-sizing:border-box;height:38px;border:1px solid var(--line);border-radius:10px;padding:0 10px;background:var(--panel);font:600 13.5px var(--f-ui)}
 .byk-dv{display:flex;align-items:center;gap:8px;font:500 12.5px var(--f-ui);color:var(--muted);margin:0}
-.yk-gd-et{display:inline-flex;align-items:center;height:24px;padding:0 9px;border-radius:8px;font:600 11px var(--f-ui);background:#F1F3F6;color:#7A8592} .yk-gd-et.tamam{background:#E3F1E7;color:#2E6B41}
 .sp-be-ac{display:flex;align-items:center;gap:10px;width:100%;margin-top:8px;padding:10px 12px;border:1px dashed #BFD8C6;border-radius:14px;background:#F4FAF5;color:#2F6B47;font:700 13.5px var(--f-ui);cursor:pointer;text-align:left}
 .sp-be-ac span{width:28px;height:28px;border-radius:50%;display:grid;place-items:center;background:#E3EFE6;font-size:16px} .sp-be-ac small{margin-left:auto;font:500 11.5px var(--f-ui);color:var(--muted)}
 .g-sekme{display:none} .g-gr{display:contents}
@@ -2371,7 +2370,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
   
  
 .ko-is .yk-kaydet{margin-right:auto;height:32px;padding:0 14px}
-.yk-kay{font:700 12px var(--f-ui);color:#7A5512;background:#FBEBD2;border-radius:8px;padding:5px 9px} .yk-kay-n{align-self:center;font-size:10.5px;color:var(--muted)} .yk-dn-ust{flex-wrap:wrap} .yk-tb:disabled{opacity:.75;cursor:default}
+.yk-kay{font:700 12px var(--f-ui);color:#7A5512;background:#FBEBD2;border-radius:8px;padding:5px 9px} .yk-dn-ust{flex-wrap:wrap} .yk-tb:disabled{opacity:.75;cursor:default}
 .yk-top{display:flex;flex-wrap:wrap;gap:6px} .yk-top .btn{height:32px;font-size:12px}
 .yk-t2{display:flex!important;flex-direction:column;align-items:stretch!important;gap:6px!important}
 .yk-tust{display:flex;align-items:center;justify-content:space-between} .yk-tust>span{font-size:12px;color:var(--muted);font-weight:600}
@@ -2684,7 +2683,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .rk-cub input{-webkit-appearance:none;appearance:none;width:100%;height:22px;border-radius:8px;background:var(--tr);border:1px solid rgba(0,0,0,.08);margin:0}
 .rk-cub input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:26px;border-radius:6px;background:#fff;border:2px solid #4A5868;box-shadow:0 1px 3px rgba(0,0,0,.2)} .rk-cub input::-moz-range-thumb{width:16px;height:24px;border-radius:6px;background:#fff;border:2px solid #4A5868}
 .rk-tamam{width:100%;margin-top:14px;height:44px;border:0;border-radius:10px;background:#4A5868;color:#fff;font:700 14.5px var(--f-ui);cursor:pointer}
-.yk-top .sq-ac,.yk-top .ts-ac{justify-self:start;width:auto} .sq-ac{white-space:nowrap}
+#yk-kart .yk-top{display:flex;gap:8px;flex-wrap:wrap;align-items:center} .yk-top .sq-ac,.yk-top .ts-ac{width:auto;flex:none} .sq-ac{white-space:nowrap}
 .sq-ik{width:30px;height:30px;border-radius:8px;background:#EEF0F6;display:inline-flex;align-items:center;justify-content:center;font:700 14px var(--f-ui);color:#4A5868;flex:none}
 </style>
 
@@ -2723,7 +2722,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 372</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 373</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4590,9 +4589,6 @@ let ykAcik = null, ykListe = false;
 const ykDonemler = r => [{ tur: r.tur || "", ayr: r.ayr || "", kat: r.kat || "", yer: r.yer || "", ...(r.belge && r.belge.length ? { belge: r.belge } : {}), ...(r.kaynak ? { kaynak: r.kaynak } : {}), ...(r.gizli ? { gizli: true } : {}), ...(r.gdhgde ? { gdhgde: r.gdhgde } : {}) }, ...(r.ek || [])].filter((x, i) => i || x.tur);
 const ykDonemYaz = (r, L) => { const [a, ...b] = L; Object.assign(r, { tur: a ? a.tur : "", ayr: a ? a.ayr || "" : "", kat: a ? a.kat || "" : "", yer: a ? a.yer || "" : "" }); if(a && a.belge && a.belge.length) r.belge = a.belge; else delete r.belge; if(a && a.kaynak) r.kaynak = a.kaynak; else delete r.kaynak; if(a && a.gizli) r.gizli = true; else delete r.gizli; if(a && a.gdhgde) r.gdhgde = a.gdhgde; else delete r.gdhgde; if(b.length) r.ek = b; else delete r.ek; };
 /* İzin Çizelgesi → yoklama: izin çizelgesindeki izinler yoklamada kendiliğinden "İzin" ayrılışı olur (kaynak: izin); yer ve beyan belgesi korunur */
-function ykIzinEsitle(r, pid){ const iz = (((S.izin && S.izin.kayit) || {})[pid]?.i || []).filter(x => x.a && x.k), D = ykDonemler(r), eski = D.filter(x => x.kaynak === "izin");
-  const yeni = [...D.filter(x => x.kaynak !== "izin"), ...iz.map(x => { const o = eski.find(e => e.ayr === x.a && e.kat === x.k) || {}; return { tur: "İZİN", ayr: x.a, kat: x.k, yer: o.yer || "TÜRKİYE", ...(o.belge ? { belge: o.belge } : {}), kaynak: "izin" }; })];
-  if(JSON.stringify(yeni) === JSON.stringify(D)) return false; ykDonemYaz(r, yeni); return true; }
 /* ayrılışa beyan belgesi (rapor, izin belgesi): PDF ya da resim; resimler okunur boyutta küçültülür */
 async function ykResimKucult(f){ const url = URL.createObjectURL(f); try { const im = await new Promise((ok, red) => { const i = new Image(); i.onload = () => ok(i); i.onerror = red; i.src = url; });
     const sc = Math.min(1, 2000 / Math.max(im.naturalWidth, im.naturalHeight)); if(sc === 1 && f.size < 1.5e6) return f; const cv = document.createElement("canvas"); cv.width = Math.round(im.naturalWidth * sc); cv.height = Math.round(im.naturalHeight * sc);
@@ -4606,17 +4602,6 @@ async function belgeleriYukle(dosyalar){ if(typeof assets === "undefined" || !as
   return L; }
 const dosyaSec = cb => { const inp = document.createElement("input"); inp.type = "file"; inp.multiple = true; inp.accept = "application/pdf,image/*"; inp.onchange = () => { if(inp.files.length) cb([...inp.files]); }; inp.click(); };
 const belgeCip = (x, ac, sil) => `<span class="yk-ek"><button type="button" ${ac} title="Belgeyi aç">${/pdf/.test(x.tur) ? "📄" : "🖼"} ${esc(x.ad)}</button><button type="button" class="yk-ek-sil" ${sil} aria-label="Belgeyi kaldır">✕</button></span>`;
-/* yoklama → GDHG: ayrılış türünün GDHG'deki sebebi */
-const YK_GD_SEBEP = { "İZİN": "Yıllık İzin", RAPOR: "Sağlık Raporu", "GÖREVLİ": "Görev", KURS: "Kurs" };
-function ykGdhgKisi(r){ const L = (S.gdhg && S.gdhg.kisiler) || []; return L.find(k => r.pid && k.pid === r.pid) || L.find(k => pAd(k.ad) === pAd(r.ad)) || null; }
-/* tek ayrılışı GDHG'ye yaz: aynı sebep ve tarihli satır varsa yalnız belgeler eklenir */
-function ykGdhgAktar(r, p){ const k = ykGdhgKisi(r); if(!k) return { hata: `${r.ad || "Kişi"} GDHG listesinde yok` }; if(!p.ayr) return { hata: "ayrılış tarihi yok" };
-  const sebep = YK_GD_SEBEP[p.tur] || p.tur, var_ = k.ayri.find(x => normMetin(x.sebep) === normMetin(sebep) && x.ayr === p.ayr);
-  if(var_){ var_.kat = p.kat || var_.kat; if(p.belge) { var_.belge ||= []; p.belge.forEach(b => { if(!var_.belge.some(y => y.asset === b.asset)) var_.belge.push(b); }); } }
-  else { const son = p.kat || p.ayr, cak = k.ayri.find(x => x.ayr && x.ayr < son && p.ayr < (x.kat || x.ayr));   // GDHG'de bu tarihlere düşen başka bir satır varsa üstüne yazma
-    if(cak) return { hata: `${r.ad}: GDHG'de ${trTarih(cak.ayr)}-${trTarih(cak.kat || cak.ayr)} tarihli “${cak.sebep}” satırı bu tarihlerle çakışıyor; aktarılmadı`, cakisma: true };
-    k.ayri.push({ sebep, ayr: p.ayr, kat: p.kat || "", kaynak: "yoklama", ...(p.belge ? { belge: p.belge.slice() } : {}) }); k.ayri.sort((a, b) => (a.ayr || "9999") < (b.ayr || "9999") ? -1 : 1); }
-  if(typeof gdOto === "function") gdOto(k); return { k, yeni: !var_ }; }
 async function ykBelgeYukle(r, j, dosyalar){ if(typeof assets === "undefined" || !assets){ return uyar("Belge yüklemek için bulut bağlantısı gerekiyor.", true); } let n = 0;
   for(const f of dosyalar){ const uz = (f.name.split(".").pop() || "").toLowerCase(), pdf = uz === "pdf" || f.type === "application/pdf";
     if(!pdf && !/^image\//.test(f.type) && !/^(jpe?g|png|webp|heic)$/.test(uz)){ uyar(`${f.name}: yalnız PDF ya da resim eklenebilir`, true); continue; }
@@ -4642,7 +4627,7 @@ function ykKartCiz(){ const el = $("#yk-kart"); if(!el) return; const Y = YS(), 
   const P = (S.personel.rows || []).filter(p => p.ad && !Y.rows.some(r => r.pid === p.id || pAd(r.ad) === pAd(p.ad)));
   let h = `${basAlanHtml("yoklama")}
     <div class="yk-tarih yk-t2"><div class="yk-tust"><span>Yoklama tarihi</span><button type="button" class="yk-bugun" data-ykg="0">Bugün</button></div><div class="yk-tbar"><button type="button" class="mini" data-ykg="-1" aria-label="Önceki gün">‹</button><input type="date" class="yk-tb" id="yk-t" value="${t}" aria-label="Yoklama tarihi"><button type="button" class="mini" data-ykg="1" aria-label="Sonraki gün">›</button></div></div>
-    <div class="yk-top"><button type="button" class="btn kucuk" data-yk-izin="1" title="Personel İzin Çizelgesindeki izinleri yoklamaya ekler">⇣ İzin Çizelgesinden al</button><button type="button" class="btn kucuk" data-yk-gdhg="1" title="Yoklamadaki rapor, görev ve kursları GDHG'ye ekler">→ Ayrılışları GDHG'ye aktar</button></div>
+    <div class="yk-top"></div>
     <div class="yk-oz">${tiles.map(([a, n, d]) => `<div style="--z:${YK_RENK[d][0]};--k:${YK_RENK[d][1]}"><b>${n}</b><small>${a}</small></div>`).join("")}</div>`;
   for(const v of ["GÜNDÜZ", "GECE"]){ const L = Y.rows.filter(r => (r.vardiya || "GÜNDÜZ") === v);
     h += `<div class="yk-grup"><div class="yk-gbas"><b>${v === "GÜNDÜZ" ? "Gündüz" : "Gece"}</b><small>${L.length} kişi</small><button type="button" class="btn kucuk" data-yk-ekle="${v}">＋ Kişi ekle</button></div>`;
@@ -4656,7 +4641,7 @@ function ykKartCiz(){ const el = $("#yk-kart"); if(!el) return; const Y = YS(), 
           <div class="ko-al ko-tam"><span>Vardiya</span>${ykCip(r.id, "vardiya", r.vardiya || "GÜNDÜZ", [["GÜNDÜZ", "Gündüz"], ["GECE", "Gece"]])}</div>
           <div class="ko-al ko-tam yk-dnler"><span>Ayrılışlar · izin, rapor, görev, kurs</span>${ykDonemler(r).map((p, j) => `<div class="yk-dn${p.kaynak === "izin" ? " yk-kilit" : ""}"><div class="yk-dn-ust">${p.kaynak === "izin" ? `<span class="yk-kay">İzin · İzin Çizelgesinden</span><small class="yk-kay-n">tarihleri İzin Çizelgesinde değiştirin</small>` : `${ykCip(r.id + ":" + j, "tur", p.tur, Y_TUR.map(x => [x, x[0] + x.slice(1).toLocaleLowerCase("tr")]))}<button type="button" class="mini sil" data-ykdn="${r.id}:${j}" aria-label="Bu ayrılışı sil">✕</button>`}</div>
             <div class="yk-dn-t"><div class="ko-al"><span>Ayrılış</span><input type="date" class="yk-tb" data-ykdt="${r.id}:${j}:ayr" value="${p.ayr || ""}" aria-label="${esc(r.ad || "Kişi")} · ${esc((p.tur || "").toLocaleLowerCase("tr"))} ayrılış tarihi"${p.kaynak === "izin" ? " disabled" : ""}></div><div class="ko-al"><span>Katılış</span><input type="date" class="yk-tb" data-ykdt="${r.id}:${j}:kat" value="${p.kat || ""}" aria-label="${esc(r.ad || "Kişi")} · ${esc((p.tur || "").toLocaleLowerCase("tr"))} katılış tarihi"${p.kaynak === "izin" ? " disabled" : ""}></div></div>
-            <div class="yk-dn-is">${p.kaynak === "izin" ? `<small class="yk-kay-n">İzin Çizelgesi GDHG'ye kendisi işler</small>` : `<span class="yk-gd-et${p.gdhgde ? " tamam" : ""}">${p.gdhgde ? "✓ GDHG'de" : "GDHG'ye aktarılmadı"}</span>`}<button type="button" class="yk-gz${p.gizli ? "" : " acik"}" data-ykgz="${r.id}:${j}" aria-pressed="${!p.gizli}" title="Yoklama çıktısındaki açıklamada bu satır yazılsın mı">${p.gizli ? "Açıklamada yok" : "✓ Açıklamada"}</button></div>
+            <div class="yk-dn-is"><button type="button" class="yk-gz${p.gizli ? "" : " acik"}" data-ykgz="${r.id}:${j}" aria-pressed="${!p.gizli}" title="Yoklama çıktısındaki açıklamada bu satır yazılsın mı">${p.gizli ? "Açıklamada yok" : "✓ Açıklamada"}</button></div>
             <div class="yk-dn-b">${(p.belge || []).map((x, bi) => `<span class="yk-ek"><button type="button" data-ykb-ac="${r.id}:${j}:${bi}" title="Belgeyi aç">${/pdf/.test(x.tur) ? "📄" : "🖼"} ${esc(x.ad)}</button><button type="button" class="yk-ek-sil" data-ykb-sil="${r.id}:${j}:${bi}" aria-label="Belgeyi kaldır">✕</button></span>`).join("")}<button type="button" class="yk-ek-ekle" data-ykb-ekle="${r.id}:${j}">📎 Beyan belgesi ekle <small>PDF · resim</small></button></div>
             <div class="yk-dn-y"><small>Yeri</small>${ykCip(r.id + ":" + j, "yer", p.yer || "TÜRKİYE", Y_YER.map(x => [x, x[0] + x.slice(1).toLocaleLowerCase("tr")]))}<input data-ykdy="${r.id}:${j}" placeholder="ya da yazın…" value="${p.yer && !Y_YER.includes(p.yer) ? esc(p.yer) : ""}" aria-label="Yeri elle yaz"></div></div>`).join("") || `<div class="yk-bos">Ayrılış yok · personel mevcut sayılır</div>`}
             <button type="button" class="tt-ekle" data-ykdn-ekle="${r.id}">＋ Ayrılış satırı ekle</button></div>
@@ -4687,11 +4672,6 @@ document.addEventListener("change", e => { const el = e.target; if(!el.closest |
   if(el.dataset.ykdt){ const [id, j, k] = el.dataset.ykdt.split(":"), r = ykBul(id); if(!r) return; const D = ykDonemler(r); if(!D[+j]) return; D[+j][k] = el.value || ""; ykDonemYaz(r, D); ykKaydet(); return yoklamaCiz(); } });
 document.addEventListener("focusout", e => { const el = e.target; if(!el.closest || !el.closest("#yk-kart")) return; if(el.dataset.ykd || el.dataset.ykdy || el.id === "yk-t" || el.dataset.ykf) setTimeout(() => { if(!odakIcinde("#yk-kart")) yoklamaCiz(); }, 120); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#yk-kart button"); if(!b) return; const Y = YS(), L = Y.rows;
-  if(b.dataset.ykIzin){ let n = 0; Y.rows.forEach(r => { if(r.pid && ykIzinEsitle(r, r.pid)) n++; }); if(!n) return bildir("İzin Çizelgesinde yoklamaya eklenecek yeni izin yok"); ykKaydet(); yoklamaCiz(); return bildir(`${n} kişinin izinleri İzin Çizelgesinden alındı`); }
-  if(b.dataset.ykGdhg){ if(!S.gdhg) return uyar("GDHG bulunamadı.", true); let n = 0; const yok = new Set();
-    let cak = 0; Y.rows.forEach(r => { const D = ykDonemler(r); let deg = false; D.forEach(p => { if(p.kaynak === "izin" || !p.tur || !p.ayr || p.gdhgde) return; const o = ykGdhgAktar(r, p); if(o.hata){ if(/listesinde yok/.test(o.hata)) yok.add(r.ad); if(o.cakisma) cak++; return; } p.gdhgde = new Date().toISOString().slice(0, 10); deg = true; n++; }); if(deg) ykDonemYaz(r, D); });
-    if(n){ kaydetBt("gdhg"); ykKaydet(); yoklamaCiz(); } const ek = [yok.size ? `GDHG'de olmayan: ${[...yok].join(", ")}` : "", cak ? `${cak} satır GDHG'deki tarihlerle çakıştığı için aktarılmadı` : ""].filter(Boolean).join(" · ");
-    return (cak || yok.size ? uyar : bildir)(n ? `${n} ayrılış GDHG'ye aktarıldı${ek ? " · " + ek : ""}` : ek || "Aktarılacak yeni ayrılış yok"); }
   if(b.dataset.ykgz){ const [id, j] = b.dataset.ykgz.split(":"), r = ykBul(id); if(!r) return; const D = ykDonemler(r); if(!D[+j]) return; if(D[+j].gizli) delete D[+j].gizli; else D[+j].gizli = true; ykDonemYaz(r, D); ykKaydet(); return yoklamaCiz(); }
   if(b.dataset.ykVt){ const r = ykBul(b.dataset.ykVt); if(!r) return; const eski = r.vardiya || "GÜNDÜZ", yeni = eski === "GÜNDÜZ" ? "GECE" : "GÜNDÜZ"; r.vardiya = yeni; ykKaydet(); yoklamaCiz();
     return geriAlinabilir(`${r.ad || "Kişi"} ${yeni === "GECE" ? "geceye" : "gündüze"} taşındı`, () => { r.vardiya = eski; ykKaydet(); yoklamaCiz(); }); }
