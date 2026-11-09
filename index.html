@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "351";
+  const SURUM = "352";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2649,7 +2649,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 351</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 352</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4342,13 +4342,27 @@ function kdTopla(p){ const B = [], gun = bugun();
   /* spor */
   const SP = S.belgeler.filter(d => d.tur === "spor" && !d.sablon).map(d => { const v = spVeri(d), i = v.kisiler.findIndex(x => kdEs(p, x)); if(i < 0) return null; let h = null; try { h = spGenel(v).H[i]; } catch(e){} return { d, v, h }; }).filter(Boolean).sort((a, b) => String(b.v.tarih || "").localeCompare(String(a.v.tarih || "")));
   if(SP.length){ const s0 = SP[0]; B.push({ k: "spor", d: s0.d, ad: "Spor testi", kisa: s0.h && s0.h.durum ? s0.h.durum.toLocaleLowerCase("tr") + (s0.v.tarih ? " · " + s0.v.tarih.split("-").reverse().join(".") : "") : SP.length + " test", deger: s0.h && s0.h.ort != null ? spSayiYaz(s0.h.ort) + " puan" : "sonuç yok", alt: SP.map(x => `${x.v.tarih ? x.v.tarih.split("-").reverse().join(".") : x.d.ad}: ${x.h && x.h.ort != null ? spSayiYaz(x.h.ort) : "—"}${x.h && x.h.durum ? " " + x.h.durum.toLocaleLowerCase("tr") : ""}`).join(" · "), renk: !s0.h || s0.h.ort == null ? "gri" : s0.h.durum === "BAŞARISIZ" ? "uyar" : "iyi" }); }
+  /* kimlik: eksik alanlar */
+  { const d = belgeTur("kimlik"); if(d){ let E = []; try { E = kmEksik(p); } catch(e){} B.push({ k: "kimlik", d, ad: "Personel kimliği", kisa: E.length ? E.slice(0, 3).join(", ") + (E.length > 3 ? "…" : "") : "bilgileri tam", deger: E.length ? E.length + " eksik" : "tam", alt: E.length ? "Eksik: " + E.join(", ") : "Bütün zorunlu alanlar dolu", renk: E.length ? "uyar" : "iyi", git: () => { kmSecili = p.id; } }); } }
+  /* subay / astsubay izin belgeleri */
+  S.belgeler.filter(d => d.tur === "izinsa").forEach(d => { const K = ((d.isa && d.isa.kayitlar) || []).filter(x => x.pid === p.id); if(!K.length) return; const son = K[K.length - 1];
+    B.push({ k: "isa", d, ad: d.ad, kisa: `${son.tur || "izin"} · ${trTarih(son.ayr) || "—"}`, deger: K.length + " belge", alt: K.map(x => `${x.tur || "izin"} ${trTarih(x.ayr) || ""}`).join(" · "), renk: "mavi", git: () => { d.isa.aktif = son.id; } }); });
+  /* dilekçeler */
+  S.belgeler.filter(d => d.tur === "dilekce").forEach(d => { const K = ((d.dl && d.dl.kayitlar) || []).filter(x => x.pid === p.id); if(!K.length) return; const son = K[K.length - 1];
+    B.push({ k: "dl", d, ad: d.ad, kisa: `son: ${trTarih(son.tarih) || "—"}`, deger: K.length + " dilekçe", alt: K.map(x => `${trTarih(x.tarih) || ""} ${x.ozu || x.tur || ""}`.trim()).join(" · "), renk: "mavi", git: () => { d.dl.aktif = son.id; } }); });
+  /* tazminat */
+  S.belgeler.filter(d => d.tur === "tazminat").forEach(d => { const v = d.tz; if(!v) return; const x = [...(v.rt || []), ...(v.erb || [])].find(y => kdEs(p, y)); if(!x) return; const g = (x.gun || []).filter(Boolean).length;
+    B.push({ k: "tz", d, ad: d.ad, kisa: x.iban ? "IBAN girili" : "IBAN girilmedi", deger: g ? g + " gün" : "listede", alt: d.ad, renk: x.iban ? "iyi" : "uyar" }); });
+  /* sertifikalar */
+  { const d = belgeTur("sertifika"); if(d){ const L = S.arsiv.filter(a => a.sert && ((a.sert.pid && a.sert.pid === p.id) || pAd(a.sert.ad || "") === pAd(p.ad || "")));
+    B.push({ k: "sert", d, ad: "Sertifikalar", kisa: L.length ? [...new Set(L.map(a => a.sert.konu).filter(Boolean))].join(" · ") : "sertifika yok", deger: L.length ? L.length + " sertifika" : "yok", alt: L.map(a => `${a.sert.konu || "?"} ${a.sert.tarih || ""}`.trim()).join(" · "), renk: L.length ? "iyi" : "gri", git: () => { srGorunum = "kisi"; srAra = p.ad || ""; } }); } }
   return B; }
-const KD_BOL = { yok: ["Bugün", "#E3EEDF", "#3F6B45"], izin: ["İzin", "#E2EBF5", "#3F6487"], izinb: ["İzin belgesi", "#E2EBF5", "#3F6487"], gdhg: ["GDHG", "#EEE7DA", "#7A5A25"], teb: ["Tebliğ", "#ECE6F3", "#5B4A80"], spor: ["Spor", "#E1EFEC", "#2F6B60"] };
+const KD_BOL = { kimlik: ["Kimlik", "#E3EEF0", "#2F6670"], isa: ["İzin belgesi", "#E2EBF5", "#3F6487"], dl: ["Dilekçe", "#E6F0E8", "#3F6B4C"], tz: ["Tazminat", "#F1E9DA", "#7A5A25"], sert: ["Sertifika", "#EEF0E2", "#5E6B35"], yok: ["Bugün", "#E3EEDF", "#3F6B45"], izin: ["İzin", "#E2EBF5", "#3F6487"], izinb: ["İzin belgesi", "#E2EBF5", "#3F6487"], gdhg: ["GDHG", "#EEE7DA", "#7A5A25"], teb: ["Tebliğ", "#ECE6F3", "#5B4A80"], spor: ["Spor", "#E1EFEC", "#2F6B60"] };
 function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === pid); if(!p) return;
   altPencere("kd-perde", "KİŞİ DOSYASI", () => [p.rutbe, p.ad].filter(Boolean).join(" ") || "Adsız", () => { const B = kdTopla(p);
     return `<div class="kd-ust"><span class="gd-av">${esc(gdBas(p.ad))}</span><div><b>${esc([p.sicil ? "Sicil " + p.sicil : "", p.dogum ? "Doğum " + p.dogum : ""].filter(Boolean).join(" · ") || "Sicil girilmedi")}</b><small>${esc(p.gorev || "görevi girilmedi")}</small></div></div>
       ${B.length ? `<div class="kd-izgara">${B.map((x, i) => { const [et, z, c] = KD_BOL[x.k] || ["", "#EEF2F6", "#4A5868"]; return `<button type="button" class="kd-k ${x.renk}" data-kd="${i}" style="--kz:${z};--kc:${c}" title="${esc(x.ad + (x.alt ? " · " + x.alt : ""))}"><span class="kd-k-ust"><span class="kd-k-et">${esc(et)}</span><i>›</i></span><b class="kd-k-d">${esc(x.deger)}</b><small>${esc(x.kisa || "")}</small></button>`; }).join("")}</div>` : `<div class="yk-bos">Bu kişi henüz hiçbir belgede yok</div>`}`; },
-    (b, kapat) => { if(b.dataset.kd == null) return; const x = kdTopla(p)[+b.dataset.kd]; if(!x || !x.d) return; kapat(); if(x.k === "gdhg" && x.gk){ gdSecili = x.gk.id; } belgeGit(x.d); }, { z: "EFF4FA", r: "3F6487" }); }
+    (b, kapat) => { if(b.dataset.kd == null) return; const x = kdTopla(p)[+b.dataset.kd]; if(!x || !x.d) return; kapat(); if(x.k === "gdhg" && x.gk){ gdSecili = x.gk.id; } if(x.git) x.git(); belgeGit(x.d); }, { z: "EFF4FA", r: "3F6487" }); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-p-dosya]"); if(!b) return; e.stopPropagation(); kisiDosyasi(b.dataset.pDosya); });
 const pOzet = r => `<span class="p-oy"><b>${esc(r.ad || "Yeni personel")}</b><small>${esc([r.rutbe, r.sicil, r.dogum].filter(Boolean).join(" · ") || "bilgi girilmedi")}</small></span>`;
 $("#p-tablo").addEventListener("click", e => { const b = e.target.closest("[data-p-ac]"); if(!b) return; const tr = b.closest("tr"), ac = !tr.classList.contains("acik"); document.querySelectorAll("#p-tablo tr.acik").forEach(x => x.classList.remove("acik")); if(ac){ tr.classList.add("acik"); pAcik = tr.dataset.id; otoBoyHepsi(tr); } else pAcik = null; });
