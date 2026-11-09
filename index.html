@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "362";
+  const SURUM = "363";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2653,6 +2653,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .sp-yas-k input{width:58px;height:100%;border:0;background:transparent;text-align:center;font:700 13px var(--f-ui);color:var(--fg);padding:0 2px} .sp-yas-k input.sp-yas-red{background:#FBEDEA}
 .sp-yas-k button{width:24px;height:100%;border:0;border-left:1px solid var(--line2);background:transparent;color:#9A4A3E;font:700 14px var(--f-ui);cursor:pointer;padding:0}
 .sp-yas-ekle{height:32px;width:36px;padding:0}
+.kp-tsr{max-width:320px} .kp-tsr button{padding:0 10px}
 </style>
 
 </head>
@@ -2690,7 +2691,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 362</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 363</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8203,9 +8204,11 @@ const KP_W = 210, KP_H = 297, KP_BORDO = "7A1F2B", KP_YAZI = "2A2A2A";
 function kpKaydir(P){ const k = (KP_W - PAY) / KP_W, dy = KP_H * (1 - k) / 2, X = x => PAY + x * k, Y = y => dy + y * k;
   return P.map(p => { const q = { ...p }; if(p.lw != null) q.lw = p.lw * k;
     if(p.t === "l"){ q.x1 = X(p.x1); q.x2 = X(p.x2); q.y1 = Y(p.y1); q.y2 = Y(p.y2); return q; }
-    q.x = X(p.x); q.y = Y(p.y); if(p.w != null) q.w = p.w * k; if(p.h != null) q.h = p.h * k; if(p.fs != null) q.fs = p.fs * k; if(p.maxW != null) q.maxW = p.maxW * k; if(p.ls) q.ls = p.ls * k; return q; }); }
+    q.x = X(p.x); q.y = Y(p.y); if(p.w != null) q.w = p.w * k; if(p.h != null) q.h = p.h * k; if(p.rd) q.rd = p.rd * k; if(p.fs != null) q.fs = p.fs * k; if(p.maxW != null) q.maxW = p.maxW * k; if(p.ls) q.ls = p.ls * k; return q; }); }
 const kpCikti = (v, kId, a) => kpSayfalar(v, kId, a && a.kpSadece).filter(x => !(a && a.kpSayfa) || x.key === a.kpSayfa).map(s => a && a.delgec ? { ...s, P: kpKaydir(s.P) } : s);
 const KP_HARIC = new Set(["kapak", "tamami", "baski"]);
+/* yeni tasarımın tek renk seçenekleri [koyu, açık]; "bolum" = her ayraç kendi bölüm rengiyle */
+const KP_RENK = { turkuaz: ["5A97A6", "D6ECF0", "Turkuaz"], mavi: ["6F86A0", "DCE6F1", "Mavi"], cam: ["6A8F70", "D9E9DB", "Çam"], kum: ["A88F5E", "ECE2CC", "Kum"], lavanta: ["8580B0", "E2DFF2", "Lavanta"], celik: ["5B7FA6", "D9E5F3", "Çelik"], zeytin: ["989B6C", "E6E8D2", "Zeytin"], amber: ["C09A55", "F0E3C6", "Amber"], gri: ["7D8894", "E0E4E8", "Gri"] };
 const kpVeri = d => { d.kp ||= {}; const v = d.kp; v.satirlar ||= []; v.cikti ||= { kapak: 1, icAyrac: 1, icListe: 1, bolum: 1 }; v.b ||= {}; return v; };
 let kpSayfaNo = 0;
 /* logolar: v.logo/v.logoOran = varsayılan; v.lgK = { id: { u: dataURL, o: oran } } kitaplık; v.lgS = { sayfaAnahtarı: id | "yok" } sayfaya özel */
@@ -8233,7 +8236,22 @@ function kpSayfalar(v, kId, sadece){ const lgKutu = (cx, y, W, H, key) => { cons
   const BA = sadece && sadece !== "kapak" ? kpBolumler(v, kId).filter(b => b.id === sadece) : B;
   const ust = (P, cx, y0, serif, renkTC) => { P.push({ t: "t", x: cx, y: y0, s: v.tc || "", fs: serif ? 20 : 14, b: 1, f: serif ? "s" : "a", k: renkTC || KP_YAZI, al: "c" });
     (v.satirlar || []).forEach((x, i) => P.push({ t: "t", x: cx, y: y0 + (serif ? 11.5 : 8.2) + i * (serif ? 7.6 : 7.9), s: x, fs: serif ? 14.5 : 13.5, b: 1, f: serif ? "s" : "a", k: KP_YAZI, al: "c" })); };
-  const ayrac = (baslik, alt, koyu, acik, key, liste) => { const P = [];
+  /* çerçeve: dışta soluk kalın kenar, içte ince çizgi (yumuşak köşeli) — ayraç ve içindekiler sayfalarında ortak */
+  const cerceve = (P, acik, koyu) => { const kenar = renkKar(acik, koyu, .18), ince = renkKar(koyu, "FFFFFF", .55);
+    P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, f: kenar, rd: 8 }, { t: "r", x: 14, y: 14, w: 182, h: 269, f: "FFFFFF", rd: 5.2 }, { t: "r", x: 18, y: 18, w: 174, h: 261, k: ince, lw: .3, rd: 3.4 }); };
+  /* başlık bandı: uygulamadaki çıktı başlıkları gibi — soluk zemin, ince kenar, solda küçük koyu çubuk */
+  const bant = (P, y, h, koyu, acik) => { P.push({ t: "r", x: 28, y, w: 154, h, f: renkKar(acik, "FFFFFF", .45), k: renkKar(acik, koyu, .3), lw: .25, rd: 3.2 }, { t: "r", x: 32.4, y: y + h * .27, w: 1.7, h: h * .46, f: koyu, rd: .85 }); };
+  const fgYeni = (P, y, H) => { const FG = v.fgAyrac !== false && kpFg(v); if(!FG) return; const o = FG.o || 1, W = 150; let w = W, h = W * o; if(h > H){ h = H; w = H / o; } P.push({ t: "i", x: 105 - w / 2, y: y + (H - h) / 2, w, h, src: "ay" }); };
+  const ayracY = (baslik, alt, koyu, acik, key, liste) => { const P = [], yazi = renkKar(koyu, "1F1F1F", .55);
+    cerceve(P, acik, koyu); if(v.fgAyrac) fgYeni(P, 140, 130);
+    ust(P, 105, 42, false);
+    lgEkle(P, 105, 84, 46.4, 58, key);
+    const by = 176, bh = alt ? 38 : 30; bant(P, by, bh, koyu, acik);
+    if(alt) P.push({ t: "t", x: 106, y: by + 12.5, s: alt, fs: 10.5, b: 1, f: "a", k: koyu, al: "c", ls: .35 });
+    P.push({ t: "t", x: 106, y: by + (alt ? 28.6 : bh / 2 + 3.1), s: baslik, fs: 21, b: 1, f: "a", k: yazi, al: "c", maxW: 136 });
+    if(liste && liste.length){ const y0 = by + bh + 14, ar = Math.min(6.4, (262 - y0) / liste.length); liste.forEach((x, i) => P.push({ t: "t", x: 105, y: y0 + i * ar, s: x, fs: Math.min(10, ar * 1.7), b: 1, f: "a", k: yazi, al: "c" })); }
+    return P; };
+  const ayracK = (baslik, alt, koyu, acik, key, liste) => { const P = [];
     P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, k: "2B2B2B", lw: 1 }, { t: "r", x: 13, y: 13, w: 184, h: 271, k: "2B2B2B", lw: .3 });
     ust(P, 105, 40.5, false); P.push({ t: "l", x1: 62, y1: 83.6, x2: 148, y2: 83.6, k: koyu, lw: .35 });
     lgEkle(P, 105, 93, 46.4, 58, key);
@@ -8243,7 +8261,14 @@ function kpSayfalar(v, kId, sadece){ const lgKutu = (cx, y, W, H, key) => { cons
     P.push({ t: "t", x: 105, y: alt ? 216 : 210, s: baslik, fs: 24, b: 1, f: "a", k: KP_YAZI, al: "c", maxW: 158 });
     if(liste && liste.length){ const ar = Math.min(6.2, 22 / liste.length); liste.forEach((x, i) => P.push({ t: "t", x: 105, y: 238 + i * ar, s: x, fs: Math.min(9.5, ar * 1.7), b: 1, f: "a", k: KP_YAZI, al: "c" })); }
     P.push({ t: "l", x1: 74, y1: 264, x2: 136, y2: 264, k: koyu, lw: .35 }); return P; };
-  if(C.kapak){ const P = [], cx = 113.8;
+  const YENI = v.tasarim === "yeni", TR = YENI && v.renk && KP_RENK[v.renk], ayrac = (baslik, alt, koyu, acik, ...r) => YENI ? ayracY(baslik, alt, TR ? TR[0] : koyu, TR ? TR[1] : acik, ...r) : ayracK(baslik, alt, koyu, acik, ...r);
+  if(C.kapak && YENI){ const P = [], [kk, aa] = TR || KP_RENK.turkuaz, yazi = renkKar(kk, "1F1F1F", .55);
+    cerceve(P, aa, kk); fgYeni(P, 132, 140);
+    ust(P, 105, 42, false); lgEkle(P, 105, 84, 46.4, 58, "kapak");
+    if(v.rutbe) P.push({ t: "t", x: 105, y: 168, s: v.rutbe.toLocaleUpperCase("tr"), fs: 11.5, b: 1, f: "a", k: kk, al: "c", ls: 1.6 });
+    if(v.ad){ bant(P, 176, 32, kk, aa); P.push({ t: "t", x: 106, y: 196.2, s: v.ad, fs: 26, b: 1, f: "a", k: yazi, al: "c", maxW: 134 }); }
+    S.push({ ad: "Ön kapak", P, key: "kapak" }); }
+  else if(C.kapak){ const P = [], cx = 113.8;
     P.push({ t: "r", x: 10, y: 10, w: 17.6, h: 277, f: "EFEFEF" });
     const FG = kpFg(v); if(FG){ if(FG.ozel){ const o = FG.o || 1, W = 161.6, H = 148; let w = W, h = W * o; if(h > H){ h = H; w = H / o; } P.push({ t: "i", x: 38 + (W - w) / 2, y: 122 + (H - h) / 2, w, h, src: "ay" }); } else P.push({ t: "i", x: 38, y: 122, w: 161.6, h: 148, src: "ay" }); }
     P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, k: "444444", lw: .35 }, { t: "l", x1: 26, y1: 10, x2: 26, y2: 287, k: KP_BORDO, lw: .6 }, { t: "l", x1: 27.6, y1: 10, x2: 27.6, y2: 287, k: KP_BORDO, lw: .3 });
@@ -8258,9 +8283,10 @@ function kpSayfalar(v, kId, sadece){ const lgKutu = (cx, y, W, H, key) => { cons
     S.push({ ad: "Ön kapak", P, key: "kapak" }); }
   if(C.icAyrac) S.push({ ad: "İçindekiler ayracı", key: "icAyrac", P: ayrac("İÇİNDEKİLER", "", "2E5E4A", "DFE8E3", "icAyrac") });
   if(C.icListe && B.length){ const P = [], koyu = "2E5E4A";
-    P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, k: "2B2B2B", lw: 1 }, { t: "r", x: 13, y: 13, w: 184, h: 271, k: "2B2B2B", lw: .3 });
+    if(YENI){ const kk = TR ? TR[0] : koyu, aa = TR ? TR[1] : "DFE8E3"; cerceve(P, aa, kk); bant(P, 30, 26, kk, aa); P.push({ t: "t", x: 106, y: 46, s: "İÇİNDEKİLER", fs: 21, b: 1, f: "a", k: renkKar(kk, "1F1F1F", .55), al: "c" }); }
+    else { P.push({ t: "r", x: 10, y: 10, w: 190, h: 277, k: "2B2B2B", lw: 1 }, { t: "r", x: 13, y: 13, w: 184, h: 271, k: "2B2B2B", lw: .3 });
     P.push({ t: "r", x: 22, y: 31.5, w: 166, h: 25, f: "DFE8E3" }, { t: "l", x1: 22, y1: 29.6, x2: 188, y2: 29.6, k: koyu, lw: .3 }, { t: "l", x1: 22, y1: 31.5, x2: 188, y2: 31.5, k: koyu, lw: 1 },
-      { t: "l", x1: 22, y1: 56.5, x2: 188, y2: 56.5, k: koyu, lw: 1 }, { t: "l", x1: 22, y1: 58.4, x2: 188, y2: 58.4, k: koyu, lw: .3 }, { t: "t", x: 105, y: 47.6, s: "İÇİNDEKİLER", fs: 22, b: 1, f: "a", k: KP_YAZI, al: "c" });
+      { t: "l", x1: 22, y1: 56.5, x2: 188, y2: 56.5, k: koyu, lw: 1 }, { t: "l", x1: 22, y1: 58.4, x2: 188, y2: 58.4, k: koyu, lw: .3 }, { t: "t", x: 105, y: 47.6, s: "İÇİNDEKİLER", fs: 22, b: 1, f: "a", k: KP_YAZI, al: "c" }); }
     const y0 = 66, rh = Math.min(9.6, (276 - y0) / B.length), fs = Math.min(10.5, rh * 1.1), nw = numarali ? 8.5 : 6.5;
     B.forEach((b, i) => { const y = y0 + i * rh, h = rh - 1.1, ty = y + h / 2 + fs * .3528 * .36;
       P.push({ t: "r", x: 22, y, w: 2.2, h, f: b.koyu }, { t: "r", x: 24.2, y, w: nw, h, f: b.acik }, { t: "r", x: 24.2 + nw, y, w: 163.8 - nw, h, f: i % 2 ? "FFFFFF" : "F7F6F1", k: "D6D3CA", lw: .2 });
@@ -8275,7 +8301,7 @@ function kpSayfalar(v, kId, sadece){ const lgKutu = (cx, y, W, H, key) => { cons
 /* ---- SVG önizleme ---- */
 function kpSvg(v, P){ const mm = pt => (pt * .3528).toFixed(2), F = { s: '"Times New Roman",Tinos,"Liberation Serif",serif', a: 'Arial,"Liberation Sans",Helvetica,sans-serif' };
   return `<svg viewBox="0 0 ${KP_W} ${KP_H}" xmlns="http://www.w3.org/2000/svg"><rect width="${KP_W}" height="${KP_H}" fill="#fff"/>${P.map(p => {
-    if(p.t === "r") return `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" fill="${p.f ? "#" + p.f : "none"}"${p.k ? ` stroke="#${p.k}" stroke-width="${p.lw}"` : ""}/>`;
+    if(p.t === "r") return `<rect x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}"${p.rd ? ` rx="${p.rd}"` : ""} fill="${p.f ? "#" + p.f : "none"}"${p.k ? ` stroke="#${p.k}" stroke-width="${p.lw}"` : ""}/>`;
     if(p.t === "l") return `<line x1="${p.x1}" y1="${p.y1}" x2="${p.x2}" y2="${p.y2}" stroke="#${p.k}" stroke-width="${p.lw}"/>`;
     if(p.t === "i") return `<image href="${esc(kpGorseller(v)[p.src] || "")}" x="${p.x}" y="${p.y}" width="${p.w}" height="${p.h}" preserveAspectRatio="xMidYMid meet"/>`;
     const an = p.al === "l" ? "start" : p.al === "r" ? "end" : "middle";
@@ -8286,7 +8312,7 @@ function kpSvgSigdir(kok){ kok.querySelectorAll("text[data-en]").forEach(t => { 
 async function kapakPdf(d, a, kId){ const v = kpVeri(d), S = kpCikti(v, kId, a); if(!S.length) throw new Error("çıkacak sayfa seçilmedi");
   const doc = await yeniPdf({ ...a, kagit: "A4", yon: "dikey" });
   S.forEach((s, i) => { if(i) doc.addPage("a4", "portrait"); s.P.forEach(p => {
-    if(p.t === "r"){ if(p.f) doc.setFillColor(...rgb(p.f)); if(p.k){ doc.setDrawColor(...rgb(p.k)); doc.setLineWidth(p.lw); } doc.rect(p.x, p.y, p.w, p.h, p.f && p.k ? "FD" : p.f ? "F" : "S"); }
+    if(p.t === "r"){ if(p.f) doc.setFillColor(...rgb(p.f)); if(p.k){ doc.setDrawColor(...rgb(p.k)); doc.setLineWidth(p.lw); } const st = p.f && p.k ? "FD" : p.f ? "F" : "S"; if(p.rd) doc.roundedRect(p.x, p.y, p.w, p.h, p.rd, p.rd, st); else doc.rect(p.x, p.y, p.w, p.h, st); }
     else if(p.t === "l"){ doc.setDrawColor(...rgb(p.k)); doc.setLineWidth(p.lw); doc.line(p.x1, p.y1, p.x2, p.y2); }
     else if(p.t === "i"){ const src = kpGorseller(v)[p.src]; if(src) try { doc.addImage(src, "PNG", p.x, p.y, p.w, p.h, p.src, "FAST"); } catch(e){} }
     else { let fs = p.fs; doc.setFont(p.f === "s" ? "LS" : "LA", p.b ? "bold" : "normal"); doc.setTextColor(...rgb(p.k));
@@ -8300,7 +8326,7 @@ const kpResim = src => new Promise(r => { if(!src) return r(null); const im = ne
 async function kpTuval(v, P, pxmm = 7){ await cvFontYukle(); const cv = document.createElement("canvas"); cv.width = Math.round(KP_W * pxmm); cv.height = Math.round(KP_H * pxmm); const c = cv.getContext("2d");
   c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height); c.scale(pxmm, pxmm); const R = {}; for(const [k, u] of Object.entries(kpGorseller(v))) R[k] = await kpResim(u);
   for(const p of P){
-    if(p.t === "r"){ if(p.f){ c.fillStyle = "#" + p.f; c.fillRect(p.x, p.y, p.w, p.h); } if(p.k){ c.strokeStyle = "#" + p.k; c.lineWidth = p.lw; c.strokeRect(p.x, p.y, p.w, p.h); } }
+    if(p.t === "r"){ c.beginPath(); if(p.rd && c.roundRect) c.roundRect(p.x, p.y, p.w, p.h, p.rd); else c.rect(p.x, p.y, p.w, p.h); if(p.f){ c.fillStyle = "#" + p.f; c.fill(); } if(p.k){ c.strokeStyle = "#" + p.k; c.lineWidth = p.lw; c.stroke(); } }
     else if(p.t === "l"){ c.strokeStyle = "#" + p.k; c.lineWidth = p.lw; c.beginPath(); c.moveTo(p.x1, p.y1); c.lineTo(p.x2, p.y2); c.stroke(); }
     else if(p.t === "i"){ if(R[p.src]) c.drawImage(R[p.src], p.x, p.y, p.w, p.h); }
     else { let fs = p.fs * .3528; const aile = p.f === "s" ? 'CVSerif, "Times New Roman", serif' : 'Arial, "Liberation Sans", sans-serif';
@@ -8320,10 +8346,10 @@ async function kapakWord(d, a, kId){ const v = kpVeri(d), S = kpCikti(v, kId, a)
   const E = mm => Math.round(mm * 36000); let id = 10; const medya = [], rid = {};
   for(const [src, u] of Object.entries(kpGorseller(v))) if(u){ rid[src] = "rIdM" + (medya.length + 1); medya.push({ id: rid[src], ad: src + ".png", veri: Uint8Array.from(atob(u.split(",")[1]), c => c.charCodeAt(0)) }); }
   const anchor = (x, y, cx, cy, ic, arka) => `<w:r><w:drawing><wp:anchor distT="0" distB="0" distL="0" distR="0" simplePos="0" relativeHeight="${++id}" behindDoc="${arka ? 1 : 0}" locked="0" layoutInCell="1" allowOverlap="1"><wp:simplePos x="0" y="0"/><wp:positionH relativeFrom="page"><wp:posOffset>${E(x)}</wp:posOffset></wp:positionH><wp:positionV relativeFrom="page"><wp:posOffset>${E(y)}</wp:posOffset></wp:positionV><wp:extent cx="${E(cx)}" cy="${E(cy)}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:wrapNone/><wp:docPr id="${id}" name="Sekil ${id}"/><wp:cNvGraphicFramePr/><a:graphic>${ic(E(cx), E(cy))}</a:graphic></wp:anchor></w:drawing></w:r>`;
-  const sekil = (geo, fill, ln) => (cx, cy) => `<a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"><wps:wsp><wps:cNvSpPr/><wps:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="${geo}"><a:avLst/></a:prstGeom>${fill ? `<a:solidFill><a:srgbClr val="${fill}"/></a:solidFill>` : "<a:noFill/>"}${ln ? `<a:ln w="${Math.round(ln[1] * 36000)}"><a:solidFill><a:srgbClr val="${ln[0]}"/></a:solidFill></a:ln>` : "<a:ln><a:noFill/></a:ln>"}</wps:spPr><wps:bodyPr/></wps:wsp></a:graphicData>`;
+  const sekil = (geo, fill, ln, adj) => (cx, cy) => `<a:graphicData uri="http://schemas.microsoft.com/office/word/2010/wordprocessingShape"><wps:wsp><wps:cNvSpPr/><wps:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="${geo}">${adj != null ? `<a:avLst><a:gd name="adj" fmla="val ${adj}"/></a:avLst>` : "<a:avLst/>"}</a:prstGeom>${fill ? `<a:solidFill><a:srgbClr val="${fill}"/></a:solidFill>` : "<a:noFill/>"}${ln ? `<a:ln w="${Math.round(ln[1] * 36000)}"><a:solidFill><a:srgbClr val="${ln[0]}"/></a:solidFill></a:ln>` : "<a:ln><a:noFill/></a:ln>"}</wps:spPr><wps:bodyPr/></wps:wsp></a:graphicData>`;
   const run = (p, fs) => `<w:r><w:rPr><w:rFonts w:ascii="${p.f === "s" ? "Times New Roman" : "Arial"}" w:hAnsi="${p.f === "s" ? "Times New Roman" : "Arial"}" w:cs="${p.f === "s" ? "Times New Roman" : "Arial"}"/>${p.b ? "<w:b/>" : ""}<w:color w:val="${p.k}"/>${p.ls ? `<w:spacing w:val="${Math.round(p.ls * 56.7)}"/>` : ""}<w:sz w:val="${Math.round(fs * 2)}"/><w:szCs w:val="${Math.round(fs * 2)}"/></w:rPr><w:t xml:space="preserve">${xmlEsc(p.s)}</w:t></w:r>`;
   const sayfa = s => s.P.map(p => {
-    if(p.t === "r") return anchor(p.x, p.y, p.w, p.h, sekil("rect", p.f, p.k ? [p.k, p.lw] : null), !!p.f && !p.k);
+    if(p.t === "r") return anchor(p.x, p.y, p.w, p.h, sekil(p.rd ? "roundRect" : "rect", p.f, p.k ? [p.k, p.lw] : null, p.rd ? Math.round(Math.min(50000, p.rd / Math.min(p.w, p.h) * 100000)) : null), !!p.f && !p.k);
     if(p.t === "l"){ const yat = p.y1 === p.y2, kal = Math.max(.15, p.lw); return anchor(yat ? Math.min(p.x1, p.x2) : p.x1 - kal / 2, yat ? p.y1 - kal / 2 : Math.min(p.y1, p.y2), yat ? Math.abs(p.x2 - p.x1) : kal, yat ? kal : Math.abs(p.y2 - p.y1), sekil("rect", p.k, null)); }
     if(p.t === "i") return rid[p.src] ? anchor(p.x, p.y, p.w, p.h, (cx, cy) => `<a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="${id}" name="${p.src}.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid[p.src]}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${cx}" cy="${cy}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData>`, p.src === "ay") : "";
     /* yazı: geniş yazı kutusu, hizaya göre konumlanır */
@@ -8346,6 +8372,9 @@ function kapakCiz(){ const d = acikBelge(); if(!d || d.tur !== "kapak") return; 
     <div class="kp-onizle"><div class="kp-sayfa" id="kp-sayfa">${S.length ? kpSvg(v, S[kpSayfaNo].P) : '<div class="bos" style="padding:30px">Çıktı için sayfa seçin</div>'}</div>
       <div class="kp-gez"><button type="button" data-kp-git="-1"${kpSayfaNo ? "" : " disabled"} aria-label="Önceki sayfa">‹</button><span><b>${S.length ? esc(S[kpSayfaNo].ad) : "—"}</b><small>${S.length ? kpSayfaNo + 1 : 0} / ${S.length} sayfa · ${esc(k.kisa ? k.ust + " / " + k.kisa : k.ad || "")}</small></span><button type="button" data-kp-git="1"${kpSayfaNo < S.length - 1 ? "" : " disabled"} aria-label="Sonraki sayfa">›</button></div>
       ${S.length && S[kpSayfaNo].key ? (() => { const L = kpLogo(v, S[kpSayfaNo].key), dur = (v.lgS || {})[S[kpSayfaNo].key] === "yok" ? "Logo yok" : L && L.ozel ? "Bu sayfaya özel" : L ? "Varsayılan" : "Logo yok"; return `<button type="button" class="kp-sl" data-kp-i="slogo"><span class="kp-sl-res">${L ? `<img src="${esc(L.u)}" alt="">` : "—"}</span><span><small>Bu sayfanın logosu</small><b>${dur}</b></span><em>Değiştir</em></button>`; })() : ""}</div>
+    ${kkKart("kp-tasarim", "#EEF0F6", "Tasarım", v.tasarim === "yeni" ? "yeni" + (v.renk && KP_RENK[v.renk] ? " · " + KP_RENK[v.renk][2] : " · bölüm renkleri") : "klasik", `<div class="kp-alanlar"><div class="kpk-seg kp-tsr"><button type="button" data-kp-tsr="klasik" aria-pressed="${v.tasarim !== "yeni"}">Klasik</button><button type="button" data-kp-tsr="yeni" aria-pressed="${v.tasarim === "yeni"}">Yeni</button></div>
+      ${v.tasarim === "yeni" ? `<small class="kp-lg-et">Renk</small><div class="rs-liste"><button type="button" class="rs-k" data-kp-rk="" aria-pressed="${!(v.renk && KP_RENK[v.renk])}"><i style="background:conic-gradient(#D6ECF0 0 25%,#ECE2CC 0 50%,#E2DFF2 0 75%,#D9E9DB 0)"></i><span>Bölüm renkleri</span></button>${Object.entries(KP_RENK).map(([id, r]) => `<button type="button" class="rs-k" data-kp-rk="${id}" aria-pressed="${v.renk === id}"><i style="background:linear-gradient(135deg,#${r[1]} 50%,#${r[0]} 50%)"></i><span>${r[2]}</span></button>`).join("")}</div>
+      <div class="kpk-seg kp-tsr"><button type="button" data-kp-fga="1" aria-pressed="${!!v.fgAyrac}">Ayraçta filigran</button><button type="button" data-kp-fga="0" aria-pressed="${!v.fgAyrac}">Filigransız</button></div><div class="tz-not2">Yazılar, logolar ve filigran aşağıdaki kartlardan değişir; ikisi de iki tasarımda ortaktır. Sırt yazısı yalnız klasik kapakta basılır.</div>` : `<div class="tz-not2">Klasik: şimdiye kadar kullanılan kapaklar. "Yeni"ye geçince istediğin an geri dönebilirsin; bilgiler kaybolmaz.</div>`}</div>`, { kume: kpKapali })}
     ${kkKart("kp-cikti", "#E3ECF5", "Çıkacak sayfalar", `${S.length} sayfa`, `<div class="kp-tikler">${tik("kapak", "Ön kapak")}${tik("icAyrac", "İçindekiler ayracı")}${tik("icListe", "İçindekiler listesi")}${tik("bolum", "Bölüm ayraçları")}</div>`, { kume: kpKapali })}
     ${kkKart("kp-ust", "#F3E6CF", "Başlık yazıları", "", `<div class="kp-alanlar">${al("tc", "Üst başlık", v.tc)}<label class="gi-alan"><span>Alt satırlar <i>(her satır ayrı)</i></span><textarea class="oto-boy" data-kp="satirlar" rows="4">${esc((v.satirlar || []).join("\n"))}</textarea></label>${al("sirt", "Kapak sırt yazısı (sol şerit)", v.sirt)}</div>`, { kume: kpKapali })}
     ${kkKart("kp-sahip", "#E8E2F4", "Klasör sahibi", "ön kapakta", `<div class="kp-alanlar kp-iki">${al("rutbe", "Rütbesi", v.rutbe, "TOPÇU ÜSTEĞMEN")}${al("ad", "Adı soyadı", v.ad, "Ad SOYAD")}</div>`, { kume: kpKapali })}
@@ -8373,6 +8402,9 @@ document.addEventListener("change", e => { const el = e.target; if(!el.closest |
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#kp-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kapak") return; const v = kpVeri(d);
   if(b.dataset.kk){ kpKapali.degis(b.dataset.kk); return kapakCiz(); }
   if(b.dataset.kpGit){ kpSayfaNo += +b.dataset.kpGit; return kapakCiz(); }
+  if(b.dataset.kpTsr){ v.tasarim = b.dataset.kpTsr; kaydetBelge(d); return kapakCiz(); }
+  if(b.dataset.kpRk != null){ if(b.dataset.kpRk) v.renk = b.dataset.kpRk; else delete v.renk; kaydetBelge(d); return kapakCiz(); }
+  if(b.dataset.kpFga != null){ v.fgAyrac = b.dataset.kpFga === "1"; kaydetBelge(d); return kapakCiz(); }
   if(b.hasAttribute("data-kp-renk")){ const k = klasorBul(SECIM.klasor), bol = k && k.bolumler.find(x => x.id === b.closest("[data-kp-b]").dataset.kpB); if(!bol) return;
     bolumRenkDegis(k, bol);
     kaydetYapi(); agacCiz(); anaCiz(); return kapakCiz(); }
