@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "393";
+  const SURUM = "394";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3005,7 +3005,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 393</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 394</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4502,19 +4502,9 @@ function personelEsitle(kaynaklar = ["ilk"]){
       const sicil = /^\[/.test(k.sicil || "[") && p.sicil ? `[${p.sicil}]` : p.sicil;
       if(k.pid !== p.id){ k.pid = p.id; degisen.add("gdhg"); }
       if(ileri && (k.ad !== p.ad || k.rutbe !== p.rutbe || (p.sicil && k.sicil !== sicil))){ k.ad = p.ad; k.rutbe = p.rutbe; if(p.sicil) k.sicil = sicil; degisen.add("gdhg"); } }
-    /* izinler → GDHG */
-    for(const p of P){ const k = bul(L, p); if(!k) continue;
-      const iz = ((S.izin.kayit || {})[p.id]?.i || []).filter(x => x.a && x.k).map(x => ({ sebep: { yol: "Yol İzni", mazeret: "Mazeret İzni" }[izTur(x)] || "Yıllık İzin", ayr: x.a, kat: x.k, kaynak: "izin" }));
-      const tum = [...k.ayri, ...(k.donemDisi || [])]; const anahtar = x => x.ayr + "|" + x.kat;
-      const istenen = new Set(iz.map(anahtar)), mevcutIzin = tum.filter(x => x.kaynak === "izin");
-      const silinecek = mevcutIzin.filter(x => !istenen.has(anahtar(x))), eklenecek = iz.filter(x => !tum.some(y => anahtar(y) === anahtar(x)));
-      if(!silinecek.length && !eklenecek.length) continue;
-      /* görev satırları otomatik oluşturulmuşsa (elle değiştirilmemişse) izinlere göre yeniden oluştur */
-      const oto = k.gorevOto !== false;
-      k.ayri = k.ayri.filter(x => !silinecek.includes(x)); k.donemDisi = (k.donemDisi || []).filter(x => !silinecek.includes(x)); k.ayri.push(...eklenecek);
-      k.ayri.sort((a, b) => (a.ayr || "9999") < (b.ayr || "9999") ? -1 : 1);
-      if(oto) gdOto(k);
-      degisen.add("gdhg"); } }
+    /* GDHG'nin "görevden ayrı kaldığı süreler" izin çizelgesinden aktarılmaz: elle ya da beyandan girilir. Daha önce kendiliğinden aktarılmış izin satırları kaldırılır. */
+    for(const k of L){ const n = (k.ayri || []).length + (k.donemDisi || []).length; k.ayri = (k.ayri || []).filter(x => x.kaynak !== "izin"); if(k.donemDisi) k.donemDisi = k.donemDisi.filter(x => x.kaynak !== "izin");
+      if(k.ayri.length + (k.donemDisi || []).length !== n){ if(k.gorevOto !== false) gdOto(k); degisen.add("gdhg"); } } }
   /* İzin belgesi */
   if(S.izinb){ const L = S.izinb.kisiler;
     for(const p of P){ const k0 = bul(L, p); if(!k0) continue;
