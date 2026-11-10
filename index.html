@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "389";
+  const SURUM = "390";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -178,11 +178,14 @@
     const ist = new Set(anaL.filter(id => js.includes(id)));
     const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); const payL = pr.ok ? await pr.json() : [];
     for(const x of payL) if(!ist.has(x.name)) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya kaldırma", sha: x.sha }) });   // gizlenen dosya paylaşımdan silinir
-    const var_ = new Set(payL.map(x => x.name)), eksik = [...ist].filter(id => !var_.has(id)); let n = 0;
+    const atla = [], var_ = new Set(payL.map(x => x.name)), eksik = [...ist].filter(id => !var_.has(id)); let n = 0;
     const ilerle = () => { const t = `Dosyalar gönderiliyor · ${n} / ${eksik.length}`; document.querySelectorAll("[data-bpkur],[data-bpg] .bl-yz small").forEach(el => { if(el.matches("[data-bpkur]")) el.innerHTML = '<span class="bl-spin"></span>' + t; else el.textContent = t; }); };
     for(const id of eksik){ n++; ilerle(); const b = await varlikAl(id).catch(() => null); if(!b) continue;
-      const r = await ghP(yolP(DOSYA + id), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya", content: u8ToB64(await dosyaSifreleK(new Uint8Array(await b.arrayBuffer()), pay.p)) }) });
-      if(!r.ok) throw new Error("Paylaşıma dosya gönderilemedi (" + r.status + ")"); } }
+      const icerik = u8ToB64(await dosyaSifreleK(new Uint8Array(await b.arrayBuffer()), pay.p)), koy = sha => ghP(yolP(DOSYA + id), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya", content: icerik, ...(sha ? { sha } : {}) }) });
+      let r = await koy();
+      if(r.status === 422 || r.status === 409){ const g = await ghP(yolP(DOSYA + id), { headers: { Accept: "application/vnd.github.object+json" } }); if(g.ok) r = await koy((await g.json()).sha); else { await new Promise(ok => setTimeout(ok, 1500)); r = await koy(); } }   // dosya önceki denemede gönderilmişse üstüne yazılır
+      if(!r.ok) atla.push(id + " (" + r.status + ")"); }
+    if(atla.length) console.warn("Paylaşıma gönderilemeyen dosyalar:", atla); return atla.length; }
   async function paylasimGonder(zorla){
     if(izleyici() || !pay || !pay.depo || !pay.t || payCalisiyor || !navigator.onLine) return; payCalisiyor = true; payHata = "";
     try { const A = payAyar(); let u = null;
@@ -193,7 +196,7 @@
             if(!(k in mem) || !(k in K) || kOzet(mem[k]) === K[k]){ mem[k] = kopya(v); await yerelYaz(k, mem[k]); bildir(k); n++; } else c++; }
           if(n){ degisti(); bildirim(`Paylaşılan kişinin ${n} değişikliği alındı${c ? ` · ${c} çakışmada sizinki kaldı` : ""}`); } } }
       const R = payFiltre(), im = imza(R);
-      if(im !== meta.payImza || zorla){ if(!u) u = await payOku(); await payDosyalar(R);
+      if(im !== meta.payImza || zorla){ if(!u) u = await payOku(); const eksik = await payDosyalar(R); if(eksik) bildirim(`${eksik} dosya paylaşıma gönderilemedi; bir sonraki güncellemede yeniden denenecek`);
         const r = await ghP(yolP(VERI), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: `TSK ARŞİV paylaşım (${cihaz()} · s${SURUM})`, content: u8ToB64(new TextEncoder().encode(await paketleK(R, pay.p))), ...(u.sha ? { sha: u.sha } : {}) }) });
         if(r.status === 409 || r.status === 422){ setTimeout(() => paylasimGonder(), 3000); throw new Error("Paylaşım aynı anda değişti; tekrar denenecek"); }
         if(!r.ok) throw new Error("Paylaşım gönderilemedi (" + r.status + ")");
@@ -450,16 +453,20 @@
     const payP = document.createElement("div"); payP.className = "bl-perde"; payP.id = "bl-pay"; payP.hidden = true; payP.style.zIndex = 96;
     document.body.appendChild(payP);
     const st2 = document.createElement("style");
-    st2.textContent = `.bp-agac{display:flex;flex-direction:column;gap:6px}
-      .bp-g{border:1px solid var(--line2);border-radius:12px;background:var(--panel);overflow:hidden} .bp-g>summary{list-style:none;cursor:pointer} .bp-g>summary::-webkit-details-marker{display:none}
-      .bp-s{display:flex;align-items:center;gap:8px;min-height:40px;padding:5px 8px 5px 12px;font:600 13px var(--f-ui);color:var(--fg)} .bp-s>span{flex:1;min-width:0;overflow-wrap:anywhere}
-      .bp-s.b{padding-left:22px;font-weight:600;font-size:12.5px;border-top:1px solid var(--line2)} .bp-s.d{padding-left:36px;font-weight:500;font-size:12px;color:#4A5868;min-height:34px}
-      .bp-s.k{padding-left:16px;background:var(--panel2);font-size:11.5px;color:var(--muted);border-top:1px solid var(--line2)}
-      .bp-s.mir>span{opacity:.5} .bp-t{flex:none;height:28px;min-width:74px;padding:0 9px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);font:600 11.5px var(--f-ui);color:#2F6B47;cursor:pointer}
-      .bp-t[aria-pressed="true"]{background:#34475C;border-color:#34475C;color:#fff} .bp-t:disabled{opacity:.45;cursor:default}
+    st2.textContent = `#bl-pay .bl-kart{gap:10px} .bp-bas{display:flex;flex-direction:column;gap:1px;margin-top:2px} .bp-bas small{font:500 11.5px var(--f-ui);color:var(--muted)}
+      .bp-agac{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--panel)}
+      .bp-g{border-bottom:1px solid var(--line2)} .bp-g:last-child{border-bottom:0} .bp-g>summary{list-style:none;cursor:pointer} .bp-g>summary::-webkit-details-marker{display:none}
+      .bp-s{display:flex;align-items:center;gap:8px;min-height:38px;padding:3px 6px 3px 10px;font:600 13px var(--f-ui);color:var(--fg)} .bp-s>span{flex:1;min-width:0;overflow-wrap:anywhere;display:flex;flex-direction:column}
+      .bp-s>span small{font:500 10.5px var(--f-ui);color:#8A6420} .bp-g.gz>summary>span{color:var(--muted)}
+      .bp-s.b{padding-left:26px;font-weight:500;font-size:12.5px;min-height:34px} .bp-s.d{padding-left:40px;font-weight:400;font-size:12px;color:#5A6878;min-height:30px}
+      .bp-s.k{padding-left:20px;font-size:11px;font-weight:700;letter-spacing:.04em;color:var(--muted);min-height:28px;background:var(--panel2)}
+      .bp-g[open]>summary{background:var(--panel2)} .bp-s.mir>span{opacity:.45}
+      .bp-t{flex:none;width:34px;height:28px;display:grid;place-items:center;padding:0;border-radius:8px;border:1px solid var(--line2);background:var(--panel);color:#3C7A4E;cursor:pointer}
+      .bp-t svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+      .bp-t[aria-pressed="true"]{background:#E9EDF2;border-color:#C9D2DC;color:#34475C} .bp-t:disabled{opacity:.4;cursor:default}
       .bp-seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2)}
-      .bp-seg button{height:36px;border:0;border-radius:8px;background:transparent;font:600 13px var(--f-ui);color:var(--muted);cursor:pointer} .bp-seg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.1)}
-      .bp-not{margin:0;font:500 12px/1.45 var(--f-ui);color:var(--muted)} .bp-ok{flex:none;font-size:12px;color:var(--muted);transition:transform .15s} .bp-g[open]>summary .bp-ok{transform:rotate(90deg)}`;
+      .bp-seg button{height:34px;border:0;border-radius:8px;background:transparent;font:600 12.5px var(--f-ui);color:var(--muted);cursor:pointer} .bp-seg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+      .bp-ok{flex:none;width:12px;font-style:normal;font-size:13px;color:var(--muted);transition:transform .15s} .bp-g[open]>summary .bp-ok{transform:rotate(90deg)}`;
     document.head.appendChild(st2);
     const $$ = s => document.querySelector(s);
     const KAT = window.TSK_KATMAN = window.TSK_KATMAN || {};   // telefonun geri tuşu bu pencereleri kapatır
@@ -552,19 +559,20 @@
     function payAgac(){ const A = payAyar(), G = A.gizli || {}, K = (mem["bt/yapi"] || {}).klasorler || [], gor = new Set(), grp = [];
       K.forEach(k => { const a = k.ust || k.id; if(gor.has(a)) return; gor.add(a); grp.push({ anah: k.ust ? "g:" + k.ust : "k:" + k.id, ad: k.ust || k.ad, uy: k.ust ? K.filter(x => x.ust === k.ust) : [k] }); });
       const B = Object.keys(mem).filter(p => p.startsWith("belgeler/")).map(p => mem[p]).filter(Boolean);
-      const tus = (anah, gizli, ust) => `<button type="button" class="bp-t" data-bp="${escH(anah)}" aria-pressed="${!!(gizli || ust)}"${ust ? " disabled" : ""}>${gizli || ust ? "🔒 Gizli" : "👁 Görünür"}</button>`;
+      const tus = (anah, gizli, ust) => `<button type="button" class="bp-t" data-bp="${escH(anah)}" aria-pressed="${!!(gizli || ust)}"${ust ? " disabled" : ""} aria-label="${gizli || ust ? "Gizli · göstermek için dokunun" : "Görünür · gizlemek için dokunun"}">${gizli || ust ? `<svg viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.6A10 10 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.2 3.9M6.6 6.6C3.7 8.4 2 12 2 12s3.6 6.5 10 6.5c1.7 0 3.2-.5 4.5-1.1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>` : `<svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`}</button>`;
       return grp.map(g => { const gG = !!G[g.anah], acik = g.uy.some(u => u.bolumler.some(b => G["b:" + u.id + "|" + b.id]) || G["k:" + u.id]);
-        return `<details class="bp-g"${acik ? " open" : ""}><summary class="bp-s"><i class="bp-ok">›</i><span>${escH(g.ad)}</span>${tus(g.anah, gG)}</summary>${g.uy.map(u => { const kG = gG || !!G["k:" + u.id];
+        const say = gG ? "tamamı gizli" : (() => { let n = 0; g.uy.forEach(u => { if(G["k:" + u.id]) n++; u.bolumler.forEach(b => { if(G["b:" + u.id + "|" + b.id]) n++; }); }); B.forEach(d => { if(G["d:" + d.id] && (d.yerler || []).some(y => g.uy.some(u => u.id === y.k))) n++; }); return n ? n + " gizli" : ""; })();
+        return `<details class="bp-g${gG ? " gz" : ""}"${acik ? " open" : ""}><summary class="bp-s"><i class="bp-ok">›</i><span>${escH(g.ad)}${say ? `<small>${say}</small>` : ""}</span>${tus(g.anah, gG)}</summary>${g.uy.map(u => { const kG = gG || !!G["k:" + u.id];
           return `${g.uy.length > 1 ? `<div class="bp-s k${gG ? " mir" : ""}"><span>${escH(u.kisa || u.ad)}</span>${tus("k:" + u.id, G["k:" + u.id], gG)}</div>` : ""}${u.bolumler.map(b => { const bG = kG || !!G["b:" + u.id + "|" + b.id];
             const D = B.filter(d => (d.yerler || []).some(y => y.k === u.id && y.b === b.id));
             return `<div class="bp-s b${kG ? " mir" : ""}"><span>${escH(b.ad)}</span>${tus("b:" + u.id + "|" + b.id, G["b:" + u.id + "|" + b.id], kG)}</div>${D.map(d => `<div class="bp-s d${bG ? " mir" : ""}"><span>${escH(d.ad)}</span>${tus("d:" + d.id, G["d:" + d.id], bG)}</div>`).join("")}`; }).join("")}`; }).join("")}</details>`; }).join(""); }
     function payCiz(){ const A = payAyar();
-      payP.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true"><div class="bl-ust"><div class="bl-logo">👁</div><div style="flex:1;min-width:0"><h3>Görüntüleme paylaşımı</h3><h2>${pay ? "Paylaşım açık" : "Paylaşımı kur"}</h2></div><button class="bl-x" type="button" data-bpx aria-label="Kapat">✕</button></div>
+      payP.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true"><div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div style="flex:1;min-width:0"><h3>Görüntüleme paylaşımı</h3><h2>${pay ? "Paylaşım açık" : "Paylaşımı kur"}</h2></div><button class="bl-x" type="button" data-bpx aria-label="Kapat">✕</button></div>
         ${pay ? `<div class="bl-durumkart"><span class="bl-r bl-dik"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><div style="min-width:0"><strong>${escH(pay.depo)}</strong><small id="bl-pay-durum">${escH(payDurumYazi())}</small></div></div>
           <div class="bl-modkap"><span class="bl-modbas">Karşı tarafın yetkisi</span><div class="bp-seg"><button type="button" data-bpy="0" aria-pressed="${!A.duzenle}">Yalnız görüntüleme</button><button type="button" data-bpy="1" aria-pressed="${!!A.duzenle}">Düzenleyebilir</button></div></div>
           <div class="bl-liste"><button class="bl-sat" type="button" data-bpl><span class="bl-ik mor"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span><span class="bl-yz"><strong>Görüntüleme linki</strong><small>PIN ile korunur · PIN'i karşı tarafa ayrıca söyleyin</small></span><i>›</i></button>
             <button class="bl-sat" type="button" data-bpg><span class="bl-ik mavi"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4.6L4 8"/><path d="M4 4v4h4"/></svg></span><span class="bl-yz"><strong>Şimdi güncelle</strong><small>kaydettikçe kendiliğinden güncellenir</small></span><i>›</i></button></div>
-          <span class="bl-modbas">Bölümler · gizlenen bölüm karşı tarafta buğulu görünür, içeriği hiç gönderilmez</span><div class="bp-agac">${payAgac()}</div>
+          <div class="bp-bas"><span class="bl-modbas">Bölümler</span><small>Kapalı göz: karşı tarafta buğulu görünür, içeriği hiç gönderilmez</small></div><div class="bp-agac">${payAgac()}</div>
           <button class="btn sil genis" type="button" data-bpk>Paylaşımı kapat</button>`
         : `<p class="bl-alt">Karşı taraf yalnız ikinci bir gizli depoyu görür; ana arşivinize hiç erişemez. Gizlediğiniz bölümlerin içeriği oraya hiç gönderilmez.</p>
           <ol class="bl-adim"><li>1 · Gizli paylaşım deposu aç<a class="btn genis" href="${PAY_REPO_URL}" target="_blank" rel="noopener">GitHub'da depo aç ↗</a><small>Adı <b>tsk-arsiv-paylasim</b>, görünürlük <b>Private</b> olsun, <b>Create repository</b> deyin.</small></li>
@@ -2949,7 +2957,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 389</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 390</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
