@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "417";
+  const SURUM = "418";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3041,8 +3041,12 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 
 .km-kan{display:grid;grid-template-columns:repeat(4,1fr);gap:5px} .km-kan button{border:1px solid var(--line2);background:#fff;border-radius:9px;padding:8px 2px;font:700 12.5px var(--f-ui);color:#22303D;cursor:pointer;white-space:nowrap}
 .km-kan button[aria-pressed="true"]{background:#FBEAEA;border-color:#E2B4B4;color:#8E3434;box-shadow:0 0 0 2px #F6DADA}
+.zm-l.kisa>.zm-k:nth-child(n+6){display:none} .zm-tum{border:0;background:none;color:#3D5A73;font:700 12px var(--f-ui);padding:6px;cursor:pointer} .zm-bas2{display:flex;align-items:center;gap:8px}
 .zm-s{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:7px 4px;cursor:pointer;text-align:left} .zm-l{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:10px;overflow:hidden} .zm-k+.zm-k{border-top:1px solid var(--line2)} .zm-k.acik{background:#F7F9FB} .zm-n{min-width:22px;text-align:center;font:700 11px var(--f-ui);color:var(--muted)} .zm-ic{flex:1;min-width:0;display:flex;flex-direction:column} .zm-ic b{font:700 12.5px var(--f-ui);color:#26313B} .zm-ic small{font:500 10.5px var(--f-ui);color:var(--muted)} .zm-s>em{font:700 11px var(--f-ui);font-style:normal;color:#3D5A73;background:#E8EFF5;border-radius:6px;padding:2px 7px;white-space:nowrap} .zm-form{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px 8px 10px} .zm-form .tam{grid-column:1/-1} .zm-is{grid-column:1/-1;display:flex;gap:6px;align-items:center} .zm-is .bosluk{flex:1} .zm-t{background:#E8EFF5!important;color:#3D5A73!important} .dl-ust-s.zm-ik{background:#E8EFF5;color:#3D5A73}
-.km-silb{display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D9DCC6;background:#F7F8F0;border-radius:9px;padding:7px 10px;cursor:pointer;text-align:left} .km-silL{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0} .km-silL>span{display:flex;gap:8px;align-items:baseline;min-width:0} .km-silL b{font:700 13px var(--f-ui);color:#3D4223;font-variant-numeric:tabular-nums} .km-silL b.yok{font-weight:500;color:var(--muted)} .km-silL small{font:500 11px var(--f-ui);color:var(--muted);line-height:1.3} .km-silb>i{font-style:normal;color:#777B5E}
+.km-silb{display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D9DCC6;background:#F7F8F0;border-radius:9px;padding:7px 10px;cursor:pointer;text-align:left} .km-silT{font:700 12px var(--f-ui);color:#4A4F2C;margin-bottom:1px}
+.km-nav{display:grid;grid-template-columns:38px 1fr 38px;gap:6px;align-items:stretch} .km-ok{border:1px solid var(--line2);background:#fff;border-radius:10px;font:600 20px var(--f-ui);color:#2F6670;cursor:pointer} .km-ok:disabled{opacity:.35}
+.km-kisi{display:flex;align-items:center;gap:9px;min-width:0;border:1px solid #CFE0E2;background:#F3F9F9;border-radius:10px;padding:7px 10px;cursor:pointer;text-align:left} .km-kisi .ks-ad{flex:1;min-width:0;display:flex;flex-direction:column} .km-kisi .ks-ad b{font:700 14px var(--f-ui);color:#214A50} .km-kisi .ks-ad small{font:500 11px var(--f-ui);color:var(--muted)} .km-kisi>i{font-style:normal;color:#67858A;font-size:11px}
+.km-kart{gap:0!important;padding-top:4px!important} .km-g{border-bottom:1px solid var(--line2)} .km-g>summary{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:10px 2px;cursor:pointer;list-style:none;font:700 13px var(--f-ui);color:#214A50} .km-g>summary::-webkit-details-marker{display:none} .km-g>summary::after{content:"▾";color:#8AA3A6;font-size:11px;margin-left:4px} .km-g[open]>summary::after{content:"▴"} .km-g>summary>span:first-child{flex:1} .km-g>.dl-alanlar{padding:0 0 12px} .km-kart>.km-silb{margin-top:10px} .km-silL{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0} .km-silL>span{display:flex;gap:8px;align-items:baseline;min-width:0} .km-silL b{font:700 13px var(--f-ui);color:#3D4223;font-variant-numeric:tabular-nums} .km-silL b.yok{font-weight:500;color:var(--muted)} .km-silL small{font:500 11px var(--f-ui);color:var(--muted);line-height:1.3} .km-silb>i{font-style:normal;color:#777B5E}
 .km-slgit{display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D9DCC6;background:#F7F8F0;border-radius:10px;padding:10px 12px;font:700 13px var(--f-ui);color:#3D4223;cursor:pointer;text-align:left} .km-slgit span{flex:1} .km-slgit i{font-style:normal;color:#777B5E}
 .sl-s{background:#ECEEDF!important;color:#4A4F2C!important} .sl-grup{display:flex;flex-direction:column;gap:6px} .sl-gb{display:flex;align-items:center;gap:8px} .sl-gb em{font:700 11px var(--f-ui);font-style:normal;color:#4A4F2C;background:#ECEEDF;border-radius:6px;padding:3px 8px;white-space:nowrap}
 .sl-model{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:7px 9px;font:700 13px var(--f-ui);background:#fff;resize:none}
@@ -3317,7 +3321,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 417</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 418</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10016,33 +10020,46 @@ function kmAdresSec(p, cb){ const A = (Array.isArray(p.adresler) ? p.adresler : 
 const kmDeger = (p, a) => a === "kita" ? (p.kita || p.gorev || "") : (p[a] || "");
 const kmEksik = p => KM_ZORUNLU.filter(a => !String(kmDeger(p, a)).trim()).map(a => KM_ALAN.find(x => x[0] === a)[1]);
 const kmTel = p => { try { return isaTel(p) || ""; } catch(e){ return ""; } };
+/* ekran: üstte tek satır kişi seçici (‹ kişi ›), altında alanlar dört katlanır grupta */
+const KM_GRUP = [["Kimlik", ["kita", "baba", "memleket", "dogum", "duhul", "nasip", "sicil", "ems", "tc"]], ["İletişim", ["tel", "adres"]], ["Kan grubu ve yakını", ["kan", "yakinAd", "yakinTel"]]];
+const kmAcikG = new Set();
+const kmGEksik = (p, g) => g[1].filter(a => KM_ZORUNLU.includes(a) && !String(kmDeger(p, a)).trim()).length;
+function kmAlanH(p, a, t, o){ const v = p[a] || "", bos = KM_ZORUNLU.includes(a) && !String(kmDeger(p, a)).trim(), cl = `dl-al${/tam/.test(o || "") ? " tam" : ""}${bos ? " dl-bos" : ""}`;
+  if(a === "kan"){ const es = v && !KM_KAN.includes(v); return `<div class="dl-al tam${bos ? " dl-bos" : ""}" data-km-kutu="kan"><span>${t}${es ? ` <i>kayıtlı: ${esc(v)} · listeden seçin</i>` : ""}</span><div class="km-kan">${KM_KAN.map(x => `<button type="button" data-km-kan="${esc(x)}" aria-pressed="${x === v}">${esc(kmKanKisa(x))}</button>`).join("")}</div></div>`; }
+  if(a === "adres"){ const A = Array.isArray(p.adresler) ? p.adresler : (p.adres ? [{ id: "a0", adres: p.adres }] : []); return `<div class="dl-al tam${bos ? " dl-bos" : ""}" data-km-kutu="adres"><span>Adresler${A.length > 1 ? " <i>işaretli olan asıl adres</i>" : ""}</span>
+    <div class="km-adr">${A.map((x, i) => `<div class="km-adr-s${x.adres && x.adres === p.adres ? " on" : ""}"><button type="button" class="km-radio" data-km-adr-sec="${i}" aria-label="Asıl adres yap"></button><textarea class="oto-boy" rows="1" data-km-adr="${i}" placeholder="Mahalle, sokak, no, ilçe/il">${esc(x.adres)}</textarea><button type="button" class="isa-tsil" data-km-adr-sil="${i}" aria-label="Adresi sil">✕</button></div>`).join("")}</div>
+    <button type="button" class="izb-aktar" data-km-adr-ekle="1">＋ Adres ekle</button></div>`; }
+  if(o === "t") return `<label class="${cl}"><span>${t}${v && !dlIso(v) ? ` <i>kayıtlı: ${esc(v)}</i>` : ""}</span><input type="date" data-km-k="${a}" value="${esc(dlIso(v))}"${tarihYil(v)}></label>`;
+  const ph = a === "kita" ? (p.gorev || "") : a === "tel" ? kmTel(p) : "";
+  return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-km-k="${a}"${/n/.test(o || "") ? ' inputmode="numeric"' : ""} placeholder="${esc(ph)}">${esc(v)}</textarea></label>`; }
+const kmCip = n => n ? `<em class="dl-eksik">${n} eksik</em>` : '<em class="dl-tam">tamam</em>';
 function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return; const P = (S.personel.rows || []).filter(x => x.ad);
-  if(!P.some(p => p.id === kmSecili)) kmSecili = (P.find(p => kmEksik(p).length) || P[0] || {}).id || null;
-  const p = P.find(x => x.id === kmSecili), eksikK = P.filter(x => kmEksik(x).length).length, L = kmFiltre === "eksik" ? P.filter(x => kmEksik(x).length || x.id === kmSecili) : P;
-  const sat = x => { const e = kmEksik(x); return `<button type="button" class="dl-sat km-sat${x.id === kmSecili ? " on" : ""}" data-km-sec="${esc(x.id)}"><span class="ks-av">${esc(ksBas(x.ad))}</span><b>${esc(x.ad)}</b><small>${esc(x.rutbe || "")}</small><em class="${e.length ? "dl-eksik" : "dl-tam"}" data-km-say="${esc(x.id)}">${e.length ? e.length + " eksik" : "tamam"}</em></button>`; };
+  if(!P.some(p => p.id === kmSecili)){ kmSecili = (P.find(p => kmEksik(p).length) || P[0] || {}).id || null; kmAcikG.clear(); }
+  const p = P.find(x => x.id === kmSecili), eksikK = P.filter(x => kmEksik(x).length).length, i = P.indexOf(p);
+  if(p && !kmAcikG.size){ const g = KM_GRUP.findIndex(g => kmGEksik(p, g)); kmAcikG.add(g < 0 ? 0 : g); }
+  const W = p && belgeTur("silah") ? kmSilahlar(p) : null;
   $("#km-govde").innerHTML = `
     <div class="dl-ust"><span class="dl-ust-s km-s"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.kimlik.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.8"')}</svg></span><b>Personel kimliği</b><small>${P.length}</small><em class="km-ozet ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em></div>
-    <div class="dl-seg km-filtre"><button type="button" data-km-f="hepsi" aria-pressed="${kmFiltre === "hepsi"}">Herkes</button><button type="button" data-km-f="eksik" aria-pressed="${kmFiltre === "eksik"}">Eksiği olanlar${eksikK ? ` (${eksikK})` : ""}</button></div>
-    <div class="dl-liste">${L.map(sat).join("") || '<div class="yk-bos">Eksiği olan kimse yok</div>'}</div>
-    ${belgeTur("silah") ? (() => { const L = slVeri(belgeTur("silah")).liste, b = L.filter(x => !slSahip(x)).length; return `<button type="button" class="km-slgit" data-sl-git="1"><span>Silah seri numaraları</span><em class="${b ? "dl-eksik" : "dl-tam"}">${L.length} silah${b ? ` · ${b} BOŞ` : ""}</em><i>›</i></button>`; })() : ""}
-    ${p ? `<section class="dl-kart km-kart">
-      <div class="izb-kisi"><span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small></span><span class="km-ek" data-km-ek>${kmEksik(p).length ? `<em class="dl-eksik">${kmEksik(p).length} eksik</em>` : '<em class="dl-tam">tamam</em>'}</span></div>
-      <div class="dl-alanlar">${KM_ALAN.map(([a, t, o]) => { const v = p[a] || "", bos = KM_ZORUNLU.includes(a) && !String(kmDeger(p, a)).trim(), cl = `dl-al${/tam/.test(o || "") ? " tam" : ""}${bos ? " dl-bos" : ""}`;
-          if(a === "kan"){ const es = v && !KM_KAN.includes(v); return `<div class="dl-al tam${bos ? " dl-bos" : ""}" data-km-kutu="kan"><span>${t}${es ? ` <i>kayıtlı: ${esc(v)} · listeden seçin</i>` : ""}</span><div class="km-kan">${KM_KAN.map(x => `<button type="button" data-km-kan="${esc(x)}" aria-pressed="${x === v}">${esc(kmKanKisa(x))}</button>`).join("")}</div></div>`; }
-          if(a === "adres"){ const A = Array.isArray(p.adresler) ? p.adresler : (p.adres ? [{ id: "a0", adres: p.adres }] : []); return `<div class="dl-al tam${bos ? " dl-bos" : ""}" data-km-kutu="adres"><span>Adresler <i>${A.length > 1 ? "işaretli olan asıl adres · izin belgesinde hangisi isterseniz seçilir" : "birden fazla adres ekleyebilirsiniz"}</i></span>
-            <div class="km-adr">${A.map((x, i) => `<div class="km-adr-s${x.adres && x.adres === p.adres ? " on" : ""}"><button type="button" class="km-radio" data-km-adr-sec="${i}" aria-label="Asıl adres yap"></button><textarea class="oto-boy" rows="1" data-km-adr="${i}" placeholder="Mahalle, sokak, no, ilçe/il">${esc(x.adres)}</textarea><button type="button" class="isa-tsil" data-km-adr-sil="${i}" aria-label="Adresi sil">✕</button></div>`).join("")}</div>
-            <button type="button" class="izb-aktar" data-km-adr-ekle="1">＋ Adres ekle</button></div>`; }
-          if(o === "t") return `<label class="${cl}"><span>${t}${v && !dlIso(v) ? ` <i>kayıtlı: ${esc(v)} · takvimden seçin</i>` : ""}</span><input type="date" data-km-k="${a}" value="${esc(dlIso(v))}"${tarihYil(v)}></label>`;
-          const ph = a === "kita" ? (p.gorev || "") : a === "tel" ? kmTel(p) : "";
-          return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-km-k="${a}"${/n/.test(o || "") ? ' inputmode="numeric"' : ""} placeholder="${esc(ph)}">${esc(v)}</textarea></label>`; }).join("")}${belgeTur("silah") ? (() => { const W = kmSilahlar(p); return `<div class="dl-al tam km-sil"><span>Silahları <i>Silah seri numaraları listesinden</i></span><button type="button" class="km-silb" data-sl-git="1"><span class="km-silL">${W.length ? W.map(x => `<span><b>${esc(x.seri)}</b><small>${esc(x.model || "")}</small></span>`).join("") : '<span><b class="yok">Zimmetli silah yok</b></span>'}</span><i>›</i></button></div>`; })() : ""}</div>
-      <details class="dl-bilgi km-nere"><summary><span>Bu bilgiler nereye gider?</span><em class="dl-not">her belge yalnız kendi alanını alır</em></summary>
-        <div class="km-nl">
-          <div><b>Dilekçe</b><span class="km-o">otomatik</span><small>kıt'a, baba adı, memleket, doğum, duhul, nasıp, sicil, EMS, T.C.</small></div>
-          <div><b>İzin belgeleri</b><span class="km-o el">“Kimlikten al” ile</span><small>kıt'a, sicil, adres, telefon, kan grubu, yakını — yalnız boş kutulara</small></div>
-          <div><b>GDHG · Yoklama · İzin çizelgesi · diğer listeler</b><span class="km-o ay">kendi listesi</span><small>yalnız ad, rütbe, sicil düzeltmesi taşınır; kimse eklenmez ya da silinmez. Kadro, görev, süreler gibi bilgiler o belgede kalır.</small></div>
-        </div></details>
-      <small class="dl-not">Adı ve rütbesi Personel listesinden değişir.</small></section>` : ""}`;
+    ${p ? `<div class="km-nav"><button type="button" class="km-ok" data-km-gec="-1"${i > 0 ? "" : " disabled"} aria-label="Önceki kişi">‹</button>
+      <button type="button" class="km-kisi" data-km-liste="1"><span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")} · ${i + 1}/${P.length}</small></span><span data-km-ek>${kmCip(kmEksik(p).length)}</span><i>▾</i></button>
+      <button type="button" class="km-ok" data-km-gec="1"${i < P.length - 1 ? "" : " disabled"} aria-label="Sonraki kişi">›</button></div>
+    <section class="dl-kart km-kart">
+      ${KM_GRUP.map((g, gi) => `<details class="km-g" data-km-g="${gi}"${kmAcikG.has(gi) ? " open" : ""}><summary><span>${g[0]}</span><span data-km-gs="${gi}">${kmCip(kmGEksik(p, g))}</span></summary>
+        <div class="dl-alanlar">${g[1].map(a => { const [, t, o] = KM_ALAN.find(x => x[0] === a); return kmAlanH(p, a, t, o); }).join("")}</div></details>`).join("")}
+      ${W ? `<button type="button" class="km-silb" data-sl-git="1"><span class="km-silL"><span class="km-silT">Silahları</span>${W.length ? W.map(x => `<span><b>${esc(x.seri)}</b><small>${esc(x.model || "")}</small></span>`).join("") : '<span><b class="yok">Zimmetli silah yok</b></span>'}</span><i>›</i></button>` : ""}
+    </section>
+    <details class="dl-bilgi km-nere"><summary><span>Bu bilgiler nereye gider?</span></summary>
+      <div class="km-nl">
+        <div><b>Dilekçe</b><span class="km-o">otomatik</span><small>kıt'a, baba adı, memleket, doğum, duhul, nasıp, sicil, EMS, T.C.</small></div>
+        <div><b>İzin belgeleri</b><span class="km-o el">“Kimlikten al” ile</span><small>kıt'a, sicil, adres, telefon, kan grubu, yakını — yalnız boş kutulara</small></div>
+        <div><b>GDHG · Yoklama · İzin çizelgesi · diğer listeler</b><span class="km-o ay">kendi listesi</span><small>yalnız ad, rütbe, sicil düzeltmesi taşınır; kimse eklenmez ya da silinmez. Adı ve rütbesi Personel listesinden değişir.</small></div>
+      </div></details>` : '<div class="yk-bos">Personel listesi boş</div>'}`;
   otoBoyHepsi($("#km-govde")); }
+document.addEventListener("toggle", e => { const g = e.target; if(!g.matches || !g.matches("#km-govde .km-g")) return; const n = +g.dataset.kmG; if(g.open) kmAcikG.add(n); else kmAcikG.delete(n); if(g.open) otoBoyHepsi(g); }, true);
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#km-govde [data-km-gec], #km-govde [data-km-liste]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kimlik") return; const P = (S.personel.rows || []).filter(x => x.ad);
+  const git = id => { if(id === kmSecili) return; kmSecili = id; kmAcikG.clear(); kimlikCiz(); };
+  if(b.dataset.kmGec){ const i = P.findIndex(x => x.id === kmSecili) + +b.dataset.kmGec; if(P[i]) git(P[i].id); return; }
+  kisiSecAc("Kimin bilgileri", P.map(x => { const n = kmEksik(x).length; return { ...x, rutbe: `${x.rutbe || ""} · ${n ? n + " eksik" : "tamam"}` }; }), kmSecili, git); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#km-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kimlik") return;
   if(b.dataset.kmSec){ kmSecili = b.dataset.kmSec; kimlikCiz(); const k = $("#km-govde .km-kart"); if(k) k.scrollIntoView({ block: "start", behavior: "smooth" }); return; }
   if(b.dataset.kmF){ kmFiltre = b.dataset.kmF; kimlikCiz(); return; }
@@ -10060,8 +10077,8 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#km-govde") || !el.dataset.kmK) return; const p = (S.personel.rows || []).find(x => x.id === kmSecili); if(!p) return;
   const a = el.dataset.kmK, v = el.type === "date" ? dlTrT(el.value) : el.value.replace(/\s*\n\s*/g, " "); if(v.trim()) p[a] = v; else delete p[a]; kaydetBt("personel");
   el.closest(".dl-al")?.classList.toggle("dl-bos", KM_ZORUNLU.includes(a) && !String(kmDeger(p, a)).trim());
-  const n = kmEksik(p).length, h = n ? `<em class="dl-eksik">${n} eksik</em>` : '<em class="dl-tam">tamam</em>', ek = $("#km-govde [data-km-ek]"); if(ek) ek.innerHTML = h;
-  const sy = document.querySelector(`#km-govde [data-km-say="${CSS.escape(p.id)}"]`); if(sy){ sy.className = n ? "dl-eksik" : "dl-tam"; sy.textContent = n ? n + " eksik" : "tamam"; } });
+  const n = kmEksik(p).length, ek = $("#km-govde [data-km-ek]"); if(ek) ek.innerHTML = kmCip(n);
+  document.querySelectorAll("#km-govde [data-km-gs]").forEach(x => { x.innerHTML = kmCip(kmGEksik(p, KM_GRUP[+x.dataset.kmGs])); }); });
 const TEMA_KIMLIK = { ana: "5F8F95", bas: "DDEDEE", basYazi: "214A50", bant: "EAF4F5", bantYazi: "2C5C62", serit: "F5FAFA", cizgi: "B9D2D4", soluk: "67858A", vurgu: "E6F0E4", vurguYazi: "2F5A3A", topSut: "EEF6F6", ustBand: "F0F7F7" };
 function tanimKimlik(){ const T = TEMA_KIMLIK, bh = t => H(t, { fill: T.bas, k: T.basYazi }), P = (S.personel.rows || []).filter(x => x.ad);
   const body = P.map((p, i) => { const z = i % 2 ? T.serit : null, c = t => H(t || "", { fill: z }); return [H(i + 1, { fill: z, k: T.soluk }), c(`${p.rutbe || ""}\n${p.ad || ""}`.trim()), c(p.sicil), c(p.baba), c(p.memleket), c(p.dogum), c(p.duhul), c(p.nasip), c(p.ems), c(p.tc), c(p.kan), c(kmSilahlar(p).map(x => x.seri).join("\n")), c(p.tel || kmTel(p))]; });
@@ -10074,7 +10091,7 @@ const kmKisi = x => { const R = S.personel.rows || []; return (x.pid && R.find(p
 /* ================= ZİMMET (tur: "zimmet") — Taşınır Mal Teslim Tesellüm Ayrıntı Belgesi =================
    d.zm = { aktif, kayitlar: [{ id, pid, tarih (ISO), birlik, kisim, satirlar: [{ id, stok, cins, kafile, seri, grup, skt, miktar }], eden: { ad, rutbe, gorev }, alan: { gorev } }] }
    Teslim alanın adı ve rütbesi personel kaydından gelir. Çıktı: tek tablo (PDF · Excel · Word aynı yerleşim). */
-let zmAcik = null;
+let zmAcik = null, zmTum = false;
 const zmYeni = (o = {}) => ({ id: "zk" + yeniId().slice(0, 8), pid: "", tarih: bugun(), birlik: "", kisim: "", satirlar: [], eden: { ad: "", rutbe: "", gorev: "" }, alan: { gorev: "" }, ...o });
 const zmVeri = d => { d.zm ||= {}; d.zm.kayitlar ||= []; if(!d.zm.kayitlar.length){ const k = zmYeni(); d.zm.kayitlar.push(k); d.zm.aktif = k.id; } if(!d.zm.kayitlar.some(k => k.id === d.zm.aktif)) d.zm.aktif = d.zm.kayitlar[0].id; return d.zm; };
 const zmAktif = v => v.kayitlar.find(k => k.id === v.aktif) || v.kayitlar[0];
@@ -10088,19 +10105,21 @@ function zimmetCiz(){ const d = acikBelge(); if(!d || d.tur !== "zimmet") return
     <section class="dl-kart">
       <div class="dl-bas">Teslim alan</div>
       ${ksSatir(p, 'data-zm="kisi"')}
-      <div class="dl-alanlar">
+      <label class="dl-al"><span>Teslim alanın görevi</span><input data-zm-a="gorev" value="${esc(k.alan.gorev || "")}" placeholder="boş kalabilir"></label>
+      <div class="dl-bas zm-bas2">Teslim eden <button type="button" class="dl-sifir" data-zm="eden-sec">Listeden seç</button></div>
+      <div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-zm-e="ad" value="${esc(k.eden.ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-zm-e="rutbe" value="${esc(k.eden.rutbe)}"></label>
+        <label class="dl-al tam"><span>Görevi</span><input data-zm-e="gorev" value="${esc(k.eden.gorev)}"></label></div>
+      <details class="dl-bilgi"><summary><span>Belge bilgileri</span><em class="dl-not">${esc(zmTarih(k.tarih))}</em></summary>
+        <div class="dl-alanlar">
         <label class="dl-al"><span>Rapor tarihi</span><input type="date" data-zm-f="tarih" value="${esc(k.tarih)}"></label>
-        <label class="dl-al"><span>Teslim alanın görevi</span><input data-zm-a="gorev" value="${esc(k.alan.gorev || "")}" placeholder="boş kalabilir"></label>
         <label class="dl-al tam"><span>Taşınır malın birliği</span><textarea class="oto-boy" rows="1" data-zm-f="birlik">${esc(k.birlik)}</textarea></label>
-        <label class="dl-al tam"><span>Teslim alan kısım / birim</span><textarea class="oto-boy" rows="1" data-zm-f="kisim">${esc(k.kisim)}</textarea></label></div>
+        <label class="dl-al tam"><span>Teslim alan kısım / birim</span><textarea class="oto-boy" rows="1" data-zm-f="kisim">${esc(k.kisim)}</textarea></label></div></details>
       <div class="dl-bas">Zimmetlenen malzemeler <i>${k.satirlar.length} kalem</i></div>
-      <div class="zm-l">${k.satirlar.map((x, i) => { const ac = zmAcik === x.id; return `<div class="zm-k${ac ? " acik" : ""}"><button type="button" class="zm-s" data-zm-ac="${x.id}"><span class="zm-n">${i + 1}</span><span class="zm-ic"><b>${esc(x.cins || "Yeni kalem")}</b><small>${esc([x.stok, x.seri && "Seri " + x.seri, x.skt && "SKT " + x.skt].filter(Boolean).join(" · "))}</small></span><em>${esc(x.miktar || "")}</em></button>
+      <div class="zm-l${zmTum || k.satirlar.length <= 6 || zmAcik ? "" : " kisa"}">${k.satirlar.map((x, i) => { const ac = zmAcik === x.id; return `<div class="zm-k${ac ? " acik" : ""}"><button type="button" class="zm-s" data-zm-ac="${x.id}"><span class="zm-n">${i + 1}</span><span class="zm-ic"><b>${esc(x.cins || "Yeni kalem")}</b><small>${esc([x.stok, x.seri && "Seri " + x.seri, x.skt && "SKT " + x.skt].filter(Boolean).join(" · "))}</small></span><em>${esc(x.miktar || "")}</em></button>
         ${ac ? `<div class="zm-form">${ZM_ALAN.map(([a, t, o]) => `<label class="dl-al${o === "tam" ? " tam" : ""}"><span>${t}</span><textarea class="oto-boy" rows="1" data-tek data-zm-s="${x.id}:${a}"${o === "n" ? ' inputmode="numeric"' : ""}>${esc(x[a] || "")}</textarea></label>`).join("")}
           <div class="zm-is"><button type="button" class="btn ana kucuk" data-zm="kapat">✓ Tamam</button><button type="button" class="mini" data-zm-i="${x.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-zm-i="${x.id}:1"${i < k.satirlar.length - 1 ? "" : " disabled"}>↓</button><span class="bosluk"></span><button type="button" class="mini sil" data-zm-sil="${x.id}">Sil</button></div></div>` : ""}</div>`; }).join("") || '<div class="yk-bos">Henüz kalem yok</div>'}</div>
+      ${k.satirlar.length > 6 && !zmAcik ? `<button type="button" class="zm-tum" data-zm="tum">${zmTum ? "Daha az göster ⌃" : `Tüm kalemleri göster (${k.satirlar.length}) ⌄`}</button>` : ""}
       <button type="button" class="izb-aktar tam" data-zm="ekle">＋ Kalem ekle</button>
-      <details class="dl-bilgi"${k.eden.ad ? "" : " open"}><summary><span>Teslim eden</span><em class="dl-not">${esc(k.eden.ad || "girilmedi")}</em></summary>
-        <div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-zm-e="ad" value="${esc(k.eden.ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-zm-e="rutbe" value="${esc(k.eden.rutbe)}"></label>
-          <label class="dl-al tam"><span>Görevi</span><input data-zm-e="gorev" value="${esc(k.eden.gorev)}"></label></div></details>
       <div class="dl-is"><button type="button" class="mini" data-zm="kopya">⧉ Kopyasını oluştur</button>${L.length > 1 ? '<button type="button" class="mini sil" data-zm="sil">Sil</button>' : ""}</div></section>
     <div class="kp-onizle zm-onz"></div>`;
   otoBoyHepsi($("#zm-govde")); zmOnizle(d, true); }
@@ -10118,6 +10137,8 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.zmSil){ const i = Sx.findIndex(x => x.id === b.dataset.zmSil); if(i < 0) return; const [x] = Sx.splice(i, 1); zmAcik = null; yaz(); return geriAlinabilir(`${x.cins || "Kalem"} çıkarıldı`, () => { Sx.splice(i, 0, x); yaz(); }); }
   const z = b.dataset.zm;
   if(z === "kapat"){ zmAcik = null; return yaz(); }
+  if(z === "tum"){ zmTum = !zmTum; return zimmetCiz(); }
+  if(z === "eden-sec") return kisiSecAc("Teslim eden", (S.personel.rows || []).filter(x => x.ad), "", id => { const q = (S.personel.rows || []).find(x => x.id === id); if(q){ k.eden.ad = q.ad; k.eden.rutbe = q.rutbe || ""; } yaz(); });
   if(z === "ekle"){ const x = { id: "zs" + yeniId().slice(0, 7), stok: "", cins: "", kafile: "", seri: "", grup: "", skt: "", miktar: "1 AD" }; Sx.push(x); zmAcik = x.id; yaz(); const t = document.querySelector(`#zm-govde [data-zm-s="${x.id}:stok"]`); if(t){ t.focus(); t.scrollIntoView({ block: "center" }); } return; }
   if(z === "yeni"){ const n = zmYeni({ birlik: k.birlik, eden: { ...k.eden } }); v.kayitlar.push(n); v.aktif = n.id; zmAcik = null; return yaz(); }
   if(z === "kopya"){ const n = zmYeni({ ...JSON.parse(JSON.stringify(k)), id: "zk" + yeniId().slice(0, 8), pid: "" }); n.satirlar.forEach(x => x.id = "zs" + yeniId().slice(0, 7)); v.kayitlar.push(n); v.aktif = n.id; bildir("Kopyası oluşturuldu; teslim alanı seçin"); return yaz(); }
