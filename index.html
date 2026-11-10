@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "429";
+  const SURUM = "430";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3072,15 +3072,14 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 #kayit-cubugu .k-metin small{text-decoration:underline;text-decoration-color:#E3C88F;text-underline-offset:2px}
 #kayit-cubugu{left:0;right:0;transform:none;bottom:0;width:auto;max-width:none;border-radius:14px 14px 0 0;border-width:1px 0 0;justify-content:flex-end;gap:6px;
   padding:7px max(10px,env(safe-area-inset-right,0px)) calc(7px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));box-shadow:0 -4px 18px rgba(80,60,20,.10)}
+@media (min-width:900px){ #kayit-cubugu{padding-left:calc((100vw - 860px) / 2);padding-right:calc((100vw - 860px) / 2)} }
 #kayit-cubugu .k-metin{margin-right:auto;min-width:0;overflow:hidden} #kayit-cubugu .k-metin small{white-space:normal}
 #kayit-cubugu .k-adim{width:36px;min-width:36px;padding:0!important;height:34px;font:700 17px var(--f-ui)!important;background:#fff;border:1px solid #E6D6B8;color:#7A5214}
 #kayit-cubugu .k-adim:disabled{opacity:.35}
 html.kayit-bekliyor body,html.cubuk-acik body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))} html.kayit-bekliyor #v-belge,html.cubuk-acik #v-belge{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))!important}
 html.klavye.kayit-bekliyor body{padding-bottom:0}
 #sil-geri{bottom:calc(66px + env(safe-area-inset-bottom,0px))}
-:is(#v-belge,#ks-perde) :is(input,textarea).deg-alan{box-shadow:inset 3px 0 0 #E0A040;background-color:#FFFBF1}
-.kc-is{display:grid;gap:8px} .kc-is .btn{display:flex;flex-direction:column;align-items:center;gap:1px;padding:11px 14px;border-radius:12px;font:700 14px var(--f-ui)} .kc-is .btn small{font:500 11px var(--f-ui);opacity:.75}
-.kc-is .btn.kc-yok{color:#A3412F;border-color:#EBC9C1;background:#FFF7F5}
+.gc-fark{display:block;margin-top:5px;font:500 11.5px/1.45 var(--f-ui);color:#5A6B80} .gc-fark b{color:#22324A;font-weight:700}
 .gc-sekme{display:flex;gap:4px;padding:3px;margin:0 0 10px;background:#EEF1F5;border-radius:11px} .gc-sekme button{flex:1;border:0;background:none;border-radius:9px;padding:7px 8px;font:700 12.5px var(--f-ui);color:#5A6B80;cursor:pointer}
 .gc-sekme button[aria-pressed="true"]{background:#fff;color:#22324A;box-shadow:0 1px 3px rgba(30,50,80,.12)} .gc-sekme b{font:800 10.5px var(--f-ui);background:#E2E8F0;border-radius:6px;padding:1px 6px;margin-left:4px}
 .cp-sat{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line)} .cp-sat:last-child{border-bottom:0}
@@ -3132,6 +3131,18 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .es-onbas{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 2px 0;font:700 12px var(--f-ui);color:#5B6B7B} .cs-seg.mini button{padding:4px 10px;font-size:11.5px}
 .es-birim{display:grid;grid-template-columns:repeat(6,1fr);gap:5px} .es-birim button{border:1px solid var(--line2);background:#fff;border-radius:7px;padding:7px 0;font:700 12px var(--f-ui);color:#26313B;cursor:pointer} .es-birim button[aria-pressed="true"]{background:#2F4A66;border-color:#2F4A66;color:#fff}
 .es-pis{display:flex;align-items:center;gap:6px;margin-top:12px} .es-pis .bosluk{flex:1}
+.kb{display:flex;flex-direction:column;gap:6px;padding:2px 2px 4px}
+.kb-ust{display:flex;align-items:center;gap:6px;min-height:32px} .kb-ad{font:700 11px var(--f-ui);letter-spacing:.07em;text-transform:uppercase;color:#6A7886} .kb-say{font:600 11px var(--f-ui);color:#8A96A3;font-variant-numeric:tabular-nums}
+.kb-oz{font:600 11px var(--f-ui);font-style:normal;border-radius:6px;padding:2px 7px;margin-left:2px} .kb-bos{flex:1}
+.kb-ok{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line2);background:var(--panel);border-radius:8px;font:600 16px/1 var(--f-ui);color:#3D5A73;cursor:pointer;padding:0} .kb-ok:disabled{opacity:.3;cursor:default}
+.kb-yeni{height:30px;border:1px solid #BCD6C5;background:#F1F8F3;color:#2F6B47;border-radius:8px;padding:0 11px;font:700 12px var(--f-ui);cursor:pointer;margin-left:2px;white-space:nowrap}
+.kb-sec{display:flex;align-items:center;gap:10px;width:100%;border:0;border-bottom:1px solid var(--line2);background:none;padding:2px 2px 10px;text-align:left;cursor:pointer;color:var(--fg)}
+.kb-av{flex:none;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;background:#E6EEF5;color:#3D5A73;font:700 12px var(--f-ui)}
+.kb-ic{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .kb-ic b{font:700 15.5px/1.3 var(--f-ui);color:#1F2A36;overflow-wrap:anywhere} .kb-ic small{font:500 11.5px/1.35 var(--f-ui);color:var(--muted)}
+.kb-ic small *{font-size:inherit!important;line-height:inherit!important;padding-top:0!important;padding-bottom:0!important} .kb-cip{align-self:flex-start;font:700 10px var(--f-ui);color:#3D5A73;background:#E8EEF4;border-radius:5px;padding:2px 6px;margin-bottom:1px}
+.kb-tum{flex:none;display:inline-flex;align-items:center;gap:3px;font:600 11.5px var(--f-ui);color:#3D5A73;padding:5px 7px;border-radius:7px;background:#F1F5F9}
+.kb-tum svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+@media (hover:hover){ .kb-sec:hover .kb-tum{background:#E5ECF3} .kb-ok:not(:disabled):hover{background:#F1F5F9} }
 /* alt pencerelerde kaydırma çubuğu görünmez, kutular kenara taşmaz; işlem düğmeleri altta hep görünür */
 .ap-ic{scrollbar-width:none;padding:2px 2px 4px;margin:0 -2px} .ap-ic::-webkit-scrollbar{display:none}
 .ap-ic :is(input,textarea){max-width:100%;box-sizing:border-box}
@@ -3163,10 +3174,11 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .sl-s1 input{min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px;font:700 13.5px var(--f-ui);background:#fff;font-variant-numeric:tabular-nums}
 .sl-kim{display:flex;flex-direction:column;align-items:flex-start;min-width:0;border:1px solid #D5E3D8;background:#F1F7F2;border-radius:8px;padding:5px 9px;cursor:pointer;text-align:left} .sl-kim b{font:700 12.5px var(--f-ui);color:#2F5A3A;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;max-width:100%} .sl-kim small{font:500 10.5px var(--f-ui);color:var(--muted)}
 .sl-kim.bos{background:#FBF5E6;border-color:#E9D9AE} .sl-kim.bos b{color:#7A5B1E;letter-spacing:.06em}
-.sl-kimk{display:flex;align-items:stretch;min-width:0;border:1px solid #D5E3D8;background:#F1F7F2;border-radius:8px;overflow:hidden} .sl-kimk input{flex:1;min-width:0;border:0!important;background:transparent!important;padding:8px 9px!important;font:700 12.5px var(--f-ui)!important;color:#2F5A3A;box-shadow:none!important;height:auto!important}
-.sl-kimk input::placeholder{color:#7A5B1E;letter-spacing:.06em;opacity:1} .sl-kimk.bos{background:#FBF5E6;border-color:#E9D9AE} .sl-kimk.elle{background:#fff;border-color:var(--line)} .sl-kimk.elle input{color:var(--fg)}
-.sl-kimk button{flex:none;border:0;border-left:1px solid rgba(0,0,0,.07);background:rgba(255,255,255,.55);padding:0 10px;font:600 11px var(--f-ui);color:#3D5A73;cursor:pointer;white-space:nowrap}
-.sl-form .dl-al.sl-kimal{grid-column:1/-1} .sl-form .dl-al>span i{font-style:normal;font-weight:500;color:var(--muted)}
+.nw{white-space:nowrap}
+.sl-form .dl-al.sl-kimal{grid-column:1/-1} .sl-kimin::placeholder{color:#9A7A2E;font-weight:700;letter-spacing:.06em;opacity:1}
+.sl-kimis{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px;margin:-1px 0 4px} .sl-sec{display:inline-flex;align-items:center;gap:6px;height:30px;border:1px solid var(--line2);background:var(--panel);border-radius:8px;padding:0 11px;font:600 12px var(--f-ui);color:#3D5A73;cursor:pointer}
+.sl-sec svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round} @media (hover:hover){ .sl-sec:hover{background:#F3F6F9} }
+.sl-form .dl-al>span i{font-style:normal;font-weight:500;color:var(--muted)}
 .km-adr{display:flex;flex-direction:column;gap:6px} .km-adr-s{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:start}
 .km-radio{width:22px;height:22px;margin-top:7px;border-radius:50%;border:2px solid #B9C6D2;background:#fff;cursor:pointer;padding:0} .km-adr-s.on .km-radio{border-color:#2F6670;background:radial-gradient(circle,#2F6670 0 5px,#fff 6px)}
 .km-adr-s .isa-tsil{width:34px;height:36px} .km-adr-s.on textarea{border-color:#9CC4C8!important;background:#F4FAFA!important}
@@ -3434,7 +3446,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 429</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 430</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3729,6 +3741,7 @@ function taslakGeriYukle(){ if(onizlemeMi() || saltMi()) return; let t = null; t
     else if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(i >= 0 && JSON.stringify(S.belgeler[i]) === JSON.stringify(v)) continue; if(i >= 0) S.belgeler[i] = v; else S.belgeler.push(v); kirli[y] = () => S.belgeler.find(x => x.id === id) || v; }
     else continue; surum[y] = (surum[y] || 0) + 1; n++; }
   if(!n){ taslakYaz(true); return; } kayitCubugu(); agacCiz(); anaCiz(); if(SECIM.belge){ const d = acikBelge(); if(d) belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
+  try { adimYukle(); } catch(e){}
   uyar("Kaydedilmemiş değişiklikleriniz geri getirildi. Saklamak için alttaki “Kaydet”e basın."); }
 /* ===== otomatik kaydetme ve geri alma =====
    Her değişiklik yazmayı bıraktıktan kısa süre sonra kendiliğinden kaydedilir. Kaydedilmeden önceki hâl saklanır;
@@ -3818,7 +3831,6 @@ document.addEventListener("visibilitychange", () => { if(document.hidden) taslak
 function kayitCubugu(){
   const n = Object.keys(kirli).length; const c = $("#kayit-cubugu"); if(n){ clearTimeout(geriGoster.z); c.classList.remove("tamam"); $("#k-kaydet").hidden = false; $("#k-geri").hidden = true; c.hidden = false; } else if(!c.classList.contains("tamam")) c.hidden = true;   // tek çubuk: değişiklik varken “Kaydet”, kaydedince kısa süre “Geri al”
   document.documentElement.classList.toggle("kayit-bekliyor", !!n); document.documentElement.classList.toggle("cubuk-acik", !c.hidden); adimDugme();
-  if(!n) degAlanTemizle(); else degAlanSuz();
   if(n){ $("#k-metin").innerHTML = `<i></i>Kaydedilmedi<small>${n} yerde değişiklik · göster ›</small>`; durum("yaz","Kaydedilmedi"); }
   else if(db && yazabilir) durum("ok","Kaydedildi");
 }
@@ -3851,6 +3863,13 @@ async function vazgec(sessiz, yalniz){
   if(SECIM.belge){ const d = acikBelge(); if(!d) belgeKapat(); else belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
   if(!sessiz) bildir("Değişiklikler geri alındı");
 }
+/* ===== kayıt başlığı standardı (kimlik, zimmet, el senedi): üstte ince satır (ad · sıra · ‹ › · Yeni), altında seçili kaydın adı.
+   Kutu içinde kutu yok; ada dokununca bütün kayıtların listesi açılır. Telefonda ve bilgisayarda aynı. ===== */
+function kayitBas(o){ const i = o.i || 0, n = o.n || 0, S2 = o.sec;
+  return `<div class="kb"><div class="kb-ust"><span class="kb-ad">${esc(o.ad)}</span>${n ? `<span class="kb-say">${S2 ? (i + 1) + " / " + n : n}</span>` : ""}${o.ozet || ""}<span class="kb-bos"></span>
+      ${S2 && n > 1 ? `<button type="button" class="kb-ok" ${o.gec}="-1"${i > 0 ? "" : " disabled"} aria-label="Önceki">‹</button><button type="button" class="kb-ok" ${o.gec}="1"${i < n - 1 ? "" : " disabled"} aria-label="Sonraki">›</button>` : ""}
+      ${o.yeni ? `<button type="button" class="kb-yeni" ${o.yeni}>＋ Yeni</button>` : ""}</div>
+    ${S2 ? `<button type="button" class="kb-sec" ${S2.veri}>${S2.av ? `<span class="kb-av">${S2.av}</span>` : ""}<span class="kb-ic">${S2.cip ? `<span class="kb-cip">${S2.cip}</span>` : ""}<b>${S2.baslik}</b>${S2.alt ? `<small>${S2.alt}</small>` : ""}</span><span class="kb-tum">Tümü<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button>` : ""}</div>`; }
 /* ===== adım adım geri al / yinele (kaydetmeden önce) =====
    Her değişiklik kısa bir duraklamadan sonra bir “adım” olur. ↶ son adımı geri alır, ↷ yeniden uygular. Kaydedince ya da yoksayınca adımlar sıfırlanır. */
 const adimG = [], adimI = [], adimSon = {}, adimTaban = {}; let adimZ = null, adimUyg = false;
@@ -3863,7 +3882,15 @@ async function adimTabanAl(y){ let v; try { const d = await db.doc(y).get(); v =
 function adimYaz(){ clearTimeout(adimZ); const ek = []; for(const y of Object.keys(kirli)){ if(adimSon[y] == null) continue; let c; try { c = JSON.stringify(kirli[y]() ?? null); } catch(e){ continue; } if(c !== adimSon[y]){ ek.push({ y, eski: adimSon[y] }); adimSon[y] = c; } }
   if(ek.length){ adimG.push(ek); if(adimG.length > 80) adimG.shift(); adimI.length = 0; } adimDugme(); }
 function adimSifirla(Y){ for(const y of Y){ delete adimSon[y]; delete adimTaban[y]; } for(const L of [adimG, adimI]){ for(let i = L.length - 1; i >= 0; i--){ L[i] = L[i].filter(x => !Y.includes(x.y)); if(!L[i].length) L.splice(i, 1); } } adimDugme(); }
-function adimDugme(){ const g = $("#k-ag"), i = $("#k-ai"); if(!g) return; const n = Object.keys(kirli).length > 0 || adimI.length > 0; g.hidden = i.hidden = !n || $("#kayit-cubugu").classList.contains("tamam"); g.disabled = !adimG.length; i.disabled = !adimI.length; i.hidden = i.hidden || !adimI.length; }
+const ADIM_LS = "tskAdim";
+function adimSakla(){ clearTimeout(adimSakla.z); adimSakla.z = setTimeout(() => { try { const Y = Object.keys(adimSon).filter(y => y in kirli && adimSon[y] != null && adimTaban[y] !== undefined); if(!Y.length){ localStorage.removeItem(ADIM_LS); return; }
+    const o = { G: adimG.map(e => e.filter(x => Y.includes(x.y))).filter(e => e.length), I: adimI.map(e => e.filter(x => Y.includes(x.y))).filter(e => e.length), son: {}, taban: {} }; Y.forEach(y => { o.son[y] = adimSon[y]; o.taban[y] = adimTaban[y]; });
+    let j = JSON.stringify(o); while(j.length > 2500000 && (o.G.length || o.I.length)){ if(o.I.length) o.I.shift(); else o.G.shift(); j = JSON.stringify(o); } localStorage.setItem(ADIM_LS, j); } catch(e){ try { localStorage.removeItem(ADIM_LS); } catch(x){} } }, 800); }
+function adimYukle(){ let o = null; try { o = JSON.parse(localStorage.getItem(ADIM_LS) || "null"); } catch(e){} if(!o || !o.son) return;
+  const Y = Object.keys(o.son).filter(y => y in kirli && JSON.stringify(yolDeger(y) ?? null) === o.son[y]); if(!Y.length) return;
+  Y.forEach(y => { adimSon[y] = o.son[y]; adimTaban[y] = o.taban[y]; }); const suz = L => (L || []).map(e => e.filter(x => Y.includes(x.y))).filter(e => e.length);
+  adimG.push(...suz(o.G)); adimI.push(...suz(o.I)); adimDugme(); }
+function adimDugme(){ adimSakla(); const g = $("#k-ag"), i = $("#k-ai"); if(!g) return; const n = Object.keys(kirli).length > 0 || adimI.length > 0; g.hidden = i.hidden = !n || $("#kayit-cubugu").classList.contains("tamam"); g.disabled = !adimG.length; i.disabled = !adimI.length; i.hidden = i.hidden || !adimI.length; }
 function adimUygula(ileri){ adimYaz(); const A = ileri ? adimI : adimG, B = ileri ? adimG : adimI, ek = A.pop(); if(!ek) return; const ters = []; adimUyg = true;
   try { for(const { y, eski } of ek){ const simdi = JSON.stringify(yolDeger(y) ?? null); ters.push({ y, eski: simdi }); const v = JSON.parse(eski); yolKoy(y, v); adimSon[y] = eski;
       if(eski === adimTaban[y] || v == null) delete kirli[y]; else kirli[y] = yolFn(y); surum[y] = (surum[y] || 0) + 1; } }
@@ -3873,31 +3900,25 @@ function adimUygula(ileri){ adimYaz(); const A = ileri ? adimI : adimG, B = iler
   if(SECIM.belge){ const d = acikBelge(); if(!d) belgeKapat(); else belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
   requestAnimationFrame(() => { scrollTo(0, sy); if(vb) vb.scrollTop = vs; }); bildir(ileri ? "Yinelendi" : "Son adım geri alındı"); }
 /* ===== kısa ekler satır sonunda bölünmesin: “(EK-2)”, “A-4”, “G-3” gibi tirelerde satır kırılmaz (yalnız ekranda; veri değişmez) ===== */
-const TIRE_RE = /([0-9A-Za-zÇĞİÖŞÜçğıöşü])-(?=[0-9A-Za-zÇĞİÖŞÜçğıöşü]{1,4}(?![0-9A-Za-zÇĞİÖŞÜçğıöşü]))/g;
-function tireKir(kok){ if(!kok) return; if(kok.nodeType === 3){ if((kok.nodeValue.indexOf("-") >= 0 || kok.nodeValue.indexOf(",") >= 0) && !(kok.parentNode && kok.parentNode.closest && kok.parentNode.closest("script,style,textarea,pre,[contenteditable],svg"))){ const v = kok.nodeValue.replace(TIRE_RE, "$1‑").replace(/,(?=[A-Za-zÇĞİÖŞÜçğıöşü])/g, ",​"); if(v !== kok.nodeValue) kok.nodeValue = v; } return; }
-  if(kok.nodeType !== 1 || kok.matches("script,style,textarea,pre,[contenteditable],svg,canvas")) return; const w = document.createTreeWalker(kok, NodeFilter.SHOW_TEXT); let n; const L = []; while((n = w.nextNode())) if(n.nodeValue.indexOf("-") >= 0 || n.nodeValue.indexOf(",") >= 0) L.push(n); L.forEach(tireKir); }
-new MutationObserver(M => { for(const m of M){ if(m.type === "characterData") tireKir(m.target); else m.addedNodes.forEach(tireKir); } }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
+const HARF = "0-9A-Za-zÇĞİÖŞÜçğıöşüÂâÎîÛû", TIRE_RE = new RegExp(`[${HARF}]+(?:-[${HARF}]{1,4})+(?![${HARF}])|,(?=[A-Za-zÇĞİÖŞÜçğıöşü])`, "g");
+const TIRE_YOK = "script,style,textarea,pre,[contenteditable],svg,canvas,.nw,input,select,option,title";
+function tireMetin(t){ const v = t.nodeValue; if(!v || (v.indexOf("-") < 0 && v.indexOf(",") < 0)) return; const ust = t.parentNode; if(!ust || ust.nodeType !== 1 || ust.closest(TIRE_YOK)) return;
+  TIRE_RE.lastIndex = 0; let m, son = 0, f = null;
+  while((m = TIRE_RE.exec(v))){ if(m[0] !== "," && m[0].indexOf("-") < 0) continue; f ||= document.createDocumentFragment(); if(m.index > son) f.appendChild(document.createTextNode(v.slice(son, m.index)));
+    if(m[0] === ","){ f.appendChild(document.createTextNode(",")); f.appendChild(document.createElement("wbr")); } else { const sp = document.createElement("span"); sp.className = "nw"; sp.textContent = m[0]; f.appendChild(sp); } son = m.index + m[0].length; }
+  if(!f) return; if(son < v.length) f.appendChild(document.createTextNode(v.slice(son))); ust.replaceChild(f, t); }
+function tireKir(kok){ if(!kok) return; if(kok.nodeType === 3) return tireMetin(kok); if(kok.nodeType !== 1 || kok.matches(TIRE_YOK) || kok.closest(TIRE_YOK)) return;
+  const w = document.createTreeWalker(kok, NodeFilter.SHOW_TEXT), L = []; let n; while((n = w.nextNode())) if(n.nodeValue.indexOf("-") >= 0 || n.nodeValue.indexOf(",") >= 0) L.push(n); L.forEach(tireMetin); }
+new MutationObserver(M => { for(const m of M){ if(m.type === "characterData") tireKir(m.target); else m.addedNodes.forEach(tireKir); } }).observe(document.body, { childList: true, subtree: true, characterData: true });
 tireKir(document.body);
-/* ===== değişen alan işareti: kaydedilmemiş değişiklik olan kutunun solunda turuncu çizgi ===== */
-const degAlan = new Map();
-function alanImza(el){ if(!el || !el.attributes) return ""; const at = [...el.attributes].filter(a => a.name.startsWith("data-") && !/^data-(salt|tek)$/.test(a.name)).map(a => a.name + "=" + a.value).join("&"); if(!at) return "";
-  const d = acikBelge(), alt = d ? ((d.zm || d.es || d.dl || d.isa || d.sl || {}).aktif || "") : "", kap = el.closest("[data-id],[data-pid]"), ps = el.closest("#ks-perde");
-  return [d ? d.id : "-", alt, typeof kmSecili !== "undefined" ? kmSecili || "" : "", kap ? kap.dataset.id || kap.dataset.pid : "", ps ? "P" + (ps.dataset.esId || ps.dataset.zmId || "") : "", at].join("|"); }
-document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("input:not([type=search]):not([type=file]),textarea") || !el.closest("#v-belge,#ks-perde") || el.closest("#not-panel,.np-ara") || el.readOnly) return;
-  const sg = alanImza(el); if(!sg) return; const su = { ...surum }; el.classList.add("deg-alan");
-  setTimeout(() => { const Y = Object.keys(kirli).filter(y => (surum[y] || 0) !== (su[y] || 0)); if(Y.length) degAlan.set(sg, new Set([...(degAlan.get(sg) || []), ...Y])); else if(!degAlan.has(sg)) el.classList.remove("deg-alan"); }, 0); }, true);
-function degAlanUygula(){ if(!degAlan.size) return; document.querySelectorAll("#v-belge input, #v-belge textarea, #ks-perde input, #ks-perde textarea").forEach(el => { if(!el.classList.contains("deg-alan") && degAlan.has(alanImza(el))) el.classList.add("deg-alan"); }); }
-function degAlanSuz(){ let az = false; for(const [k, Y] of degAlan){ if(![...Y].some(y => y in kirli)){ degAlan.delete(k); az = true; } } if(az){ document.querySelectorAll(".deg-alan").forEach(el => el.classList.remove("deg-alan")); degAlanUygula(); } }
-function degAlanTemizle(){ degAlan.clear(); document.querySelectorAll(".deg-alan").forEach(el => el.classList.remove("deg-alan")); }
-let degAlanZ = 0; new MutationObserver(() => { if(!degAlan.size || degAlanZ) return; degAlanZ = requestAnimationFrame(() => { degAlanZ = 0; degAlanUygula(); }); }).observe(document.documentElement, { childList: true, subtree: true });
-/* ===== kaydedilmemiş değişiklikle belge kapatılırken sorulur ===== */
-let kapatGec = false;
-document.addEventListener("click", e => { if(kapatGec || saltMi()) return; const h = e.target.closest && (e.target.closest("#d-geri") || (e.target.id === "perde" ? e.target : null)); if(!h) return;
-  const d = acikBelge(); if(!d) return; const yl = belgeYollari(d), Y = Object.keys(kirli).filter(y => yl.includes(y)); if(!Y.length) return;
-  e.preventDefault(); e.stopImmediatePropagation();
-  altPencere("ks-perde", "KAYDEDİLMEDİ", "Değişiklikler kaydedilsin mi?", () => `<p class="deg-not" style="margin:0 2px 12px">“${esc(d.ad)}” belgesinde kaydedilmemiş değişiklik var.</p><div class="kc-is">
-      <button type="button" class="btn ana" data-kc="k">Kaydet ve kapat</button><button type="button" class="btn" data-kc="b">Kaydetmeden kapat<small>değişiklikler bekler, sonra kaydedebilirsiniz</small></button><button type="button" class="btn kc-yok" data-kc="y">Yoksay ve kapat<small>bu belgedeki değişiklikler geri alınır</small></button></div>`,
-    async (b, kapat) => { const c = b.dataset.kc; if(!c) return; kapat(); if(c === "k") await hepsiniKaydet(); if(c === "y") await vazgec(true, Y); kapatGec = true; try { if(SECIM.belge) belgeKapat(); } finally { kapatGec = false; } }, { z: "FFF3DD", r: "7A5214" }); }, true);
+/* bilgisayarda sekme/pencere kapatılırken kaydedilmemiş değişiklik varsa tarayıcı uyarır (telefonda değişiklikler taslak olarak zaten korunur) */
+addEventListener("beforeunload", e => { if(Object.keys(kirli).length && !saltMi() && !onizlemeMi()){ taslakYaz(true); e.preventDefault(); e.returnValue = ""; } });
+/* klavye (bilgisayar): Ctrl+S kaydet; yazı kutusu dışındayken Ctrl+Z son adımı geri al, Ctrl+Y / Ctrl+Shift+Z yinele */
+document.addEventListener("keydown", e => { if(!(e.ctrlKey || e.metaKey) || e.altKey) return; const k = e.key.toLowerCase();
+  if(k === "s"){ e.preventDefault(); if(Object.keys(kirli).length && !saltMi()) hepsiniKaydet(); return; }
+  const yazi = e.target.matches && e.target.matches("input,textarea,[contenteditable=true]"); if(yazi) return;
+  if(k === "z" && !e.shiftKey){ if(adimG.length || Object.keys(kirli).length){ e.preventDefault(); adimUygula(false); } return; }
+  if(k === "y" || (k === "z" && e.shiftKey)){ if(adimI.length){ e.preventDefault(); adimUygula(true); } } });
 /* ===== silinenler kutusu (bt/cop): kaydedilirken listeden çıkan kayıtlar ve silinen belgeler 30 gün saklanır, geri getirilebilir ===== */
 const COP_GUN = 30;
 const idDiziMi = a => Array.isArray(a) && a.length > 0 && a.every(x => x && typeof x === "object" && x.id != null);
@@ -3912,8 +3933,14 @@ function copTopla(once, yeni){ const L = [], tum = JSON.stringify(yeni);
       L.push({ t: Date.now(), yol: y, ad: degEt(x.v), belge, konum: x.konum, i: x.i, v: x.v }); }); }
   if(L.length) copEkle(L).catch(() => {}); }
 async function copOku(){ try { const d = await db.doc("bt/cop").get(); const c = d.exists ? d.data() : null; return c && Array.isArray(c.L) ? c : { L: [] }; } catch(e){ return { L: [] }; } }
-async function copEkle(L){ const c = await copOku(), sin = Date.now() - COP_GUN * 864e5; c.L = c.L.filter(x => x.t > sin).concat(L); while(c.L.length > 1 && (c.L.length > 300 || JSON.stringify(c.L).length > 1500000)) c.L.shift(); await db.doc("bt/cop").set(c); }
-async function copGeri(x){ if(!x.konum){ if(S.belgeler.some(b => b.id === x.v.id)) return "Bu belge zaten yerinde"; S.belgeler.push(kopya(x.v)); kaydet(x.yol, yolFn(x.yol)); return ""; }
+/* dosya kalıcı silinir (kutudan çıkınca): dosyanın içeriği ve parçaları */
+async function dosyaKaliciSil(a){ try { if(a.asset && assets) await assets.delete(a.asset); for(let i = 0; i < (a.parca || 0); i++) await db.doc(`arsivparca/${a.id}_${i}`).delete(); } catch(e){} }
+const copCik = L => L.forEach(x => { if(x.konum === "dosya" && x.v && !S.arsiv.some(a => a.id === x.v.id)) dosyaKaliciSil(x.v); });
+async function copDosya(A){ await copEkle(A.map(a => ({ t: Date.now(), yol: "arsiv/" + a.id, ad: a.ad || "Dosya", belge: "Dosya" + (bolumBul(a.klasor, a.bolum) ? " · " + bolumBul(a.klasor, a.bolum).ad : ""), konum: "dosya", i: 0, v: kopya(a) }))); }
+async function copEkle(L){ const c = await copOku(), sin = Date.now() - COP_GUN * 864e5; copCik(c.L.filter(x => x.t <= sin)); c.L = c.L.filter(x => x.t > sin).concat(L); while(c.L.length > 1 && (c.L.length > 300 || JSON.stringify(c.L).length > 1500000)) copCik([c.L.shift()]); await db.doc("bt/cop").set(c); }
+async function copBosalt(){ const c = await copOku(); copCik(c.L); await db.doc("bt/cop").set({ L: [] }); }
+async function copGeri(x){ if(x.konum === "dosya"){ if(S.arsiv.some(a => a.id === x.v.id)) return "Bu dosya zaten yerinde"; await db.doc(x.yol).set(kopya(x.v)); if(!S.arsiv.some(a => a.id === x.v.id)) S.arsiv.push(kopya(x.v)); try { if(acikBelge() && acikBelge().tur === "sertifika") sertifikaCiz(); } catch(e){} return ""; }
+  if(!x.konum){ if(S.belgeler.some(b => b.id === x.v.id)) return "Bu belge zaten yerinde"; S.belgeler.push(kopya(x.v)); kaydet(x.yol, yolFn(x.yol)); return ""; }
   let o = yolDeger(x.yol); if(!o) return "Bulunduğu belge artık yok; geri getirilemedi";
   for(const s of x.konum){ if(o == null) break; o = typeof s === "object" ? (Array.isArray(o) ? o.find(z => z && String(z.id) === s.id) : null) : o[s]; }
   if(!Array.isArray(o)) return "Eski yeri artık yok; geri getirilemedi"; if(o.some(z => z && String(z.id) === String(x.v.id))) return "Bu kayıt zaten yerinde";
@@ -5304,7 +5331,7 @@ function srIslem(d, a){ altPencere("sr-is", "SERTİFİKA", srAdi(a), () => `<div
 /* silme: kayıt hemen kalkar, dosyanın kendisi 15 sn sonra silinir (geri alınırsa kayıt geri yazılır) */
 function srSil(A){ const kopyalar = A.map(a => ({ ...a })); let iptal = false;
   A.forEach(a => { db.doc("arsiv/" + a.id).delete().catch(() => {}); }); S.arsiv = S.arsiv.filter(x => !A.includes(x)); sertifikaCiz();
-  setTimeout(() => { if(iptal) return; kopyalar.forEach(a => { if(a.asset && assets) assets.delete(a.asset).catch?.(() => {}); }); }, 15000);
+  setTimeout(() => { if(iptal) return; copDosya(kopyalar).catch(() => {}); }, 15000);   /* dosyanın kendisi silinenler kutusunda 30 gün durur */
   return () => { iptal = true; kopyalar.forEach(a => db.doc("arsiv/" + a.id).set(a)); S.arsiv.push(...kopyalar.filter(a => !S.arsiv.some(x => x.id === a.id))); sertifikaCiz(); }; }
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#sr-govde .sr-ara")) return; srAra = el.value; const d = acikBelge(); if(d) srListeCiz(d); });
 document.addEventListener("change", e => { if(e.target.id !== "sr-dosya") return; const f = [...e.target.files]; e.target.value = ""; srYukle(f); });
@@ -6148,15 +6175,19 @@ document.addEventListener("click", async e => {
   const gt = e.target.closest("[data-gt]"); if(gt){ gt.setAttribute("aria-pressed", gt.getAttribute("aria-pressed") !== "true"); return; }
   const cg = e.target.closest("[data-cpg]"); if(cg){ const x = gcCop[+cg.dataset.cpg]; if(!x) return; const h = await copGeri(x); if(h){ bildir(h); return; }
     const c = await copOku(); c.L = c.L.filter(z => !(z.t === x.t && z.yol === x.yol && JSON.stringify(z.v) === JSON.stringify(x.v))); await db.doc("bt/cop").set(c);
-    agacCiz(); anaCiz(); const d = acikBelge(); if(d) belgeAc(d.id); gecmisAc(); bildir(`“${x.ad}” geri getirildi · saklamak için Kaydet’e basın`); return; }
-  if(e.target.closest("[data-cpb]")){ await db.doc("bt/cop").set({ L: [] }); gecmisAc(); bildir("Silinenler kutusu boşaltıldı"); return; }
+    agacCiz(); anaCiz(); const d = acikBelge(); if(d) belgeAc(d.id); gecmisAc(); bildir(x.konum === "dosya" ? `“${x.ad}” geri getirildi` : `“${x.ad}” geri getirildi · saklamak için Kaydet’e basın`); return; }
+  if(e.target.closest("[data-cpb]")){ await copBosalt(); gecmisAc(); bildir("Silinenler kutusu boşaltıldı"); return; }
   if(e.target.closest("#gt-btn")){ const b = $("#gt-btn"), G = window.TSK_GECMIS; if(!G || !G.temizle) return; if(Object.keys(kirli).length){ bildir("Önce kaydedilmemiş değişiklikleri kaydedin"); return; }
     const pd = $('[data-gt="pay"]').getAttribute("aria-pressed") === "true", cp = $('[data-gt="cop"]').getAttribute("aria-pressed") === "true";
     b.disabled = true; b.textContent = "Temizleniyor…";
-    try { if(cp) await db.doc("bt/cop").set({ L: [] }); const r = await G.temizle(pd); gecmisAc(); uyar(`Geçmiş temizlendi. Bulutta yalnız şu anki hâl kaldı${r && r.pay ? "; paylaşım deposunun geçmişi de silindi" : ""}. GitHub silinen eski sürümleri bir süre kendi tarafında tutabilir, ama artık hiçbir listede ve uygulamada görünmez.`); }
+    try { if(cp) await copBosalt(); const r = await G.temizle(pd); gecmisAc(); uyar(`Geçmiş temizlendi. Bulutta yalnız şu anki hâl kaldı${r && r.pay ? "; paylaşım deposunun geçmişi de silindi" : ""}. GitHub silinen eski sürümleri bir süre kendi tarafında tutabilir, ama artık hiçbir listede ve uygulamada görünmez.`); }
     catch(err){ b.disabled = false; b.textContent = "Temizle"; uyar("Geçmiş temizlenemedi: " + (err.message || err), true); } return; }
   const o = e.target.closest(".gc-oge"); if(o && !o.dataset.yuklu){ const d = acikBelge(); if(!d) return; o.dataset.yuklu = "1"; const oz = o.querySelector(".gc-ozet"); oz.textContent = "okunuyor…";
-    try { const veri = await window.TSK_GECMIS.oku(o.dataset.sha); oz.innerHTML = `${esc(gecmisOzet(d, veri))}<span class="gc-dugme">Bu hâline geri yükle</span>`; o._veri = veri; o.classList.add("acik"); }
+    try { const veri = await window.TSK_GECMIS.oku(o.dataset.sha); let fark = "";
+      const on = o.nextElementSibling && o.nextElementSibling.classList.contains("gc-oge") ? o.nextElementSibling : null;
+      if(on){ try { const eski = on._veri || await window.TSK_GECMIS.oku(on.dataset.sha); on._veri = eski; const F = []; belgeYollari(d).forEach(y => { if(JSON.stringify(eski[y]) !== JSON.stringify(veri[y])) degFark(eski[y] ?? null, veri[y] ?? null, "", F); });
+          fark = F.length ? `<span class="gc-fark"><b>Bu kayıtta değişenler:</b> ${esc(degOzet(F.slice(0, 6)))}${F.length > 6 ? " …" : ""}</span>` : `<span class="gc-fark">Bu belgede değişiklik yok (başka belgeler kaydedilmiş)</span>`; } catch(e){} }
+      oz.innerHTML = `${esc(gecmisOzet(d, veri))}${fark}<span class="gc-dugme">Bu hâline geri yükle</span>`; o._veri = veri; o.classList.add("acik"); }
     catch(err){ oz.textContent = "okunamadı: " + (err.message || err); o.dataset.yuklu = ""; } return; }
   const gy = e.target.closest(".gc-dugme"); if(gy){ const o2 = gy.closest(".gc-oge"); const d = acikBelge(); if(!d || !o2._veri) return;
     
@@ -10290,10 +10321,9 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
   if(p && !kmAcikG.size){ const g = KM_GRUP.findIndex(g => kmGEksik(p, g)); kmAcikG.add(g < 0 ? 0 : g); }
   const W = p && belgeTur("silah") ? kmSilahlar(p) : null;
   $("#km-govde").innerHTML = `
-    <div class="dl-ust"><span class="dl-ust-s km-s"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.kimlik.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.8"')}</svg></span><b>Personel kimliği</b><small>${P.length}</small><em class="km-ozet ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em></div>
-    ${p ? `<div class="km-nav"><button type="button" class="km-ok" data-km-gec="-1"${i > 0 ? "" : " disabled"} aria-label="Önceki kişi">‹</button>
-      <button type="button" class="km-kisi" data-km-liste="1"><span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")} · ${i + 1}/${P.length} · <span data-km-ek>${kmCipY(kmEksik(p).length)}</span></small></span><i>▾</i></button>
-      <button type="button" class="km-ok" data-km-gec="1"${i < P.length - 1 ? "" : " disabled"} aria-label="Sonraki kişi">›</button></div>
+    ${kayitBas({ ad: "Personel kimliği", i, n: P.length, gec: "data-km-gec", ozet: `<em class="kb-oz ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em>`,
+      sec: p ? { veri: 'data-km-liste="1"', av: esc(ksBas(p.ad)), baslik: esc(p.ad), alt: `${esc(p.rutbe || "")}${p.rutbe ? " · " : ""}<span data-km-ek>${kmCipY(kmEksik(p).length)}</span>` } : null })}
+    ${p ? `
     <section class="dl-kart km-kart">
       ${KM_GRUP.map((g, gi) => `<details class="km-g" data-km-g="${gi}"${kmAcikG.has(gi) ? " open" : ""}><summary><span>${g[0]}</span><span data-km-gs="${gi}">${kmCip(kmGEksik(p, g))}</span></summary>
         <div class="dl-alanlar">${g[1].map(a => { const [, t, o] = KM_ALAN.find(x => x[0] === a); return kmAlanH(p, a, t, o); }).join("")}</div></details>`).join("")}
@@ -10440,10 +10470,7 @@ function elsenetCiz(){ const d = acikBelge(); if(!d || d.tur !== "elsenet") retu
   const kisiIc = an => `<div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-es-k="${an}:ad" value="${esc(k[an].ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-es-k="${an}:rutbe" value="${esc(k[an].rutbe)}"></label><label class="dl-al tam"><span>Görevi</span><input data-es-k="${an}:gorev" value="${esc(k[an].gorev)}" placeholder="ör. Ks.K."></label></div><button type="button" class="es-sec" data-es="sec-${an}">Personel listesinden seç</button>`;
   const bilgi = [esTr(k.tarih), B.kod && k.kod && "Kod " + k.kod, B.kod && k.no && "No " + k.no, k.kisim || k.birlik].filter(Boolean).join(" · ");
   $("#es-govde").innerHTML = `
-    <div class="dl-ust"><span class="dl-ust-s zm-ik"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.elsenet.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"')}</svg></span><b>El senetleri</b><small>${L.length}</small><button type="button" class="dl-yeni" data-es="yeni"><span>＋</span>Yeni</button></div>
-    <div class="km-nav"><button type="button" class="km-ok" data-es-gec="-1"${i > 0 ? "" : " disabled"} aria-label="Önceki">‹</button>
-      <button type="button" class="km-kisi es-kisi" data-es="liste"><span class="ks-ad"><span class="es-bcip">${esc(B.ad)}</span><b>${esc(ad(k))}</b><small>${esc([esTr(k.tarih), Sx.length + " kalem", (i + 1) + "/" + L.length].filter(Boolean).join(" · "))}</small></span><i>▾</i></button>
-      <button type="button" class="km-ok" data-es-gec="1"${i < L.length - 1 ? "" : " disabled"} aria-label="Sonraki">›</button></div>
+    ${kayitBas({ ad: "El senetleri", i, n: L.length, gec: "data-es-gec", yeni: 'data-es="yeni"', sec: { veri: 'data-es="liste"', cip: esc(B.ad), baslik: esc(ad(k)), alt: esc([esTr(k.tarih), Sx.length + " kalem"].filter(Boolean).join(" · ")) } })}
     <section class="dl-kart es-kart">
       <button type="button" class="es-bicim" data-es="bicim"><span class="es-bt">Biçim</span><span class="es-bo"><b>${esc(B.ad)}</b> · ${esc(B.alt)}</span><em>Değiştir</em></button>
       ${k.bicim === 5 ? bol("bas", "Başlık", k.baslik || "girilmedi", `<label class="dl-al tam"><span>Başlık</span><textarea class="oto-boy" rows="1" data-es-f="baslik" placeholder="ör. 4'ÜNCÜ TİM (142209) SİLAH, MÜHİMMAT, TEÇHİZAT DURUMU">${esc(k.baslik)}</textarea></label>`, !k.baslik) : `
@@ -10551,10 +10578,7 @@ function zimmetCiz(){ const d = acikBelge(); if(!d || d.tur !== "zimmet") return
   const n = normMetin(zmAra), F = Sx.map((x, j) => [x, j]).filter(([x]) => !n || normMetin([x.stok, x.cins, x.seri, x.kafile].join(" ")).includes(n)), G = F.slice(0, zmGoster);
   const eden = [k.eden.ad, k.eden.rutbe, k.eden.gorev].filter(Boolean).join(" · "), bilgi = zmTarih(k.tarih);
   $("#zm-govde").innerHTML = `
-    <div class="dl-ust"><span class="dl-ust-s zm-ik"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.zimmet.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"')}</svg></span><b>Zimmet belgeleri</b><small>${L.length}</small><button type="button" class="dl-yeni" data-zm="yeni"><span>＋</span>Yeni</button></div>
-    <div class="km-nav"><button type="button" class="km-ok" data-zm-gec="-1"${i > 0 ? "" : " disabled"} aria-label="Önceki">‹</button>
-      <button type="button" class="km-kisi es-kisi" data-zm="liste"><span class="ks-av">${esc(ksBas(p ? p.ad : "?"))}</span><span class="ks-ad"><b>${esc(p ? p.ad : "Kişi seçilmedi")}</b><small>${esc([p && p.rutbe, Sx.length + " kalem", (i + 1) + "/" + L.length].filter(Boolean).join(" · "))}</small></span><i>▾</i></button>
-      <button type="button" class="km-ok" data-zm-gec="1"${i < L.length - 1 ? "" : " disabled"} aria-label="Sonraki">›</button></div>
+    ${kayitBas({ ad: "Zimmet belgeleri", i, n: L.length, gec: "data-zm-gec", yeni: 'data-zm="yeni"', sec: { veri: 'data-zm="liste"', av: esc(ksBas(p ? p.ad : "?")), baslik: esc(p ? p.ad : "Kişi seçilmedi"), alt: esc([p && p.rutbe, Sx.length + " kalem"].filter(Boolean).join(" · ")) } })}
     <section class="dl-kart es-kart">
       ${bol("alan", "Teslim alan", p ? [p.ad, p.rutbe, k.alan.gorev].filter(Boolean).join(" · ") : "seçilmedi", `${ksSatir(p, 'data-zm="kisi"')}<label class="dl-al tam" style="margin-top:8px"><span>Görevi <i>boş kalabilir</i></span><input data-zm-a="gorev" value="${esc(k.alan.gorev || "")}"></label>`, !p)}
       ${bol("eden", "Teslim eden", eden || "girilmedi", `<div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-zm-e="ad" value="${esc(k.eden.ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-zm-e="rutbe" value="${esc(k.eden.rutbe)}"></label><label class="dl-al tam"><span>Görevi</span><input data-zm-e="gorev" value="${esc(k.eden.gorev)}"></label></div><button type="button" class="es-sec" data-zm="eden-sec">Personel listesinden seç</button>`, !eden)}
@@ -10685,7 +10709,8 @@ function silahCiz(){ const d = acikBelge(); if(!d || d.tur !== "silah") return; 
     ${G.map((g, gi) => { const mduz = slMAcik === gi || !g.model; return `<section class="sl-grup">
       <div class="sl-gb">${mduz ? `<textarea class="oto-boy sl-model" rows="1" data-tek data-sl-model="${gi}" placeholder="Cinsi / modeli (ör. 7,62 mm G3 A4 P. Tüfeği)">${esc(g.model)}</textarea><button type="button" class="sl-mok" data-sl-mduz="-1">✓</button>` : `<b class="sl-mad">${esc(g.model)}</b><button type="button" class="sl-mok" data-sl-mduz="${gi}" aria-label="Cinsini düzenle">✎</button>`}<em>${g.L.length} adet</em></div>
       <div class="sl-l">${g.L.map(x => { const p = slSahip(x), ac = slAcik === x.id; return `<div class="sl-r${ac ? " acik" : ""}"><button type="button" class="sl-rs" data-sl-ac="${esc(x.id)}"><b class="sl-no">${esc(x.seri || "—")}</b>${p ? `<span class="sl-ki"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small></span>` : slElle(x) ? `<span class="sl-ki"><b>${esc(slElle(x))}</b><small>elle yazıldı</small></span>` : '<span class="sl-ki"><em class="sl-bos">BOŞ</em></span>'}<i>${ac ? "▴" : "▾"}</i></button>${notHtml(d, x.id)}
-        ${ac ? `<div class="sl-form"><label class="dl-al"><span>Seri no</span><input data-sl-seri="${esc(x.id)}" value="${esc(x.seri)}" inputmode="numeric"></label><div class="dl-al sl-kimal"><span>Kimde <i>· elle de yazılabilir</i></span><div class="sl-kimk${p ? "" : slElle(x) ? " elle" : " bos"}"><input data-sl-kimde="${esc(x.id)}" value="${esc(p ? p.ad : slElle(x))}" placeholder="BOŞ" autocomplete="off"><button type="button" data-sl-kim="${esc(x.id)}">Listeden ›</button></div></div>
+        ${ac ? `<div class="sl-form"><label class="dl-al"><span>Seri no</span><input data-sl-seri="${esc(x.id)}" value="${esc(x.seri)}" inputmode="numeric"></label><label class="dl-al sl-kimal"><span>Kimde <i>${p ? "· personel listesinden" : slElle(x) ? "· elle yazıldı" : "· boşsa BOŞ yazılır"}</i></span><input class="sl-kimin" data-sl-kimde="${esc(x.id)}" value="${esc(p ? p.ad : slElle(x))}" placeholder="BOŞ" autocomplete="off"></label>
+          <div class="sl-kimis"><button type="button" class="sl-sec" data-sl-kim="${esc(x.id)}"><svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/></svg>Personel listesinden seç</button>${p || slElle(x) ? `<button type="button" class="sl-sec" data-sl-bosalt="${esc(x.id)}">BOŞ yap</button>` : ""}</div>
           <div class="sl-is"><button type="button" class="btn ana kucuk" data-sl-ac="${esc(x.id)}">✓ Tamam</button>${notDug(d, x.id, "Seri " + x.seri)}<span class="bosluk"></span><button type="button" class="mini sil" data-sl-sil="${esc(x.id)}">Sil</button></div></div>` : ""}</div>`; }).join("")}
         <button type="button" class="sl-ekle" data-sl-ekle="${gi}">＋ Seri no ekle</button></div></section>`; }).join("")}
     <button type="button" class="izb-aktar tam" data-sl-yeni="1">＋ Yeni silah cinsi</button>
@@ -10698,12 +10723,13 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.slMduz != null){ slMAcik = +b.dataset.slMduz < 0 ? null : +b.dataset.slMduz; silahCiz(); const t = $("#sl-govde .sl-model"); if(t) t.focus(); return; }
   if(b.dataset.slYeni){ L.push({ id: "w" + yeniId().slice(0, 7), model: "", seri: "" }); yaz(); const t = document.querySelectorAll("#sl-govde .sl-model"); if(t.length) t[t.length - 1].focus(); return; }
   if(b.dataset.slEkle != null){ const g = G[+b.dataset.slEkle]; if(!g) return; const son = g.L[g.L.length - 1], i = L.indexOf(son); const yx = { id: "w" + yeniId().slice(0, 7), model: g.model, seri: "" }; L.splice(i + 1, 0, yx); slAcik = yx.id; yaz(); const t = document.querySelector(`#sl-govde [data-sl-seri="${yx.id}"]`); if(t) t.focus(); return; }
+  if(b.dataset.slBosalt){ const x = L.find(y => y.id === b.dataset.slBosalt); if(!x) return; slKisiYaz(x, ""); return yaz(); }
   if(b.dataset.slSil){ const x = L.find(y => y.id === b.dataset.slSil); if(!x) return; v.liste = L.filter(y => y !== x); yaz(); return; }
   if(b.dataset.slKim){ const x = L.find(y => y.id === b.dataset.slKim); if(!x) return; if(!slN(x.seri)) return bildir("Önce seri numarasını yazın"); const P = (S.personel.rows || []).filter(y => y.ad).map(y => { const n = kmSilahlar(y).filter(z => z !== x).length; return n ? { ...y, rutbe: `${y.rutbe || ""} · ${n} silahı var` } : y; }), s0 = slSahip(x);
     return kisiSecAc(`${x.seri} kimde`, [{ id: "__bos", ad: "BOŞ (kimseye verilmedi)", rutbe: "" }, ...P], s0 ? s0.id : "__bos", id => { slKisiYaz(x, id === "__bos" ? "" : id); yaz(); }); } });
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#sl-govde")) return; const d = acikBelge(); if(!d || d.tur !== "silah") return; const v = slVeri(d), L = v.liste;
   if(el.dataset.slSeri){ const x = L.find(y => y.id === el.dataset.slSeri); if(!x) return; x.seri = el.value.trim(); kaydetBelge(d); return; }
-  if(el.dataset.slKimde){ const x = L.find(y => y.id === el.dataset.slKimde); if(!x) return; delete x.pid; const t = el.value.replace(/\s+/g, " ").trim(); if(t) x.kimde = el.value; else delete x.kimde; const k = el.parentNode; k.classList.toggle("bos", !t); k.classList.toggle("elle", !!t); kaydetBelge(d); return; }
+  if(el.dataset.slKimde){ const x = L.find(y => y.id === el.dataset.slKimde); if(!x) return; delete x.pid; const t = el.value.replace(/\s+/g, " ").trim(); if(t) x.kimde = el.value; else delete x.kimde; kaydetBelge(d); return; }
   if(el.dataset.slModel != null){ const g = slGruplar(L)[+el.dataset.slModel]; if(!g) return; const m = el.value.replace(/\s*\n\s*/g, " "); g.L.forEach(x => { x.model = m; }); kaydetBelge(d); } });
 document.addEventListener("change", e => { const el = e.target; if(el.closest && el.closest("#sl-govde") && (el.dataset.slSeri != null || el.dataset.slKimde != null)) silahCiz(); });
 const TEMA_SILAH = { ana: "7A7F55", bas: "E6E8D6", basYazi: "3D4223", bant: "F0F1E6", bantYazi: "4A4F2C", serit: "F8F9F2", cizgi: "C8CBAE", soluk: "777B5E", vurgu: "E6F0E4", vurguYazi: "2F5A3A", topSut: "F2F3EA", ustBand: "F4F5EC" };
@@ -12074,7 +12100,7 @@ $("#b-dosyalar").addEventListener("click", async e => {
     inp.addEventListener("blur", () => bitir(true));
   } else if(b.dataset.is === "sil"){
     
-    try { if(a.asset && assets) await assets.delete(a.asset); for(let i = 0; i < (a.parca || 0); i++) await db.doc(`arsivparca/${a.id}_${i}`).delete(); await db.doc("arsiv/" + a.id).delete(); uyar(`${a.ad} silindi.`); }
+    try { await copDosya([a]); await db.doc("arsiv/" + a.id).delete(); uyar(`${a.ad} silindi. 30 gün boyunca belgedeki 🕘 Geçmiş › Silinenler'den geri getirilebilir.`); }
     catch(err){ uyar("Silinemedi: " + (err.message || err.code || err), true); }
   }
 });
