@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "424";
+  const SURUM = "425";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -110,20 +110,22 @@
   const jEs = (a, b) => JSON.stringify(a) === JSON.stringify(b), duz = x => x && typeof x === "object" && !Array.isArray(x);
   const idDizi = a => Array.isArray(a) && a.length > 0 && a.every(x => duz(x) && x.id != null);
   /* üç yollu birleştirme: taban (b), bu cihaz (l), bulut (u). Yalnız bir tarafta değişen alan o taraftan; ikisinde de değişirse bu cihaz */
-  function derin(b, l, u){ if(jEs(l, b)) return kopya(u); if(l === undefined && u !== undefined && !jEs(u, b)) return kopya(u);   // silme ile yeni değer çakışırsa değer kalır
+  /* iki cihazda aynı alan farklı değiştiyse kayda geçer (cak): kullanıcıya sorulur */
+  let cak = [], cakK = "";
+  function derin(b, l, u, p = []){ if(jEs(l, b)) return kopya(u); if(l === undefined && u !== undefined && !jEs(u, b)) return kopya(u);   // silme ile yeni değer çakışırsa değer kalır
     if(jEs(u, b) || jEs(l, u)) return kopya(l);
-    if(duz(l) && duz(u)){ const r = {}, B = duz(b) ? b : {}; for(const k of new Set([...Object.keys(u), ...Object.keys(l)])){ const v = derin(B[k], l[k], u[k]); if(v !== undefined) r[k] = v; } return r; }
+    if(duz(l) && duz(u)){ const r = {}, B = duz(b) ? b : {}; for(const k of new Set([...Object.keys(u), ...Object.keys(l)])){ const v = derin(B[k], l[k], u[k], p.concat(k)); if(v !== undefined) r[k] = v; } return r; }
     if((idDizi(l) || !l || !l.length) && (idDizi(u) || !u || !u.length) && Array.isArray(l) && Array.isArray(u)){ const B = new Map((Array.isArray(b) ? b : []).filter(duz).map(x => [String(x.id), x])), Lm = new Map(l.map(x => [String(x.id), x])), Um = new Map(u.map(x => [String(x.id), x]));
       const sira = (A, Bd) => A.map(x => String(x.id)).filter(i => Bd.has(i)).join("|"), bSira = [...B.keys()].filter(i => Lm.has(i) && Um.has(i)).join("|");
       const ana = sira(l, B) !== bSira && sira(u, B) === bSira ? l : u, out = [];
-      const ekle = id => { if(out.some(x => String(x.id) === id)) return; const x = derin(B.get(id), Lm.get(id), Um.get(id)); if(x !== undefined) out.push(x); };
-      ana.forEach(x => ekle(String(x.id))); (ana === l ? u : l).forEach(x => { const id = String(x.id); if(!B.has(id)) ekle(id); else if(!out.some(y => String(y.id) === id)){ const v = derin(B.get(id), Lm.get(id), Um.get(id)); if(v !== undefined) out.push(v); } });
+      const ekle = id => { if(out.some(x => String(x.id) === id)) return; const x = derin(B.get(id), Lm.get(id), Um.get(id), p.concat({ id })); if(x !== undefined) out.push(x); };
+      ana.forEach(x => ekle(String(x.id))); (ana === l ? u : l).forEach(x => { const id = String(x.id); if(!B.has(id)) ekle(id); else if(!out.some(y => String(y.id) === id)){ const v = derin(B.get(id), Lm.get(id), Um.get(id), p.concat({ id })); if(v !== undefined) out.push(v); } });
       return out; }
-    return kopya(l); }
-  function birlestir(yerel, uzak){ const T = meta.taban, R = { ...uzak };
+    if(cakK) cak.push({ k: cakK, p, u: kopya(u), l: kopya(l) }); return kopya(l); }
+  function birlestir(yerel, uzak){ const T = meta.taban, R = { ...uzak }; cak = [];
     for(const k of new Set([...Object.keys(yerel), ...Object.keys(T || {})])){ const l = k in yerel ? kOzet(yerel[k]) : null;
       if(T){ const t = k in T ? T[k] : null; if(l === t) continue; if(l === null) delete R[k];
-        else if(k in uzak && kOzet(uzak[k]) !== t && tabanV && k in tabanV && kOzet(tabanV[k]) === t){ try { R[k] = derin(tabanV[k], yerel[k], uzak[k]); } catch(e){ R[k] = yerel[k]; } }   // ikisinde de değişmiş: alan alan
+        else if(k in uzak && kOzet(uzak[k]) !== t && tabanV && k in tabanV && kOzet(tabanV[k]) === t){ try { cakK = k; R[k] = derin(tabanV[k], yerel[k], uzak[k]); } catch(e){ R[k] = yerel[k]; } finally { cakK = ""; } }   // ikisinde de değişmiş: alan alan
         else R[k] = yerel[k]; }   // yalnız bu cihazda değişenler
       else if(l !== null) R[k] = yerel[k]; }   // taban yoksa: ortak anahtarda bu cihaz, yalnız bulutta olan anahtar korunur
     return R; }
@@ -168,7 +170,7 @@
         bildirim("Bu cihazdaki kayıtlar eksikti; buluttan yeniden yüklendi"); return; }
       const uzakDegisti = u.sha && u.sha !== meta.sha;
       if(meta.yerelDegisti){
-        if(uzakDegisti && u.veri && imza(u.veri) !== meta.imza){ const M = birlestir(mem, u.veri); meta.sha = u.sha; await uzakYaz(M, `TSK ARŞİV kayıt (${cihaz()} · s${SURUM})`); yerelDegistir(M); esit(M); meta.yerelDegisti = false; meta.sonGonder = Date.now(); bildirim("Diğer cihazdaki değişikliklerle birleştirildi"); }
+        if(uzakDegisti && u.veri && imza(u.veri) !== meta.imza){ const M = birlestir(mem, u.veri), C = cak.slice(); meta.sha = u.sha; await uzakYaz(M, `TSK ARŞİV kayıt (${cihaz()} · s${SURUM})`); yerelDegistir(M); esit(M); meta.yerelDegisti = false; meta.sonGonder = Date.now(); bildirim("Diğer cihazdaki değişikliklerle birleştirildi"); if(C.length) setTimeout(() => cakismaSor(C), 50); }
         else { if(u.sha) meta.sha = u.sha; await uzakYaz(mem, `TSK ARŞİV kayıt (${cihaz()} · s${SURUM})`); esit(mem); meta.yerelDegisti = false; meta.sonGonder = Date.now(); }
       } else if(uzakDegisti && u.veri){ meta.sha = u.sha; const i = imza(u.veri); if(i !== imza(mem)){ esit(u.veri); yerelDegistir(u.veri); bildirim("Diğer cihazdaki değişiklikler alındı"); } meta.sonAl = Date.now(); }
       else meta.sonAl = Date.now();
@@ -177,6 +179,16 @@
     finally { calisiyor = false; metaYaz(); durumCiz(); }
   }
   const cihaz = () => /Android|iPhone|iPad/i.test(navigator.userAgent) ? "telefon" : "bilgisayar";
+  /* aynı alan iki cihazda farklı değiştirildiyse: şimdilik bu cihazdaki kalır, kullanıcıya hangisinin kalacağı sorulur */
+  const cakAd = c => { const v = mem[c.k], ad = v && (v.ad || v.baslik) || ({ "bt/personel": "Personel", "bt/izin": "İzin çizelgesi", "bt/yoklama": "Yoklama", "bt/gdhg": "GDHG", "bt/izinb": "İzin belgesi", "bt/hedef": "Hedefler", "bt/yapi": "Klasör düzeni" })[c.k] || c.k;
+    let o = v, ad2 = ""; for(const s of c.p){ if(o == null) break; if(typeof s === "object"){ o = Array.isArray(o) ? o.find(z => z && String(z.id) === s.id) : null; if(o && (o.ad || o.cins)) ad2 = o.ad || o.cins; } else o = o[s]; }
+    const son = [...c.p].reverse().find(s => typeof s === "string"); return [ad, ad2, son].filter(Boolean).join(" · "); };
+  function cakKoy(c){ if(!c.p.length){ mem[c.k] = kopya(c.u); return; } let o = mem[c.k]; for(let i = 0; i < c.p.length - 1; i++){ const s = c.p[i]; o = typeof s === "object" ? (Array.isArray(o) ? o.find(z => z && String(z.id) === s.id) : null) : o && o[s]; if(o == null) return; }
+    const s = c.p[c.p.length - 1]; if(typeof s === "object"){ if(!Array.isArray(o)) return; const i = o.findIndex(z => z && String(z.id) === s.id); if(i >= 0) o[i] = kopya(c.u); } else if(c.u === undefined) delete o[s]; else o[s] = kopya(c.u); }
+  async function cakismaSor(C){ const L = [...new Set(C.map(cakAd))], m = L.slice(0, 4).join("; ") + (L.length > 4 ? ` ve ${L.length - 4} yer daha` : "");
+    const r = await sor("Aynı yer iki cihazda değiştirilmiş", `Şu yerler hem bu cihazda hem diğer cihazda farklı değiştirilmiş: ${m}. Şimdilik bu cihazdaki kaldı. Hangisi kalsın?`, "Bendekiler kalsın", "Diğer cihazınkiler kalsın");
+    if(r !== 2) return; const K = new Set(); C.forEach(c => { try { cakKoy(c); K.add(c.k); } catch(e){} }); for(const k of K){ await yerelYaz(k, mem[k]); bildir(k); } degisti(); bildirim("Diğer cihazdaki değerler alındı"); }
+  window.__tskDerin = (b, l, u) => { cak = []; cakK = "test"; try { return [derin(b, l, u), cak.slice()]; } finally { cakK = ""; } };
   /* sahip: paylaşım deposuna gizlenen bölümler çıkarılmış kopya gönderilir. Gizli belge/dosya yalnız adsız bir taslak olarak gider (içeriği hiç gitmez),
      onu kullanan belgelerin hepsi gizliyse ortak veri (personel, izin…) hiç gönderilmez. Karşı tarafın düzenlemeleri yalnız düzenleme yetkisi açıkken alınır. */
   const PAY_LS = "tsk-pay";
@@ -203,7 +215,7 @@
   function payBelgeGizli(G, d){ return !!(d && (G["d:" + d.id] || ((d.yerler || []).length && d.yerler.every(y => payYerGizli(G, y.k, y.b))))); }
   function payFiltre(){ const A = payAyar(), G = A.gizli || {}, R = {}, B = Object.keys(mem).filter(p => p.startsWith("belgeler/")).map(p => mem[p]).filter(Boolean);
     const sertGizli = B.some(d => d.tur === "sertifika") && B.filter(d => d.tur === "sertifika").every(d => payBelgeGizli(G, d));
-    for(const [p, v] of Object.entries(mem)){ if(p === "bt/paylasim" || p === "bt/paylasimGor") continue;
+    for(const [p, v] of Object.entries(mem)){ if(p === "bt/paylasim" || p === "bt/paylasimGor" || p === "bt/cop") continue;
       if(p.startsWith("belgeler/") && v && payBelgeGizli(G, v)){ R[p] = { id: v.id, ad: "Gizli belge", tur: v.tur, sira: v.sira, yerler: v.yerler, gizli: 1, ...(v.bt ? { bt: v.bt } : {}) }; continue; }
       if(p.startsWith("arsiv/") && v && (payYerGizli(G, v.klasor, v.bolum) || (v.sert && sertGizli))){ R[p] = { id: v.id, ad: "Gizli dosya", klasor: v.klasor, bolum: v.bolum, tur: "", boyut: 0, tarih: v.tarih, gizli: 1 }; continue; }
       R[p] = p.startsWith("belgeler/") && v && v.notlar ? notGorunur(v) : v; }
@@ -438,6 +450,16 @@
     var: () => !!(meta.bagli && token),
     liste: async (n = 60) => { const r = await gh(`${API}/repos/${meta.depo}/commits?path=${encodeURIComponent(VERI)}&per_page=${n}`); if(!r.ok) throw new Error("Geçmiş okunamadı (" + r.status + ")");
       return (await r.json()).map(c => ({ sha: c.sha, tarih: (c.commit.committer || c.commit.author || {}).date, mesaj: (c.commit.message || "").split("\n")[0] })); },
+    /* geçmişi temizle: dalın şu anki ağacıyla geçmişsiz tek bir kayıt oluşturulur ve dal ona çevrilir (eski sürümler artık listelenmez) */
+    temizle: async payDa => { const J = { "Content-Type": "application/json" };
+      const ez = async (depo, f) => { const r = await f(`${API}/repos/${depo}`); if(!r.ok) throw new Error("Depo okunamadı (" + r.status + ")"); const dal = (await r.json()).default_branch, rd = `${API}/repos/${depo}/git`;
+        const rf = await f(`${rd}/ref/heads/${encodeURIComponent(dal)}`); if(!rf.ok) throw new Error("Dal okunamadı (" + rf.status + ")"); const cs = (await rf.json()).object.sha;
+        const c = await f(`${rd}/commits/${cs}`); if(!c.ok) throw new Error("Son kayıt okunamadı (" + c.status + ")"); const tree = (await c.json()).tree.sha;
+        const n = await f(`${rd}/commits`, { method: "POST", headers: J, body: JSON.stringify({ message: `TSK ARŞİV · geçmiş temizlendi (${cihaz()} · s${SURUM})`, tree, parents: [] }) }); if(!n.ok) throw new Error("Yeni kayıt oluşturulamadı (" + n.status + ")");
+        const pt = await f(`${rd}/refs/heads/${encodeURIComponent(dal)}`, { method: "PATCH", headers: J, body: JSON.stringify({ sha: (await n.json()).sha, force: true }) });
+        if(!pt.ok) throw new Error(pt.status === 422 ? "Dal korumalı olduğu için geçmiş silinemedi" : "Geçmiş silinemedi (" + pt.status + ")"); };
+      if(meta.yerelDegisti){ await esitle("temizle"); if(meta.yerelDegisti) throw new Error("Bekleyen değişiklikler önce buluta gönderilemedi; internet bağlantısını kontrol edin"); }
+      await ez(meta.depo, gh); let pd = false; if(payDa && payTazele() && pay.t){ try { await ez(pay.depo, ghP); pd = true; } catch(e){ bildirim("Paylaşım deposunun geçmişi silinemedi: " + e.message); } } return { pay: pd }; },
     oku: async sha => { const r = await gh(yol(VERI) + "?ref=" + sha, { headers: { Accept: "application/vnd.github.raw+json" } }); if(!r.ok) throw new Error("Sürüm okunamadı (" + r.status + ")"); return ac_paket(await r.text()); }
   };
 
@@ -671,7 +693,13 @@
       .bp-seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2)}
       .bp-seg button{height:34px;border:0;border-radius:8px;background:transparent;font:600 12.5px var(--f-ui);color:var(--muted);cursor:pointer} .bp-seg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.1)}
       .bp-mis{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:12px;background:var(--panel);overflow:hidden}
-      .bp-m{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px;padding:10px;border-bottom:1px solid var(--line2)} .bp-m:last-child{border-bottom:0}
+      .bp-m{display:flex;flex-direction:column;gap:10px;padding:10px;border-bottom:1px solid var(--line2)} .bp-m:last-child{border-bottom:0}
+      .bp-mbas{display:flex;align-items:center;gap:6px} .bp-ac{flex:1;min-width:0;display:flex;align-items:center;gap:10px;padding:0;border:0;background:none;text-align:left;cursor:pointer;color:var(--fg)}
+      .bp-acad{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .bp-acad b{font:650 14px var(--f-ui);overflow-wrap:anywhere} .bp-acad small{display:none;font:500 11.5px var(--f-ui);color:var(--muted);overflow-wrap:anywhere}
+      .bp-m.kapali .bp-acad small{display:block} .bp-m.kapali .bp-ic{display:none} .bp-m.kapali{gap:0}
+      .bp-mok{flex:none;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:#F1F4F8} .bp-mok svg{width:15px;height:15px;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round;transition:transform .18s} .bp-m.kapali .bp-mok svg{transform:rotate(-90deg)}
+      .bp-adk{flex:none;width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line2);border-radius:8px;background:var(--panel);cursor:pointer} .bp-adk svg{width:13px;height:13px;fill:none;stroke:var(--muted);stroke-width:1.8;stroke-linejoin:round}
+      .bp-ic{display:flex;flex-wrap:wrap;align-items:flex-start;gap:10px}
       .bp-mi{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#F5EEDB;color:#8A6420;font:700 14px var(--f-ui)}
       .bp-md{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .bp-md b{font:650 13.5px var(--f-ui);overflow-wrap:anywhere}
       .bp-ad{align-self:flex-start;display:inline-flex;align-items:center;gap:5px;max-width:100%;padding:0;border:0;background:none;font:650 13.5px var(--f-ui);color:var(--fg);text-align:left;overflow-wrap:anywhere;cursor:pointer} .bp-ad svg{flex:none;width:12px;height:12px;fill:none;stroke:var(--muted);stroke-width:1.8;stroke-linejoin:round}
@@ -839,11 +867,17 @@
     const gorHtml = m => { const g = payGorulme[m.id], k = g && g.kayit && g.kayit[0]; if(k) return oturumHtml(m) + `<div class="ck-et">Son açılış</div>` + cihazKart(k, { kucuk: 1 });
       return oturumHtml(m) + `<small>${g && g.t ? "son açılış " + escH(zmn(g.t)) + (g.c ? " · " + escH(g.c) : "") : "henüz açılmadı"}</small>`; };
     const gecmisHtml = m => { const g = payGorulme[m.id], K = ((g && g.kayit) || []).slice(1); if(!K.length) return ""; return `<details class="bp-gec"><summary>Önceki açılışlar · ${K.length}</summary><div class="ck-liste">${K.map(k => cihazKart(k, { kucuk: 1 })).join("")}</div></details>`; };
-    const misafirSatir = m => `<div class="bp-m"><span class="bp-mi">${escH((m.ad || "?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><div class="bp-md"><button type="button" class="bp-ad" data-bpad="${escH(m.id)}" aria-label="Adı değiştir">${escH(m.ad || "Misafir")}<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
+    /* misafir kartı: ada dokununca daralır (tek satır özet), yine dokununca açılır; tercih bu cihazda hatırlanır */
+    const BP_KAP = "tsk-bp-kapali", bpKapali = () => { try { return new Set(JSON.parse(localStorage.getItem(BP_KAP) || "[]")); } catch(e){ return new Set(); } };
+    const bpOzet = m => { const g = payGorulme[m.id], O = Object.values((g && g.oturum) || {}).sort((a, b) => b.son - a.son), d = O[0] ? otDurum(O[0]) : "";
+      const dur = d === "acik" ? "Çevrimiçi" : d === "arka" ? "Arka planda" : O[0] ? "son görülme " + once(O[0].son) : g && g.t ? "son açılış " + zmn(g.t) : "henüz açılmadı";
+      return [m.duzenle ? "Düzenler" : "Görüntüler", m.notlu ? "Notlu" : "Notsuz", dur].join(" · "); };
+    const misafirSatir = m => `<div class="bp-m${bpKapali().has(m.id) ? " kapali" : ""}"><div class="bp-mbas"><button type="button" class="bp-ac" data-bpac="${escH(m.id)}" aria-expanded="${!bpKapali().has(m.id)}"><span class="bp-mi">${escH((m.ad || "?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><span class="bp-acad"><b>${escH(m.ad || "Misafir")}</b><small>${escH(bpOzet(m))}</small></span><i class="bp-mok"><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></i></button><button type="button" class="bp-adk" data-bpad="${escH(m.id)}" aria-label="Adı değiştir"><svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button></div>
+        <div class="bp-ic"><div class="bp-md">
         <div class="bp-seg mini"><button type="button" data-bpmy="${escH(m.id)}" data-v="0" aria-pressed="${!m.duzenle}">Görüntüler</button><button type="button" data-bpmy="${escH(m.id)}" data-v="1" aria-pressed="${!!m.duzenle}">Düzenler</button></div>
         <div class="bp-seg mini"><button type="button" data-bpmn="${escH(m.id)}" data-v="0" aria-pressed="${!m.notlu}">Notsuz</button><button type="button" data-bpmn="${escH(m.id)}" data-v="1" aria-pressed="${!!m.notlu}">Notlu</button></div></div>
         <div class="bp-mt"><button type="button" class="bp-mb" data-bpml="${escH(m.id)}" aria-label="${escH(m.ad)} için link">${IK_L}<span>Link</span></button><button type="button" class="bp-mb kal" data-bpmk="${escH(m.id)}" aria-label="${escH(m.ad)} kaldır">${IK_X}<span>Kaldır</span></button></div>
-        <div class="bp-alt"><div class="bp-gor" data-gor="${escH(m.id)}">${gorHtml(m)}</div><div data-gec="${escH(m.id)}">${gecmisHtml(m)}</div></div></div>`;
+        <div class="bp-alt"><div class="bp-gor" data-gor="${escH(m.id)}">${gorHtml(m)}</div><div data-gec="${escH(m.id)}">${gecmisHtml(m)}</div></div></div></div>`;
     function payCiz(){ const acik = !payP.hidden, y0 = payP.scrollTop; payCiz0(); if(acik){ const k = payP.querySelector(".bl-kart"); if(k) k.classList.add("yerinde"); payP.scrollTop = y0; } }   /* açıkken yeniden çizimde açılış hareketi tekrarlanmaz, kaydırma yeri korunur */
     function payCiz0(){ const A = payAyar(); payTazele(); const M = payMis();
       payP.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true"><div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div style="flex:1;min-width:0"><h3>Görüntüleme paylaşımı</h3><h2>${pay ? "Paylaşım açık" : "Paylaşımı kur"}</h2></div><button class="bl-x" type="button" data-bpx aria-label="Kapat">✕</button></div>
@@ -889,8 +923,10 @@
         if(!gizle && !Object.keys(payAyar().gizli || {}).length){ bildirim("Zaten bütün bölümler görünür"); return; }
         const G = {}; if(gizle){ const K = (mem["bt/yapi"] || {}).klasorler || []; K.forEach(k => { G[k.ust ? "g:" + k.ust : "k:" + k.id] = 1; }); }
         await payGizliYaz(G); paySec = null; payCiz(); bildirim(gizle ? "Bütün bölümler gizlendi" : "Bütün bölümler görünür"); return; }
+      if(b.dataset.bpac){ const id = b.dataset.bpac, K = bpKapali(), kart = b.closest(".bp-m"); if(K.has(id)) K.delete(id); else K.add(id); try { localStorage.setItem(BP_KAP, JSON.stringify([...K])); } catch(e){}
+        if(kart){ kart.classList.toggle("kapali", K.has(id)); b.setAttribute("aria-expanded", !K.has(id)); } return; }
       if(b.dataset.bpad){ const id = b.dataset.bpad, m = payMis().find(x => x.id === id); if(!m) return;
-        const i = document.createElement("input"); i.className = "bp-adg"; i.value = m.ad || ""; i.maxLength = 40; b.replaceWith(i); i.focus(); i.select(); let bitti = false;
+        const i = document.createElement("input"); i.className = "bp-adg"; i.value = m.ad || ""; i.maxLength = 40; (b.closest(".bp-mbas") || b).replaceWith(i); i.focus(); i.select(); let bitti = false;
         const bit = async kaydet => { if(bitti) return; bitti = true; const ad = i.value.trim().replace(/\s+/g, " "), A = payAyar();
           if(kaydet && ad && ad !== m.ad){ if((A.misafirler || []).some(x => x.id !== id && (x.ad || "").toLocaleLowerCase("tr") === ad.toLocaleLowerCase("tr"))){ h().textContent = "Bu adla bir misafir zaten var."; }
             else { await payAyarYaz({ ...A, misafirler: (A.misafirler || []).map(x => x.id === id ? { ...x, ad } : x) }); payPlanla(1500); bildirim("Ad değişti: " + ad); } }
@@ -3031,6 +3067,27 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 
 #kayit-cubugu button.k-metin{border:0;background:none;padding:2px 4px 2px 0;cursor:pointer;text-align:left} #kayit-cubugu.tamam button.k-metin{cursor:default}
 #kayit-cubugu .k-metin small{text-decoration:underline;text-decoration-color:#E3C88F;text-underline-offset:2px}
+#kayit-cubugu{left:0;right:0;transform:none;bottom:0;width:auto;max-width:none;border-radius:14px 14px 0 0;border-width:1px 0 0;justify-content:flex-end;gap:6px;
+  padding:7px max(10px,env(safe-area-inset-right,0px)) calc(7px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));box-shadow:0 -4px 18px rgba(80,60,20,.10)}
+#kayit-cubugu .k-metin{margin-right:auto;min-width:0;overflow:hidden} #kayit-cubugu .k-metin small{white-space:normal}
+#kayit-cubugu .k-adim{width:36px;min-width:36px;padding:0!important;height:34px;font:700 17px var(--f-ui)!important;background:#fff;border:1px solid #E6D6B8;color:#7A5214}
+#kayit-cubugu .k-adim:disabled{opacity:.35}
+html.kayit-bekliyor body,html.cubuk-acik body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))} html.kayit-bekliyor #v-belge,html.cubuk-acik #v-belge{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))!important}
+html.klavye.kayit-bekliyor body{padding-bottom:0}
+#sil-geri{bottom:calc(66px + env(safe-area-inset-bottom,0px))}
+:is(#v-belge,#ks-perde) :is(input,textarea).deg-alan{box-shadow:inset 3px 0 0 #E0A040;background-color:#FFFBF1}
+.kc-is{display:grid;gap:8px} .kc-is .btn{display:flex;flex-direction:column;align-items:center;gap:1px;padding:11px 14px;border-radius:12px;font:700 14px var(--f-ui)} .kc-is .btn small{font:500 11px var(--f-ui);opacity:.75}
+.kc-is .btn.kc-yok{color:#A3412F;border-color:#EBC9C1;background:#FFF7F5}
+.gc-sekme{display:flex;gap:4px;padding:3px;margin:0 0 10px;background:#EEF1F5;border-radius:11px} .gc-sekme button{flex:1;border:0;background:none;border-radius:9px;padding:7px 8px;font:700 12.5px var(--f-ui);color:#5A6B80;cursor:pointer}
+.gc-sekme button[aria-pressed="true"]{background:#fff;color:#22324A;box-shadow:0 1px 3px rgba(30,50,80,.12)} .gc-sekme b{font:800 10.5px var(--f-ui);background:#E2E8F0;border-radius:6px;padding:1px 6px;margin-left:4px}
+.cp-sat{display:flex;align-items:center;gap:10px;padding:9px 2px;border-bottom:1px solid var(--line)} .cp-sat:last-child{border-bottom:0}
+.cp-sat .cp-ad{flex:1;min-width:0;font:700 13px var(--f-ui);color:var(--fg)} .cp-sat .cp-ad small{display:block;font:500 11px var(--f-ui);color:var(--muted);margin-top:2px}
+.cp-sat .mini{flex:none}
+.gc-temiz{margin-top:14px;padding:12px;border:1px solid #EBC9C1;background:#FFF8F6;border-radius:12px} .gc-temiz b{font:800 13px var(--f-ui);color:#8A3424} .gc-temiz p{margin:4px 0 10px;font:500 12px/1.45 var(--f-ui);color:#6B5550}
+.gc-temiz .gt-sec{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px} .gc-temiz .gt-sec button{border:1px solid #E5CFC9;background:#fff;border-radius:9px;padding:6px 10px;font:600 12px var(--f-ui);color:#6B4038;cursor:pointer}
+.gc-temiz .gt-sec button[aria-pressed="true"]{background:#8A3424;border-color:#8A3424;color:#fff}
+.gc-temiz .gt-onay{display:flex;gap:8px} .gc-temiz .gt-onay input{flex:1;min-width:0;border:1px solid #E5CFC9;border-radius:9px;padding:8px 10px;font:600 13px var(--f-ui)} .gc-temiz .gt-onay .btn{background:#A3412F;border-color:#A3412F;color:#fff;border-radius:9px}
+.gc-temiz .gt-onay .btn:disabled{opacity:.4}
 .ks-av.deg-av{background:#FBEFD8;color:#7A5214;font-weight:800} .deg-not{margin:10px 2px 0;font:500 11.5px var(--f-ui);color:var(--muted)}
 
 .dl-ust .km-s{background:#E4F0F1;color:#2F6670} .km-ozet{margin-left:auto}
@@ -3358,7 +3415,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 424</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 425</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3412,7 +3469,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
       <button id="yapistir-btn" class="kopya yapistir" hidden type="button" aria-label="Panodakini kutuya yapıştır">⇣ Yapıştır</button>
       <div id="toast" class="toast" hidden role="status"></div>
       <div id="geri-al" class="geri-al" hidden role="status"><span id="geri-al-yazi">Kaydedildi</span><button type="button" id="geri-al-btn">↶ Geri al</button></div>
-      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><button type="button" id="k-metin" class="k-metin">Kaydedilmedi</button><button class="btn" id="k-vazgec" type="button" hidden>Vazgeç</button><button class="btn" id="k-geri" type="button" hidden>↶ Geri al</button><button class="btn" id="k-sgeri" type="button" hidden>↶ Geri al</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
+      <div id="kayit-cubugu" class="kayit-cubugu" hidden role="region" aria-label="Kaydedilmemiş değişiklikler"><button type="button" id="k-metin" class="k-metin">Kaydedilmedi</button><button class="btn" id="k-vazgec" type="button" hidden>Vazgeç</button><button class="btn" id="k-geri" type="button" hidden>↶ Geri al</button><button class="btn" id="k-sgeri" type="button" hidden>↶ Geri al</button><button class="btn k-adim" id="k-ag" type="button" title="Son adımı geri al" aria-label="Son adımı geri al" hidden>↶</button><button class="btn k-adim" id="k-ai" type="button" title="Yinele" aria-label="Yinele" hidden>↷</button><button class="btn ana" id="k-kaydet" type="button">Kaydet</button></div>
       <section class="panel" id="v-belge" hidden role="dialog" aria-modal="true" aria-label="Belge düzenleyici">
         <div class="arac">
           <button class="btn kucuk" id="d-geri" aria-label="Belgeyi kapat">✕ Kapat</button>
@@ -3642,7 +3699,7 @@ function saltGeriAl(yol){ clearTimeout(saltGeriAl.z); (saltGeriAl.y ||= new Set(
 function kaydet(yol, veriFn){
   if(saltMi()){ if(Date.now() - sonDokunus < 2000) saltGeriAl(yol); return; }   /* kendiliğinden hesaplananlar yalnız ekranda kalır, kaydedilmez */
   if(!db){ durum("hata","Bağlantı yok: değişiklik kaydedilemez"); }
-  kirli[yol] = veriFn; surum[yol] = (surum[yol] || 0) + 1; kayitCubugu(); taslakYaz();   // elle kayıt: yalnız “Kaydet” ile yazılır
+  kirli[yol] = veriFn; surum[yol] = (surum[yol] || 0) + 1; adimPlanla(yol); kayitCubugu(); taslakYaz();   // elle kayıt: yalnız “Kaydet” ile yazılır
 }
 /* kaydedilmemiş değişiklikler telefonda kaybolmasın: taslak olarak bu cihazda tutulur, açılışta geri getirilir (kaydetmek yine kullanıcının elinde) */
 const TASLAK = "tskTaslak";
@@ -3665,6 +3722,7 @@ async function otoKaydet(){
   otoCalisiyor = true; durum("yaz", "Kaydediliyor…");
   try {
     const once = {}; for(const y of yollar){ try { const d = await db.doc(y).get(); once[y] = d.exists ? kopya(d.data()) : null; } catch(e){ once[y] = undefined; } }
+    try { copTopla(once, Object.fromEntries(yollar.map(y => [y, kirli[y] ? kopya(kirli[y]() ?? null) : null]))); } catch(e){}
     let ok = true; for(const y of yollar) ok = (await yaz(y)) && ok;
     otoHata = !ok;
     if(ok){ geriYigin.push({ zaman: Date.now(), once }); if(geriYigin.length > 40) geriYigin.shift(); geriGoster(); }
@@ -3674,15 +3732,18 @@ async function otoKaydet(){
 const DEG_AD = { sl: "", zm: "", liste: "", satirlar: "", seri: "seri no", pid: "zimmet", model: "cinsi", cins: "cins", miktar: "miktar", stok: "stok no", eden: "teslim eden", alan: "teslim alan", birlik: "birlik", kisim: "kısım", aktif: "seçili kayıt", ad: "adı", rutbe: "rütbe", tel: "telefon", memleket: "memleket", baba: "baba adı", dogum: "doğum tarihi", duhul: "duhul", nasip: "nasıp", sicil: "sicil", ems: "EMS no", tc: "T.C. no", kita: "kıt'a", adres: "adres", ayr: "ayrılış", kat: "katılış", gun: "gün", tur: "tür", ozu: "özü", metin: "metin", tarih: "tarih", gorev: "görev", ilgi: "ilgi", ek: "ekler", kayitlar: "", rows: "", kisiler: "", adresler: "adresler", kan: "kan grubu", bas: "başlangıç", bit: "bitiş", onay: "onaylayan", durum: "durum", not: "not",
   kayit: "", i: "", a: "ayrılış", k: "katılış", t: "tür", yilGun: "yıllık gün", mazGun: "mazeret gün", yol: "yol izni", topYil: "yıllık hak", topMaz: "mazeret hak", topYol: "yol hakkı", ayri: "ayrı kaldığı süreler", sebep: "sebep", kaynak: "kaynak", musvedde: "çıktı biçimi", hak: "haklar", bag: "devam", iz: "izin bağı", gorevler: "görev yerleri", pid: "kişi bağı", foto: "fotoğraf", toplamArti: "toplama +1 gün", gorevOto: "otomatik görev satırları", donemDisi: "dönem dışı izinler" };
 const degKisi = k => { const p = (S.personel.rows || []).find(x => x.id === k); return p ? p.ad : null; };
-const degEt = x => x && typeof x === "object" ? (("seri" in x && "model" in x) ? (x.seri ? "Seri " + x.seri : "boş seri satırı") : x.cins || x.ad || x.baslik || x.no || x.hedef || ("a" in x && "k" in x ? (x.a ? trTarih(x.a).slice(0, 5) + " izni" : "izin satırı") : "") || (x.ayr ? trTarih(x.ayr).slice(0, 5) + " satırı" : "") || "satır") : String(x);
+const degEt = x => x && typeof x === "object" ? ("satirlar" in x && "eden" in x && typeof zmKisi === "function" && zmKisi(x) ? zmKisi(x).ad + " belgesi" : "") || (("seri" in x && "model" in x) ? (x.seri ? "Seri " + x.seri : "boş seri satırı") : x.cins || x.ad || x.baslik || x.no || x.hedef || ("a" in x && "k" in x ? (x.a ? trTarih(x.a).slice(0, 5) + " izni" : "izin satırı") : "") || (x.ayr ? trTarih(x.ayr).slice(0, 5) + " satırı" : "") || "satır") : String(x);
 function degFark(a, b, yol, o){ if(o.length > 5 || JSON.stringify(a) === JSON.stringify(b)) return o; const on = yol ? yol + " · " : "";
   if(Array.isArray(a) && Array.isArray(b)){ const id = x => x && typeof x === "object" ? (x.id || x.ad) : x, am = new Map(a.map(x => [id(x), x])), bm = new Map(b.map(x => [id(x), x])), n0 = o.length;
     for(const x of b){ if(!am.has(id(x))) o.push(`${on}${degEt(x)} eklendi`); else degFark(am.get(id(x)), x, on + degEt(x), o); if(o.length > 5) return o; }
     for(const x of a) if(!bm.has(id(x))) o.push(`${on}${degEt(x)} silindi`);
     if(o.length === n0) o.push(`${yol || "liste"} sırası değişti`); return o; }
   if(a && b && typeof a === "object" && typeof b === "object"){ for(const k of new Set([...Object.keys(a), ...Object.keys(b)])){ if(JSON.stringify(a[k]) === JSON.stringify(b[k])) continue;
-      const et = DEG_AD[k] ?? degKisi(k) ?? k; if(a[k] && b[k] && typeof a[k] === "object" && typeof b[k] === "object") degFark(a[k], b[k], et ? on + et : yol, o); else o.push(on + (et || k)); if(o.length > 5) return o; } return o; }
+      const et = DEG_AD[k] ?? degKisi(k) ?? k; if(a[k] && b[k] && typeof a[k] === "object" && typeof b[k] === "object") degFark(a[k], b[k], et ? on + et : yol, o); else o.push(on + (et || k) + degDeger(a[k], b[k])); if(o.length > 5) return o; } return o; }
   o.push(yol || "değer"); return o; }
+/* eski → yeni: kısa değerler olduğu gibi gösterilir; uzun metin ya da liste için yalnız “değişti” denir (yarım kesilmez) */
+const degDeger = (a, b) => { const g = v => v === undefined || v === null || v === "" ? "boş" : typeof v === "object" ? null : `“${String(v)}”`, x = g(a), y = g(b);
+  if(x === null || y === null || x.length + y.length > 90) return ""; return `: ${x} → ${y}`; };
 /* “Enes DEMİR · memleket”, “Enes DEMİR · telefon” → “Enes DEMİR: memleket, telefon” */
 const degOzet = F => { const M = new Map(); F.forEach(x => { const i = x.lastIndexOf(" · "), k = i < 0 ? "" : x.slice(0, i), v = i < 0 ? x : x.slice(i + 3); M.set(k, [...(M.get(k) || []), v]); });
   return [...M].map(([k, v]) => (k ? k + ": " : "") + [...new Set(v)].join(", ")).join(" · "); };
@@ -3714,7 +3775,7 @@ async function degisenlerAc(){ const yollar = Object.keys(kirli); if(!yollar.len
     async (b, kapat) => { if(b.dataset.ks){ const x = L[+b.dataset.ks]; kapat(); if(x.git) x.git(); return; }
       if(b.dataset.kay){ kapat(); $("#k-kaydet").click(); return; }
       if(b.dataset.yok){ kapat(); if(b.dataset.yok === "hepsi") return $("#k-vazgec").click(); const x = L[+b.dataset.yok]; if(!x) return; await vazgec(true, [x.y]); bildir(`${x.ad}: değişiklik yoksayıldı`); if(Object.keys(kirli).length) $("#k-metin").click(); } }, { z: "FFF3DD", r: "7A5214" }); }
-function cubukTamam(yazi, geri){ const c = $("#kayit-cubugu"); if(Object.keys(kirli).length) return; c.classList.add("tamam"); $("#k-metin").innerHTML = `<i></i>${yazi}`; $("#k-kaydet").hidden = true; $("#k-geri").hidden = !geri; c.hidden = false;
+function cubukTamam(yazi, geri){ const c = $("#kayit-cubugu"); if(Object.keys(kirli).length) return; c.classList.add("tamam"); $("#k-metin").innerHTML = `<i></i>${yazi}`; $("#k-kaydet").hidden = true; $("#k-geri").hidden = !geri; c.hidden = false; document.documentElement.classList.add("cubuk-acik"); adimDugme();
   clearTimeout(geriGoster.z); geriGoster.z = setTimeout(() => { c.classList.remove("tamam"); kayitCubugu(); }, 4500); }
 function geriGoster(){ cubukTamam("Kaydedildi", geriYigin.length > 0); }
 async function dbdenYenile(yollar){
@@ -3737,13 +3798,14 @@ async function geriAl(){
 document.addEventListener("visibilitychange", () => { if(document.hidden) taslakYaz(true); });
 function kayitCubugu(){
   const n = Object.keys(kirli).length; const c = $("#kayit-cubugu"); if(n){ clearTimeout(geriGoster.z); c.classList.remove("tamam"); $("#k-kaydet").hidden = false; $("#k-geri").hidden = true; c.hidden = false; } else if(!c.classList.contains("tamam")) c.hidden = true;   // tek çubuk: değişiklik varken “Kaydet”, kaydedince kısa süre “Geri al”
-  document.documentElement.classList.toggle("kayit-bekliyor", !!n);
+  document.documentElement.classList.toggle("kayit-bekliyor", !!n); document.documentElement.classList.toggle("cubuk-acik", !c.hidden); adimDugme();
+  if(!n) degAlanTemizle(); else degAlanSuz();
   if(n){ $("#k-metin").innerHTML = `<i></i>Kaydedilmedi<small>${n} yerde değişiklik · göster ›</small>`; durum("yaz","Kaydedilmedi"); }
   else if(db && yazabilir) durum("ok","Kaydedildi");
 }
 async function yaz(yol){
   const fn = kirli[yol]; if(!fn) return true; const v = surum[yol];
-  try { await db.doc(yol).set(kopya(fn())); if(surum[yol] === v) delete kirli[yol]; return true; }
+  try { await db.doc(yol).set(kopya(fn())); if(surum[yol] === v){ delete kirli[yol]; adimSifirla([yol]); } return true; }
   catch(e){
     if(e && e.code === "unavailable"){ await new Promise(r => setTimeout(r, 1500)); try { await db.doc(yol).set(kopya(fn())); if(surum[yol] === v) delete kirli[yol]; return true; } catch(x){} }
     uyar(e && e.code === "invalid_argument" ? "Kaydedilemedi: bu sayfada değişiklik yetkiniz yok ya da belge çok büyük." : "Kaydedilemedi: " + (e && e.message || e), true); return false;
@@ -3761,7 +3823,7 @@ function btDuzelt(k){
 }
 async function vazgec(sessiz, yalniz){
   const yollar = yalniz ? yalniz.filter(y => y in kirli) : Object.keys(kirli); if(!yollar.length) return;
-  for(const y of yollar){ delete kirli[y]; if(!db) continue; const [kol, id] = y.split("/");
+  adimSifirla(yollar); for(const y of yollar){ delete kirli[y]; if(!db) continue; const [kol, id] = y.split("/");
     try { const d = await db.doc(y).get();
       if(kol === "bt"){ if(d.exists){ S[id] = kopya(d.data()); btDuzelt(id); } }
       else if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(d.exists){ if(i >= 0) S.belgeler[i] = kopya(d.data()); else S.belgeler.push(kopya(d.data())); } else if(i >= 0) S.belgeler.splice(i, 1); }
@@ -3770,6 +3832,67 @@ async function vazgec(sessiz, yalniz){
   if(SECIM.belge){ const d = acikBelge(); if(!d) belgeKapat(); else belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
   if(!sessiz) bildir("Değişiklikler geri alındı");
 }
+/* ===== adım adım geri al / yinele (kaydetmeden önce) =====
+   Her değişiklik kısa bir duraklamadan sonra bir “adım” olur. ↶ son adımı geri alır, ↷ yeniden uygular. Kaydedince ya da yoksayınca adımlar sıfırlanır. */
+const adimG = [], adimI = [], adimSon = {}, adimTaban = {}; let adimZ = null, adimUyg = false;
+const yolDeger = y => { const [kol, id] = y.split("/"); return kol === "bt" ? S[id] : kol === "belgeler" ? S.belgeler.find(x => x.id === id) || null : undefined; };
+const yolFn = y => { const [kol, id] = y.split("/"); return kol === "bt" ? () => S[id] : () => S.belgeler.find(x => x.id === id); };
+function yolKoy(y, v){ const [kol, id] = y.split("/"); if(kol === "bt"){ S[id] = v; btDuzelt(id); return; }
+  if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(v == null){ if(i >= 0) S.belgeler.splice(i, 1); } else if(i >= 0) S.belgeler[i] = v; else S.belgeler.push(v); } }
+function adimPlanla(yol){ if(adimUyg || !/^(bt|belgeler)\//.test(yol)) return; if(!(yol in adimSon)){ adimSon[yol] = null; adimTabanAl(yol); } clearTimeout(adimZ); adimZ = setTimeout(adimYaz, 650); }
+async function adimTabanAl(y){ let v; try { const d = await db.doc(y).get(); v = d.exists ? JSON.stringify(d.data()) : "null"; } catch(e){ v = undefined; } if(!(y in adimSon)) return; adimTaban[y] = v; if(adimSon[y] === null) adimSon[y] = v; }
+function adimYaz(){ clearTimeout(adimZ); const ek = []; for(const y of Object.keys(kirli)){ if(adimSon[y] == null) continue; let c; try { c = JSON.stringify(kirli[y]() ?? null); } catch(e){ continue; } if(c !== adimSon[y]){ ek.push({ y, eski: adimSon[y] }); adimSon[y] = c; } }
+  if(ek.length){ adimG.push(ek); if(adimG.length > 80) adimG.shift(); adimI.length = 0; } adimDugme(); }
+function adimSifirla(Y){ for(const y of Y){ delete adimSon[y]; delete adimTaban[y]; } for(const L of [adimG, adimI]){ for(let i = L.length - 1; i >= 0; i--){ L[i] = L[i].filter(x => !Y.includes(x.y)); if(!L[i].length) L.splice(i, 1); } } adimDugme(); }
+function adimDugme(){ const g = $("#k-ag"), i = $("#k-ai"); if(!g) return; const n = Object.keys(kirli).length > 0 || adimI.length > 0; g.hidden = i.hidden = !n || $("#kayit-cubugu").classList.contains("tamam"); g.disabled = !adimG.length; i.disabled = !adimI.length; i.hidden = i.hidden || !adimI.length; }
+function adimUygula(ileri){ adimYaz(); const A = ileri ? adimI : adimG, B = ileri ? adimG : adimI, ek = A.pop(); if(!ek) return; const ters = []; adimUyg = true;
+  try { for(const { y, eski } of ek){ const simdi = JSON.stringify(yolDeger(y) ?? null); ters.push({ y, eski: simdi }); const v = JSON.parse(eski); yolKoy(y, v); adimSon[y] = eski;
+      if(eski === adimTaban[y] || v == null) delete kirli[y]; else kirli[y] = yolFn(y); surum[y] = (surum[y] || 0) + 1; } }
+  finally { adimUyg = false; }
+  B.push(ters); const sy = scrollY, vb = $("#v-belge"), vs = vb ? vb.scrollTop : 0; kayitCubugu(); taslakYaz(); agacCiz(); anaCiz();
+  const kp = window.TSK_KATMAN && window.TSK_KATMAN["ks-perde"]; if(kp && $("#ks-perde") && !$("#ks-perde").hidden) kp();
+  if(SECIM.belge){ const d = acikBelge(); if(!d) belgeKapat(); else belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
+  requestAnimationFrame(() => { scrollTo(0, sy); if(vb) vb.scrollTop = vs; }); bildir(ileri ? "Yinelendi" : "Son adım geri alındı"); }
+/* ===== değişen alan işareti: kaydedilmemiş değişiklik olan kutunun solunda turuncu çizgi ===== */
+const degAlan = new Map();
+function alanImza(el){ if(!el || !el.attributes) return ""; const at = [...el.attributes].filter(a => a.name.startsWith("data-") && !/^data-(salt|tek)$/.test(a.name)).map(a => a.name + "=" + a.value).join("&"); if(!at) return "";
+  const d = acikBelge(), alt = d ? ((d.zm || d.es || d.dl || d.isa || d.sl || {}).aktif || "") : "", kap = el.closest("[data-id],[data-pid]"), ps = el.closest("#ks-perde");
+  return [d ? d.id : "-", alt, typeof kmSecili !== "undefined" ? kmSecili || "" : "", kap ? kap.dataset.id || kap.dataset.pid : "", ps ? "P" + (ps.dataset.esId || ps.dataset.zmId || "") : "", at].join("|"); }
+document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("input:not([type=search]):not([type=file]),textarea") || !el.closest("#v-belge,#ks-perde") || el.closest("#not-panel,.np-ara") || el.readOnly) return;
+  const sg = alanImza(el); if(!sg) return; const su = { ...surum }; el.classList.add("deg-alan");
+  setTimeout(() => { const Y = Object.keys(kirli).filter(y => (surum[y] || 0) !== (su[y] || 0)); if(Y.length) degAlan.set(sg, new Set([...(degAlan.get(sg) || []), ...Y])); else if(!degAlan.has(sg)) el.classList.remove("deg-alan"); }, 0); }, true);
+function degAlanUygula(){ if(!degAlan.size) return; document.querySelectorAll("#v-belge input, #v-belge textarea, #ks-perde input, #ks-perde textarea").forEach(el => { if(!el.classList.contains("deg-alan") && degAlan.has(alanImza(el))) el.classList.add("deg-alan"); }); }
+function degAlanSuz(){ let az = false; for(const [k, Y] of degAlan){ if(![...Y].some(y => y in kirli)){ degAlan.delete(k); az = true; } } if(az){ document.querySelectorAll(".deg-alan").forEach(el => el.classList.remove("deg-alan")); degAlanUygula(); } }
+function degAlanTemizle(){ degAlan.clear(); document.querySelectorAll(".deg-alan").forEach(el => el.classList.remove("deg-alan")); }
+let degAlanZ = 0; new MutationObserver(() => { if(!degAlan.size || degAlanZ) return; degAlanZ = requestAnimationFrame(() => { degAlanZ = 0; degAlanUygula(); }); }).observe(document.documentElement, { childList: true, subtree: true });
+/* ===== kaydedilmemiş değişiklikle belge kapatılırken sorulur ===== */
+let kapatGec = false;
+document.addEventListener("click", e => { if(kapatGec || saltMi()) return; const h = e.target.closest && (e.target.closest("#d-geri") || (e.target.id === "perde" ? e.target : null)); if(!h) return;
+  const d = acikBelge(); if(!d) return; const yl = belgeYollari(d), Y = Object.keys(kirli).filter(y => yl.includes(y)); if(!Y.length) return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  altPencere("ks-perde", "KAYDEDİLMEDİ", "Değişiklikler kaydedilsin mi?", () => `<p class="deg-not" style="margin:0 2px 12px">“${esc(d.ad)}” belgesinde kaydedilmemiş değişiklik var.</p><div class="kc-is">
+      <button type="button" class="btn ana" data-kc="k">Kaydet ve kapat</button><button type="button" class="btn" data-kc="b">Kaydetmeden kapat<small>değişiklikler bekler, sonra kaydedebilirsiniz</small></button><button type="button" class="btn kc-yok" data-kc="y">Yoksay ve kapat<small>bu belgedeki değişiklikler geri alınır</small></button></div>`,
+    async (b, kapat) => { const c = b.dataset.kc; if(!c) return; kapat(); if(c === "k") await hepsiniKaydet(); if(c === "y") await vazgec(true, Y); kapatGec = true; try { if(SECIM.belge) belgeKapat(); } finally { kapatGec = false; } }, { z: "FFF3DD", r: "7A5214" }); }, true);
+/* ===== silinenler kutusu (bt/cop): kaydedilirken listeden çıkan kayıtlar ve silinen belgeler 30 gün saklanır, geri getirilebilir ===== */
+const COP_GUN = 30;
+const idDiziMi = a => Array.isArray(a) && a.length > 0 && a.every(x => x && typeof x === "object" && x.id != null);
+function copBul(a, b, konum, out){ if(!a || !b || typeof a !== "object" || typeof b !== "object") return;
+  if(Array.isArray(a)){ if(!Array.isArray(b) || !idDiziMi(a)) return; const bm = new Map(b.filter(x => x && x.id != null).map(x => [String(x.id), x]));
+    a.forEach((x, i) => { const y = bm.get(String(x.id)); if(!y) out.push({ konum, i, v: x }); else copBul(x, y, konum.concat({ id: String(x.id) }), out); }); return; }
+  for(const k of Object.keys(a)) if(k !== "notlar" && k in b) copBul(a[k], b[k], konum.concat(k), out); }
+function copTopla(once, yeni){ const L = [], tum = JSON.stringify(yeni);
+  for(const y of Object.keys(yeni)){ const a = once[y], b = yeni[y]; if(!a || !b) continue; const out = []; copBul(a, b, [], out);
+    const [kol, id] = y.split("/"), d = kol === "belgeler" ? S.belgeler.find(x => x.id === id) : null, belge = d ? d.ad : (DEG_BT[id] || [null, id])[1];
+    out.forEach(x => { if(tum.includes(`"id":${JSON.stringify(x.v.id)}`)) return;   /* başka yere taşınmış, silinmemiş */
+      L.push({ t: Date.now(), yol: y, ad: degEt(x.v), belge, konum: x.konum, i: x.i, v: x.v }); }); }
+  if(L.length) copEkle(L).catch(() => {}); }
+async function copOku(){ try { const d = await db.doc("bt/cop").get(); const c = d.exists ? d.data() : null; return c && Array.isArray(c.L) ? c : { L: [] }; } catch(e){ return { L: [] }; } }
+async function copEkle(L){ const c = await copOku(), sin = Date.now() - COP_GUN * 864e5; c.L = c.L.filter(x => x.t > sin).concat(L); while(c.L.length > 1 && (c.L.length > 300 || JSON.stringify(c.L).length > 1500000)) c.L.shift(); await db.doc("bt/cop").set(c); }
+async function copGeri(x){ if(!x.konum){ if(S.belgeler.some(b => b.id === x.v.id)) return "Bu belge zaten yerinde"; S.belgeler.push(kopya(x.v)); kaydet(x.yol, yolFn(x.yol)); return ""; }
+  let o = yolDeger(x.yol); if(!o) return "Bulunduğu belge artık yok; geri getirilemedi";
+  for(const s of x.konum){ if(o == null) break; o = typeof s === "object" ? (Array.isArray(o) ? o.find(z => z && String(z.id) === s.id) : null) : o[s]; }
+  if(!Array.isArray(o)) return "Eski yeri artık yok; geri getirilemedi"; if(o.some(z => z && String(z.id) === String(x.v.id))) return "Bu kayıt zaten yerinde";
+  o.splice(Math.min(x.i, o.length), 0, kopya(x.v)); kaydet(x.yol, yolFn(x.yol)); return ""; }
 const kaydetBt = k => { kaydet("bt/" + k, () => S[k]); if(["personel", "izin", "gdhg", "izinb", "yoklama"].includes(k) && !esitleniyor) esitlePlanla(k === "izin" ? "personel" : k); };
 const kaydetBelge = b => kaydet("belgeler/" + b.id, () => b);
 const kaydetYapi = () => kaydet("bt/yapi", () => S.yapi);
@@ -4568,7 +4691,7 @@ async function belgeBolumdenSil(d){
   const kalan = (d.yerler || []).filter(y => !(y.k === SECIM.klasor && y.b === SECIM.bolum));
   try {
     if(kalan.length){ d.yerler = kalan; await db.doc("belgeler/" + d.id).set(kopya(d)); }
-    else { await db.doc("belgeler/" + d.id).delete(); S.belgeler = S.belgeler.filter(x => x.id !== d.id); delete kirli["belgeler/" + d.id]; kayitCubugu(); }
+    else { try { await copEkle([{ t: Date.now(), yol: "belgeler/" + d.id, ad: d.ad || "Belge", belge: "Belge", konum: null, i: 0, v: kopya(d) }]); } catch(e){} await db.doc("belgeler/" + d.id).delete(); S.belgeler = S.belgeler.filter(x => x.id !== d.id); delete kirli["belgeler/" + d.id]; kayitCubugu(); }
     bildir(`“${d.ad}” silindi`); if(SECIM.belge === d.id) belgeKapat(); else bolumCiz();
   } catch(err){ uyar("Silinemedi: " + (err.message || err.code), true); }
 }
@@ -5972,20 +6095,41 @@ async function gecmisAc(){
   if(!p){ p = document.createElement("div"); p.className = "sc-perde"; p.id = "gc-perde"; p.hidden = true; document.body.appendChild(p);
     (window.TSK_KATMAN = window.TSK_KATMAN || {})["gc-perde"] = () => { p.hidden = true; };
     p.addEventListener("click", e => { if(e.target === p || e.target.closest(".sc-x")) p.hidden = true; }); }
+  const cop = await copOku(), sin = Date.now() - COP_GUN * 864e5; cop.L = cop.L.filter(x => x.t > sin);
   p.innerHTML = `<div class="sc-kart gc-kart" role="dialog" aria-modal="true"><div class="sc-tut"></div><div class="sc-bas"><h4>Geçmiş · ${esc(d.ad)}</h4><button class="sc-x" type="button" aria-label="Kapat">✕</button></div>
+    <div class="gc-sekme"><button type="button" data-gcs="k" aria-pressed="${gcSekme !== "c"}">Kayıt geçmişi</button><button type="button" data-gcs="c" aria-pressed="${gcSekme === "c"}">Silinenler<b>${cop.L.length}</b></button></div>
     <div class="gc-govde" id="gc-govde"><div class="uclar">Yükleniyor…</div></div></div>`;
   p.hidden = false;
   const gv = p.querySelector("#gc-govde");
+  if(gcSekme === "c"){ const L = cop.L.slice().reverse(); gcCop = L;
+    gv.innerHTML = `<p class="uclar">Kaydedilirken silinen satırlar ve belgeler ${COP_GUN} gün burada durur. “Geri getir” eski yerine koyar; sonra Kaydet’e basın.</p>${L.length ? `<div class="cp-liste">${L.map((x, i) => `<div class="cp-sat"><span class="cp-ad">${esc(x.ad)}<small>${esc(x.belge || "")} · ${esc(new Date(x.t).toLocaleString("tr-TR", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" }))}</small></span><button type="button" class="mini" data-cpg="${i}">Geri getir</button></div>`).join("")}</div>
+      <div style="margin-top:12px;text-align:right"><button type="button" class="mini sil" data-cpb="1">Silinenleri boşalt</button></div>` : `<div class="mesaj">Silinen bir şey yok.</div>`}`; return; }
   if(!G || !G.var()){ gv.innerHTML = `<div class="mesaj">Geçmiş, bulut eşitlemesi (GitHub) bağlıyken kullanılabilir. Her kayıt bulutta bir sürüm olarak saklanır.</div>`; return; }
   try {
     const L = await G.liste(60); const bugun = new Date().toDateString();
     gv.innerHTML = `<p class="uclar">Bir zamana dokun; o andaki hâli gösterilir, istersen geri yüklersin. Geri yükleme de geri alınabilir.</p><div class="gc-liste">${L.map((c, i) => { const t = new Date(c.tarih);
       const z = t.toDateString() === bugun ? "Bugün " + t.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : t.toLocaleString("tr-TR", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" });
-      return `<button type="button" class="gc-oge" data-sha="${esc(c.sha)}"><b>${esc(z)}</b><small>${i === 0 ? "şu anki bulut hâli · " : ""}${esc(/telefon/.test(c.mesaj) ? "telefondan" : /bilgisayar/.test(c.mesaj) ? "bilgisayardan" : c.mesaj.replace(/^TSK ARŞİV\s*/, "").slice(0, 60))}</small><span class="gc-ozet"></span></button>`; }).join("")}</div>`;
+      return `<button type="button" class="gc-oge" data-sha="${esc(c.sha)}"><b>${esc(z)}</b><small>${i === 0 ? "şu anki bulut hâli · " : ""}${esc(/telefon/.test(c.mesaj) ? "telefondan" : /bilgisayar/.test(c.mesaj) ? "bilgisayardan" : c.mesaj.replace(/^TSK ARŞİV\s*/, ""))}</small><span class="gc-ozet"></span></button>`; }).join("")}</div>
+      <div class="gc-temiz"><b>Geçmişi temizle</b><p>Düzen oturduysa buluttaki eski kayıt sürümlerini silebilirsiniz. Yalnız şu anki hâl kalır; eski sürümlere bir daha dönülemez. Arşivdeki belgeler silinmez.</p>
+        <div class="gt-sec"><button type="button" data-gt="pay" aria-pressed="true">Paylaşım deposu da</button><button type="button" data-gt="cop" aria-pressed="true">Silinenler kutusu da</button></div>
+        <div class="gt-onay"><input id="gt-yaz" placeholder="Onay için SİL yazın" autocomplete="off"><button type="button" class="btn" id="gt-btn" disabled>Temizle</button></div></div>`;
   } catch(e){ gv.innerHTML = `<div class="mesaj hata">${esc(e.message || e)}</div>`; }
 }
+let gcSekme = "k", gcCop = [];
+document.addEventListener("input", e => { if(e.target.id === "gt-yaz") $("#gt-btn").disabled = e.target.value.trim().toLocaleUpperCase("tr") !== "SİL"; });
 document.addEventListener("click", async e => {
   if(e.target.closest("#d-gecmis")){ gecmisAc(); return; }
+  const gs = e.target.closest("[data-gcs]"); if(gs){ gcSekme = gs.dataset.gcs; gecmisAc(); return; }
+  const gt = e.target.closest("[data-gt]"); if(gt){ gt.setAttribute("aria-pressed", gt.getAttribute("aria-pressed") !== "true"); return; }
+  const cg = e.target.closest("[data-cpg]"); if(cg){ const x = gcCop[+cg.dataset.cpg]; if(!x) return; const h = await copGeri(x); if(h){ bildir(h); return; }
+    const c = await copOku(); c.L = c.L.filter(z => !(z.t === x.t && z.yol === x.yol && JSON.stringify(z.v) === JSON.stringify(x.v))); await db.doc("bt/cop").set(c);
+    agacCiz(); anaCiz(); const d = acikBelge(); if(d) belgeAc(d.id); gecmisAc(); bildir(`“${x.ad}” geri getirildi · saklamak için Kaydet’e basın`); return; }
+  if(e.target.closest("[data-cpb]")){ await db.doc("bt/cop").set({ L: [] }); gecmisAc(); bildir("Silinenler kutusu boşaltıldı"); return; }
+  if(e.target.closest("#gt-btn")){ const b = $("#gt-btn"), G = window.TSK_GECMIS; if(!G || !G.temizle) return; if(Object.keys(kirli).length){ bildir("Önce kaydedilmemiş değişiklikleri kaydedin"); return; }
+    const pd = $('[data-gt="pay"]').getAttribute("aria-pressed") === "true", cp = $('[data-gt="cop"]').getAttribute("aria-pressed") === "true";
+    b.disabled = true; b.textContent = "Temizleniyor…";
+    try { if(cp) await db.doc("bt/cop").set({ L: [] }); const r = await G.temizle(pd); gecmisAc(); uyar(`Geçmiş temizlendi. Bulutta yalnız şu anki hâl kaldı${r && r.pay ? "; paylaşım deposunun geçmişi de silindi" : ""}. GitHub silinen eski sürümleri bir süre kendi tarafında tutabilir, ama artık hiçbir listede ve uygulamada görünmez.`); }
+    catch(err){ b.disabled = false; b.textContent = "Temizle"; uyar("Geçmiş temizlenemedi: " + (err.message || err), true); } return; }
   const o = e.target.closest(".gc-oge"); if(o && !o.dataset.yuklu){ const d = acikBelge(); if(!d) return; o.dataset.yuklu = "1"; const oz = o.querySelector(".gc-ozet"); oz.textContent = "okunuyor…";
     try { const veri = await window.TSK_GECMIS.oku(o.dataset.sha); oz.innerHTML = `${esc(gecmisOzet(d, veri))}<span class="gc-dugme">Bu hâline geri yükle</span>`; o._veri = veri; o.classList.add("acik"); }
     catch(err){ oz.textContent = "okunamadı: " + (err.message || err); o.dataset.yuklu = ""; } return; }
@@ -10375,32 +10519,47 @@ const ZM_BIRIM = [["AD", "Adet"], ["TK", "Takım"], ["ÇF", "Çift"], ["KT", "Ku
 const zmMik = m => { const r = /^\s*([\d.,]*)\s*(.*?)\s*$/.exec(String(m || "")) || []; return { n: r[1] || "", b: (r[2] || "").toLocaleUpperCase("tr") }; };
 const zmBirimAd = b => (ZM_BIRIM.find(x => x[0] === b) || [, b || "seç"])[1];
 const ZM_ALAN = [["stok", "Stok No.", "n"], ["cins", "Cins ve özellikleri", "tam"], ["seri", "Seri numarası"], ["miktar", "Miktar"], ["kafile", "Kafile"], ["grup", "Stok grup"], ["skt", "Son kullanma tarihi", "tam"]];
-function zimmetCiz(){ const d = acikBelge(); if(!d || d.tur !== "zimmet") return; const v = zmVeri(d), k = zmAktif(v), p = zmKisi(k), P = (S.personel.rows || []).filter(x => x.ad), L = v.kayitlar;
+/* ekran: üstte zimmet belgesi seçici (‹ kişi ›), katlanır özet bölümler, kalem tablosu (arama + sayfa sayfa), kaleme dokununca düzenleme penceresi */
+const zmAcikB = new Set(); let zmAra = "", zmGoster = 40;
+function zimmetCiz(){ const d = acikBelge(); if(!d || d.tur !== "zimmet") return; const v = zmVeri(d), k = zmAktif(v), p = zmKisi(k), L = v.kayitlar, Sx = k.satirlar, i = L.indexOf(k);
+  const bol = (an, et, ozet, ic, bos) => `<details class="es-b"${zmAcikB.has(an) ? " open" : ""} data-zm-bol="${an}"><summary><span class="es-bt">${et}</span><span class="es-bo${bos ? " bos" : ""}">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
+  const n = normMetin(zmAra), F = Sx.map((x, j) => [x, j]).filter(([x]) => !n || normMetin([x.stok, x.cins, x.seri, x.kafile].join(" ")).includes(n)), G = F.slice(0, zmGoster);
+  const eden = [k.eden.ad, k.eden.rutbe, k.eden.gorev].filter(Boolean).join(" · "), bilgi = zmTarih(k.tarih);
   $("#zm-govde").innerHTML = `
     <div class="dl-ust"><span class="dl-ust-s zm-ik"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.zimmet.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.7" stroke-linejoin="round" stroke-linecap="round"')}</svg></span><b>Zimmet belgeleri</b><small>${L.length}</small><button type="button" class="dl-yeni" data-zm="yeni"><span>＋</span>Yeni</button></div>
-    ${listeSar("zm", L.length, L.map(x => { const q = zmKisi(x); return `<button type="button" class="dl-sat${x.id === k.id ? " on" : ""}" data-zm-sec="${x.id}"><span class="dl-tur zm-t">${x.satirlar.length} kalem</span><b>${esc(q ? q.ad : "Kişi seçilmedi")}</b><small>${esc(zmTarih(x.tarih))}</small></button>`; }).join(""))}
-    <section class="dl-kart">
-      <div class="dl-bas">Teslim alan</div>
-      ${ksSatir(p, 'data-zm="kisi"')}
-      <label class="dl-al"><span>Teslim alanın görevi</span><input data-zm-a="gorev" value="${esc(k.alan.gorev || "")}" placeholder="boş kalabilir"></label>
-      <div class="dl-bas zm-bas2">Teslim eden <button type="button" class="dl-sifir" data-zm="eden-sec">Listeden seç</button></div>
-      <div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-zm-e="ad" value="${esc(k.eden.ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-zm-e="rutbe" value="${esc(k.eden.rutbe)}"></label>
-        <label class="dl-al tam"><span>Görevi</span><input data-zm-e="gorev" value="${esc(k.eden.gorev)}"></label></div>
-      <details class="dl-bilgi"><summary><span>Belge bilgileri</span><em class="dl-not">${esc(zmTarih(k.tarih))}</em></summary>
-        <div class="dl-alanlar">
-        <label class="dl-al"><span>Rapor tarihi</span><input type="date" data-zm-f="tarih" value="${esc(k.tarih)}"></label>
-        <label class="dl-al tam"><span>Taşınır malın birliği</span><textarea class="oto-boy" rows="1" data-zm-f="birlik">${esc(k.birlik)}</textarea></label>
-        <label class="dl-al tam"><span>Teslim alan kısım / birim</span><textarea class="oto-boy" rows="1" data-zm-f="kisim">${esc(k.kisim)}</textarea></label></div></details>
-      <div class="dl-bas">Zimmetlenen malzemeler <i>${k.satirlar.length} kalem</i></div>
-      <div class="zm-l${zmTum || k.satirlar.length <= 6 || zmAcik ? "" : " kisa"}">${k.satirlar.map((x, i) => { const ac = zmAcik === x.id; return `<div class="zm-k${ac ? " acik" : ""}"><button type="button" class="zm-s" data-zm-ac="${x.id}"><span class="zm-n">${i + 1}</span><span class="zm-ic"><b>${esc(x.cins || "Yeni kalem")}</b><small>${esc([x.stok, x.seri && "Seri " + x.seri, x.skt && "SKT " + x.skt].filter(Boolean).join(" · "))}</small>${notHtml(d, x.id)}</span><em>${esc(x.miktar || "")}</em></button>
-        ${ac ? `<div class="zm-form">${ZM_ALAN.map(([a, t, o]) => a === "miktar" ? (() => { const m = zmMik(x.miktar); return `<div class="dl-al"><span>Miktar</span><div class="zm-mik"><input inputmode="decimal" data-zm-n="${x.id}" value="${esc(m.n)}" placeholder="0"><button type="button" class="zm-bir" data-zm-b="${x.id}"><b>${esc(m.b || "—")}</b><small>${esc(zmBirimAd(m.b))}</small></button></div></div>`; })() : `<label class="dl-al${o === "tam" ? " tam" : ""}"><span>${t}</span><textarea class="oto-boy" rows="1" data-tek data-zm-s="${x.id}:${a}"${o === "n" ? ' inputmode="numeric"' : ""}>${esc(x[a] || "")}</textarea></label>`).join("")}
-          <div class="zm-is"><button type="button" class="btn ana kucuk" data-zm="kapat">✓ Tamam</button>${notDug(d, x.id, x.cins)}<button type="button" class="mini" data-zm-i="${x.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-zm-i="${x.id}:1"${i < k.satirlar.length - 1 ? "" : " disabled"}>↓</button><span class="bosluk"></span><button type="button" class="mini sil" data-zm-sil="${x.id}">Sil</button></div></div>` : ""}</div>`; }).join("") || '<div class="yk-bos">Henüz kalem yok</div>'}</div>
-      ${k.satirlar.length > 6 && !zmAcik ? `<button type="button" class="zm-tum" data-zm="tum">${zmTum ? "Daha az göster ⌃" : `Tüm kalemleri göster (${k.satirlar.length}) ⌄`}</button>` : ""}
-      <button type="button" class="izb-aktar tam" data-zm="ekle">＋ Kalem ekle</button>
-      <div class="dl-is"><button type="button" class="mini" data-zm="kopya">⧉ Kopyasını oluştur</button>${L.length > 1 ? '<button type="button" class="mini sil" data-zm="sil">Sil</button>' : ""}</div></section>
-    ${notGorVar(d) ? `<div class="cs-seg zm-onseg"><button type="button" data-zm="onz0" aria-pressed="${!zmOnNot}">Önizleme notsuz</button><button type="button" data-zm="onz1" aria-pressed="${zmOnNot}">Notlu</button></div>` : ""}
+    <div class="km-nav"><button type="button" class="km-ok" data-zm-gec="-1"${i > 0 ? "" : " disabled"} aria-label="Önceki">‹</button>
+      <button type="button" class="km-kisi es-kisi" data-zm="liste"><span class="ks-av">${esc(ksBas(p ? p.ad : "?"))}</span><span class="ks-ad"><b>${esc(p ? p.ad : "Kişi seçilmedi")}</b><small>${esc([p && p.rutbe, Sx.length + " kalem", (i + 1) + "/" + L.length].filter(Boolean).join(" · "))}</small></span><i>▾</i></button>
+      <button type="button" class="km-ok" data-zm-gec="1"${i < L.length - 1 ? "" : " disabled"} aria-label="Sonraki">›</button></div>
+    <section class="dl-kart es-kart">
+      ${bol("alan", "Teslim alan", p ? [p.ad, p.rutbe, k.alan.gorev].filter(Boolean).join(" · ") : "seçilmedi", `${ksSatir(p, 'data-zm="kisi"')}<label class="dl-al tam" style="margin-top:8px"><span>Görevi <i>boş kalabilir</i></span><input data-zm-a="gorev" value="${esc(k.alan.gorev || "")}"></label>`, !p)}
+      ${bol("eden", "Teslim eden", eden || "girilmedi", `<div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-zm-e="ad" value="${esc(k.eden.ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-zm-e="rutbe" value="${esc(k.eden.rutbe)}"></label><label class="dl-al tam"><span>Görevi</span><input data-zm-e="gorev" value="${esc(k.eden.gorev)}"></label></div><button type="button" class="es-sec" data-zm="eden-sec">Personel listesinden seç</button>`, !eden)}
+      ${bol("bilgi", "Belge bilgileri", bilgi || "girilmedi", `<div class="dl-alanlar"><label class="dl-al"><span>Rapor tarihi</span><input type="date" data-zm-f="tarih" value="${esc(k.tarih)}"></label>
+          <label class="dl-al tam"><span>Taşınır malın birliği</span><textarea class="oto-boy" rows="1" data-zm-f="birlik">${esc(k.birlik)}</textarea></label>
+          <label class="dl-al tam"><span>Teslim alan kısım / birim</span><textarea class="oto-boy" rows="1" data-zm-f="kisim">${esc(k.kisim)}</textarea></label></div>`, !bilgi)}
+      <div class="es-mbas"><span class="es-bt">Kalemler</span><small>${Sx.length} kalem · düzenlemek için dokunun</small></div>
+      ${Sx.length > 8 ? `<input type="search" class="np-ara zm-ara" data-zm-ara="1" placeholder="Kalem ara: stok no, cins, seri…" value="${esc(zmAra)}">` : ""}
+      <div class="es-tb">${G.map(([x, j]) => `<button type="button" class="es-tr" data-zm-duz="${x.id}"><span class="es-n">${j + 1}</span><span class="es-c"><b>${esc(x.cins || "Adsız kalem")}</b><small>${esc([x.stok, x.seri && "Seri " + x.seri, x.kafile && "Kafile " + x.kafile, x.skt && "SKT " + x.skt].filter(Boolean).join(" · ") || "ayrıntı girilmedi")}</small>${notHtml(d, x.id).replace(/ data-not="[^"]*"/, "")}</span><span class="es-m">${esc(x.miktar || "—")}</span><i>✎</i></button>`).join("") || `<div class="yk-bos">${Sx.length ? "Aramaya uyan kalem yok" : "Henüz kalem yok"}</div>`}
+        ${F.length > G.length ? `<button type="button" class="es-ekle zm-daha" data-zm="daha">${F.length - G.length} kalem daha göster ⌄</button>` : ""}
+        <button type="button" class="es-ekle" data-zm="ekle">＋ Kalem ekle</button></div>
+      <div class="es-alt"><button type="button" class="mini" data-zm="kopya">⧉ Kopyala</button><span class="bosluk"></span>${L.length > 1 ? '<button type="button" class="mini sil" data-zm="sil">Bu belgeyi sil</button>' : ""}</div></section>
+    <div class="es-onbas"><span>Kâğıttaki hali</span>${notGorVar(d) ? `<div class="cs-seg mini"><button type="button" data-zm="onz0" aria-pressed="${!zmOnNot}">Notsuz</button><button type="button" data-zm="onz1" aria-pressed="${zmOnNot}">Notlu</button></div>` : ""}</div>
     <div class="kp-onizle zm-onz"></div>`;
   otoBoyHepsi($("#zm-govde")); zmOnizle(d, true); }
+document.addEventListener("toggle", e => { const g = e.target; if(!g.matches || !g.matches("#zm-govde .es-b")) return; const n = g.dataset.zmBol; if(g.open){ zmAcikB.add(n); otoBoyHepsi(g); } else zmAcikB.delete(n); }, true);
+let zmAraZ; document.addEventListener("input", e => { const el = e.target; if(!el.dataset || !el.dataset.zmAra || !el.closest("#zm-govde")) return; zmAra = el.value; zmGoster = 40; clearTimeout(zmAraZ); zmAraZ = setTimeout(() => { zimmetCiz(); const a = $("#zm-govde .zm-ara"); if(a){ a.focus(); a.setSelectionRange(a.value.length, a.value.length); } }, 250); });
+function zmSatirDuzen(d, x, yeniMi){ const k = zmAktif(zmVeri(d)), m = () => zmMik(x.miktar);
+  altPencere("ks-perde", yeniMi ? "YENİ KALEM" : "KALEM", x.cins || "Kalem", () => `<div class="dl-alanlar es-form">${ZM_ALAN.filter(([a]) => a !== "miktar").map(([a, t, o]) => `<label class="dl-al${o === "tam" ? " tam" : ""}"><span>${t}</span><textarea class="oto-boy" rows="1" data-tek data-zmx="${a}"${o === "n" ? ' inputmode="numeric"' : ""}>${esc(x[a] || "")}</textarea></label>`).join("")}
+        <label class="dl-al tam"><span>Miktar</span><input inputmode="decimal" data-zmx="miktarN" value="${esc(m().n)}" placeholder="0"></label></div>
+      <div class="dl-al tam"><span>Ölçü birimi</span><div class="es-birim">${ZM_BIRIM.map(([k2, a]) => `<button type="button" data-zb="${k2}" aria-pressed="${m().b === k2}" title="${a}">${k2}</button>`).join("")}</div><small class="dl-not">${esc(zmBirimAd(m().b))}</small></div>
+      <div class="es-pis">${notDug(d, x.id, x.cins)}<button type="button" class="mini" data-zmy="-1">↑</button><button type="button" class="mini" data-zmy="1">↓</button><span class="bosluk"></span><button type="button" class="mini sil" data-zmd="1">Sil</button><button type="button" class="btn ana" data-ap="x">Tamam</button></div>`,
+    (b, kapat, yenile) => { const Sx = k.satirlar, i = Sx.indexOf(x);
+      if(b.dataset.zb){ x.miktar = [m().n || "1", b.dataset.zb].join(" "); kaydetBelge(d); yenile(); $("#ks-perde").dataset.zmId = x.id; return otoBoyHepsi($("#ks-perde")); }
+      if(b.dataset.zmy){ const j = i + +b.dataset.zmy; if(j >= 0 && j < Sx.length){ [Sx[i], Sx[j]] = [Sx[j], Sx[i]]; kaydetBelge(d); bildir(`${j + 1}. sıraya taşındı`); } return; }
+      if(b.dataset.zmd){ Sx.splice(i, 1); kaydetBelge(d); kapat(); return geriAlinabilir(`${x.cins || "Kalem"} silindi`, () => { Sx.splice(i, 0, x); kaydetBelge(d); zimmetCiz(); }); } },
+    { z: "E8EFF5", r: "3D5A73", kapaninca: () => { if(yeniMi && !String(x.cins || "").trim() && !String(x.stok || "").trim()){ const Sx = k.satirlar, i = Sx.indexOf(x); if(i >= 0) Sx.splice(i, 1); } zimmetCiz(); } });
+  $("#ks-perde").dataset.zmId = x.id; otoBoyHepsi($("#ks-perde")); setTimeout(() => { const t = $('#ks-perde [data-zmx="stok"]'); if(t && yeniMi) t.focus(); }, 80); }
+document.addEventListener("input", e => { const el = e.target; if(!el.dataset || !el.dataset.zmx || !el.closest("#ks-perde")) return; const d = acikBelge(); if(!d || d.tur !== "zimmet") return; const k = zmAktif(zmVeri(d)), x = k.satirlar.find(y => y.id === $("#ks-perde").dataset.zmId); if(!x) return;
+  if(el.dataset.zmx === "miktarN"){ const n = el.value.replace(/[^\d.,]/g, ""); if(n !== el.value) el.value = n; x.miktar = [n, zmMik(x.miktar).b || "AD"].filter(Boolean).join(" "); } else x[el.dataset.zmx] = el.value.replace(/\s*\n\s*/g, " "); kaydetBelge(d); });
 const zmOnizle = (d, hemen) => pdfOnizle($("#zm-govde .zm-onz"), () => zmPdf(zmIcerik(d, zmOnNot)), hemen);
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#zm-govde")) return; const d = acikBelge(); if(!d || d.tur !== "zimmet") return; const v = zmVeri(d), k = zmAktif(v);
   if(el.dataset.zmF) k[el.dataset.zmF] = el.dataset.zmF === "tarih" ? el.value : el.value.replace(/\s*\n\s*/g, " ");
@@ -10411,6 +10570,8 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
   else return; kaydetBelge(d); zmOnizle(d); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#zm-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "zimmet") return; const v = zmVeri(d), k = zmAktif(v), Sx = k.satirlar, yaz = () => { kaydetBelge(d); zimmetCiz(); };
   if(b.dataset.zmSec){ v.aktif = b.dataset.zmSec; zmAcik = null; return yaz(); }
+  if(b.dataset.zmGec){ const j = v.kayitlar.indexOf(k) + +b.dataset.zmGec; if(v.kayitlar[j]){ v.aktif = v.kayitlar[j].id; zmAra = ""; zmGoster = 40; zimmetCiz(); } return; }
+  if(b.dataset.zmDuz){ const x = Sx.find(y => y.id === b.dataset.zmDuz); if(x) zmSatirDuzen(d, x, false); return; }
   if(b.dataset.zmB){ const x = Sx.find(y => y.id === b.dataset.zmB); if(!x) return; const m = zmMik(x.miktar);
     return altPencere("ks-perde", "ÖLÇÜ BİRİMİ", x.cins || "Kalem", () => `<div class="zm-bl">${ZM_BIRIM.map(([k2, a]) => `<button type="button" class="zm-bs" data-zb="${k2}" aria-pressed="${m.b === k2}"><b>${k2}</b><small>${a}</small></button>`).join("")}</div>`,
       (bb, kapat) => { if(bb.dataset.zb){ x.miktar = [m.n || "1", bb.dataset.zb].join(" "); kapat(); yaz(); } }, { z: "E8EFF5", r: "3D5A73" }); }
@@ -10422,7 +10583,9 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(z === "tum"){ zmTum = !zmTum; return zimmetCiz(); }
   if(z === "onz0" || z === "onz1"){ zmOnNot = z === "onz1"; return zimmetCiz(); }
   if(z === "eden-sec") return kisiSecAc("Teslim eden", (S.personel.rows || []).filter(x => x.ad), "", id => { const q = (S.personel.rows || []).find(x => x.id === id); if(q){ k.eden.ad = q.ad; k.eden.rutbe = q.rutbe || ""; } yaz(); });
-  if(z === "ekle"){ const x = { id: "zs" + yeniId().slice(0, 7), stok: "", cins: "", kafile: "", seri: "", grup: "", skt: "", miktar: "1 AD" }; Sx.push(x); zmAcik = x.id; yaz(); const t = document.querySelector(`#zm-govde [data-zm-s="${x.id}:stok"]`); if(t){ t.focus(); t.scrollIntoView({ block: "center" }); } return; }
+  if(z === "daha"){ zmGoster += 80; return zimmetCiz(); }
+  if(z === "liste") return altPencere("ks-perde", "ZİMMET BELGELERİ", "Kimin belgesi?", () => `<div class="ap-liste">${v.kayitlar.map(x => { const q = zmKisi(x); return apSatir(`data-ks="${x.id}"`, `<span class="ks-av">${esc(ksBas(q ? q.ad : "?"))}</span>`, esc(q ? q.ad : "Kişi seçilmedi"), x.id === k.id ? '<em class="ks-tik">✓</em>' : "", { alt: esc([q && q.rutbe, zmTarih(x.tarih), x.satirlar.length + " kalem"].filter(Boolean).join(" · ")) }); }).join("")}</div>`, (bb, kapat) => { if(bb.dataset.ks){ v.aktif = bb.dataset.ks; zmAra = ""; zmGoster = 40; kapat(); zimmetCiz(); } }, { z: "E8EFF5", r: "3D5A73" });
+  if(z === "ekle"){ const x = { id: "zs" + yeniId().slice(0, 7), stok: "", cins: "", kafile: "", seri: "", grup: "", skt: "", miktar: "1 AD" }; Sx.push(x); kaydetBelge(d); zmAra = ""; zmGoster = Math.max(zmGoster, Sx.length); return zmSatirDuzen(d, x, true); }
   if(z === "yeni"){ const n = zmYeni({ birlik: k.birlik, eden: { ...k.eden } }); v.kayitlar.push(n); v.aktif = n.id; zmAcik = null; return yaz(); }
   if(z === "kopya"){ const n = zmYeni({ ...JSON.parse(JSON.stringify(k)), id: "zk" + yeniId().slice(0, 8), pid: "" }); n.satirlar.forEach(x => x.id = "zs" + yeniId().slice(0, 7)); v.kayitlar.push(n); v.aktif = n.id; bildir("Kopyası oluşturuldu; teslim alanı seçin"); return yaz(); }
   if(z === "sil"){ const i = v.kayitlar.indexOf(k); v.kayitlar.splice(i, 1); v.aktif = (v.kayitlar[i] || v.kayitlar[i - 1] || {}).id; yaz(); return geriAlinabilir("Zimmet belgesi silindi", () => { v.kayitlar.splice(i, 0, k); v.aktif = k.id; yaz(); }); }
@@ -11888,7 +12051,7 @@ $("#b-dosyalar").addEventListener("click", async e => {
   }
 });
 
-$("#k-kaydet").addEventListener("click", hepsiniKaydet);
+$("#k-kaydet").addEventListener("click", hepsiniKaydet); $("#k-ag").addEventListener("click", () => adimUygula(false)); $("#k-ai").addEventListener("click", () => adimUygula(true));
 $("#geri-al-btn").addEventListener("click", geriAl); $("#k-geri").addEventListener("click", geriAl); $("#k-metin").addEventListener("click", () => { if(Object.keys(kirli).length) degisenlerAc(); });
 $("#k-vazgec").addEventListener("click", e => { const b = e.currentTarget; b.dataset.onay = ""; b.textContent = "Vazgeç"; vazgec(); });
 document.addEventListener("keydown", e => { if((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === "s"){ e.preventDefault(); hepsiniKaydet(); } });
