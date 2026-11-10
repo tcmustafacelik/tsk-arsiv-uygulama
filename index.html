@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "407";
+  const SURUM = "408";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2040,7 +2040,7 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dl-onz{padding:10px;background:#E9EDF1;border-radius:14px;display:block!important} .dl-onz .dl-kagit{width:100%} .onz-tuval{display:block;width:100%;height:auto;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12)} .dl-kagit{container-type:inline-size;aspect-ratio:210/297;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);box-sizing:border-box;font-family:"Times New Roman",Tinos,"Liberation Serif",serif;color:#111;font-size:2.02cqw;line-height:1.72;overflow:hidden}
 .dl-mut{position:relative} .dl-mut>*{position:absolute;white-space:nowrap;line-height:1.2} .dl-mut .dl-m{white-space:normal;text-align:justify} .dl-mut .dl-e{overflow:visible}          .dl-m{text-align:justify;line-height:1.3} .dl-bos{color:#aaa} .dl-im{display:flex;flex-direction:column;align-items:center;margin:7cqw 0 0 56%;line-height:1.35} .dl-im b{font-weight:700}
 .izt-sec{margin-bottom:2px;grid-template-columns:1fr 1fr!important} .izt-sec button{white-space:nowrap}   .isa-not{font:600 10px var(--f-ui);color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px}
-.isa-kagit{position:relative} .isa-kagit>span{position:absolute;font-size:1.344cqw;line-height:1;white-space:nowrap;color:#000} .isa-k{position:absolute;border:.13cqw solid #000;box-sizing:border-box} .isa-c{position:absolute;border-top:.12cqw solid #000} .isa-kes{position:absolute;border-top:.22cqw dashed #000}
+.isa-kagit{position:relative} .isa-kagit>span{position:absolute;font-size:1.344cqw;line-height:1;white-space:nowrap;color:#000} .isa-k{position:absolute;border:max(.13cqw,1px) solid #000;box-sizing:border-box} .isa-c{position:absolute;border-top:max(.12cqw,1px) solid #000} .isa-kes{position:absolute;border-top:max(.22cqw,1px) dashed #000}
 .lt-grp{display:flex;align-items:baseline;gap:8px;margin:10px 0 2px;padding:7px 10px;border-radius:9px;background:#F3F1EA} .lt-grp:first-of-type{margin-top:4px} .lt-grp b{font:800 13.5px var(--f-ui);color:#2C3E50;min-width:0;overflow-wrap:anywhere} .lt-grp span{font:500 11px var(--f-ui);color:#8A8574;flex:none} .lt-grp em{margin-left:auto;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums;flex:none}
 .kc-sat.lt-kf{margin-left:12px;border-left:2px solid #E6E1D3} .kc-sat.lt-kf.lt-tek{margin:8px 0 0;border-left:0;background:#FBFAF6;border-radius:9px} .lt-tek-ad{display:block;font:800 13.5px var(--f-ui)!important;color:#2C3E50!important;margin-bottom:3px} .kc-sat.lt-kf .kc-sb{padding-left:8px}
 .lt-kfu{display:flex;align-items:baseline;gap:7px;flex-wrap:wrap} .lt-kfu b{font:700 12.5px ui-monospace,Menlo,Consolas,monospace!important;letter-spacing:.01em;color:#34495E;background:#EEF2F6;border-radius:5px;padding:1px 6px;overflow-wrap:anywhere} .lt-kfu i{font-style:normal;font:500 11px var(--f-ui);color:#8A94A0}
@@ -3160,7 +3160,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 .sp-br.std-ustu input[data-sp-d$=":d"]{border-color:#9FC2AA;background:#F1F8F2}
 /* köpek tanıtma kartı */
 .kpk-kagit{padding:4cqw 5cqw}
-.kpk-kart{border:.25cqw solid #1F4E79;border-radius:1cqw;overflow:hidden;font-family:"Liberation Serif","Times New Roman",serif}
+.kpk-kart{border:max(.25cqw,1px) solid #1F4E79;border-radius:1cqw;overflow:hidden;font-family:"Liberation Serif","Times New Roman",serif}
 .kpk-kart table{width:100%;border-collapse:collapse;table-layout:fixed} .kpk-kart td{padding:0 1cqw;vertical-align:middle;word-break:break-word}
 .kpk-alanlar{display:flex;flex-direction:column;gap:8px;padding:10px 12px}
 .kpk-al{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr) 30px;gap:6px;align-items:center}
@@ -3258,7 +3258,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 407</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 408</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10699,7 +10699,7 @@ async function kopekCikti(d, a, tur){ const a2 = { ...a, yon: "dikey", kagit: "A
 function kpkOnHtml(d){ const g = kpkGrid(d), KPK_ANA = g.tema.cizgi, k = .19, son = g.c.length - 1;   // 1 pt ≈ 0,19 cqw (kart 472 pt ≈ kağıdın %90'ı)
   let h = ""; g.c.forEach((row, r) => { if(!r) return; const birlesik = g.m.some(m => m[0] === r); h += `<tr style="height:${(g.h[r] * k).toFixed(2)}cqw">`;
     row.forEach((x, c) => { if(birlesik && c) return; const sag = !birlesik && c === 0, alt = r < son;
-      h += `<td${birlesik ? ' colspan="2"' : ""} style="${x.f ? `background:#${x.f};` : ""}${sag ? `border-right:.13cqw solid #${KPK_ANA};` : ""}${alt ? `border-bottom:.13cqw solid #${KPK_ANA};` : ""}font-weight:${x.b ? 700 : 400};text-align:${x.a === "l" ? "left" : "center"};${x.a === "l" ? `padding-left:${(5.3 / 166.7 * 100).toFixed(2)}cqw;` : ""}color:#${x.k || KPK_YAZI};font-size:${((x.s || 14.25) * k).toFixed(2)}cqw;line-height:${x.lh || 1.15}">${esc(x.v ?? "").replace(/\n/g, "<br>")}</td>`; });
+      h += `<td${birlesik ? ' colspan="2"' : ""} style="${x.f ? `background:#${x.f};` : ""}${sag ? `border-right:max(.13cqw,1px) solid #${KPK_ANA};` : ""}${alt ? `border-bottom:max(.13cqw,1px) solid #${KPK_ANA};` : ""}font-weight:${x.b ? 700 : 400};text-align:${x.a === "l" ? "left" : "center"};${x.a === "l" ? `padding-left:${(5.3 / 166.7 * 100).toFixed(2)}cqw;` : ""}color:#${x.k || KPK_YAZI};font-size:${((x.s || 14.25) * k).toFixed(2)}cqw;line-height:${x.lh || 1.15}">${esc(x.v ?? "").replace(/\n/g, "<br>")}</td>`; });
     h += "</tr>"; });
   return `<div class="kpk-kart" style="border-color:#${KPK_ANA}"><table>${h}</table></div>`; }
 const kpkKapali = kkKume("kpkKapali", ["kpk-bas"]);
@@ -10965,7 +10965,7 @@ async function tebtutCikti(d, tur, kapsam){ const v = ttVeri(d), K = kapsam === 
 /* önizleme: ızgarayı küçük tablo olarak çiz */
 function ttOnHtml(v, k){ const g = ttGrid(v, [k]), kap = kapsananlar(g); let h = `<colgroup>${g.w.map(w => `<col style="width:${(w / 98.4 * 100).toFixed(2)}%">`).join("")}</colgroup>`;
   g.c.forEach((row, r) => { h += `<tr style="height:${(g.h[r] * .1).toFixed(2)}cqw">`; for(let c = 0; c < 6; c++){ const kk = kap[r + ":" + c]; if(kk === 1) continue; const x = row[c] || {}; const sp = Array.isArray(kk) ? ` rowspan="${kk[2] - kk[0] + 1}" colspan="${kk[3] - kk[1] + 1}"` : "";
-    const br = x.br ? "border:.15cqw solid #333;" : ""; h += `<td${sp} style="${br}${x.b ? "font-weight:700;" : ""}text-align:${x.a === "c" ? "center" : "left"};vertical-align:${x.va === "t" ? "top" : "middle"};font-size:${((x.s || 11) * .155).toFixed(2)}cqw">${esc(x.v ?? "").replace(/\n/g, "<br>")}</td>`; } h += "</tr>"; });
+    const br = x.br ? "border:max(.15cqw,1px) solid #333;" : ""; h += `<td${sp} style="${br}${x.b ? "font-weight:700;" : ""}text-align:${x.a === "c" ? "center" : "left"};vertical-align:${x.va === "t" ? "top" : "middle"};font-size:${((x.s || 11) * .155).toFixed(2)}cqw">${esc(x.v ?? "").replace(/\n/g, "<br>")}</td>`; } h += "</tr>"; });
   return `<table class="tt-tablo">${h}</table>`; }
 function tebtutCiz(){ const d = acikBelge(); if(!d || d.tur !== "tebtut") return; const v = ttVeri(d), k = ttKayit(v), eden = ttEden(k), S = ttSatirlar(k), P = tbPersonel().filter(p => p.id !== k.eden);
   const sira = [...v.kayitlar].sort((a, b) => (b.tarih || "").localeCompare(a.tarih || ""));
