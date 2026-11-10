@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "419";
+  const SURUM = "420";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3041,6 +3041,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 
 .km-kan{display:grid;grid-template-columns:repeat(4,1fr);gap:5px} .km-kan button{border:1px solid var(--line2);background:#fff;border-radius:9px;padding:8px 2px;font:700 12.5px var(--f-ui);color:#22303D;cursor:pointer;white-space:nowrap}
 .km-kan button[aria-pressed="true"]{background:#FBEAEA;border-color:#E2B4B4;color:#8E3434;box-shadow:0 0 0 2px #F6DADA}
+.deg-sat{display:flex;align-items:center;gap:6px;padding-right:8px} .deg-sat+.deg-sat{border-top:1px solid var(--line2)} .deg-sat>.ap-sat{flex:1;min-width:0;border:0!important} .deg-yok{flex:0 0 auto;height:32px;border:1px solid #E6D3B0;background:#FFF8EC;color:#7A5214;border-radius:9px;font:700 12px var(--f-ui);padding:0 10px;cursor:pointer} .deg-is{display:flex;gap:8px;margin-top:10px} .deg-is .btn{flex:1}
 .zm-l.kisa>.zm-k:nth-child(n+6){display:none} .zm-tum{border:0;background:none;color:#3D5A73;font:700 12px var(--f-ui);padding:6px;cursor:pointer} .zm-bas2{display:flex;align-items:center;gap:8px}
 .zm-s{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:7px 4px;cursor:pointer;text-align:left} .zm-l{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:10px;overflow:hidden} .zm-k+.zm-k{border-top:1px solid var(--line2)} .zm-k.acik{background:#F7F9FB} .zm-n{min-width:22px;text-align:center;font:700 11px var(--f-ui);color:var(--muted)} .zm-ic{flex:1;min-width:0;display:flex;flex-direction:column} .zm-ic b{font:700 12.5px var(--f-ui);color:#26313B} .zm-ic small{font:500 10.5px var(--f-ui);color:var(--muted)} .zm-s>em{font:700 11px var(--f-ui);font-style:normal;color:#3D5A73;background:#E8EFF5;border-radius:6px;padding:2px 7px;white-space:nowrap} .zm-form{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px 8px 10px} .zm-form .tam{grid-column:1/-1} .zm-is{grid-column:1/-1;display:flex;gap:6px;align-items:center} .zm-is .bosluk{flex:1} .zm-t{background:#E8EFF5!important;color:#3D5A73!important} .dl-ust-s.zm-ik{background:#E8EFF5;color:#3D5A73}
 .km-silb{display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D9DCC6;background:#F7F8F0;border-radius:9px;padding:7px 10px;cursor:pointer;text-align:left} .km-silT{font:700 12px var(--f-ui);color:#4A4F2C;margin-bottom:1px}
@@ -3327,7 +3328,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 419</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 420</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3638,10 +3639,10 @@ async function otoKaydet(){
   } finally { otoCalisiyor = false; kayitCubugu(); }
 }
 /* kaydedilmemiş değişiklikler nerede: her yol için kayıtlı hâlle karşılaştırılır, dokununca oraya gidilir */
-const DEG_AD = { ad: "adı", rutbe: "rütbe", tel: "telefon", memleket: "memleket", baba: "baba adı", dogum: "doğum tarihi", duhul: "duhul", nasip: "nasıp", sicil: "sicil", ems: "EMS no", tc: "T.C. no", kita: "kıt'a", adres: "adres", ayr: "ayrılış", kat: "katılış", gun: "gün", tur: "tür", ozu: "özü", metin: "metin", tarih: "tarih", gorev: "görev", ilgi: "ilgi", ek: "ekler", kayitlar: "", rows: "", kisiler: "", adresler: "adresler", kan: "kan grubu", bas: "başlangıç", bit: "bitiş", onay: "onaylayan", durum: "durum", not: "not",
+const DEG_AD = { sl: "", zm: "", liste: "", satirlar: "", seri: "seri no", pid: "zimmet", model: "cinsi", cins: "cins", miktar: "miktar", stok: "stok no", eden: "teslim eden", alan: "teslim alan", birlik: "birlik", kisim: "kısım", aktif: "seçili kayıt", ad: "adı", rutbe: "rütbe", tel: "telefon", memleket: "memleket", baba: "baba adı", dogum: "doğum tarihi", duhul: "duhul", nasip: "nasıp", sicil: "sicil", ems: "EMS no", tc: "T.C. no", kita: "kıt'a", adres: "adres", ayr: "ayrılış", kat: "katılış", gun: "gün", tur: "tür", ozu: "özü", metin: "metin", tarih: "tarih", gorev: "görev", ilgi: "ilgi", ek: "ekler", kayitlar: "", rows: "", kisiler: "", adresler: "adresler", kan: "kan grubu", bas: "başlangıç", bit: "bitiş", onay: "onaylayan", durum: "durum", not: "not",
   kayit: "", i: "", a: "ayrılış", k: "katılış", t: "tür", yilGun: "yıllık gün", mazGun: "mazeret gün", yol: "yol izni", topYil: "yıllık hak", topMaz: "mazeret hak", topYol: "yol hakkı", ayri: "ayrı kaldığı süreler", sebep: "sebep", kaynak: "kaynak", musvedde: "çıktı biçimi", hak: "haklar", bag: "devam", iz: "izin bağı", gorevler: "görev yerleri", pid: "kişi bağı", foto: "fotoğraf", toplamArti: "toplama +1 gün", gorevOto: "otomatik görev satırları", donemDisi: "dönem dışı izinler" };
 const degKisi = k => { const p = (S.personel.rows || []).find(x => x.id === k); return p ? p.ad : null; };
-const degEt = x => x && typeof x === "object" ? (x.ad || x.baslik || x.no || x.hedef || ("a" in x && "k" in x ? (x.a ? trTarih(x.a).slice(0, 5) + " izni" : "izin satırı") : "") || (x.ayr ? trTarih(x.ayr).slice(0, 5) + " satırı" : "") || "satır") : String(x);
+const degEt = x => x && typeof x === "object" ? (("seri" in x && "model" in x) ? (x.seri ? "Seri " + x.seri : "boş seri satırı") : x.cins || x.ad || x.baslik || x.no || x.hedef || ("a" in x && "k" in x ? (x.a ? trTarih(x.a).slice(0, 5) + " izni" : "izin satırı") : "") || (x.ayr ? trTarih(x.ayr).slice(0, 5) + " satırı" : "") || "satır") : String(x);
 function degFark(a, b, yol, o){ if(o.length > 5 || JSON.stringify(a) === JSON.stringify(b)) return o; const on = yol ? yol + " · " : "";
   if(Array.isArray(a) && Array.isArray(b)){ const id = x => x && typeof x === "object" ? (x.id || x.ad) : x, am = new Map(a.map(x => [id(x), x])), bm = new Map(b.map(x => [id(x), x])), n0 = o.length;
     for(const x of b){ if(!am.has(id(x))) o.push(`${on}${degEt(x)} eklendi`); else degFark(am.get(id(x)), x, on + degEt(x), o); if(o.length > 5) return o; }
@@ -3674,10 +3675,13 @@ async function degisenlerAc(){ const yollar = Object.keys(kirli); if(!yollar.len
           if(ilk && d.tur === "izin") setTimeout(() => { const tr = document.querySelector(`#i-tablo tr[data-id="${ilk.id}"]`); if(tr) tr.scrollIntoView({ block: "start" }); }, 300);
           setTimeout(() => { const el = document.querySelector(`#v-belge .dl-sat.on, #v-belge [aria-current="true"], #v-belge .km-kart`); if(el) el.scrollIntoView({ block: "center" }); }, 250); }
         : (id === "yapi" ? () => { belgeKapat && belgeKapat(); } : null); }
-    L.push({ ad, F, git }); }
+    L.push({ ad, F, git, y }); }
   kayitCubugu(); taslakYaz(true); if(!L.length){ bildir("Kaydedilmemiş değişiklik kalmadı"); return; }
-  altPencere("ks-perde", "KAYDEDİLMEMİŞ", "Değişen yerler", () => `<div class="ap-liste">${L.map((x, i) => apSatir(`data-ks="${i}"`, `<span class="ks-av deg-av">${i + 1}</span>`, esc(x.ad), "", { alt: esc(degOzet(x.F) + (x.F.length > 5 ? " …" : "")) })).join("")}</div><p class="deg-not">Dokununca o belge açılır. Hepsini saklamak için alttaki “Kaydet”e basın.</p>`,
-    (b, kapat) => { if(b.dataset.ks){ const x = L[+b.dataset.ks]; kapat(); if(x.git) x.git(); } }, { z: "FFF3DD", r: "7A5214" }); }
+  altPencere("ks-perde", "KAYDEDİLMEMİŞ", "Değişen yerler", () => `<div class="ap-liste">${L.map((x, i) => `<div class="deg-sat">${apSatir(`data-ks="${i}"`, `<span class="ks-av deg-av">${i + 1}</span>`, esc(x.ad), "", { alt: esc(degOzet(x.F) + (x.F.length > 5 ? " …" : "")) })}<button type="button" class="deg-yok" data-yok="${i}">Yoksay</button></div>`).join("")}</div>
+    <div class="deg-is"><button type="button" class="btn" data-yok="hepsi">Hepsini yoksay</button><button type="button" class="btn ana" data-kay="1">Kaydet</button></div><p class="deg-not">Satıra dokununca o belge açılır. “Yoksay” o değişikliği geri alır, kaydedilmez.</p>`,
+    async (b, kapat) => { if(b.dataset.ks){ const x = L[+b.dataset.ks]; kapat(); if(x.git) x.git(); return; }
+      if(b.dataset.kay){ kapat(); $("#k-kaydet").click(); return; }
+      if(b.dataset.yok){ kapat(); if(b.dataset.yok === "hepsi") return $("#k-vazgec").click(); const x = L[+b.dataset.yok]; if(!x) return; await vazgec(true, [x.y]); bildir(`${x.ad}: değişiklik yoksayıldı`); if(Object.keys(kirli).length) $("#k-metin").click(); } }, { z: "FFF3DD", r: "7A5214" }); }
 function cubukTamam(yazi, geri){ const c = $("#kayit-cubugu"); if(Object.keys(kirli).length) return; c.classList.add("tamam"); $("#k-metin").innerHTML = `<i></i>${yazi}`; $("#k-kaydet").hidden = true; $("#k-geri").hidden = !geri; c.hidden = false;
   clearTimeout(geriGoster.z); geriGoster.z = setTimeout(() => { c.classList.remove("tamam"); kayitCubugu(); }, 4500); }
 function geriGoster(){ cubukTamam("Kaydedildi", geriYigin.length > 0); }
@@ -3723,8 +3727,8 @@ function btDuzelt(k){
   if(k === "hedef"){ S.hedef.lejant = { ...VARSAYILAN_LEJANT, ...(S.hedef.lejant || {}) }; S.hedef.rows ||= []; }
   if(k === "personel") S.personel.rows ||= []; if(k === "izin") S.izin.kayit ||= {}; if(k === "yapi") S.yapi.klasorler ||= []; if(k === "yoklama") S.yoklama.rows ||= []; if(k === "yoklama30"){ S.yoklama30 ||= {}; S.yoklama30.rows ||= []; } if(k === "gdhg") gdDuzelt(); if(k === "izinb") izbDuzelt(); if(k === "gdhgSet"){ S.gdhgSet ||= {}; S.gdhgSet.liste ||= []; }
 }
-async function vazgec(sessiz){
-  const yollar = Object.keys(kirli); if(!yollar.length) return;
+async function vazgec(sessiz, yalniz){
+  const yollar = yalniz ? yalniz.filter(y => y in kirli) : Object.keys(kirli); if(!yollar.length) return;
   for(const y of yollar){ delete kirli[y]; if(!db) continue; const [kol, id] = y.split("/");
     try { const d = await db.doc(y).get();
       if(kol === "bt"){ if(d.exists){ S[id] = kopya(d.data()); btDuzelt(id); } }
