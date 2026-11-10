@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "383";
+  const SURUM = "384";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1899,7 +1899,20 @@ textarea.tek-satir{display:block;width:100%;box-sizing:border-box;min-height:38p
   #i-tablo td input{min-width:0!important;width:100%;height:36px;border:1px solid rgba(0,0,0,.08)!important;border-radius:8px;background:rgba(255,255,255,.75)!important;padding:0 6px!important;font:600 13px var(--f-ui)}
   #i-tablo td.i-toplam{grid-column:2 / -1;flex-direction:row;justify-content:space-between;align-items:center;padding:6px 10px!important;background:var(--panel2)!important}
   #i-tablo td.i-not{grid-column:2 / -1}
+  #i-tablo td.i-tur{grid-column:2 / -1;padding:4px!important;border-radius:10px!important;margin-top:-4px} #i-tablo td.i-kal{display:none!important} #i-tablo td.i-kalm,#i-tablo td.i-ekle{grid-column:2 / -1}
+  #i-tablo td.i-ekle .mini{height:34px;border:1px dashed var(--line);border-radius:10px;background:transparent;color:#3D5F8C;font:600 12.5px var(--f-ui)}
 }
+#i-tablo td.i-kalm{display:none} @media (max-width:640px){ #i-tablo tr.acik td.i-kalm{display:flex!important} }
+.i-tc{display:flex;gap:3px} .i-tc button{flex:1;min-width:0;height:28px;padding:0 6px;border:1px solid rgba(0,0,0,.07);border-radius:7px;background:rgba(255,255,255,.45);font:600 11.5px var(--f-ui);color:#6A7684;cursor:pointer;white-space:nowrap}
+.i-tc button[aria-pressed="true"]{background:#fff;color:#1F2A36;border-color:rgba(0,0,0,.18);box-shadow:0 1px 2px rgba(0,0,0,.06)}
+#i-tablo td.i-kal{font-weight:700;color:#2F5A3A} #i-tablo td.i-kal.asim{color:#9A3A2E}
+.i-km{display:grid;grid-template-columns:repeat(3,1fr);gap:6px} .i-km span{display:flex;flex-direction:column;align-items:center;padding:6px 4px;border-radius:9px;background:#F1F5F2} .i-km b{font:800 15px var(--f-ui);color:#2F5A3A} .i-km small{font:500 10.5px var(--f-ui);color:var(--muted);text-align:center}
+.i-km span.asim{background:#F8ECE9} .i-km span.asim b{color:#9A3A2E}
+.i-ayar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 10px;border:1px solid var(--line2);border-radius:10px;background:var(--panel)}
+.i-et{font:600 11px var(--f-ui);color:var(--muted);margin-right:6px}
+.i-hak{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px} .i-hak label{display:flex;align-items:center;gap:5px;font:600 12.5px var(--f-ui);color:var(--fg)} .i-hak input{width:46px;height:32px;border:1px solid var(--line);border-radius:8px;text-align:center;font:700 13px var(--f-ui);background:var(--panel2)}
+.i-cikti{display:flex;align-items:center} .i-seg{display:inline-grid;grid-template-columns:1fr 1fr;gap:2px;padding:2px;border:1px solid var(--line2);border-radius:9px;background:var(--panel2)}
+.i-seg button{height:30px;padding:0 10px;border:0;border-radius:7px;background:transparent;font:600 12px var(--f-ui);color:var(--muted);cursor:pointer;white-space:nowrap} .i-seg button[aria-pressed="true"]{background:var(--panel);color:var(--accent);box-shadow:0 1px 3px rgba(30,45,60,.1)}
 select.sec-gizli{display:none!important}
 .sec-cip{display:inline-flex;flex:1 1 auto;min-width:0;max-width:100%;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--panel)} .sec-cip button{flex:1 1 auto;min-width:0;height:36px;padding:0 10px;border:0;background:transparent;font:600 12.5px var(--f-ui);color:var(--fg);white-space:nowrap} .sec-cip button+button{border-left:1px solid var(--line)} .sec-cip button[aria-pressed="true"]{background:var(--accent);color:#fff}
 .sec-cip.cok{flex-wrap:wrap;border:0;background:transparent;gap:6px;overflow:visible} .sec-cip.cok button{flex:0 1 auto;height:34px;border:1px solid var(--line)!important;border-radius:7px;background:var(--panel);padding:0 12px} .sec-cip.cok button[aria-pressed="true"]{background:var(--accent);border-color:var(--accent)!important}
@@ -2756,7 +2769,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 383</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 384</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -2863,7 +2876,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 
         <!-- İZİN -->
         <div id="e-izin" hidden style="display:flex;flex-direction:column;gap:10px"><div id="i-bas"></div>
-          <div class="arac"><label class="kutu" for="i-yil">Yıl <input type="number" id="i-yil" min="2024" max="2040" style="width:84px"></label><span class="uclar">Gün sayısı = katılış − ayrılış.</span></div>
+          <div class="arac"><label class="kutu" for="i-yil">Yıl <input type="number" id="i-yil" min="2024" max="2040" style="width:84px"></label><span class="uclar">Gün sayısı = katılış − ayrılış.</span></div><div id="i-ayar" class="i-ayar"></div>
           <div class="tablo-kap"><table class="liste" id="i-tablo"><thead>
             <tr><th rowspan="2">S.No</th><th rowspan="2">Rütbesi</th><th rowspan="2">Adı Soyadı</th><th colspan="3" style="background:#E1ECF7;color:#2B3A4A">1'inci İzin</th><th colspan="3" style="background:#E5F2E2;color:#2B3A2B">2'nci İzin</th><th colspan="3" style="background:#F6EFD9;color:#4A3E1F">3'üncü İzin</th><th rowspan="2">Toplam Gün</th><th rowspan="2">Açıklama</th></tr>
             <tr><th style="top:31px">Ayrılış</th><th style="top:31px">Katılış</th><th style="top:31px">Gün</th><th style="top:31px">Ayrılış</th><th style="top:31px">Katılış</th><th style="top:31px">Gün</th><th style="top:31px">Ayrılış</th><th style="top:31px">Katılış</th><th style="top:31px">Gün</th></tr>
@@ -2983,7 +2996,7 @@ const CDN = {
 var BIRLIK = "";
 const RENK = { yesil:"B5DDA9", beyaz:"F1F1EE", kirmizi:"E8685C", mod:"8FD0CE", k307:"F2CF8C", ucus:"D3E4F6", bas:"EDEFEC" };
 const VARSAYILAN_LEJANT = { yesil:"YEŞİL KESE M3A1", beyaz:"BEYAZ KESE M4A2", kirmizi:"KIRMIZI KESE M119A2", mod:"M92A3T", k307:"K 676" };
-const IZIN_RENK = ["E1ECF7","E5F2E2","F6EFD9"];
+const IZIN_RENK = ["E1ECF7","E5F2E2","F6EFD9","E6E3F3","DFEFEF","EEEBDD"];
 const H_ALAN = ["sn","no","koor","rakim","mesafe","mermi","barut","ist","yuk","ucus","tepe","tanim"];
 const H_BASLIK = ["S.NU","HEDEF NUMARASI","KOORDİNAT","RAKIM","MESAFE","MERMİ","BARUT HAKKI","İSTİKAMET AÇISI","YÜKSELİŞ","UÇUŞ SÜRESİ","MERMİ TEPE YÜKSEKLİĞİ","HEDEFİN TANIMI"];
 const H_ORAN = [4.2,10.5,20.5,5.2,6.2,7.2,8.2,7.0,7.0,5.6,8.2,22.0];
@@ -4247,7 +4260,7 @@ function personelEsitle(kaynaklar = ["ilk"]){
       if(ileri && (k.ad !== p.ad || k.rutbe !== p.rutbe || (p.sicil && k.sicil !== sicil))){ k.ad = p.ad; k.rutbe = p.rutbe; if(p.sicil) k.sicil = sicil; degisen.add("gdhg"); } }
     /* izinler → GDHG */
     for(const p of P){ const k = bul(L, p); if(!k) continue;
-      const iz = ((S.izin.kayit || {})[p.id]?.i || []).filter(x => x.a && x.k).map(x => ({ sebep: "Yıllık İzin", ayr: x.a, kat: x.k, kaynak: "izin" }));
+      const iz = ((S.izin.kayit || {})[p.id]?.i || []).filter(x => x.a && x.k).map(x => ({ sebep: (IZ_TUR.find(t => t[0] === izTur(x)) || [])[3] || "Yıllık İzin", ayr: x.a, kat: x.k, kaynak: "izin" }));
       const tum = [...k.ayri, ...(k.donemDisi || [])]; const anahtar = x => x.ayr + "|" + x.kat;
       const istenen = new Set(iz.map(anahtar)), mevcutIzin = tum.filter(x => x.kaynak === "izin");
       const silinecek = mevcutIzin.filter(x => !istenen.has(anahtar(x))), eklenecek = iz.filter(x => !tum.some(y => anahtar(y) === anahtar(x)));
@@ -4504,7 +4517,7 @@ const KD_KAYNAK = [
     B.push({ k: "yok", d, ad: d.ad, kisa: [String(r.vardiya || "GÜNDÜZ").toLocaleLowerCase("tr").replace(/^./, c => c.toLocaleUpperCase("tr")), r.gorev].filter(Boolean).join(" · "), deger: h.durum || "—", alt: [r.vardiya || "GÜNDÜZ", r.gorev, String(h.aciklama || "").split("\n")[0]].filter(Boolean).join(" · "), renk: h.durum === "MEVCUT" ? "iyi" : "uyar" }); }); } },
   { k: "izin", et: "İzin", z: "#E2EBF5", c: "#3F6487", topla: (p, B, gun) => { /* izin çizelgesi */
   const iz = S.izin && S.izin.kayit && S.izin.kayit[p.id]; if(iz){ const L = (iz.i || []).filter(x => x.a || x.k); const top = L.reduce((t, x) => { const g = gunFark(x.a, x.k); return t + (g === "" ? 0 : g); }, 0);
-    B.push({ k: "izin", d: belgeTur("izin"), ad: "Personel İzin Çizelgesi", kisa: L.length ? L.length + " izin kaydı" : "kayıt yok", deger: L.length ? top + " gün" : "izin yok", alt: L.map((x, j) => `${j + 1}. ${trTarih(x.a) || "?"}–${trTarih(x.k) || "?"}`).join(" · ") || (iz.not || ""), renk: L.length ? "mavi" : "gri" }); } } },
+    B.push({ k: "izin", d: belgeTur("izin"), ad: "Personel İzin Çizelgesi", kisa: L.length ? L.length + " izin kaydı" : "kayıt yok", deger: L.length ? top + " gün" : "izin yok", alt: [L.map((x, j) => `${j + 1}. ${trTarih(x.a) || "?"}–${trTarih(x.k) || "?"} (${(IZ_TUR.find(t => t[0] === izTur(x)) || [])[1]})`).join(" · ") || (iz.not || ""), (() => { const u = izKullan(iz), h = izHak(); return "kalan: " + IZ_TUR.map(([v, t]) => `${t.toLocaleLowerCase("tr")} ${h[v] - u[v]}`).join(", "); })()].filter(Boolean).join(" · "), renk: L.length ? "mavi" : "gri" }); } } },
   { k: "izinb", et: "İzin belgesi", z: "#E2EBF5", c: "#3F6487", topla: (p, B, gun) => { /* izin belgesi */
   ((S.izinb && S.izinb.kisiler) || []).filter(x => kdEs(p, x)).forEach(x => { let kat = ""; try { kat = izbHesap(x).kat; } catch(e){} B.push({ k: "izinb", d: belgeTur("izinb"), ad: "İzin belgesi", kisa: `${(izbTr(x.ayr) || "—").slice(0, 5)} → ${izbTr(kat) || "—"}`, deger: x.tur || "izin", alt: `${izbTr(x.ayr) || "—"} → ${izbTr(kat) || "—"}`, renk: "mavi" }); }); } },
   { k: "gdhg", et: "GDHG", z: "#EEE7DA", c: "#7A5A25", topla: (p, B, gun) => { /* GDHG */
@@ -4560,25 +4573,49 @@ $("#p-ekle").addEventListener("click", () => { const r = { id: yeniId(), rutbe:"
 /* ================= İZİN ================= */
 const gunFark = (a, k) => { if(!a || !k) return ""; const d = (Date.parse(k) - Date.parse(a)) / 864e5; return isFinite(d) ? Math.round(d) : ""; };
 const izinKayit = id => (S.izin.kayit[id] ||= { i: [{ a:"", k:"" }, { a:"", k:"" }, { a:"", k:"" }], not: "" });
+/* izin türleri ve yıllık haklar: her izin satırı Yıllık / Yol / Mazeret; kullanılan ve kalan gün kendiliğinden hesaplanır */
+const IZ_TUR = [["yillik", "Yıllık", "YILLIK", "Yıllık İzin"], ["yol", "Yol", "YOL", "Yol İzni"], ["mazeret", "Mazeret", "MAZERET", "Mazeret İzni"]];
+const IZ_HAK0 = { yillik: 30, yol: 2, mazeret: 15 };
+const izHak = () => ({ ...IZ_HAK0, ...(S.izin.hak || {}) });
+const izTur = x => x && IZ_TUR.some(t => t[0] === x.t) ? x.t : "yillik";
+function izKullan(k){ const u = { yillik: 0, yol: 0, mazeret: 0 }; ((k && k.i) || []).forEach(x => { const g = gunFark(x.a, x.k); if(g !== "") u[izTur(x)] += g; }); return u; }
+const izSlotSay = () => Math.min(6, Math.max(3, ...Object.values(S.izin.kayit || {}).map(k => (k.i || []).length)));
+const IZ_SIRA = ["1'inci", "2'nci", "3'üncü", "4'üncü", "5'inci", "6'ncı"];
 function izinCiz(){ { const ib = $("#i-bas"); if(ib && !odakIcinde("#i-bas")){ ib.innerHTML = basAlanHtml("izin"); otoBoyHepsi(ib); } }
-  const tb = $("#i-tablo tbody"); const yil = S.izin.yil || 2027; $("#i-yil").value = yil;
-  if(!S.personel.rows.length){ tb.innerHTML = `<tr><td colspan="14"><div class="bos"><strong>Önce personel ekleyin</strong>İzin çizelgesi Personel İsim Listesi belgesinden oluşur.</div></td></tr>`; return; }
+  const tb = $("#i-tablo tbody"); const yil = S.izin.yil || 2027; $("#i-yil").value = yil; const N = izSlotSay(), hak = izHak(), bos = !!S.izin.musvedde;
+  if(!odakIcinde("#i-ayar")) $("#i-ayar").innerHTML = `<div class="i-hak"><span class="i-et">Yıllık haklar</span>${IZ_TUR.map(([v, t]) => `<label>${t}<input type="number" min="0" max="99" inputmode="numeric" data-i-hak="${v}" value="${hak[v]}"> gün</label>`).join("")}</div>
+    <div class="i-cikti"><span class="i-et">Çıktı</span><div class="i-seg"><button type="button" data-i-bos="0" aria-pressed="${!bos}">Dolu</button><button type="button" data-i-bos="1" aria-pressed="${bos}">Boş müsvedde</button></div></div>`;
+  $("#i-tablo thead").innerHTML = `<tr><th rowspan="2">S.No</th><th rowspan="2">Rütbesi</th><th rowspan="2">Adı Soyadı</th>${Array.from({ length: N }, (_, j) => `<th colspan="4" style="background:#${IZIN_RENK[j]};color:#2B3A4A">${IZ_SIRA[j]} İzin</th>`).join("")}<th rowspan="2">Toplam Gün</th><th colspan="3">Kalan</th><th rowspan="2">Açıklama</th><th rowspan="2"></th></tr>
+    <tr>${Array.from({ length: N }, () => ["Ayrılış", "Katılış", "Gün", "Tür"].map(t => `<th style="top:31px">${t}</th>`).join("")).join("")}${IZ_TUR.map(([v, t]) => `<th style="top:31px">${t}</th>`).join("")}</tr>`;
+  if(!S.personel.rows.length){ tb.innerHTML = `<tr><td colspan="${4 * N + 9}"><div class="bos"><strong>Önce personel ekleyin</strong>İzin çizelgesi Personel İsim Listesi belgesinden oluşur.</div></td></tr>`; return; }
   tb.innerHTML = S.personel.rows.map((p, n) => {
-    const k = S.izin.kayit[p.id] || { i: [{}, {}, {}], not: "" }; let toplam = 0, var_ = false;
-    const hucre = k.i.map((iz, j) => { const g = gunFark(iz.a, iz.k); if(g !== ""){ toplam += g; var_ = true; } const st = `style="background:#${IZIN_RENK[j]}"`;
-      return `<td class="boya ia" data-et="${j + 1}. izin · ayrılış" ${st}><input type="date" id="i-${p.id}-${j}-a" data-j="${j}" data-alan="a" value="${esc(iz.a)}" min="${yil}-01-01" max="${yil + 1}-01-31" aria-label="${j + 1}. izin ayrılış"></td>
-        <td class="boya" data-et="katılış" ${st}><input type="date" id="i-${p.id}-${j}-k" data-j="${j}" data-alan="k" value="${esc(iz.k)}" min="${yil}-01-01" max="${yil + 1}-01-31" aria-label="${j + 1}. izin katılış"></td>
-        <td class="hesap" data-et="gün" style="background:#${IZIN_RENK[j]};color:#1F2420">${g}</td>`; }).join("");
+    const k = S.izin.kayit[p.id] || { i: [], not: "" }; let toplam = 0, var_ = false; const u = izKullan(k);
+    const hucre = Array.from({ length: N }, (_, j) => k.i[j] || {}).map((iz, j) => { const g = gunFark(iz.a, iz.k); if(g !== ""){ toplam += g; var_ = true; } const st = `style="background:#${IZIN_RENK[j]}"`, tr0 = izTur(iz);
+      return `<td class="boya ia" data-et="${j + 1}. izin · ayrılış" ${st}><input type="date" id="i-${p.id}-${j}-a" data-j="${j}" data-alan="a" value="${esc(iz.a || "")}" min="${yil}-01-01" max="${yil + 1}-01-31" aria-label="${j + 1}. izin ayrılış"></td>
+        <td class="boya" data-et="katılış" ${st}><input type="date" id="i-${p.id}-${j}-k" data-j="${j}" data-alan="k" value="${esc(iz.k || "")}" min="${yil}-01-01" max="${yil + 1}-01-31" aria-label="${j + 1}. izin katılış"></td>
+        <td class="hesap" data-et="gün" ${st}>${g}</td>
+        <td class="boya i-tur" ${st}><div class="i-tc" role="radiogroup" aria-label="${j + 1}. izin türü">${IZ_TUR.map(([v, t]) => `<button type="button" data-i-tur="${j}:${v}" aria-pressed="${tr0 === v}">${t}</button>`).join("")}</div></td>`; }).join("");
     const donem = k.i.map(iz => iz.a ? `${trTarih(iz.a).slice(0, 5)}${iz.k ? "–" + trTarih(iz.k).slice(0, 5) : ""}` : "").filter(Boolean);
+    const kal = IZ_TUR.map(([v, t]) => ({ v, t, h: hak[v], k: hak[v] - u[v] }));
     return `<tr data-id="${esc(p.id)}"${iAcik === p.id ? ' class="acik"' : ""}><td class="sn">${n + 1}</td><td class="i-oz"><button type="button" data-i-ac><span class="p-oy"><b>${esc(p.ad)}</b><small>${esc(p.rutbe)}${donem.length ? " · " + donem.join(", ") : " · izin girilmedi"}</small></span>${var_ ? `<span class="i-top">${toplam}<small>gün</small></span>` : ""}<i class="p-ok"></i></button></td><td class="i-rt" style="padding:0 8px;font-weight:600;white-space:nowrap">${esc(p.rutbe)}</td><td class="i-rt" style="padding:0 8px;font-weight:700;white-space:nowrap">${esc(p.ad)}</td>${hucre}
-      <td class="hesap i-toplam" data-et="Toplam gün">${var_ ? toplam : ""}</td><td class="i-not" data-et="Açıklama"><input id="i-${p.id}-not" data-alan="not" value="${esc(k.not)}" aria-label="Açıklama" style="min-width:140px"></td></tr>`; }).join("");
+      <td class="hesap i-toplam" data-et="Toplam gün">${var_ ? toplam : ""}</td>${kal.map(x => `<td class="hesap i-kal${x.k < 0 ? " asim" : ""}">${x.k}</td>`).join("")}
+      <td class="i-kalm" data-et="Kalan izin"><div class="i-km">${kal.map(x => `<span class="${x.k < 0 ? "asim" : ""}"><b>${x.k}</b><small>${x.t} · ${x.h} günden</small></span>`).join("")}</div></td>
+      <td class="i-not" data-et="Açıklama"><input id="i-${p.id}-not" data-alan="not" value="${esc(k.not)}" aria-label="Açıklama" style="min-width:140px"></td>
+      <td class="i-ekle">${N < 6 || (k.i || []).length < 6 ? `<button type="button" class="mini" data-i-ekle title="Bu kişiye bir izin satırı daha ekle">＋ İzin</button>` : ""}</td></tr>`; }).join("");
 }
 let iAcik = null;
 $("#i-tablo").addEventListener("click", e => { const b = e.target.closest("[data-i-ac]"); if(!b) return; const tr = b.closest("tr"), ac = !tr.classList.contains("acik"); document.querySelectorAll("#i-tablo tr.acik").forEach(x => x.classList.remove("acik")); if(ac){ tr.classList.add("acik"); iAcik = tr.dataset.id; } else iAcik = null; });
 $("#i-tablo").addEventListener("change", e => { const tr = e.target.closest("tr"); if(!tr) return; const k = izinKayit(tr.dataset.id);
-  if(e.target.dataset.alan === "not") k.not = e.target.value; else k.i[+e.target.dataset.j][e.target.dataset.alan] = e.target.value;
+  if(e.target.dataset.alan === "not") k.not = e.target.value; else { const j = +e.target.dataset.j; while(k.i.length <= j) k.i.push({ a: "", k: "" }); k.i[j][e.target.dataset.alan] = e.target.value;
+    while(k.i.length > 3 && !k.i[k.i.length - 1].a && !k.i[k.i.length - 1].k) k.i.pop(); }
   const akt = document.activeElement?.id; izinCiz(); if(akt) document.getElementById(akt)?.focus(); kaydetBt("izin"); });
 $("#i-tablo").addEventListener("input", e => { if(e.target.dataset.alan === "not"){ izinKayit(e.target.closest("tr").dataset.id).not = e.target.value; kaydetBt("izin"); } });
+$("#i-tablo").addEventListener("click", e => { const b = e.target.closest("[data-i-tur],[data-i-ekle]"); if(!b) return; const tr = b.closest("tr"), k = izinKayit(tr.dataset.id);
+  if(b.dataset.iTur){ const [j, v] = b.dataset.iTur.split(":"); while(k.i.length <= +j) k.i.push({ a: "", k: "" }); if(v === "yillik") delete k.i[+j].t; else k.i[+j].t = v; }
+  else { const N = izSlotSay(); if(k.i.length >= 6) return bildir("Bir kişiye en çok 6 izin satırı"); while(k.i.length < N) k.i.push({ a: "", k: "" }); k.i.push({ a: "", k: "" }); }
+  izinCiz(); kaydetBt("izin"); });
+document.addEventListener("change", e => { const h = e.target.closest && e.target.closest("[data-i-hak]"); if(!h) return; const v = parseInt(h.value, 10); if(!(v >= 0 && v < 100)) return; S.izin.hak = { ...(S.izin.hak || {}), [h.dataset.iHak]: v }; kaydetBt("izin"); izinCiz(); });
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-i-bos]"); if(!b) return; S.izin.musvedde = b.dataset.iBos === "1"; if(!S.izin.musvedde) delete S.izin.musvedde; kaydetBt("izin"); izinCiz(); bildir(S.izin.musvedde ? "Çıktı boş müsvedde: tarihler ve günler boş basılır" : "Çıktı dolu: girilen izinlerle basılır"); });
 $("#i-yil").addEventListener("change", e => { const y = parseInt(e.target.value, 10); if(y > 2000 && y < 2100){ S.izin.yil = y; izinCiz(); kaydetBt("izin"); } });
 
 /* ================= YOKLAMA ================= */
@@ -7274,14 +7311,17 @@ function tanimPersonel(){
     satirH: 12, xSatir: 42, xYazi: 9, xBasYazi: 10, xBaslikYazi: 12, xGenis: [6, 17, 22, 11, 93] };
 }
 function tanimIzin(){
-  const yil = S.izin.yil || 2027; const tr = d => d ? d.split("-").reverse().join(".") : "";
-  const T = TEMA_IZIN, nb = (t, o = {}) => H(t,{ fill: T.bas, k: T.basYazi, ...o });
-  const head = [[nb("S.NO.",{ rs:2 }),nb("RÜTBESİ",{ rs:2 }),nb("ADI SOYADI",{ rs:2 }),nb("SİCİL",{ rs:2 }),H("1'İNCİ İZİN",{ cs:3, fill:IZIN_RENK[0], k: T.basYazi }),H("2'NCİ İZİN",{ cs:3, fill:IZIN_RENK[1], k: T.basYazi }),H("3'ÜNCÜ İZİN",{ cs:3, fill:IZIN_RENK[2], k: T.basYazi }),nb("TOPLAM GÜN",{ rs:2 }),nb("AÇIKLAMA",{ rs:2 })],
-    [0,1,2].flatMap(j => ["AYRILIŞ","KATILIŞ","GÜN"].map(t => H(t,{ fill:IZIN_RENK[j] })))];
-  const body = S.personel.rows.map((p, n) => { const k = S.izin.kayit[p.id] || { i:[{},{},{}], not:"" }; let top = 0, v = false;
-    const iz = k.i.flatMap((x, j) => { const g = gunFark(x.a, x.k); if(g !== ""){ top += g; v = true; } return [H(tr(x.a),{ fill:IZIN_RENK[j], d:x.a }),H(tr(x.k),{ fill:IZIN_RENK[j], d:x.k }),H(g,{ fill:IZIN_RENK[j], gun:j })]; });
-    const z = n % 2 ? T.serit : null; return [H(n + 1,{ fill: z, k: T.soluk }),H(p.rutbe,{ sol:1, fill: z }),H(p.ad,{ sol:1, fill: z }),H(p.sicil,{ fill: z }),...iz,H(v ? top : "",{ fill:"ECE9F0", toplam:1 }),H(k.not,{ sol:1, fill: z })]; });
-  return { tema: T, dosya:`Personel_Izin_Cizelgesi_${yil}`, baslik: belgeBaslik("izin"), oran:[5,15,18,10,9,9,5,9,9,5,9,9,5,7,14], head, body, satirH: 14, izin:true };
+  const yil = S.izin.yil || 2027; const tr = d => d ? d.split("-").reverse().join(".") : "", bos = !!S.izin.musvedde, N = izSlotSay(), hak = izHak();
+  const T = TEMA_IZIN, nb = (t, o = {}) => H(t,{ fill: T.bas, k: T.basYazi, ...o }), SIRA = IZ_SIRA.map(x => x.toLocaleUpperCase("tr")), KF = "ECE9F0";
+  const head = [[nb("S.NO.",{ rs:2 }),nb("RÜTBESİ",{ rs:2 }),nb("ADI SOYADI",{ rs:2 }),nb("SİCİL",{ rs:2 }),...Array.from({ length: N }, (_, j) => H(SIRA[j] + " İZİN",{ cs:4, fill:IZIN_RENK[j], k: T.basYazi })),nb("TOPLAM GÜN",{ rs:2 }),nb("KALAN İZİN",{ cs:3 }),nb("AÇIKLAMA",{ rs:2 })],
+    [...Array.from({ length: N }, (_, j) => ["AYRILIŞ","KATILIŞ","GÜN","TÜRÜ"].map(t => H(t,{ fill:IZIN_RENK[j] }))).flat(), ...IZ_TUR.map(([v, , B]) => H(`${B} (${hak[v]})`,{ fill: T.bas, k: T.basYazi }))]];
+  const body = S.personel.rows.map((p, n) => { const k = S.izin.kayit[p.id] || { i:[], not:"" }; let top = 0, v = false; const u = izKullan(k);
+    const iz = Array.from({ length: N }, (_, j) => k.i[j] || {}).flatMap((x, j) => { if(bos) return [H("",{ fill:IZIN_RENK[j] }),H("",{ fill:IZIN_RENK[j] }),H("",{ fill:IZIN_RENK[j], gun:j }),H("",{ fill:IZIN_RENK[j] })];
+      const g = gunFark(x.a, x.k); if(g !== ""){ top += g; v = true; } return [H(tr(x.a),{ fill:IZIN_RENK[j], d:x.a }),H(tr(x.k),{ fill:IZIN_RENK[j], d:x.k }),H(g,{ fill:IZIN_RENK[j], gun:j }),H(x.a || x.k ? (IZ_TUR.find(t => t[0] === izTur(x)) || [])[2] : "",{ fill:IZIN_RENK[j] })]; });
+    const kal = IZ_TUR.map(([t]) => bos ? H("",{ fill: KF }) : H(hak[t] - u[t],{ fill: KF, kalan: t, ...(hak[t] - u[t] < 0 ? { k: "9A3A2E" } : {}) }));
+    const z = n % 2 ? T.serit : null; return [H(n + 1,{ fill: z, k: T.soluk }),H(p.rutbe,{ sol:1, fill: z }),H(p.ad,{ sol:1, fill: z }),H(p.sicil,{ fill: z }),...iz,H(v ? top : "",{ fill:"ECE9F0", toplam:1 }),...kal,H(bos ? "" : k.not,{ sol:1, fill: z })]; });
+  return { tema: T, dosya:`Personel_Izin_Cizelgesi_${yil}${bos ? "_bos" : ""}`, baslik: belgeBaslik("izin"), oran:[5,15,18,10,...Array.from({ length: N }, () => [9,9,5,7]).flat(),6,6,5,7,14], head, body, satirH: 14, izin:true,
+    izSut: Array.from({ length: N }, (_, j) => ({ g: 7 + 4 * j, t: 8 + 4 * j })), hak };
 }
 /* hedef listesinin sayfa sayısı: istenen sayıya bölünür ama satırlar okunur boyutun altına inmez;
    sığmazsa sayfa sayısı artırılır ve satırlar sayfalara eşit dağıtılır (ör. 130 hedef → 5 × 26). */
@@ -7449,7 +7489,8 @@ async function tabloExcel(sp, a){
         for(let q = 1; q <= ncol; q++){ ws.getCell(r, q).fill = dol(satir.fill || "E9EEF3"); ws.getCell(r, q).border = { top: ince, left: q === 1 ? kalin : ince, bottom: ince, right: q === ncol ? kalin : ince }; } ws.getRow(r).height = TM ? 22 : 18; r++; return; }
       let ihtiyac = 0; satir.forEach((h, ci) => { const x = ws.getCell(r, ci + 1);
         if(sp.izin && h.gun !== undefined){ const L = ws.getColumn(ci - 1).letter, K = ws.getColumn(ci).letter; x.value = { formula: `IF(OR(${L}${r}="",${K}${r}=""),"",${K}${r}-${L}${r})`, result: h.t === "" || h.t == null ? "" : +h.t }; x.numFmt = "0"; }
-        else if(sp.izin && h.toplam){ const g = [7,10,13].map(c => ws.getColumn(c).letter + r).join(","); x.value = { formula: `IF(COUNT(${g})=0,"",SUM(${g}))`, result: h.t === "" || h.t == null ? "" : +h.t }; }
+        else if(sp.izin && h.kalan){ const ad = (IZ_TUR.find(t => t[0] === h.kalan) || [])[2], kol = c => ws.getColumn(c).letter + r; x.value = { formula: `${sp.hak[h.kalan]}-(${sp.izSut.map(o => `IF(${kol(o.t)}="${ad}",N(${kol(o.g)}),0)`).join("+")})`, result: +h.t }; x.numFmt = "0"; }
+        else if(sp.izin && h.toplam){ const g = (sp.izSut ? sp.izSut.map(o => o.g) : [7,10,13]).map(c => ws.getColumn(c).letter + r).join(","); x.value = { formula: `IF(COUNT(${g})=0,"",SUM(${g}))`, result: h.t === "" || h.t == null ? "" : +h.t }; }
         else if(h.d){ const [yy, mm, dd] = h.d.split("-").map(Number); x.value = new Date(Date.UTC(yy, mm - 1, dd)); x.numFmt = "dd.mm.yyyy"; }
         else if(h.sayi && h.t !== "" && isFinite(+h.t)) x.value = +h.t; else x.value = h.t;
         x.font = h.k ? { ...yazi(sp.xYazi || 12), color: { argb: "FF" + h.k } } : yazi(sp.xYazi || 12); x.alignment = { horizontal: h.sol ? "left" : "center", vertical: "middle", wrapText: !!sp.xSatir, indent: h.sol ? 1 : 0 };
