@@ -22,7 +22,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "398";
+  const SURUM = "399";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -321,7 +321,7 @@
   new MutationObserver(m => { if(!document.documentElement.classList.contains("salt")) return; m.forEach(x => x.addedNodes.forEach(n => { if(n.nodeType === 1){ saltKilitle(n); if(n.matches && n.matches("input,textarea,select")) saltKilitle(n.parentNode); } })); }).observe(document.documentElement, { childList: true, subtree: true });
   window.TSK_ROL = () => ({ izleyici: izleyici(), duzenle: !izleyici() || !!payGor().duzenle });
   const hazir = (async () => { idb = await ac(); await yerelOku();
-    if(ONIZLE){ if(meta.rol === "izleyici"){ ONIZLE = false; try { sessionStorage.removeItem("tsk-onizle"); } catch(e){} } else { const R = payFiltre(); Object.keys(mem).forEach(k => delete mem[k]); Object.assign(mem, kopya(R)); meta.rol = "izleyici"; } }
+    if(ONIZLE){ if(meta.rol === "izleyici"){ ONIZLE = false; try { sessionStorage.removeItem("tsk-onizle"); } catch(e){} } else { const R = payFiltre(); R["bt/paylasimGor"] = { ...R["bt/paylasimGor"], duzenle: false }; Object.keys(mem).forEach(k => delete mem[k]); Object.assign(mem, kopya(R)); meta.rol = "izleyici"; } }
     ayarUygula(); try { if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){} })();
   window.claude = { use: async n => { await hazir; return ({ db, assets, downloads, user })[n] || null; } };
   /* geçmiş: GitHub'daki veri.json kayıt geçmişi (her kayıt bir sürüm). Eski bir sürüm okunabilir, belge oradan geri yüklenebilir. */
@@ -3118,7 +3118,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 398</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 399</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3387,14 +3387,23 @@ function uyar(metin, hata){ const u = $("#uyari"); if(!metin){ u.hidden = true; 
 const zaman = {}, bekleyen = {}, kirli = {}; let kayitSayaci = 0;
 /* Değişiklikler kendiliğinden kaydedilmez: “Kaydet” düğmesine basılınca yazılır, “Vazgeç” ile geri alınır */
 const surum = {};
+/* misafir (yalnız görüntüleme) ve önizleme: değişiklik hiçbir yere kaydedilmez, taslak da tutulmaz */
+const saltMi = () => document.documentElement.classList.contains("salt");
+const onizlemeMi = () => { try { return sessionStorage.getItem("tsk-onizle") === "1"; } catch(e){ return false; } };
+let sonDokunus = 0; ["pointerdown", "keydown"].forEach(t => document.addEventListener(t, () => { sonDokunus = Date.now(); }, true));
+let saltUyari = 0;
+function saltGeriAl(yol){ clearTimeout(saltGeriAl.z); (saltGeriAl.y ||= new Set()).add(yol);
+  saltGeriAl.z = setTimeout(async () => { const Y = [...saltGeriAl.y]; saltGeriAl.y.clear(); for(const y of Y) kirli[y] = () => undefined; await vazgec(true);
+    if(Date.now() - saltUyari > 2500){ saltUyari = Date.now(); bildir(onizlemeMi() ? "Önizlemede değişiklik yapılamaz" : "Bu paylaşımda yalnız görüntüleme yetkiniz var"); } }, 250); }
 function kaydet(yol, veriFn){
+  if(saltMi()){ if(Date.now() - sonDokunus < 2000) saltGeriAl(yol); return; }   /* kendiliğinden hesaplananlar yalnız ekranda kalır, kaydedilmez */
   if(!db){ durum("hata","Bağlantı yok: değişiklik kaydedilemez"); }
   kirli[yol] = veriFn; surum[yol] = (surum[yol] || 0) + 1; kayitCubugu(); taslakYaz();   // elle kayıt: yalnız “Kaydet” ile yazılır
 }
 /* kaydedilmemiş değişiklikler telefonda kaybolmasın: taslak olarak bu cihazda tutulur, açılışta geri getirilir (kaydetmek yine kullanıcının elinde) */
 const TASLAK = "tskTaslak";
-function taslakYaz(hemen){ clearTimeout(taslakYaz.z); const is = () => { try { const o = {}; for(const y in kirli){ const v = kirli[y](); if(v !== undefined) o[y] = v; } if(Object.keys(o).length) localStorage.setItem(TASLAK, JSON.stringify({ t: Date.now(), o })); else localStorage.removeItem(TASLAK); } catch(e){} }; if(hemen) is(); else taslakYaz.z = setTimeout(is, 700); }
-function taslakGeriYukle(){ let t = null; try { t = JSON.parse(localStorage.getItem(TASLAK) || "null"); } catch(e){} if(!t || !t.o) return;
+function taslakYaz(hemen){ clearTimeout(taslakYaz.z); if(onizlemeMi() || saltMi()) return; const is = () => { try { const o = {}; for(const y in kirli){ const v = kirli[y](); if(v !== undefined) o[y] = v; } if(Object.keys(o).length) localStorage.setItem(TASLAK, JSON.stringify({ t: Date.now(), o })); else localStorage.removeItem(TASLAK); } catch(e){} }; if(hemen) is(); else taslakYaz.z = setTimeout(is, 700); }
+function taslakGeriYukle(){ if(onizlemeMi() || saltMi()) return; let t = null; try { t = JSON.parse(localStorage.getItem(TASLAK) || "null"); } catch(e){} if(!t || !t.o) return;
   let n = 0; for(const [y, v] of Object.entries(t.o)){ const [kol, id] = y.split("/"); if(!v || !id) continue;
     if(kol === "bt"){ if(JSON.stringify(S[id]) === JSON.stringify(v)) continue; S[id] = v; btDuzelt(id); kirli[y] = () => S[id]; }
     else if(kol === "belgeler"){ const i = S.belgeler.findIndex(x => x.id === id); if(i >= 0 && JSON.stringify(S.belgeler[i]) === JSON.stringify(v)) continue; if(i >= 0) S.belgeler[i] = v; else S.belgeler.push(v); kirli[y] = () => S.belgeler.find(x => x.id === id) || v; }
@@ -3503,7 +3512,7 @@ function btDuzelt(k){
   if(k === "hedef"){ S.hedef.lejant = { ...VARSAYILAN_LEJANT, ...(S.hedef.lejant || {}) }; S.hedef.rows ||= []; }
   if(k === "personel") S.personel.rows ||= []; if(k === "izin") S.izin.kayit ||= {}; if(k === "yapi") S.yapi.klasorler ||= []; if(k === "yoklama") S.yoklama.rows ||= []; if(k === "yoklama30"){ S.yoklama30 ||= {}; S.yoklama30.rows ||= []; } if(k === "gdhg") gdDuzelt(); if(k === "izinb") izbDuzelt(); if(k === "gdhgSet"){ S.gdhgSet ||= {}; S.gdhgSet.liste ||= []; }
 }
-async function vazgec(){
+async function vazgec(sessiz){
   const yollar = Object.keys(kirli); if(!yollar.length) return;
   for(const y of yollar){ delete kirli[y]; if(!db) continue; const [kol, id] = y.split("/");
     try { const d = await db.doc(y).get();
@@ -3512,7 +3521,7 @@ async function vazgec(){
     } catch(e){} }
   kayitCubugu(); taslakYaz(true); agacCiz(); anaCiz();
   if(SECIM.belge){ const d = acikBelge(); if(!d) belgeKapat(); else belgeAc(d.id); } else if(SECIM.bolum) bolumCiz();
-  bildir("Değişiklikler geri alındı");
+  if(!sessiz) bildir("Değişiklikler geri alındı");
 }
 const kaydetBt = k => { kaydet("bt/" + k, () => S[k]); if(["personel", "izin", "gdhg", "izinb", "yoklama"].includes(k) && !esitleniyor) esitlePlanla(k === "izin" ? "personel" : k); };
 const kaydetBelge = b => kaydet("belgeler/" + b.id, () => b);
