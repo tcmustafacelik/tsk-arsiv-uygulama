@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "381";
+  const SURUM = "382";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1475,6 +1475,25 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 #gd-imza .gi-blok .gi-yil{width:auto!important;flex:none} #gd-imza .gi-blok .gi-yil>input{text-align:left;font-weight:700;max-width:110px} #gd-imza .gi-blok .gi-hizli{flex:none!important}
 #gd-imza .gi-blok .gi-not{margin-top:6px;padding-top:6px;border-top:1px solid #EEF2F6;font-size:11px;color:#A0AAB6}
 #gd-imza .gi-blok input[type=date]{text-align:left}
+/* imzalar sekmesi sadeleşti: dış kutu kalktı, seçici tam genişlik, satırlar sıkı */
+#gd-imza .gd-imza-kutu{border:0!important;background:none!important;padding:0!important;gap:10px!important}
+#gd-imza .gi-ust{display:none}
+#gd-imza .gd-imza-sec{align-self:stretch;display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2)}
+#gd-imza .gd-imza-sec .btn{height:34px;border:0!important;border-radius:8px!important;background:transparent!important;font:600 12.5px var(--f-ui);color:var(--muted);box-shadow:none;padding:0 4px;min-width:0}
+#gd-imza .gd-imza-sec .btn[aria-pressed="true"]{background:var(--panel)!important;color:var(--accent);box-shadow:0 1px 3px rgba(30,45,60,.1)}
+#gd-imza .gi-bloklar{gap:8px}
+#gd-imza .gi-blok{padding:8px 12px 10px!important;gap:2px!important;border-radius:10px!important;box-shadow:none!important}
+#gd-imza .gi-bas{font-size:13px;min-height:30px} #gd-imza .gi-bas svg{width:16px;height:16px} #gd-imza .gi-ozet{font-size:11px;padding:2px 7px}
+#gd-imza .gi-blok .gi-alan{padding:4px 0!important;grid-template-columns:86px minmax(0,1fr)!important}
+#gd-imza .gi-blok .gi-alan:has(textarea),#gd-imza .gi-blok .gi-hizli{grid-template-columns:1fr!important}
+#gd-imza .gi-blok .gi-alan>input{min-height:34px;height:34px} #gd-imza .gi-blok .gi-alan>span{font-size:11px}
+#gd-imza .gi-blok .gi-sat{flex-direction:row!important;align-items:center!important;gap:8px!important;flex-wrap:nowrap!important}
+#gd-imza .gi-blok .gi-sat .gi-yil{grid-template-columns:auto 72px!important;border-top:0;gap:6px!important} #gd-imza .gi-blok .gi-sat .gi-yil>input{max-width:72px;text-align:center}
+#gd-imza .gi-blok .gi-sat .gi-hizli{flex:1!important;display:block!important;border-top:0;padding:4px 0!important} #gd-imza .gi-blok .gi-sat .gi-hizli>span{display:none}
+#gd-imza .gi-blok .gi-hizli .gd-cs-sec button{font-size:12px;padding:6px 2px}
+#gd-imza .gi-blok .gi-not{margin-top:2px;padding-top:4px}
+#gd-imza h3{margin:6px 0 0;font:650 13px var(--f-ui);color:var(--fg)}
+#gd-imza .gd-tarih-bicim{padding:8px!important;gap:6px!important;border-radius:10px!important}
 .kd-izgara{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-rows:1fr;gap:8px}
 .kd-k{display:flex;flex-direction:column;align-items:flex-start;gap:6px;min-height:104px;padding:11px 12px;border:1px solid color-mix(in srgb,var(--kz) 70%,var(--line2));border-radius:16px;background:linear-gradient(160deg,color-mix(in srgb,var(--kz) 55%,var(--panel)),var(--panel) 70%);text-align:left;cursor:pointer;font:inherit;color:var(--fg);min-width:0}
 .kd-izgara .kd-k:last-child:nth-child(odd){grid-column:1 / -1}
@@ -2737,7 +2756,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 381</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 382</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3772,6 +3791,7 @@ function altOgeler(k, b, git){ const svg = p => `<svg viewBox="0 0 24 24" fill="
 document.addEventListener("click", e => { const x = e.target.closest && e.target.closest("[data-ao]"); if(!x) return; e.preventDefault(); e.stopPropagation(); const [t, id, k, b] = x.dataset.ao.split("|");
   const kp = (window.TSK_KATMAN || {})["mn-perde"]; if(kp && $("#mn-perde") && !$("#mn-perde").hidden) kp();
   bolumAc(k, b); if(t === "d") belgeAc(id); else if(t === "a"){ const a = S.arsiv.find(y => y.id === id); if(a && (/^image\//.test(a.tur || "") || /\.(pdf|svg)$/i.test(a.ad))) dosyaGor(a); } else setTimeout(() => scrollTo(0, 0), 40); }, true);
+document.documentElement.lang = "tr";   /* büyük harfe çevirmede İ/I doğru olsun (İMZA, IMZA değil) */
 /* sistemde tek onay yolu: silmeler ve geri dönüşü zor işler hep bu pencereyle, bir kez sorulur (düğmede “Emin misin?” çift dokunuşu yok) */
 const ONAY_SEC = { "#h-renk-sifirla": ["Renk grupları sıfırlansın mı?", "Eklediğiniz renk grupları silinir, varsayılan gruplar gelir.", "Sıfırla"],
   ".gc-dugme": ["Eski sürüm geri yüklensin mi?", "Belgenin şimdiki hali bu sürümle değişir.", "Geri yükle"],
