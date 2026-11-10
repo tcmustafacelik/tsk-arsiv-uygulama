@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "409";
+  const SURUM = "410";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -280,13 +280,25 @@
   async function gorCoz(x, prv){ const ham = await crypto.subtle.decrypt({ name: "RSA-OAEP" }, prv, ub64(x.k)); const ak = await crypto.subtle.importKey("raw", ham, "AES-GCM", false, ["decrypt"]);
     return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: ub64(x.iv) }, ak, ub64(x.v)))); }
   let gorIpBu = null;
+  /* misafir dosyası: açılış kayıtları (şifreli) + oturumlar (cihaz başına giriş, son nabız, ön planda mı). Aynı anda iki cihaz yazarsa yeniden denenir. */
+  const OTURUM_BAS = Date.now();
+  async function gorDosya(fn){ const p = yol("gorulme/" + (meta.misafirId || "0") + ".json");
+    for(let d = 0; d < 3; d++){ const g = await gh(p, { headers: { Accept: "application/vnd.github.object+json" } }); let sha = null, o = {};
+      if(g.ok){ const j = await g.json(); sha = j.sha; try { o = JSON.parse(new TextDecoder().decode(b64ToU8((j.content || "").replace(/\s/g, "")))) || {}; } catch(e){} }
+      await fn(o); const O = o.oturum || {}; for(const k of Object.keys(O)) if(!O[k] || Date.now() - O[k].son > 86400000 * 2) delete O[k];
+      const r = await gh(p, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV misafir · " + (fn.ad || "nabız"), content: u8ToB64(new TextEncoder().encode(JSON.stringify(o))), ...(sha ? { sha } : {}) }) });
+      if(r.ok || (r.status !== 409 && r.status !== 422)) return; } }
+  const oturumYaz = o => { o.oturum ||= {}; o.oturum[cihazNo()] = { bas: OTURUM_BAS, son: Date.now(), c: cihazAd(), a: document.visibilityState === "hidden" ? 0 : 1 }; };
   async function gorulmeYaz(){ if(!izleyici()) return; const G = payGor(); if(gorIpBu === null) gorIpBu = await ipAl();
-    if(Date.now() - (meta.gorYaz || 0) < 1800000 && gorIpBu === (meta.gorIp || "")) return; meta.gorYaz = Date.now(); meta.gorIp = gorIpBu; metaYaz();
-    try { const p = yol("gorulme/" + (meta.misafirId || "0") + ".json"), g = await gh(p, { headers: { Accept: "application/vnd.github.object+json" } }); let sha = null, eski = [];
-      if(g.ok){ const j = await g.json(); sha = j.sha; try { const o = JSON.parse(new TextDecoder().decode(b64ToU8((j.content || "").replace(/\s/g, "")))); if(Array.isArray(o.kayit)) eski = o.kayit; } catch(e){} }
-      const c = await cihazBilgi(), kayit = { t: Date.now(), c: c.m, s: c.s, tr: c.t, e: c.e, ip: gorIpBu, cpu: c.cpu, ram: c.ram, gpu: c.gpu };
-      const yeni = G.pub ? { t: kayit.t, c: cihazAd(), kayit: [await gorSifrele(kayit, G.pub), ...eski].slice(0, 20) } : { t: kayit.t, c: cihazAd() };   /* şifresiz eski düzende IP yazılmaz */
-      await gh(p, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV misafir açtı", content: u8ToB64(new TextEncoder().encode(JSON.stringify(yeni))), ...(sha ? { sha } : {}) }) }); } catch(e){} }
+    if(Date.now() - (meta.gorYaz || 0) < 1800000 && gorIpBu === (meta.gorIp || "")) return nabiz(); meta.gorYaz = Date.now(); meta.gorIp = gorIpBu; metaYaz();
+    try { const c = await cihazBilgi(), kayit = { t: Date.now(), no: cihazNo(), c: c.m, s: c.s, tr: c.t, e: c.e, ip: gorIpBu, cpu: c.cpu, ram: c.ram, gpu: c.gpu }, sif = G.pub ? await gorSifrele(kayit, G.pub) : null;
+      const f = async o => { o.t = kayit.t; o.c = cihazAd(); if(sif) o.kayit = [sif, ...(Array.isArray(o.kayit) ? o.kayit : [])].slice(0, 20); oturumYaz(o); }; f.ad = "açtı";   /* şifresiz eski düzende IP yazılmaz */
+      await gorDosya(f); nabizSon = Date.now(); nabizA = document.visibilityState === "hidden" ? 0 : 1; } catch(e){} }
+  let nabizSon = 0, nabizA = -1;
+  async function nabiz(zorla){ if(!izleyici() || ONIZLE || !meta.bagli || !navigator.onLine) return; const a = document.visibilityState === "hidden" ? 0 : 1;
+    if(!zorla && a === nabizA && Date.now() - nabizSon < 110000) return; nabizSon = Date.now(); nabizA = a; try { await gorDosya(oturumYaz); } catch(e){} }
+  document.addEventListener("visibilitychange", () => { if(izleyici()) nabiz(true); });   /* ön plan / arka plan değişince hemen bildirilir */
+  setInterval(() => { if(izleyici() && document.visibilityState !== "hidden") nabiz(); }, 120000);
   /* kendi cihazların: her açılış (30 dk'da bir ya da IP değişince) ana depoya yazılır; arşiv şifresi varsa onunla şifrelenir. Son 40 kayıt. */
   const ACY = "veri/acilislar.json";
   const cihazNo = () => { try { let x = localStorage.getItem("tsk-cihaz-no"); if(!x){ x = b64u(crypto.getRandomValues(new Uint8Array(6))); localStorage.setItem("tsk-cihaz-no", x); } return x; } catch(e){ return ""; } };
@@ -310,7 +322,7 @@
     let prv = null; try { if(kur.prv) prv = await crypto.subtle.importKey("pkcs8", ub64(tkAc(kur.prv)), { name: "RSA-OAEP", hash: "SHA-256" }, false, ["decrypt"]); } catch(e){}
     for(const x of L){ const r2 = await ghP(yolP("gorulme/" + x.name), { headers: { Accept: "application/vnd.github.raw+json" } }); if(!r2.ok) continue; let j; try { j = JSON.parse(await r2.text()); } catch(e){ continue; }
       const K = []; if(prv && Array.isArray(j.kayit)) for(const y of j.kayit){ try { K.push(await gorCoz(y, prv)); } catch(e){} }
-      o[x.name.replace(/\.json$/, "")] = { t: j.t, c: j.c, kayit: K }; }
+      o[x.name.replace(/\.json$/, "")] = { t: j.t, c: j.c, kayit: K, oturum: j.oturum || {} }; }
     payGorulme = o; } catch(e){} }
   const payDurumYazi = () => payHata ? "Sorun: " + payHata : meta.paySon ? "Son güncelleme: " + new Date(meta.paySon).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "Henüz gönderilmedi";
   async function baglan(depo, t, s, mod, rol, mid){
@@ -657,6 +669,10 @@
       .ck-dil{font:500 10.5px var(--f-ui);color:var(--muted)} .ck-et{font:600 10.5px var(--f-ui);color:var(--muted);letter-spacing:.03em;text-transform:uppercase;margin:4px 0 3px}
       .bp-alt{flex:1 1 100%;min-width:0} .bp-alt .bp-gor>small{display:block;font:500 11px var(--f-ui);color:var(--muted);padding-left:44px} .ck-liste{display:flex;flex-direction:column;gap:6px;margin-top:6px} .bp-gor{margin-top:2px}
       .ac-liste{gap:8px;border:0!important;background:none!important;padding:2px}
+      .ot{display:flex;flex-direction:column;gap:4px;margin:4px 0 2px} .ot-uyari{align-self:flex-start;padding:2px 8px;border-radius:6px;background:#F7EEDB;color:#7A5214;font:650 11px var(--f-ui)}
+      .ot-s{display:flex;align-items:flex-start;gap:8px;padding:6px 9px;border-radius:9px;border:1px solid #E1E6EC;background:#F7F9FB} .ot-s i{flex:none;width:9px;height:9px;margin-top:4px;border-radius:50%;background:#A9B2BC}
+      .ot-s.acik{background:#EEF6EC;border-color:#D3E6CF} .ot-s.acik i{background:#4E9A5B;box-shadow:0 0 0 3px #D6EBD3} .ot-s.arka{background:#FBF5E8;border-color:#EEE0BF} .ot-s.arka i{background:#C99A3C}
+      .ot-s b{display:block;font:650 12px var(--f-ui);color:var(--fg)} .ot-s small{font:500 10.5px var(--f-ui);color:var(--muted)}
       .bp-gec{margin-top:4px} .bp-gec>summary{list-style:none;cursor:pointer;font:600 11px var(--f-ui);color:var(--accent);padding:2px 0} .bp-gec>summary::-webkit-details-marker{display:none} .bp-gec>summary::after{content:" ›"} .bp-gec[open]>summary::after{content:" ‹"}
       .bp-gs{display:flex;flex-direction:column;gap:1px;padding:6px 0;border-top:1px dashed var(--line2)} .bp-gs b{font:650 11.5px var(--f-ui)} .bp-gs span{font:500 11px var(--f-ui);color:var(--muted);overflow-wrap:anywhere} .bp-gs .mono{font-family:ui-monospace,Menlo,monospace}
       .bp-bos{padding:12px;font:500 12px var(--f-ui);color:var(--muted);text-align:center}
@@ -787,8 +803,14 @@
         <div class="ck-sag">${o.bu ? '<em class="ck-bu">bu cihaz</em>' : ""}<time>${escH(ckZaman(k.t))}</time></div></div>
         <div class="ck-cipler">${cip("ip", "ip", k.ip ? k.ip : "IP alınamadı")}${cip("cpu", "cpu", k.cpu ? k.cpu + " çekirdek" : "")}${cip("ram", "ram", k.ram ? (k.ram >= 8 ? "8+ GB" : k.ram + " GB") + " RAM" : "")}${cip("ekr", "ekr", k.e || "")}</div>
         ${k.gpu ? `<div class="ck-gpu">${IK_C.gpu}<span>${escH(k.gpu)}</span></div>` : ""}${k.dil && o.dil ? `<div class="ck-dil">Dil ${escH(k.dil)}</div>` : ""}</div>`; };
-    const gorHtml = m => { const g = payGorulme[m.id], k = g && g.kayit && g.kayit[0]; if(k) return `<div class="ck-et">Son açılış</div>` + cihazKart(k, { kucuk: 1 });
-      return `<small>${g && g.t ? "son açılış " + escH(zmn(g.t)) + (g.c ? " · " + escH(g.c) : "") : "henüz açılmadı"}</small>`; };
+    const once = t => { const d = Math.round((Date.now() - t) / 60000); return d < 1 ? "şimdi" : d < 60 ? d + " dk önce" : d < 1440 ? Math.round(d / 60) + " sa önce" : Math.round(d / 1440) + " gün önce"; };
+    const otDurum = x => Date.now() - x.son < 200000 ? (x.a ? "acik" : "arka") : "kapali";
+    const oturumHtml = m => { const g = payGorulme[m.id], O = Object.entries((g && g.oturum) || {}).map(([no, x]) => ({ no, ...x })).sort((a, b) => b.son - a.son); if(!O.length) return "";
+      const K = (g.kayit || []), model = no => (K.find(k => k.no === no) || {}).c, acik = O.filter(x => otDurum(x) !== "kapali").length, Y = { acik: "Çevrimiçi", arka: "Arka planda", kapali: "Çevrimdışı" };
+      return `<div class="ot">${acik > 1 ? `<div class="ot-uyari">Aynı anda ${acik} cihazda açık</div>` : ""}${O.slice(0, 5).map(x => { const d = otDurum(x);
+        return `<div class="ot-s ${d}"><i></i><div><b>${Y[d]} · ${escH(model(x.no) || x.c || "cihaz")}</b><small>giriş ${escH(zmn(x.bas))} · ${d === "kapali" ? "son görülme " : "son sinyal "}${escH(once(x.son))}</small></div></div>`; }).join("")}</div>`; };
+    const gorHtml = m => { const g = payGorulme[m.id], k = g && g.kayit && g.kayit[0]; if(k) return oturumHtml(m) + `<div class="ck-et">Son açılış</div>` + cihazKart(k, { kucuk: 1 });
+      return oturumHtml(m) + `<small>${g && g.t ? "son açılış " + escH(zmn(g.t)) + (g.c ? " · " + escH(g.c) : "") : "henüz açılmadı"}</small>`; };
     const gecmisHtml = m => { const g = payGorulme[m.id], K = ((g && g.kayit) || []).slice(1); if(!K.length) return ""; return `<details class="bp-gec"><summary>Önceki açılışlar · ${K.length}</summary><div class="ck-liste">${K.map(k => cihazKart(k, { kucuk: 1 })).join("")}</div></details>`; };
     const misafirSatir = m => `<div class="bp-m"><span class="bp-mi">${escH((m.ad || "?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><div class="bp-md"><button type="button" class="bp-ad" data-bpad="${escH(m.id)}" aria-label="Adı değiştir">${escH(m.ad || "Misafir")}<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button>
         <div class="bp-seg mini"><button type="button" data-bpmy="${escH(m.id)}" data-v="0" aria-pressed="${!m.duzenle}">Görüntüler</button><button type="button" data-bpmy="${escH(m.id)}" data-v="1" aria-pressed="${!!m.duzenle}">Düzenler</button></div></div>
@@ -815,7 +837,7 @@
         <div class="bl-hata" id="bp-hata" role="alert"></div></div>`; }
     st2.textContent += ".bl-kart.yerinde{animation:none!important}";
     let paySec = null;   // seçmeli gizle: seçilen kategori / bölüm / belge anahtarları
-    const payAc = () => { paySec = null; payCiz(); payP.hidden = false; gorulmeCiz(); };
+    const payAc = () => { paySec = null; payCiz(); payP.hidden = false; gorulmeCiz(); clearInterval(payAc.z); payAc.z = setInterval(() => { if(payP.hidden){ clearInterval(payAc.z); return; } gorulmeCiz(); }, 45000); };
     payP.addEventListener("toggle", e => { if(e.target.classList && e.target.classList.contains("bp-g") && e.target.open) payP.querySelectorAll(".bp-g[open]").forEach(d => { if(d !== e.target) d.open = false; }); }, true);   /* bir kategori açılınca diğerleri kapanır */
     const payYeniden = () => { const sec = ".bp-g, .bp-bd", op = [...payP.querySelectorAll(sec)].map(x => x.open), y = payP.scrollTop, ad = (payP.querySelector("#bp-ad") || {}).value || ""; payCiz(); payP.querySelectorAll(sec).forEach((x, i) => x.open = op[i]); payP.scrollTop = y; const i2 = payP.querySelector("#bp-ad"); if(i2) i2.value = ad; };
     async function misafirPin(ad){ let hata = "";
@@ -888,7 +910,7 @@
       for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Misafir girişi", "Bu bir görüntüleme linkidir. Arşiv sahibinin size söylediği 6 haneli PIN'i girin.", hata, "Aç", "misafir"); if(pin === null) return; d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar deneyin"; }
       if(!d){ bildirim("PIN 5 kez yanlış girildi"); return; }
       panelCiz(); panel.hidden = false; const h = $$("#bl-hata"); h.className = "bl-hata bilgi"; h.innerHTML = '<span class="bl-spin"></span>Paylaşılan arşiv açılıyor…';
-      try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici", d.mid); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : payGor().ad ? "Hoş geldiniz, " + payGor().ad + " · açılışlar (cihaz, IP) paylaşım sahibine kaydedilir" : "Paylaşılan arşiv açıldı"); gorulmeYaz(); }
+      try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici", d.mid); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : payGor().ad ? "Hoş geldiniz, " + payGor().ad + " · bu açılış kaydedilir" : "Paylaşılan arşiv açıldı"); gorulmeYaz(); }
       catch(x){ meta.bagli = false; meta.rol = "sahip"; meta.misafirId = ""; token = ""; h.className = "bl-hata"; h.textContent = x.message; } }
 
     /* --- panel --- */
@@ -2120,7 +2142,8 @@ tr.gd-yeni td{animation:gdYeni 1.6s ease}
   #gd-kagit table.gd-kart tfoot tr{background:#EEF3F8;border-color:#D9E3EE}
 }
 /* belge penceresinin üst çubuğu (Kapat, ad, Geçmiş, PDF/Excel/Word) aşağı inince de görünsün */
-#v-belge > .arac:first-child{position:sticky;top:-14px;z-index:6;margin:-14px -14px 0;padding:10px 14px;background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line2);border-radius:var(--r) var(--r) 0 0}
+#v-belge{overscroll-behavior:contain} html.belge-acik{overflow:hidden!important;overscroll-behavior:none} html.belge-acik body{overscroll-behavior:none}   /* iPhone: belge açıkken arkadaki sayfa kaymaz, üst çubuk yerinde kalır */
+#v-belge > .arac:first-child{position:-webkit-sticky;position:sticky;top:-14px;z-index:6;margin:-14px -14px 0;padding:10px 14px;background:color-mix(in srgb,var(--panel) 94%,transparent);backdrop-filter:blur(6px);border-bottom:1px solid var(--line2);border-radius:var(--r) var(--r) 0 0}
 @media (max-width:640px){
   #v-belge > .arac:first-child{gap:6px;padding:8px 12px}
   #v-belge > .arac:first-child .etiket,#v-belge > .arac:first-child .bosluk{display:none}
@@ -3258,7 +3281,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 409</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 410</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3933,6 +3956,7 @@ function yzKaydir(sar){ const t = sar && sar.querySelector(":scope > table"); if
   new MutationObserver(M => { if(kendim || M.every(m => yb.contains(m.target) || m.target === yb)) return; son = null; iste(); }).observe(kap, { childList: true, subtree: true, attributes: true, attributeFilter: ["hidden"] });
 })();
 /*YAPISKAN-SON*/
+new MutationObserver(() => document.documentElement.classList.toggle("belge-acik", !$("#v-belge").hidden)).observe($("#v-belge"), { attributes: true, attributeFilter: ["hidden"] });
 let araSonuc = [];
 function belgeGit(d){ if(!d){ uyar("İlgili belge bulunamadı.", true); return; } const y = (d.yerler || [])[0]; if(y){ SECIM.klasor = y.k; SECIM.bolum = y.b; } belgeAc(d.id); }
 const belgeTur = t => S.belgeler.find(x => x.tur === t);
