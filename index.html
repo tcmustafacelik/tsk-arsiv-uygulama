@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "377";
+  const SURUM = "378";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1895,7 +1895,7 @@ html.klavye #gd-sekme,html.klavye .kayit-cubugu{display:none!important}   /* kla
 .ao-s{display:flex;align-items:center;gap:9px;width:100%;min-height:38px;padding:5px 8px;border:0;border-radius:8px;background:transparent;color:var(--fg);font:500 13px/1.25 var(--f-ui);text-align:left;cursor:pointer}
 .ao-s:active,.ao-s:hover{background:var(--panel2)} .ao-s svg{flex:none;width:17px;height:17px;color:#5C7088} .ao-s>span{flex:1;min-width:0;overflow-wrap:anywhere} .ao-s>small{flex:none;font:600 10px var(--f-ui);letter-spacing:.05em;color:var(--muted)}
 .ao-s.ao-git{color:#3D5F8C;font-weight:650} .ao-s>i.ao-uz{flex:none;width:17px;font:700 8px var(--f-mono);font-style:normal;color:#5C7088;text-align:center}
-.sirt-sat>i.ss-ok{flex:none;font-style:normal;color:var(--muted);font-size:15px;transition:transform .15s} .sirt-sat.ac>i.ss-ok{transform:rotate(90deg)}
+.sirt-sat>i.ss-ok{flex:none;font-style:normal;color:var(--muted);font-size:15px;transform:rotate(90deg);transition:transform .15s} .sirt-sat.ac>i.ss-ok{transform:rotate(-90deg)}
 #agac .ao{margin:0 0 4px 22px} #agac .ao-s{min-height:30px;font-size:12px;padding:3px 6px}
 .izb-kenar-kap{display:flex;flex-direction:column;align-items:stretch!important;gap:7px;flex-basis:100%} .izb-kenar-kap>span{font:600 12px var(--f-ui);color:var(--muted)}
 .izb-harita{background:conic-gradient(#E57373,#FFD54F,#81C784,#4FC3F7,#9575CD,#F06292,#E57373)!important;position:relative} .izb-harita::after{content:"+";position:absolute;inset:0;display:grid;place-items:center;font:800 16px var(--f-ui);color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.4)}
@@ -2731,7 +2731,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 377</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 378</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3184,14 +3184,15 @@ function menuAc(anah){ mnAcik = SECIM.klasor && SECIM.bolum ? SECIM.klasor + "|"
     return `<button type="button" class="ap-geri" data-mn-geri>‹ Bütün kategoriler</button>
       ${c.uyeler.length > 1 ? `<div class="ap-sekme">${c.uyeler.map(u => `<button type="button" data-mn-uye="${esc(u.id)}" aria-pressed="${u.id === uye.id}">${esc(mnKisa(u))}${u.delgec ? " · delgeç" : ""}</button>`).join("")}</div>` : ""}
       <div class="an-ic">${uye.bolumler.map((b, i) => { const n = apSay(uye, b), cur = SECIM.klasor === uye.id && SECIM.bolum === b.id, no = bolumNo(uye.id, b.id);
-        const ac = n && mnAcik === uye.id + "|" + b.id;
+        const tek = uye.bolumler.filter(x => apSay(uye, x)).length === 1 && !uye.bolumler.some(x => mnAcik === uye.id + "|" + x.id) && mnAcik !== "-" + uye.id;
+        const ac = n && (mnAcik === uye.id + "|" + b.id || tek);
         return `<button type="button" class="sirt-sat${n ? "" : " soluk"}${cur ? " aktif" : ""}${ac ? " ac" : ""}" data-mn-b="${esc(uye.id)}|${esc(b.id)}" aria-expanded="${!!ac}" style="--sr:${SIRT[i % SIRT.length]}"><span class="ss-no">${b.sabit ? "◆" : no || i + 1}</span><b>${esc(b.ad)}</b>${n ? `<small>${n}</small><i class="ss-ok">›</i>` : ""}</button>${ac ? altOgeler(uye.id, b.id, true) : ""}`; }).join("")}</div>
       <div class="mn-alt"><button type="button" class="mn-is" data-mn-duz>✎ Düzenle · taşı</button></div>`; },
     (b, kapat, yenile) => { const d = b.dataset;
       if(d.mnKat){ mnKat = d.mnKat; yenile(); return; }
       if(d.mnGeri != null){ mnKat = null; yenile(); return; }
       if(d.mnUye){ agacUye[mnKat] = d.mnUye; menuSakla(); yenile(); return; }
-      if(d.mnB && apSay(klasorBul(d.mnB.split("|")[0]), { id: d.mnB.split("|")[1] })){ mnAcik = mnAcik === d.mnB ? null : d.mnB; yenile(); return; }
+      if(d.mnB && apSay(klasorBul(d.mnB.split("|")[0]), { id: d.mnB.split("|")[1] })){ mnAcik = d.mnB.split("|")[0] + "|"; mnAcik = b.getAttribute("aria-expanded") === "true" ? "-" + d.mnB.split("|")[0] : d.mnB; yenile(); return; }
       if(d.mnB){ const [k, bb] = d.mnB.split("|"); kapat(); bolumAc(k, bb); setTimeout(() => scrollTo(0, 0), 40); return; }
       if(d.mnDuz != null){ const a = mnKat; kapat(); agacKapali = false; kokAcik = true; acikKlasorler.add(a); agAdDuz = a; menuSakla(); agacCiz(); setTimeout(() => document.querySelector("#agac .ag-k.acik")?.scrollIntoView({ block: "start", behavior: "smooth" }), 60); return; }
       if(d.mnYeni != null){ kapat(); agacKapali = false; agacCiz(); $("#kat-ekle")?.click(); return; }
