@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "411";
+  const SURUM = "412";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2057,6 +2057,11 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dl-eksik{font-style:normal;font:700 10.5px var(--f-ui);color:#9A5B18;background:#FBEFD8;border-radius:6px;padding:1px 8px} .dl-tam{font-style:normal;font:700 10.5px var(--f-ui);color:#2F6B47;background:#E2F1E7;border-radius:6px;padding:1px 8px}
 .dl-alanlar{display:grid;grid-template-columns:1fr 1fr;gap:7px} .dl-al{display:flex;flex-direction:column;gap:3px;min-width:0} .dl-al.tam,.dl-alanlar .tam{grid-column:1 / -1} .dl-al>span{font:600 10.5px var(--f-ui);color:var(--muted);display:flex;align-items:center;gap:6px;flex-wrap:wrap} .dl-al>span i{font-weight:500;font-style:normal;opacity:.8}
 .dl-al input,.dl-al textarea{width:100%;box-sizing:border-box;min-width:0;border:1px solid var(--line2);border-radius:8px;background:#fff;padding:7px 9px;font:600 13px/1.35 var(--f-ui);color:#22303D;resize:none} .dl-al input{height:36px} .dl-al.dl-bos textarea,#dl-govde .dl-al.dl-bos input{border-color:#E5C48E;background:#FFFBF3}
+.km-kaynak{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap} .km-kaynak small{font:500 10.5px var(--f-ui);color:var(--muted);flex:1 1 160px}
+.km-git{border:1px solid #B9D2D4;background:#EAF4F5;color:#2C5C62;border-radius:8px;padding:5px 10px;font:700 11px var(--f-ui);cursor:pointer;white-space:nowrap}
+.km-nl{display:flex;flex-direction:column;gap:6px;margin-top:6px} .km-nl>div{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:7px 9px;border:1px solid #DCE7E8;border-radius:8px;background:#F7FBFB}
+.km-nl b{font:700 12px var(--f-ui);color:#214A50} .km-nl small{grid-column:1/-1;font:500 11px var(--f-ui);color:var(--muted);line-height:1.35}
+.km-o{font:700 10px var(--f-ui);border-radius:6px;padding:2px 7px;background:#E6F0E4;color:#2F5A3A;align-self:start} .km-o.el{background:#EEF0F8;color:#3D4A7A} .km-o.ay{background:#F4EFE3;color:#6B5A2E}
 .dl-metin{min-height:80px;font-weight:500!important;font-size:13px!important;line-height:1.45!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
 .dl-seg-tur{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))!important}
 .dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:7px 4px;font:700 11.5px/1.2 var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
@@ -3283,7 +3288,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 411</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 412</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9994,7 +9999,13 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
           if(o === "t" && (!v || dlIso(v))) return `<label class="${cl}"><span>${t}</span><input type="date" data-km-k="${a}" value="${esc(dlIso(v))}"></label>`;
           const ph = a === "kita" ? (p.gorev || "") : a === "tel" ? kmTel(p) : "";
           return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-km-k="${a}"${/n/.test(o || "") ? ' inputmode="numeric"' : ""} placeholder="${esc(ph)}">${esc(v)}</textarea></label>`; }).join("")}</div>
-      <small class="dl-not">Buraya yazılanlar dilekçeye kendiliğinden gelir; izin belgelerinde “Kimlikten al” ile aktarılır. Adı ve rütbesi Personel listesinden değişir.</small></section>` : ""}`;
+      <details class="dl-bilgi km-nere"><summary><span>Bu bilgiler nereye gider?</span><em class="dl-not">her belge yalnız kendi alanını alır</em></summary>
+        <div class="km-nl">
+          <div><b>Dilekçe</b><span class="km-o">otomatik</span><small>kıt'a, baba adı, memleket, doğum, duhul, nasıp, sicil, EMS, T.C.</small></div>
+          <div><b>İzin belgeleri</b><span class="km-o el">“Kimlikten al” ile</span><small>kıt'a, sicil, adres, telefon, kan grubu, yakını — yalnız boş kutulara</small></div>
+          <div><b>GDHG · Yoklama · İzin çizelgesi · diğer listeler</b><span class="km-o ay">kendi listesi</span><small>yalnız ad, rütbe, sicil düzeltmesi taşınır; kimse eklenmez ya da silinmez. Kadro, görev, süreler gibi bilgiler o belgede kalır.</small></div>
+        </div></details>
+      <small class="dl-not">Adı ve rütbesi Personel listesinden değişir.</small></section>` : ""}`;
   otoBoyHepsi($("#km-govde")); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#km-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kimlik") return;
   if(b.dataset.kmSec){ kmSecili = b.dataset.kmSec; kimlikCiz(); const k = $("#km-govde .km-kart"); if(k) k.scrollIntoView({ block: "start", behavior: "smooth" }); return; }
@@ -10020,6 +10031,8 @@ function tanimKimlik(){ const T = TEMA_KIMLIK, bh = t => H(t, { fill: T.bas, k: 
   return { tema: T, dosya: "Personel_Kimlik_Bilgileri", baslik: "PERSONEL KİMLİK BİLGİLERİ", oran: [4, 17, 8, 9, 10, 8, 8, 8, 8, 10, 6, 10],
     head: [["S/N", "RÜTBE / ADI SOYADI", "SİCİL", "BABA ADI", "MEMLEKETİ", "DOĞUM T.", "DUHUL", "NASIP", "EMS NO", "T.C. KİMLİK NO", "KAN", "TELEFON"].map(bh)], body, satirH: 12, xSatir: 30, xYazi: 10, xBasYazi: 9.5, xBaslikYazi: 15 }; }
 /* izin belgelerine aktarım: yalnız boş kutuları doldurur (çıktı biçimi değişmez) */
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-km-git]"); if(!b) return; const d = belgeTur("kimlik"); if(!d) return bildir("Personel kimliği belgesi yok");
+  kmSecili = b.dataset.kmGit; kmFiltre = "hepsi"; belgeGit(d); setTimeout(() => { const k = $("#km-govde .km-kart"); if(k) k.scrollIntoView({ block: "start" }); }, 250); });
 const kmKisi = x => { const R = S.personel.rows || []; return (x.pid && R.find(p => p.id === x.pid)) || R.find(p => pAd(p.ad) === pAd(x.ad)) || null; };
 /* ================= DİLEKÇE (tur: "dilekce") =================
    d.dl = { garnizon, aktif, kayitlar: [{ id, pid, tur: "izin"|"mazeret"|"diger", tarih, bas, gun, sebep, ozu, metin, elle, imza }] }
@@ -10128,7 +10141,7 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
           if(DL_TARIH.includes(a) && (!p[a] || dlIso(p[a]))) return `<label class="${cl}"><span>${t}</span><input type="date" data-dl-k="${a}" value="${esc(dlIso(p[a]))}"></label>`;
           return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-dl-k="${a}" placeholder="${a === "kita" ? esc(dlKita(v, { ...p, kita: "" })) : ""}"${a === "tc" || a === "sicil" || a === "ems" ? ' inputmode="numeric"' : ""}>${esc(a === "kita" ? (p.kita || "") : (p[a] || ""))}</textarea></label>`; }).join("")}
           ${p.kita ? "" : `<label class="dl-al tam"><span>Garnizon (kıt'a satırının sonu)</span><input data-dl-g="garnizon" value="${esc(v.garnizon)}"></label>`}</div>
-        <small class="dl-not">Kişinin personel kaydına yazılır; bir kez girilir.</small></details>` : ""}
+        <div class="km-kaynak"><small>Ortak kayıttan gelir; burada değiştirirsen Personel kimliğinde de değişir.</small>${belgeTur("kimlik") ? `<button type="button" class="km-git" data-km-git="${esc(p.id)}">Personel kimliğinde aç ›</button>` : ""}</div></details>` : ""}
       <div class="dl-bas">Tür</div>
       <div class="dl-seg dl-seg-tur">${Object.entries(DL_TUR).map(([t, o]) => `<button type="button" data-dl-tur="${t}" aria-pressed="${k.tur === t}">${esc(o.kisa || o.ad)}</button>`).join("")}</div>
       <div class="dl-alanlar">
