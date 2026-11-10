@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "378";
+  const SURUM = "379";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1890,7 +1890,9 @@ select.sec-gizli{display:none!important}
 .sil-not{margin:0;padding:10px 12px;border-radius:10px;background:var(--panel2);font:500 12.5px/1.45 var(--f-ui);color:var(--muted)}
 .sil-is{display:grid;grid-template-columns:1fr 1fr;gap:8px} .sil-is .btn{height:42px;border-radius:10px;font:650 13.5px var(--f-ui)} .sil-is .sil-evet{background:#34475C!important;border-color:#34475C!important;color:#fff!important}
 #sil-perde .ap-kart{background:var(--panel)!important} #sil-perde .ap-ic{gap:12px}
-html.klavye #gd-sekme,html.klavye .kayit-cubugu{display:none!important}   /* klavye açıkken alttaki çubuklar yazı kutularının üstüne binmesin */
+html.klavye #gd-sekme,html.klavye .kayit-cubugu{display:none!important}
+/* GDHG alt sekmeleri: belge penceresi kaydırılınca birlikte yukarı kaymasın; pencerenin altına yapışık durur */
+#e-gdhg>#gd-sekme.gd-sekmeler{position:sticky!important;bottom:calc(8px + env(safe-area-inset-bottom,0px))!important;left:auto!important;transform:none!important;order:99;z-index:6;animation:none;margin-top:4px;box-shadow:0 6px 20px rgba(30,45,60,.16)}   /* klavye açıkken alttaki çubuklar yazı kutularının üstüne binmesin */
 .ao{display:flex;flex-direction:column;gap:2px;margin:-2px 0 4px 14px;padding:4px 0 4px 8px;border-left:2px solid var(--line2)}
 .ao-s{display:flex;align-items:center;gap:9px;width:100%;min-height:38px;padding:5px 8px;border:0;border-radius:8px;background:transparent;color:var(--fg);font:500 13px/1.25 var(--f-ui);text-align:left;cursor:pointer}
 .ao-s:active,.ao-s:hover{background:var(--panel2)} .ao-s svg{flex:none;width:17px;height:17px;color:#5C7088} .ao-s>span{flex:1;min-width:0;overflow-wrap:anywhere} .ao-s>small{flex:none;font:600 10px var(--f-ui);letter-spacing:.05em;color:var(--muted)}
@@ -2731,7 +2733,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 378</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 379</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
