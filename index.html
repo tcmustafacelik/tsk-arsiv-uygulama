@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "432";
+  const SURUM = "433";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -302,6 +302,15 @@
   const IPH = { "320x568": "iPhone SE (1.) / 5s", "375x667": "iPhone SE (2./3.) / 6 / 7 / 8", "414x736": "iPhone 6 / 7 / 8 Plus", "375x812": "iPhone X / XS / 11 Pro / 12 mini / 13 mini",
     "414x896@2": "iPhone XR / 11", "414x896@3": "iPhone XS Max / 11 Pro Max", "390x844": "iPhone 12 / 13 / 14 (Pro dahil 12–13)", "428x926": "iPhone 12–13 Pro Max / 14 Plus",
     "393x852": "iPhone 14 Pro / 15 / 15 Pro / 16", "430x932": "iPhone 14 Pro Max / 15 Plus / 15 Pro Max / 16 Plus", "402x874": "iPhone 16 Pro / 17 / 17 Pro", "440x956": "iPhone 16 Pro Max / 17 Pro Max", "420x912": "iPhone Air" };
+  /* Android model kodu → satıştaki adı (telefon yalnız kodu bildirir: 2407FPN8EG → Xiaomi 14T Pro). Bilinmeyen kod olduğu gibi kalır. */
+  const SM = { S938: "Galaxy S25 Ultra", S937: "Galaxy S25 Edge", S936: "Galaxy S25+", S931: "Galaxy S25", S928: "Galaxy S24 Ultra", S926: "Galaxy S24+", S921: "Galaxy S24", S721: "Galaxy S24 FE", S918: "Galaxy S23 Ultra", S916: "Galaxy S23+", S911: "Galaxy S23", S711: "Galaxy S23 FE",
+    S908: "Galaxy S22 Ultra", S906: "Galaxy S22+", S901: "Galaxy S22", G998: "Galaxy S21 Ultra", G996: "Galaxy S21+", G991: "Galaxy S21", G990: "Galaxy S21 FE", N986: "Galaxy Note20 Ultra", N981: "Galaxy Note20",
+    F956: "Galaxy Z Fold6", F741: "Galaxy Z Flip6", F946: "Galaxy Z Fold5", F731: "Galaxy Z Flip5", F936: "Galaxy Z Fold4", F721: "Galaxy Z Flip4",
+    A566: "Galaxy A56", A366: "Galaxy A36", A266: "Galaxy A26", A166: "Galaxy A16 5G", A165: "Galaxy A16", A556: "Galaxy A55", A356: "Galaxy A35", A256: "Galaxy A25", A156: "Galaxy A15 5G", A155: "Galaxy A15",
+    A546: "Galaxy A54", A346: "Galaxy A34", A245: "Galaxy A24", A146: "Galaxy A14 5G", A145: "Galaxy A14", A057: "Galaxy A05s", A055: "Galaxy A05", A736: "Galaxy A73", A536: "Galaxy A53", A336: "Galaxy A33", A235: "Galaxy A23", A135: "Galaxy A13",
+    A528: "Galaxy A52s", A526: "Galaxy A52 5G", A525: "Galaxy A52", A325: "Galaxy A32", A515: "Galaxy A51", A715: "Galaxy A71", A217: "Galaxy A21s" };
+  const KOD = { "2407FPN8EG": "Xiaomi 14T Pro", "2406APNFAG": "Xiaomi 14T" };
+  const modelAdi = c => { const k = String(c || "").trim(); if(!k) return ""; if(KOD[k.toUpperCase()]) return KOD[k.toUpperCase()]; const m = /^SM-([A-Z]\d{3})/i.exec(k); if(m && SM[m[1].toUpperCase()]) return "Samsung " + SM[m[1].toUpperCase()]; return ""; };
   const cihazAd = () => { const u = navigator.userAgent; return /iPhone/.test(u) ? "iPhone" : /iPad/.test(u) ? "iPad" : /Android/.test(u) ? "Android" : /Windows/.test(u) ? "Windows" : /Mac/.test(u) ? "Mac" : /Linux/.test(u) ? "Linux" : "cihaz"; };
   async function cihazBilgi(){ const u = navigator.userAgent; let m = "", s = "";
     try { if(navigator.userAgentData && navigator.userAgentData.getHighEntropyValues){ const h = await navigator.userAgentData.getHighEntropyValues(["model", "platform", "platformVersion"]); if(h.model) m = h.model; if(h.platform) s = h.platform + (h.platformVersion ? " " + h.platformVersion.split(".")[0] : ""); } } catch(e){}
@@ -855,9 +864,9 @@
     const IK_C = { ip: '<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3.2 3 14.8 0 18M12 3c-3 3.2-3 14.8 0 18"/></svg>', cpu: '<svg viewBox="0 0 24 24"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>',
       ram: '<svg viewBox="0 0 24 24"><rect x="2.5" y="7" width="19" height="9" rx="1.5"/><path d="M6 16v3M10 16v3M14 16v3M18 16v3M6.5 10.5h2M11 10.5h2M15.5 10.5h2"/></svg>', ekr: '<svg viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M4 7h16M4 17h16"/></svg>', gpu: '<svg viewBox="0 0 24 24"><rect x="2.5" y="6" width="19" height="11" rx="2"/><circle cx="9" cy="11.5" r="2.6"/><path d="M15 9.5h3.5M15 13.5h3.5M6 17v2"/></svg>' };
     const ckZaman = t => new Date(t).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" });
-    const cihazKart = (k, o = {}) => { const tel = /iPhone|iPad|Android|SM-|Pixel|Redmi|Xiaomi|Galaxy/i.test((k.c || "") + " " + (k.s || "")) || k.tur === "telefon";
+    const cihazKart = (k, o = {}) => { const tel = /iPhone|iPad|Android|SM-|Pixel|Redmi|Xiaomi|Galaxy/i.test((k.c || "") + " " + (k.s || "") + " " + modelAdi(k.c)) || k.tur === "telefon";
       const cip = (t, ik, v) => v ? `<span class="ck-c ${t}">${IK_C[ik]}<span>${escH(v)}</span></span>` : "";
-      return `<div class="ck${o.bu ? " bu" : ""}${o.kucuk ? " kucuk" : ""}"><div class="ck-ust"><span class="ck-ik">${tel ? IK_TEL : IK_PC}</span><div class="ck-ad"><b>${escH(k.c || "Bilinmeyen cihaz")}</b><small>${escH([k.s, k.tr].filter(Boolean).join(" · ") || "sistem bilgisi yok")}</small></div>
+      return `<div class="ck${o.bu ? " bu" : ""}${o.kucuk ? " kucuk" : ""}"><div class="ck-ust"><span class="ck-ik">${tel ? IK_TEL : IK_PC}</span><div class="ck-ad"><b>${escH(modelAdi(k.c) || k.c || "Bilinmeyen cihaz")}</b><small>${escH([modelAdi(k.c) ? "model " + k.c : "", k.s, k.tr].filter(Boolean).join(" · ") || "sistem bilgisi yok")}</small></div>
         <div class="ck-sag">${o.bu ? '<em class="ck-bu">bu cihaz</em>' : ""}<time>${escH(ckZaman(k.t))}</time></div></div>
         <div class="ck-cipler">${cip("ip", "ip", k.ip ? k.ip : "IP alınamadı")}${cip("cpu", "cpu", k.cpu ? k.cpu + " çekirdek" : "")}${cip("ram", "ram", k.ram ? (k.ram >= 8 ? "8+ GB" : k.ram + " GB") + " RAM" : "")}${cip("ekr", "ekr", k.e || "")}</div>
         ${k.gpu ? `<div class="ck-gpu">${IK_C.gpu}<span>${escH(k.gpu)}</span></div>` : ""}${k.dil && o.dil ? `<div class="ck-dil">Dil ${escH(k.dil)}</div>` : ""}</div>`; };
@@ -866,7 +875,7 @@
     const oturumHtml = m => { const g = payGorulme[m.id], O = Object.entries((g && g.oturum) || {}).map(([no, x]) => ({ no, ...x })).sort((a, b) => b.son - a.son); if(!O.length) return "";
       const K = (g.kayit || []), model = no => (K.find(k => k.no === no) || {}).c, acik = O.filter(x => otDurum(x) !== "kapali").length, Y = { acik: "Çevrimiçi", arka: "Arka planda", kapali: "Çevrimdışı" };
       return `<div class="ot">${acik > 1 ? `<div class="ot-uyari">Aynı anda ${acik} cihazda açık</div>` : ""}${O.slice(0, 5).map(x => { const d = otDurum(x);
-        return `<div class="ot-s ${d}"><i></i><div><b>${Y[d]} · ${escH(model(x.no) || x.c || "cihaz")}</b><small>giriş ${escH(zmn(x.bas))} · ${d === "kapali" ? "son görülme " : "son sinyal "}${escH(once(x.son))}</small></div></div>`; }).join("")}</div>`; };
+        return `<div class="ot-s ${d}"><i></i><div><b>${Y[d]} · ${escH(modelAdi(model(x.no) || x.c) || model(x.no) || x.c || "cihaz")}</b><small>giriş ${escH(zmn(x.bas))} · ${d === "kapali" ? "son görülme " : "son sinyal "}${escH(once(x.son))}</small></div></div>`; }).join("")}</div>`; };
     const gorHtml = m => { const g = payGorulme[m.id], k = g && g.kayit && g.kayit[0]; if(k) return oturumHtml(m) + `<div class="ck-et">Son açılış</div>` + cihazKart(k, { kucuk: 1 });
       return oturumHtml(m) + `<small>${g && g.t ? "son açılış " + escH(zmn(g.t)) + (g.c ? " · " + escH(g.c) : "") : "henüz açılmadı"}</small>`; };
     const gecmisHtml = m => { const g = payGorulme[m.id], K = ((g && g.kayit) || []).slice(1); if(!K.length) return ""; return `<details class="bp-gec"><summary>Önceki açılışlar · ${K.length}</summary><div class="ck-liste">${K.map(k => cihazKart(k, { kucuk: 1 })).join("")}</div></details>`; };
@@ -3134,6 +3143,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .es-pis{display:flex;align-items:center;gap:6px;margin-top:12px} .es-pis .bosluk{flex:1}
 /* kayıt başlığı: altındaki kartla tek parça; üstte ince gri şerit (‹ ad · 4/5 ⌄ › … ＋ Yeni), altında seçili kaydın adı */
 .kb{display:flex;flex-direction:column;border:1px solid var(--line2);border-bottom:0;border-radius:14px 14px 0 0;background:var(--panel);overflow:hidden}
+.kb.yalniz{border-bottom:1px solid var(--line2);border-radius:14px}
+.kb-gun{flex:none;display:flex;flex-direction:column;align-items:flex-end;line-height:1.1;padding-left:10px;border-left:1px solid var(--line2)} .kb-gun b{font:800 19px var(--f-ui);color:#2F6B47;font-variant-numeric:tabular-nums} .kb-gun small{font:600 10.5px var(--f-ui);color:var(--muted)}
 .kb + section{margin-top:-12px!important;border-top-left-radius:0!important;border-top-right-radius:0!important}
 .kb-ust{display:flex;align-items:center;gap:2px;min-height:40px;padding:4px 6px;background:#F4F6F9;border-bottom:1px solid var(--line2)}
 .kb-orta{display:inline-flex;align-items:center;gap:7px;min-width:0;height:32px;padding:0 8px;border:0;background:none;border-radius:7px;cursor:pointer;color:#3D4D5E}
@@ -3473,7 +3484,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 432</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 433</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3757,8 +3768,17 @@ function saltGeriAl(yol){ clearTimeout(saltGeriAl.z); (saltGeriAl.y ||= new Set(
 function kaydet(yol, veriFn){
   if(saltMi()){ if(Date.now() - sonDokunus < 2000) saltGeriAl(yol); return; }   /* kendiliğinden hesaplananlar yalnız ekranda kalır, kaydedilmez */
   if(!db){ durum("hata","Bağlantı yok: değişiklik kaydedilemez"); }
-  kirli[yol] = veriFn; surum[yol] = (surum[yol] || 0) + 1; adimPlanla(yol); kayitCubugu(); taslakYaz();   // elle kayıt: yalnız “Kaydet” ile yazılır
+  kirli[yol] = veriFn; surum[yol] = (surum[yol] || 0) + 1; adimPlanla(yol); kayitCubugu(); taslakYaz(); gercekMiPlanla(yol);   // elle kayıt: yalnız “Kaydet” ile yazılır
 }
+/* yalnız gezinti (hangi kaydın/kişinin seçili olduğu) değişiklik sayılmaz: kayıtlı hâlle arasında “aktif” dışında fark yoksa çubuk çıkmaz.
+   Elle yapılıp sonra eski hâline döndürülen değişiklik de böylece kendiliğinden düşer. */
+const GEZINTI = new Set(["aktif"]);
+const gercekJson = v => JSON.stringify(v ?? null, (k, x) => GEZINTI.has(k) ? undefined : x);
+const gercekZ = {};
+function gercekMiPlanla(yol){ clearTimeout(gercekZ[yol]); gercekZ[yol] = setTimeout(async () => { if(!(yol in kirli) || !db) return; const sv = surum[yol];
+    let taban; try { const d = await db.doc(yol).get(); taban = d.exists ? d.data() : null; } catch(e){ return; }
+    if(!(yol in kirli) || surum[yol] !== sv) return; let simdi; try { simdi = kirli[yol](); } catch(e){ return; }
+    if(gercekJson(simdi) === gercekJson(taban)){ delete kirli[yol]; adimSifirla([yol]); kayitCubugu(); taslakYaz(true); } }, 350); }
 /* kaydedilmemiş değişiklikler telefonda kaybolmasın: taslak olarak bu cihazda tutulur, açılışta geri getirilir (kaydetmek yine kullanıcının elinde) */
 const TASLAK = "tskTaslak";
 function taslakYaz(hemen){ clearTimeout(taslakYaz.z); if(onizlemeMi() || saltMi()) return; const is = () => { try { const o = {}; for(const y in kirli){ const v = kirli[y](); if(v !== undefined) o[y] = v; } if(Object.keys(o).length) localStorage.setItem(TASLAK, JSON.stringify({ t: Date.now(), o })); else localStorage.removeItem(TASLAK); } catch(e){} }; if(hemen) is(); else taslakYaz.z = setTimeout(is, 700); }
@@ -6286,9 +6306,10 @@ const gdBas = ad => String(ad || "?").split(/\s+/).filter(Boolean).slice(0, 2).m
 const gdKisiGun = (x, soz) => { const hs = soz ? gdSozHesap(x) : null; return { gun: soz ? (hs.kalis === "" ? "—" : hs.kalis) : gdToplam(x), u: soz ? hs.uyari.length : gdUyarilar(x).length }; };
 function gdSecici(k, soz){ const L = gdGrupListe(), i = L.indexOf(k); if(!k) return ""; const { gun, u } = gdKisiGun(k, soz), o = L[i - 1], s = L[i + 1];
   const nok = L.length <= 12 ? L.map((x, j) => `<i${j === i ? ' class="su"' : ""}></i>`).join("") : `<span>${i + 1} / ${L.length}</span>`;
-  return `<div class="gd-secici"><div class="gd-bar"><button type="button" class="gd-ok"${o ? ` data-kisi="${esc(o.id)}"` : " disabled"} aria-label="Önceki kişi">‹</button>
-    <button type="button" class="gd-sk" data-gd-liste aria-label="Personel listesini aç"><span class="gd-av">${esc(gdBas(k.ad))}</span><span class="gd-sy"><b>${esc(k.ad || "(adsız)")}</b><small>${esc(k.rutbe || "")}</small></span><span class="gd-gn">${esc(gun)}<small>gün</small></span>${u ? `<i class="gd-uy" title="${u} uyarı">!</i>` : ""}</button>
-    <button type="button" class="gd-ok"${s ? ` data-kisi="${esc(s.id)}"` : " disabled"} aria-label="Sonraki kişi">›</button></div><div class="gd-nok" aria-label="${i + 1}. kişi / ${L.length}">${nok}</div></div>`; }
+  return `<div class="gd-secici kb yalniz"><div class="kb-ust"><button type="button" class="kb-ok"${o ? ` data-kisi="${esc(o.id)}"` : " disabled"} aria-label="Önceki kişi">‹</button>
+    <button type="button" class="kb-orta" data-gd-liste><span class="kb-ad">${soz ? "Sözleşmeli" : "Personel"}</span><span class="kb-say">${i + 1} / ${L.length}</span><svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>
+    <button type="button" class="kb-ok"${s ? ` data-kisi="${esc(s.id)}"` : " disabled"} aria-label="Sonraki kişi">›</button><span class="kb-bos"></span>${u ? `<em class="kb-oz dl-eksik">${u} uyarı</em>` : ""}</div>
+    <button type="button" class="kb-sec" data-gd-liste><span class="kb-av">${esc(gdBas(k.ad))}</span><span class="kb-ic"><b>${esc(k.ad || "(adsız)")}</b><small>${esc(k.rutbe || "")}</small></span><span class="kb-gun"><b>${esc(gun)}</b><small>gün</small></span></button></div>`; }
 document.addEventListener("click", e => { if(!e.target.closest || !e.target.closest("[data-gd-liste]")) return; const soz = gdSekme === "soz", k = gdKisi(), L = gdGrupListe();
   altPencere("gk-perde", "PERSONEL", `${L.length} kişi`, () => `<div class="ap-liste">${L.map((x, j) => { const { gun, u } = gdKisiGun(x, soz); return apSatir(`data-gk="${esc(x.id)}"`, `<span class="gd-av${x === k ? " sec" : ""}">${esc(gdBas(x.ad))}</span>`, esc(x.ad || "(adsız)") + (u ? ` <i class="gd-uy">!</i>` : ""), `<span class="ap-say">${esc(gun)} gün</span>`, { alt: esc(x.rutbe || "") + (x === k ? " · seçili" : "") }); }).join("")}</div>
       <button type="button" class="ag-yeni-kat" data-gk-ekle>＋ Personel ekle</button><button type="button" class="ag-yeni-kat" data-gk-sira>${S.gdhg.srKilit ? "🔒 Sıra kilitli" : "⇅ Sırala"}</button>`,
@@ -12842,10 +12863,12 @@ uzE({ k: "es", kap: "#es-govde .es-tb", satir: ".es-tr[data-es-duz]", id: el => 
 uzE({ k: "zm", kap: "#zm-govde .es-tb", satir: ".es-tr[data-zm-duz]", id: el => el.dataset.zmDuz, ...uzSatirlar(() => zimmetCiz(), () => zmAktif(zmVeri(uzAB())).satirlar) });
 uzE({ k: "sl", kap: "#sl-govde .sl-l", satir: ".sl-r", id: el => (el.querySelector("[data-sl-ac]") || {}).dataset?.slAc, grup: x => x.model || "", ...uzSatirlar(() => silahCiz(), () => slVeri(uzAB()).liste),
   ad: el => { const b = el.querySelector(".sl-no"); return b ? "Seri " + b.textContent : ""; } });
+[["spor", "data-sp-ac"], ["sicil", "data-sa-ac"]].forEach(([k, a]) => { const Q = SQ[k]; uzE({ k, kap: k === "spor" ? "#sp-govde .sa-blok" : "#sa-govde .sa-blok", satir: ".yk-k", id: el => (el.querySelector(`[${a}]`) || {}).getAttribute?.(a), dizi: () => Q.dizi(), kaydet: () => Q.kaydet(), ciz: () => Q.ciz() }); });
+uzE({ k: "gdhg", kap: "#gk-perde .ap-liste", satir: "[data-gk]", perde: "gk-perde", ac: id => { gdSecili = id; gdBelgeCiz(); }, id: el => el.dataset.gk, ad: el => (el.querySelector(".ap-ad") || el).childNodes[0].textContent, dizi: () => SQ.gdhg.dizi(), kaydet: () => SQ.gdhg.kaydet(), ciz: () => SQ.gdhg.ciz() });
 uzE({ k: "kart", kap: "#b-belgeler, #b-dosyalar", satir: ".kart.bkk:not(.gizli-kart)", vekil: true, id: () => "x", ad: el => (el.querySelector(".ad") || {}).textContent || "" });
-const uzEtiket = (e, el) => { const a = e.ad ? e.ad(el) : ""; if(a) return a.trim(); const b = el.querySelector("b, .ad, td:nth-child(2)"); return ((b && b.textContent) || el.textContent || "").trim().split("\n")[0].trim() || "Satır"; };
-function uzBul(t){ if(!t || !t.closest || t.closest("input,textarea,select,[contenteditable=true],.ap-perde,.imz-perde")) return null;
-  for(const e of UZ){ const el = t.closest(e.satir); if(el && el.closest(e.kap) && !document.documentElement.classList.contains("salt")) return { e, el }; } return null; }
+const uzEtiket = (e, el) => { const a = e.ad ? e.ad(el) : ""; if(a) return a.trim(); const b = el.querySelector("b") || el.querySelector(".ad") || el.querySelector("td:nth-child(2)"); return ((b && b.textContent) || el.textContent || "").trim().split("\n")[0].trim() || "Satır"; };
+function uzBul(t){ if(!t || !t.closest || t.closest("input,textarea,select,[contenteditable=true]") || document.documentElement.classList.contains("salt")) return null; const perde = t.closest(".ap-perde,.imz-perde");
+  for(const e of UZ){ if(perde && (!e.perde || perde.id !== e.perde)) continue; const el = t.closest(e.satir); if(el && el.closest(e.kap)) return { e, el }; } return null; }
 function uzIndeks(e, L, id){ return e.idx ? +id : L.findIndex(x => x && String(x.id) === String(id)); }
 function uzTasi(e, id, yon0){ const L = e.dizi(); if(!L) return; const yon = e.ters ? ({ ust: "alt", alt: "ust", "-1": 1, "1": -1 })[yon0] : yon0;   /* listede en yeni üstte gösteriliyorsa yön ters çevrilir */ const i = uzIndeks(e, L, id); if(i < 0) return; let j;
   if(e.grup){ const g = e.grup(L[i]), es = L.map((x, k) => k).filter(k => e.grup(L[k]) === g), p = es.indexOf(i); j = yon === "ust" ? es[0] : yon === "alt" ? es[es.length - 1] : es[p + yon]; }
@@ -12859,10 +12882,11 @@ function uzSil(e, id, ad){ let geri;
 const UZ_IK = { ac: '<path d="M4 20h4L19 9l-4-4L4 16z"/>', yuk: '<path d="M12 19V5M6 11l6-6 6 6"/>', asa: '<path d="M12 5v14M6 13l6 6 6-6"/>', ust: '<path d="M5 4h14M12 20V8M7 13l5-5 5 5"/>', alt: '<path d="M5 20h14M12 4v12M7 11l5 5 5-5"/>',
   kop: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', tas: '<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>', sec: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/>', sil: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/>', dug: '<circle cx="12" cy="12" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>' };
 function uzAc({ e, el }){ const id = e.id(el); if(id == null) return; const ad = uzEtiket(e, el), I = [];
+  if(e.perde){ const k = window.TSK_KATMAN && window.TSK_KATMAN[e.perde]; if(k) k(); }   /* liste penceresi kapanır, işlemler onun yerine açılır */
   if(e.vekil){ const ac = el.querySelector("[data-ac],[data-dsy-gor]"); if(ac) I.push({ ad: "Aç", ik: "ac", f: () => ac.click() });
     const gor = new Set(); el.querySelectorAll("button").forEach(b => { if(b.disabled || b.matches(".uz-dug,[data-alt-ayrac]") || (b.offsetParent === null && !b.closest(".bkk-is") && !b.classList.contains("bkk-kalem"))) return; const t = (b.getAttribute("aria-label") || b.title || b.textContent || "").replace(/\s+/g, " ").trim(); if(!t || gor.has(t) || b.matches("[data-ac]")) return; gor.add(t);
       const sil = /sil/i.test(t) || b.classList.contains("sil"); I.push({ ad: t.replace(new RegExp("^" + ad.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*"), "").replace(/^belgesini\s*/i, "").replace(/^./, c => c.toLocaleUpperCase("tr")), ik: sil ? "sil" : /taşı/i.test(t) ? "tas" : /ad|düzenle/i.test(t) ? "ac" : /çoğalt|kopya/i.test(t) ? "kop" : /indir/i.test(t) ? "asa" : "dug", kirmizi: sil, f: () => b.click() }); }); }
-  else { I.push({ ad: "Aç / düzenle", ik: "ac", f: () => { const h = el.matches("button,[data-ac]") ? el : el.querySelector("button,[data-ac],td") || el; h.click(); } });
+  else { I.push({ ad: "Aç / düzenle", ik: "ac", f: () => { if(e.ac) return e.ac(id); const h = el.matches("button,[data-ac]") ? el : el.querySelector("button,[data-ac],td") || el; h.click(); } });
     if(e.dizi){ I.push({ ad: "Yukarı taşı", ik: "yuk", f: () => uzTasi(e, id, -1) }, { ad: "Aşağı taşı", ik: "asa", f: () => uzTasi(e, id, 1) }, { ad: "En üste taşı", ik: "ust", f: () => uzTasi(e, id, "ust") }, { ad: "En alta taşı", ik: "alt", f: () => uzTasi(e, id, "alt") }); }
     if(e.kopya && e.dizi) I.push({ ad: "Kopyala", alt: "kopyası hemen altına eklenir", ik: "kop", f: () => uzKopya(e, id) });
     if(e.ts) I.push({ ad: "Seç", alt: "birden çok satırı birlikte silmek ya da işlemek için", ik: "sec", f: () => { for(const x in tsSec) tsSec[x] = null; tsSec[e.ts] = new Set([id]); tsUygula(); } });
@@ -12877,11 +12901,11 @@ document.addEventListener("pointerdown", e => { if(e.button > 0) return; const h
   clearTimeout(uzZ); uzZ = setTimeout(() => { uzZ = null; if(uzEl) uzEl.classList.remove("uz-bas"); uzSon = Date.now(); uzAc(h); uzEl = null; }, 480); }, true);
 document.addEventListener("pointermove", e => { if(uzZ && Math.hypot(e.clientX - uzX, e.clientY - uzY) > 9) uzBirak(); }, true);
 ["pointerup", "pointercancel", "scroll"].forEach(t => document.addEventListener(t, () => { if(uzZ) uzBirak(); }, true));
-document.addEventListener("click", e => { if(Date.now() - uzSon < 700 && !e.target.closest(".ap-perde")){ e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+document.addEventListener("click", e => { if(Date.now() - uzSon < 700 && !e.target.closest("#ks-perde")){ e.preventDefault(); e.stopImmediatePropagation(); } }, true);
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-uz-ac]"); if(!b) return; e.preventDefault(); e.stopImmediatePropagation(); const el = b.closest(".kart"), en = UZ.find(x => x.k === "kart"); if(el && en) uzAc({ e: en, el }); }, true);
 document.addEventListener("contextmenu", e => { const h = uzBul(e.target); if(!h) return; e.preventDefault(); if(Date.now() - uzSon < 900) return; uzBirak(); uzSon = Date.now(); uzAc(h); }, true);
 document.head.insertAdjacentHTML("beforeend", `<style>${UZ.map(e => e.kap.split(",").map(k => k.trim() + " " + e.satir).join(",")).join(",")}{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
-.bkk>.bkk-kalem:not(.uz-dug){display:none!important} .bkk>.uz-dug{right:9px!important;font-size:17px!important;font-weight:700} .bkk:not(.gizli-kart) .bkk-ust{padding-right:42px!important}
+.bkk>.bkk-kalem:not(.uz-dug){display:none!important} .bkk-is .btn.sil,.bkk-is [data-cogalt],.bkk-is [data-is="parcala"]{display:none!important} .ts-ac[aria-pressed="false"]{display:none!important} .bkk>.uz-dug{right:9px!important;font-size:17px!important;font-weight:700} .bkk:not(.gizli-kart) .bkk-ust{padding-right:42px!important}
 .uz-bas{transition:background .25s,transform .25s;transform:scale(.985);background-color:#F1F5F9!important} .uz-ik svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round} .uz-ik{--sz:#EEF2F6;--sr:#3D5A73} .uz-ik.kz{--sz:#FBEDEA;--sr:#A3412F}</style>`);
 </script>
 
