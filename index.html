@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "441";
+  const SURUM = "442";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3505,7 +3505,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 441</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 442</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11643,8 +11643,8 @@ const fyKapsamListe = (d) => { const v = fyVeri(d); return v.kapsam === "hepsi" 
 /* ---- FYDT kartı PDF: orijinal karttan ölçülerek (mm) birebir çizim; ön ve arka yüz ayrı tablolar, ayrı fotoğraflar ---- */
 /* ölçüler orijinal karttan (mm). Ön yüzde her test bloğu iki ayrı tablodur: solda Test Tarihi/Yaş Grubu/Katılmama satırları, sağda Test/Ölçüm sütunları; satırları hizalı değildir */
 const FYP = { X: [5.4, 10.5, 52.1, 87.4, 112.5, 162.9, 194.5],
-  BL: [{ t: 60.5, lh: 68.7, ls: 5.97, rt: 60.5, rh: 71.0, rs: 6.1, b: 119.5 }, { t: 119.5, lh: 129.9, ls: 6.03, rt: 120.5, rh: 133.8, rs: 6.03, b: 181.4 }, { t: 181.4, lh: 192.0, ls: 6.07, rt: 182.4, rh: 196.0, rs: 5.87, b: 244.4 }],
-  KX: [34.7, 58.6, 82.2, 106.6, 130.9, 155.3], KY: [8.3, 13.8, 19.3, 24.7], HX: [5.4, 169.2], HY: [30.2, 36.4, 42.7, 48.9, 60.5], FOTO_ON: [170.2, 30.6, 195.1, 60.4],
+  BL: [{ t: 59.8, lh: 68.7, ls: 5.97, rt: 59.8, rh: 71.0, rs: 6.1, b: 119.5 }, { t: 119.5, lh: 129.9, ls: 6.03, rt: 120.5, rh: 133.8, rs: 6.03, b: 181.4 }, { t: 181.4, lh: 192.0, ls: 6.07, rt: 182.4, rh: 196.0, rs: 5.87, b: 245.6 }],
+  KX: [34.7, 58.6, 82.2, 106.6, 130.9, 155.3], KY: [8.3, 13.8, 19.3, 24.7], HX: [5.4, 169.2], HY: [30.2, 36.4, 42.7, 48.9, 58.6], FOTO_ON: [169.7, 29.7, 193.6, 60.0], ET: [59.2, 119.2, 181.0, 243.2],
   AX: [5.2, 30.0, 35.0, 88.6, 118.8, 125.2, 175.2], AY: [22.6, 28.5, 34.5, 40.5, 46.3, 52.5], FOTO_AR: [175.9, 22.6, 202.2, 52.6],
   SX: [5.2, 33.9, 47.5, 64.0, 97.4], SY: [52.5, 58.1, 64.1], SR: [74.8, 85.6, 96.4, 107.1, 117.9, 128.6, 134.7, 145.8, 156.7, 171.1, 182.1, 193.4, 204.3, 215.5, 228.0, 239.6, 248.0],
   GX: [97.4, 127.0, 140.7, 157.6, 202.2], GY: [53.4, 59.1, 64.8], GR: [75.7, 87.1, 101.5, 112.4, 123.4, 134.4, 146.0, 157.2, 168.2, 178.8, 189.8, 201.2] };
@@ -11672,21 +11672,22 @@ async function fyPdfYap(d, P, sol){ const v = fyVeri(d), doc = await yeniPdf({ y
     const ETK = ["TEST BİR", "TEST İKİ", "TSK SPOR OK. VE EĞT.MRK.K.LIĞI"]; let y = HY[4];
     ETK.forEach((et, bi) => { const t = x.t[bi] || {}, son = bi === 2, B = FYP.BL[bi], ust = son ? " :" : ":", tek = son ? "Tekrar Sayısı :" : "Tekrar Sayisi:";
       const OL = [["Boy", "boy", "cm."], ["Ağırlık", "kilo", "kg."], ["Bel Çevresi", "bel", "cm."], ["Mekik Testi", "mekik", tek], ["Şınav Testi", "sinav", tek], ["Koşu Testi", "kosu", son ? "Süre:" : "Süre :"], ["Alternatif Test", "alt", tek]];
-      kutu(X[0], B.t, X[6], B.b); cz(X[1], B.t, X[1], B.b);   /* blok çerçevesi ve dik etiket sütunu */
+      kutu(X[1], B.t, X[6], B.b);   /* ana tablo; dik etiket sütunu ayrı tablo (aşağıda), köşeleri birleşmez */
       /* sol tablo */
       cz(X[2], B.t, X[2], B.lh); cz(X[1], B.lh, X[3], B.lh); yaz(`Test Tarihi : ${t.tarih ? fyTarihTr(t.tarih) : "....../...../......"}`, X[1], B.t, X[2], B.lh, { s: Z, sigdir: true }); yaz(`Yaş Grubu${ust}${t.tarih ? " " + grp : ""}`, X[2], B.t, X[3], B.lh, { s: Z, sigdir: true });
       for(let j = 1; j <= 7; j++) cz(X[1], B.lh + j * B.ls, X[3], B.lh + j * B.ls);
       yaz(`Katılmama Nedeni*${ust}${t.neden ? " " + t.neden : ""}`, X[1], B.lh, X[3], B.lh + B.ls, { s: Z, sigdir: true });
       /* sağ tablo */
       const rb = B.rh + 7 * B.rs; cz(X[3], B.rt, X[6], B.rt); [3, 4, 5].forEach(c => cz(X[c], B.rt, X[c], rb)); cz(X[3], B.rh, X[6], B.rh);
-      [[3, "Test/Ölçüm"], [4, "Test / Ölçüm Sonucu"], [5, "Teste Giren Personel İmzası"]].forEach(([c, t2]) => yaz(t2, X[c], B.rt, X[c + 1], B.rh, { al: "c", s: Z, sigdir: true }));
+      [[3, "Test/Ölçüm"], [4, "Test / Ölçüm Sonucu"], [5, "Teste Giren Personel\nİmzası"]].forEach(([c, t2]) => yaz(t2, X[c], B.rt, X[c + 1], B.rh, { al: "c", s: c === 5 ? 10 : Z, pad: c === 5 ? .2 : 1, sigdir: true }));
       OL.forEach(([ad, k, birim], j) => { const y1 = B.rh + j * B.rs, y2 = y1 + B.rs, deg = t[k] || ""; cz(X[3], y2, X[6], y2); yaz(ad, X[3], y1, X[4], y2, { s: Z, sigdir: true });
         if(birim.endsWith(".")){ yaz(birim, X[4], y1, X[5], y2 + 1.2, { al: "r", s: Z }); if(deg) yaz(deg, X[4], y1, X[5] - 9, y2, { al: "r", s: Z }); }
         else if(k === "kosu" && son){ const [dk, sn] = String(deg).split(":"); yaz(birim, X[4], y1, X[5], y2, { s: Z }); yaz(`${dk || ""}  dk.`, X[4] + 14, y1, X[4] + 34, y2, { al: "r", s: Z }); yaz(`${sn || ""}  sn.`, X[4] + 30, y1, X[4] + 50, y2, { al: "r", s: Z }); }
         else yaz(`${birim}${deg ? " " + deg : ""}`, X[4], y1, X[5], y2, { s: Z }); });
       if(son){ cz(X[1], rb, X[6], rb); yaz("Heyet Başkanı (Rütbe, Adı,Soyadı, İmza) :", X[1], rb, X[6], B.b, { s: Z }); }
-      doc.setFont("LS", "normal"); let fs = Z; doc.setFontSize(fs); while(doc.getTextWidth(et) > B.b - B.t - 3 && fs > 7){ fs -= .25; doc.setFontSize(fs); }
-      doc.text(et, (X[0] + X[1]) / 2 + fs * .3528 * .35, (B.t + B.b) / 2 + doc.getTextWidth(et) / 2, { angle: 90 }); y = B.b; });
+      const e1 = FYP.ET[bi], e2 = FYP.ET[bi + 1]; kutu(X[0], e1, X[1], e2);
+      doc.setFont("LS", "normal"); let fs = Z; doc.setFontSize(fs); while(doc.getTextWidth(et) > e2 - e1 - 3 && fs > 7){ fs -= .25; doc.setFontSize(fs); }
+      doc.text(et, (X[0] + X[1]) / 2 + fs * .3528 * .35, (e1 + e2) / 2 + doc.getTextWidth(et) / 2, { angle: 90 }); y = B.b; });
     yaz("AÇIKLAMALAR :", X[0], y + .6, X[6], y + 4.6, { b: 1, u: 1, s: 9.5, pad: .3, va: "t" });
     pdfZengin(doc, { va: "t", k: "000000", vr: ["a. Katılmadı :", "b. Testi Tamamlamadı :", "c. Sağlık Nedeni ile Sadece Bir Branştan Muaf :", "d. Muaf :"].map(t2 => ({ t: t2, b: 1 })) }, FY_ACIK.replace(/^AÇIKLAMALAR :\n/, ""), X[0] - .3, y + 4.2, X[6] - X[0] + .6, 32, .3, 9, "left");
     /* ---------- arka yüz ---------- */
@@ -11696,7 +11697,7 @@ async function fyPdfYap(d, P, sol){ const v = fyVeri(d), doc = await yeniPdf({ y
     const { AX, AY } = FYP, yas = fyYas(v, p), SOL = [["Adı ve Soyadı", p.ad], ["Sicil Nu.", p.sicil], ["Rütbesi", p.rutbe], ["Yaşı", yas == null ? "" : yas], ["Cinsiyeti", "E"]],
       SAG = [["Ağırlığı", x.kilo], ["Boyu", x.boy], ["Kan Grubu", x.kan || fyKan(p.kan)], ["Kan Basıncı", x.tansiyon], ["Tarih", fyTarihTr(v.tarih) || new Date().toLocaleDateString("tr-TR")]];
     for(let i = 0; i < 5; i++){ const a = AY[i], b = AY[i + 1]; [[0, SOL[i][0], 1], [1, String(i + 1)], [2, SOL[i][1]], [3, SAG[i][0], 1], [4, String(i + 6)], [5, SAG[i][1]]].forEach(([c, t2, bb]) => { kutu(AX[c], a, AX[c + 1], b); yaz(t2 ?? "", AX[c], a, AX[c + 1], b, { b: bb, s: 11, sigdir: true, pad: .8 }); }); }
-    kutu(...[FYP.FOTO_AR[0], FYP.FOTO_AR[1], FYP.FOTO_AR[2], FYP.FOTO_AR[3]]); resim(await fyGriVeri(p.foto), FYP.FOTO_AR, .6);
+    kutu(...[FYP.FOTO_AR[0], FYP.FOTO_AR[1], FYP.FOTO_AR[2], FYP.FOTO_AR[3]]); resim(await fyGriVeri(p.foto), FYP.FOTO_AR, .35);
     const tablo = (TX, TY, ust, bas, satirlar, RS) => { kutu(TX[0], TY[0], TX[4], TY[1]); yaz(ust, TX[0], TY[0], TX[4], TY[1], { al: "c", b: 1, s: 11 });
       bas.forEach((t2, c) => { kutu(TX[c], TY[1], TX[c + 1], TY[2]); yaz(t2, TX[c], TY[1], TX[c + 1], TY[2], { b: 1, s: 11, pad: .6, sigdir: true }); });
       let a = TY[2]; satirlar.forEach((t2, i) => { const b = fyPx(RS[i]); for(let c = 0; c < 4; c++) kutu(TX[c], a, TX[c + 1], b); yaz(t2, TX[0], a, TX[1], b, { s: 11, b: t2 === "ÖZ GEÇMİŞ", va: t2 === "ÖZ GEÇMİŞ" ? "m" : "t", pad: .6, sigdir: true }); a = b; }); };
