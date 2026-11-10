@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "390";
+  const SURUM = "391";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -104,7 +104,7 @@
     if(meta.bagli){ if(durumHata){ renk = "kirmizi"; yazi = durumHata; } else if(meta.yerelDegisti || meta.bekleyenDosya.length){ renk = "turuncu"; yazi = "Gönderilmeyi bekleyen değişiklik var"; } else { renk = "yesil"; yazi = "Her şey buluta kaydedildi"; } }
     if(meta.bagli && izleyici() && !durumHata && renk !== "turuncu"){ yazi = payGor().duzenle ? "Paylaşılan arşiv · düzenleme açık" : "Paylaşılan arşiv · yalnız görüntüleme"; }
     b.dataset.renk = renk; b.title = yazi; b.querySelector("span").textContent = calisiyor ? "eşitleniyor…" : meta.bagli && izleyici() && renk === "yesil" ? (payGor().duzenle ? "paylaşım · düzenleme" : "paylaşım · görüntüleme") : ({ gri: "bulut kapalı", kirmizi: "sorun", turuncu: "bekliyor", yesil: "kaydedildi" })[renk];
-    const kb = document.getElementById("bl-bagli"); if(kb) kb.dataset.renk = renk; const db2 = document.getElementById("bl-dbas"); if(db2) db2.textContent = calisiyor ? "Eşitleniyor…" : yazi;
+    const kb = document.getElementById("bl-bagli"); if(kb) kb.dataset.renk = renk; const bkd = document.querySelector(".bk-durum"); if(bkd) bkd.dataset.renk = renk; const db2 = document.getElementById("bl-dbas"); if(db2) db2.textContent = calisiyor ? "Eşitleniyor…" : yazi;
     const d = document.getElementById("bl-durum"); if(d) d.textContent = meta.bagli ? `Son eşitleme: ${meta.sonGonder || meta.sonAl ? new Date(Math.max(meta.sonGonder, meta.sonAl)).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—"}${sonrakiYazi()}` : "Bağlı değil. Veriler yalnızca bu cihazda.";
   }
   const sonrakiYazi = () => { const m = MODLAR[meta.mod] || MODLAR.an; if(meta.mod === "an") return " · otomatik"; const t = Math.max(meta.sonAl, meta.sonGonder) + m.al; return " · sonraki: " + new Date(t).toLocaleString("tr-TR", { hour: "2-digit", minute: "2-digit" }); };
@@ -179,7 +179,7 @@
     const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); const payL = pr.ok ? await pr.json() : [];
     for(const x of payL) if(!ist.has(x.name)) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya kaldırma", sha: x.sha }) });   // gizlenen dosya paylaşımdan silinir
     const atla = [], var_ = new Set(payL.map(x => x.name)), eksik = [...ist].filter(id => !var_.has(id)); let n = 0;
-    const ilerle = () => { const t = `Dosyalar gönderiliyor · ${n} / ${eksik.length}`; document.querySelectorAll("[data-bpkur],[data-bpg] .bl-yz small").forEach(el => { if(el.matches("[data-bpkur]")) el.innerHTML = '<span class="bl-spin"></span>' + t; else el.textContent = t; }); };
+    const ilerle = () => { const t = `Dosyalar gönderiliyor · ${n} / ${eksik.length}`; document.querySelectorAll("[data-bpkur]").forEach(el => el.innerHTML = '<span class="bl-spin"></span>' + t); const pd = document.getElementById("bl-pay-durum"); if(pd) pd.textContent = t; };
     for(const id of eksik){ n++; ilerle(); const b = await varlikAl(id).catch(() => null); if(!b) continue;
       const icerik = u8ToB64(await dosyaSifreleK(new Uint8Array(await b.arrayBuffer()), pay.p)), koy = sha => ghP(yolP(DOSYA + id), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya", content: icerik, ...(sha ? { sha } : {}) }) });
       let r = await koy();
@@ -422,14 +422,16 @@
         <div class="bl-hata" id="bl-hata" role="alert"></div>
       </div>
       <div id="bl-bagli" class="bl-ac" hidden>
-        <div class="bl-durumkart"><span class="bl-r bl-dik"><svg viewBox="0 0 24 24"><path d="M7 18h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 9.2 4.4 4.4 0 0 0 7 18z"/><path d="M9.5 13.5l2 2 3.5-3.5"/></svg></span><div style="min-width:0"><strong id="bl-dbas"></strong><small id="bl-durum"></small></div></div>
-        <div class="bl-liste"><button class="bl-sat" type="button" id="bl-simdi"><span class="bl-ik mavi"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4.6L4 8"/><path d="M4 4v4h4"/><path d="M4 13a8 8 0 0 0 14.5 4.6L20 16"/><path d="M20 20v-4h-4"/></svg></span><span class="bl-yz"><strong>Şimdi eşitle</strong><small>değişiklikleri gönder, buluttakini al</small></span><i>›</i></button><button class="bl-sat" type="button" id="bl-hizli"><span class="bl-ik mor"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg></span><span class="bl-yz"><strong>Başka cihaza bağlan</strong><small>hızlı bağlantı linki</small></span><i>›</i></button><button class="bl-sat" type="button" id="bl-pay-ac"><span class="bl-ik amber"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><span class="bl-yz"><strong>Görüntüleme paylaşımı</strong><small>başkasına link · bölümleri göster / gizle</small></span><i>›</i></button></div>
-        <div class="bl-modkap"><span class="bl-modbas">Otomatik eşitleme</span><div class="bl-mod" id="bl-mod" role="radiogroup" aria-label="Otomatik eşitleme">${Object.entries(MODLAR).map(([k, v]) => `<button type="button" role="radio" data-mod="${k}" aria-checked="false">${v.ad.replace("Dakikada bir", "Dakikada").replace("Saatte bir", "Saatte").replace("Günde bir", "Günde")}</button>`).join("")}</div></div>
-        <details class="bl-veri"><summary><span class="bl-ik yesil"><svg viewBox="0 0 24 24"><ellipse cx="12" cy="6" rx="7" ry="2.8"/><path d="M5 6v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8V6"/><path d="M5 12v6c0 1.5 3.1 2.8 7 2.8s7-1.3 7-2.8v-6"/></svg></span><span class="bl-yz"><strong>Bu cihazdaki veriler</strong><small>yedek al, yedekten yükle, sıfırla</small></span><i>›</i></summary><div class="arac"><button class="btn kucuk" type="button" id="bl-yedek">Yedek al (.json)</button><button class="btn kucuk" type="button" id="bl-yukle">Yedekten yükle</button><input type="file" id="bl-dosya" accept=".json,application/json" hidden><button class="btn kucuk sil" type="button" id="bl-sifirla">Bu cihazı sıfırla</button></div></details>
-        <button class="btn sil genis" type="button" id="bl-kes">Bağlantıyı kes</button>
+        <div class="bk-durum"><i class="bl-r">●</i><div class="bk-dy"><strong id="bl-dbas"></strong><small id="bl-durum"></small></div><button class="btn" type="button" id="bl-simdi">Eşitle</button></div>
+        <div class="bk-bol"><span class="bk-et">Otomatik eşitleme</span><div class="bl-mod" id="bl-mod" role="radiogroup" aria-label="Otomatik eşitleme">${Object.entries(MODLAR).map(([k, v]) => `<button type="button" role="radio" data-mod="${k}" aria-checked="false">${v.ad.replace("Dakikada bir", "Dakikada").replace("Saatte bir", "Saatte").replace("Günde bir", "Günde")}</button>`).join("")}</div></div>
+        <div class="bk-bol"><span class="bk-et">Bağlantılar</span><div class="bk-liste">
+          <button class="bk-sat" type="button" id="bl-hizli"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg><span><b>Kendi cihazlarım</b><small>başka telefona / bilgisayara bağlanma linki</small></span><i>›</i></button>
+          <button class="bk-sat" type="button" id="bl-pay-ac"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span><b>Başkasına göster</b><small>görüntüleme linki · bölüm gizle</small></span><i>›</i></button></div></div>
+        <div class="bk-bol"><span class="bk-et">Bu cihazdaki veriler</span><div class="bk-tuslar"><button type="button" id="bl-yedek">Yedek al</button><button type="button" id="bl-yukle">Yedekten yükle</button><button type="button" class="sil" id="bl-sifirla">Sıfırla</button></div><input type="file" id="bl-dosya" accept=".json,application/json" hidden></div>
         <div class="bl-hata" id="bl-hata2" role="alert"></div>
       </div>
-      <button class="bl-secenek bl-kilitsat" type="button" id="bl-kilit"><span class="bl-ik amber"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span><span><strong>Uygulama kilidi</strong><small id="bl-kilit-alt"></small></span><i>›</i></button>
+      <div class="bk-bol"><span class="bk-et">Güvenlik</span><div class="bk-liste"><button class="bk-sat" type="button" id="bl-kilit"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><b>Uygulama kilidi</b><small id="bl-kilit-alt"></small></span><i>›</i></button></div></div>
+      <button class="btn sil genis" type="button" id="bl-kes">Bağlantıyı kes</button>
     </div>`;
     document.body.appendChild(panel);
     /* PIN penceresi */
@@ -453,7 +455,25 @@
     const payP = document.createElement("div"); payP.className = "bl-perde"; payP.id = "bl-pay"; payP.hidden = true; payP.style.zIndex = 96;
     document.body.appendChild(payP);
     const st2 = document.createElement("style");
-    st2.textContent = `#bl-pay .bl-kart{gap:10px} .bp-bas{display:flex;flex-direction:column;gap:1px;margin-top:2px} .bp-bas small{font:500 11.5px var(--f-ui);color:var(--muted)}
+    st2.textContent = `.bl-kart{padding:16px!important;gap:12px!important;border-radius:18px!important}
+      .bl-ust .bl-logo{width:38px;height:38px;border-radius:11px;font-size:18px} .bl-ust .bl-logo svg{width:20px!important;height:20px!important} .bl-kart h2{font-size:18px} .bl-kart h3{font-size:10.5px} .bl-x{width:32px;height:32px}
+      .bk-durum{display:flex;align-items:center;gap:10px;padding:9px 10px 9px 12px;border:1px solid var(--line2);border-radius:12px;background:var(--panel2)}
+      .bk-durum .bl-r{flex:none;font-style:normal;font-size:12px;line-height:1} .bk-durum[data-renk="yesil"] .bl-r{color:#3C7A4E} .bk-durum[data-renk="turuncu"] .bl-r{color:#C27C1A} .bk-durum[data-renk="kirmizi"] .bl-r{color:#B4382C} .bk-durum[data-renk="gri"] .bl-r{color:#9AA19A}
+      .bk-dy{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .bk-dy strong{font:650 13.5px var(--f-ui);overflow-wrap:anywhere} .bk-dy small{font:500 11.5px var(--f-ui);color:var(--muted)}
+      .bk-durum .btn{flex:none;min-height:34px!important;height:34px;border-radius:9px!important;padding:0 12px;font:600 12.5px var(--f-ui)}
+      .bk-bol{display:flex;flex-direction:column;gap:5px} .bk-et{font:650 11.5px var(--f-ui);color:var(--muted)} .bk-et small{font-weight:500}
+      .bk-liste{border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--panel)}
+      .bk-sat{display:flex;align-items:center;gap:11px;width:100%;min-height:48px;padding:6px 12px;border:0;border-bottom:1px solid var(--line2);background:transparent;text-align:left;color:var(--fg);font:inherit;cursor:pointer} .bk-sat:last-child{border-bottom:0} .bk-sat[hidden]{display:none}
+      .bk-sat>svg{flex:none;width:19px;height:19px;fill:none;stroke:#4A6280;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+      .bk-sat>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .bk-sat b{font:600 13.5px var(--f-ui)} .bk-sat small{font:500 11.5px var(--f-ui);color:var(--muted)} .bk-sat>i{flex:none;font-style:normal;color:var(--muted)}
+      .bk-tuslar{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px} .bk-tuslar button{height:36px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer;white-space:nowrap} .bk-tuslar .sil{color:#A3412F}
+      .bl-mod{border-radius:10px!important;padding:3px!important} .bl-mod button{padding:8px 4px!important;font-size:12.5px!important;border-radius:8px!important}
+      #bl-pay .bl-kart{gap:12px}
+      .bp-arac{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:5px} .bp-arac button{height:34px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer;white-space:nowrap;padding:0 6px}
+      .bp-arac button[aria-pressed="true"]{background:#34475C;border-color:#34475C;color:#fff}
+      .bp-c{flex:none;width:24px;height:24px;margin-right:5px;border-radius:7px;border:1.5px solid #9AA6B4;background:var(--panel);cursor:pointer;padding:0} .bp-c[aria-pressed="true"]{background:#34475C url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/14px no-repeat;border-color:#34475C} .bp-c:disabled{opacity:.35}
+      .bp-secbar{position:sticky;bottom:0;display:flex;align-items:center;gap:6px;padding:8px 10px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);box-shadow:0 -4px 14px rgba(20,30,45,.08)}
+      .bp-secbar span{flex:1;font:650 13px var(--f-ui)} .bp-secbar button{height:34px;padding:0 14px;border-radius:9px;border:1px solid var(--line);background:var(--panel2);font:600 12.5px var(--f-ui);cursor:pointer} .bp-secbar button[data-bpsg="1"]{background:#34475C;border-color:#34475C;color:#fff} .bp-secbar button:disabled{opacity:.45} .bp-bas{display:flex;flex-direction:column;gap:1px;margin-top:2px} .bp-bas small{font:500 11.5px var(--f-ui);color:var(--muted)}
       .bp-agac{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--panel)}
       .bp-g{border-bottom:1px solid var(--line2)} .bp-g:last-child{border-bottom:0} .bp-g>summary{list-style:none;cursor:pointer} .bp-g>summary::-webkit-details-marker{display:none}
       .bp-s{display:flex;align-items:center;gap:8px;min-height:38px;padding:3px 6px 3px 10px;font:600 13px var(--f-ui);color:var(--fg)} .bp-s>span{flex:1;min-width:0;overflow-wrap:anywhere;display:flex;flex-direction:column}
@@ -486,7 +506,7 @@
     async function pinOzet(pin, salt){ const k = await crypto.subtle.importKey("raw", enc(pin), "PBKDF2", false, ["deriveBits"]);
       return u8ToB64(new Uint8Array(await crypto.subtle.deriveBits({ name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" }, k, 256))); }
     async function pinDogru(pin){ const k = kilitOku(); if(!k) return true; return (await pinOzet(pin, b64ToU8(k.salt))) === k.ozet; }
-    const kilitAlt = () => { const e = $$("#bl-kilit-alt"); if(e) e.textContent = kilitOku() ? "Açık · uygulama açılırken ve 3 dakika arka planda kalınca PIN sorulur. Değiştirmek ya da kaldırmak için dokun." : "Kapalı · telefon başkasının eline geçerse veriler görünmesin diye 6 haneli PIN koy."; };
+    const kilitAlt = () => { const e = $$("#bl-kilit-alt"); if(e) e.textContent = kilitOku() ? "Açık · açılışta ve 3 dk arka planda kalınca PIN sorulur" : "Kapalı · 6 haneli PIN koyabilirsiniz"; };
     const kl = document.createElement("div"); kl.id = "kilit"; kl.hidden = !kilitOku();
     kl.innerHTML = `<div class="kl-ic"><div class="bl-logo">🔒</div><h2>TSK ARŞİV</h2><p class="bl-alt">Devam etmek için PIN'ini gir.</p>
       <div class="pinx"><input class="pinin" id="kl-in" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="off" aria-label="PIN">${"<i></i>".repeat(6)}</div>
@@ -559,7 +579,7 @@
     function payAgac(){ const A = payAyar(), G = A.gizli || {}, K = (mem["bt/yapi"] || {}).klasorler || [], gor = new Set(), grp = [];
       K.forEach(k => { const a = k.ust || k.id; if(gor.has(a)) return; gor.add(a); grp.push({ anah: k.ust ? "g:" + k.ust : "k:" + k.id, ad: k.ust || k.ad, uy: k.ust ? K.filter(x => x.ust === k.ust) : [k] }); });
       const B = Object.keys(mem).filter(p => p.startsWith("belgeler/")).map(p => mem[p]).filter(Boolean);
-      const tus = (anah, gizli, ust) => `<button type="button" class="bp-t" data-bp="${escH(anah)}" aria-pressed="${!!(gizli || ust)}"${ust ? " disabled" : ""} aria-label="${gizli || ust ? "Gizli · göstermek için dokunun" : "Görünür · gizlemek için dokunun"}">${gizli || ust ? `<svg viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.6A10 10 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.2 3.9M6.6 6.6C3.7 8.4 2 12 2 12s3.6 6.5 10 6.5c1.7 0 3.2-.5 4.5-1.1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>` : `<svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`}</button>`;
+      const tus = (anah, gizli, ust) => paySec ? `<button type="button" class="bp-c" data-bps="${escH(anah)}" aria-pressed="${paySec.has(anah)}" aria-label="Seç"${ust ? " disabled" : ""}></button>` : `<button type="button" class="bp-t" data-bp="${escH(anah)}" aria-pressed="${!!(gizli || ust)}"${ust ? " disabled" : ""} aria-label="${gizli || ust ? "Gizli · göstermek için dokunun" : "Görünür · gizlemek için dokunun"}">${gizli || ust ? `<svg viewBox="0 0 24 24"><path d="M3 3l18 18"/><path d="M10.6 5.6A10 10 0 0 1 12 5.5c6.4 0 10 6.5 10 6.5a17 17 0 0 1-3.2 3.9M6.6 6.6C3.7 8.4 2 12 2 12s3.6 6.5 10 6.5c1.7 0 3.2-.5 4.5-1.1"/><path d="M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg>` : `<svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>`}</button>`;
       return grp.map(g => { const gG = !!G[g.anah], acik = g.uy.some(u => u.bolumler.some(b => G["b:" + u.id + "|" + b.id]) || G["k:" + u.id]);
         const say = gG ? "tamamı gizli" : (() => { let n = 0; g.uy.forEach(u => { if(G["k:" + u.id]) n++; u.bolumler.forEach(b => { if(G["b:" + u.id + "|" + b.id]) n++; }); }); B.forEach(d => { if(G["d:" + d.id] && (d.yerler || []).some(y => g.uy.some(u => u.id === y.k))) n++; }); return n ? n + " gizli" : ""; })();
         return `<details class="bp-g${gG ? " gz" : ""}"${acik ? " open" : ""}><summary class="bp-s"><i class="bp-ok">›</i><span>${escH(g.ad)}${say ? `<small>${say}</small>` : ""}</span>${tus(g.anah, gG)}</summary>${g.uy.map(u => { const kG = gG || !!G["k:" + u.id];
@@ -568,11 +588,13 @@
             return `<div class="bp-s b${kG ? " mir" : ""}"><span>${escH(b.ad)}</span>${tus("b:" + u.id + "|" + b.id, G["b:" + u.id + "|" + b.id], kG)}</div>${D.map(d => `<div class="bp-s d${bG ? " mir" : ""}"><span>${escH(d.ad)}</span>${tus("d:" + d.id, G["d:" + d.id], bG)}</div>`).join("")}`; }).join("")}`; }).join("")}</details>`; }).join(""); }
     function payCiz(){ const A = payAyar();
       payP.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true"><div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div style="flex:1;min-width:0"><h3>Görüntüleme paylaşımı</h3><h2>${pay ? "Paylaşım açık" : "Paylaşımı kur"}</h2></div><button class="bl-x" type="button" data-bpx aria-label="Kapat">✕</button></div>
-        ${pay ? `<div class="bl-durumkart"><span class="bl-r bl-dik"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></span><div style="min-width:0"><strong>${escH(pay.depo)}</strong><small id="bl-pay-durum">${escH(payDurumYazi())}</small></div></div>
-          <div class="bl-modkap"><span class="bl-modbas">Karşı tarafın yetkisi</span><div class="bp-seg"><button type="button" data-bpy="0" aria-pressed="${!A.duzenle}">Yalnız görüntüleme</button><button type="button" data-bpy="1" aria-pressed="${!!A.duzenle}">Düzenleyebilir</button></div></div>
-          <div class="bl-liste"><button class="bl-sat" type="button" data-bpl><span class="bl-ik mor"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></span><span class="bl-yz"><strong>Görüntüleme linki</strong><small>PIN ile korunur · PIN'i karşı tarafa ayrıca söyleyin</small></span><i>›</i></button>
-            <button class="bl-sat" type="button" data-bpg><span class="bl-ik mavi"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14.5-4.6L4 8"/><path d="M4 4v4h4"/></svg></span><span class="bl-yz"><strong>Şimdi güncelle</strong><small>kaydettikçe kendiliğinden güncellenir</small></span><i>›</i></button></div>
-          <div class="bp-bas"><span class="bl-modbas">Bölümler</span><small>Kapalı göz: karşı tarafta buğulu görünür, içeriği hiç gönderilmez</small></div><div class="bp-agac">${payAgac()}</div>
+        ${pay ? `<div class="bk-durum" data-renk="${payHata ? "kirmizi" : "yesil"}"><i class="bl-r">●</i><div class="bk-dy"><strong>${escH(pay.depo.split("/")[1])}</strong><small id="bl-pay-durum">${escH(payDurumYazi())}</small></div><button class="btn" type="button" data-bpg>Güncelle</button></div>
+          <div class="bk-bol"><span class="bk-et">Karşı tarafın yetkisi</span><div class="bp-seg"><button type="button" data-bpy="0" aria-pressed="${!A.duzenle}">Yalnız görüntüleme</button><button type="button" data-bpy="1" aria-pressed="${!!A.duzenle}">Düzenleyebilir</button></div></div>
+          <button class="btn ana genis" type="button" data-bpl>Görüntüleme linki oluştur</button>
+          <div class="bk-bol"><span class="bk-et">Bölümler <small>· kapalı göz: karşı tarafta buğulu, içeriği gönderilmez</small></span>
+            <div class="bp-arac"><button type="button" data-bpsec aria-pressed="${!!paySec}">${paySec ? "Seçimi bitir" : "☑ Seçerek gizle"}</button><button type="button" data-bphep="0">Hepsini göster</button><button type="button" data-bphep="1">Hepsini gizle</button></div>
+            <div class="bp-agac${paySec ? " sec" : ""}">${payAgac()}</div>
+            ${paySec ? `<div class="bp-secbar"><span>${paySec.size} seçili</span><button type="button" data-bpsg="1"${paySec.size ? "" : " disabled"}>Gizle</button><button type="button" data-bpsg="0"${paySec.size ? "" : " disabled"}>Göster</button></div>` : ""}</div>
           <button class="btn sil genis" type="button" data-bpk>Paylaşımı kapat</button>`
         : `<p class="bl-alt">Karşı taraf yalnız ikinci bir gizli depoyu görür; ana arşivinize hiç erişemez. Gizlediğiniz bölümlerin içeriği oraya hiç gönderilmez.</p>
           <ol class="bl-adim"><li>1 · Gizli paylaşım deposu aç<a class="btn genis" href="${PAY_REPO_URL}" target="_blank" rel="noopener">GitHub'da depo aç ↗</a><small>Adı <b>tsk-arsiv-paylasim</b>, görünürlük <b>Private</b> olsun, <b>Create repository</b> deyin.</small></li>
@@ -580,12 +602,21 @@
             <li>3 · Buraya yapıştır<label>Paylaşım deposu<input id="bp-depo" type="text" value="tcmustafacelik/tsk-arsiv-paylasim"></label><div class="bl-satir"><input id="bp-token" type="password" placeholder="github_pat_…" autocomplete="off"><button class="btn" type="button" data-bpyap>Yapıştır</button></div></li></ol>
           <button class="btn ana genis" type="button" data-bpkur>Paylaşımı kur</button>`}
         <div class="bl-hata" id="bp-hata" role="alert"></div></div>`; }
-    const payAc = () => { payCiz(); payP.hidden = false; };
+    let paySec = null;   // seçmeli gizle: seçilen kategori / bölüm / belge anahtarları
+    const payAc = () => { paySec = null; payCiz(); payP.hidden = false; };
+    const payYeniden = () => { const op = [...payP.querySelectorAll(".bp-g")].map(x => x.open), y = payP.scrollTop; payCiz(); payP.querySelectorAll(".bp-g").forEach((x, i) => x.open = op[i]); payP.scrollTop = y; };
+    const payGizliYaz = async G => { await db.doc("bt/paylasim").set({ ...payAyar(), gizli: G }); payPlanla(2500); };
     KAT["bl-pay"] = () => { payP.hidden = true; };
     payP.addEventListener("click", async e => { if(e.target === payP || e.target.closest("[data-bpx]")){ payP.hidden = true; return; }
       const b = e.target.closest("button"); if(!b) return; const h = () => payP.querySelector("#bp-hata");
-      if(b.dataset.bp){ e.preventDefault(); const A = payAyar(), G = { ...(A.gizli || {}) }; if(G[b.dataset.bp]) delete G[b.dataset.bp]; else G[b.dataset.bp] = 1;
-        await db.doc("bt/paylasim").set({ ...A, gizli: G }); const op = [...payP.querySelectorAll(".bp-g")].map(x => x.open); payCiz(); payP.querySelectorAll(".bp-g").forEach((x, i) => x.open = op[i]); payPlanla(2500); return; }
+      if(b.dataset.bp){ e.preventDefault(); const G = { ...(payAyar().gizli || {}) }; if(G[b.dataset.bp]) delete G[b.dataset.bp]; else G[b.dataset.bp] = 1; await payGizliYaz(G); payYeniden(); return; }
+      if(b.dataset.bps){ e.preventDefault(); const k = b.dataset.bps; if(paySec.has(k)) paySec.delete(k); else paySec.add(k); payYeniden(); return; }
+      if(b.dataset.bpsec != null){ paySec = paySec ? null : new Set(); payYeniden(); return; }
+      if(b.dataset.bpsg != null){ const G = { ...(payAyar().gizli || {}) }, n = paySec.size; paySec.forEach(k => { if(b.dataset.bpsg === "1") G[k] = 1; else delete G[k]; }); paySec = null; await payGizliYaz(G); payYeniden(); bildirim(`${n} öğe ${b.dataset.bpsg === "1" ? "gizlendi" : "gösterildi"}`); return; }
+      if(b.dataset.bphep != null){ const gizle = b.dataset.bphep === "1";
+        if(gizle){ const s2 = await sor("Hepsi gizlensin mi?", "Karşı taraf bütün bölümleri buğulu görür; hiçbir içerik gönderilmez.", "Hepsini gizle", "Vazgeç"); if(s2 !== 1) return; }
+        const G = {}; if(gizle){ const K = (mem["bt/yapi"] || {}).klasorler || []; K.forEach(k => { G[k.ust ? "g:" + k.ust : "k:" + k.id] = 1; }); }
+        await payGizliYaz(G); paySec = null; payYeniden(); bildirim(gizle ? "Bütün bölümler gizlendi" : "Bütün bölümler görünür"); return; }
       if(b.dataset.bpy != null){ const A = payAyar(); await db.doc("bt/paylasim").set({ ...A, duzenle: b.dataset.bpy === "1" }); payCiz(); payPlanla(1500); bildirim(b.dataset.bpy === "1" ? "Karşı taraf artık düzenleyebilir" : "Karşı taraf yalnız görüntüleyebilir"); return; }
       if(b.dataset.bpyap != null){ try { payP.querySelector("#bp-token").value = (await navigator.clipboard.readText()).trim(); } catch(x){ payP.querySelector("#bp-token").focus(); } return; }
       if(b.dataset.bpkur != null){ const depo = payP.querySelector("#bp-depo").value.trim().replace(/^https:\/\/github.com\//, "").replace(/\/$/, ""), t = payP.querySelector("#bp-token").value.trim();
@@ -597,7 +628,7 @@
           const k = crypto.getRandomValues(new Uint8Array(24)); pay = { depo, t, p: b64u(k) }; payKaydet(); meta.payImza = ""; await paylasimGonder(true);
           if(payHata) throw new Error(payHata); payCiz(); bildirim("Paylaşım kuruldu"); }
         catch(x){ if(pay && !meta.paySon){ pay = null; payKaydet(); } h().textContent = x.message; } finally { if(b.isConnected){ b.disabled = false; b.innerHTML = eski; } } return; }
-      if(b.dataset.bpg != null){ b.disabled = true; await paylasimGonder(true); b.disabled = false; payCiz(); bildirim(payHata ? payHata : "Paylaşım güncellendi"); return; }
+      if(b.dataset.bpg != null){ b.disabled = true; b.innerHTML = '<span class="bl-spin"></span>'; await paylasimGonder(true); const op = [...payP.querySelectorAll(".bp-g")].map(x => x.open); payCiz(); payP.querySelectorAll(".bp-g").forEach((x, i) => x.open = op[i]); bildirim(payHata ? payHata : "Paylaşım güncellendi"); return; }
       if(b.dataset.bpl != null){ let pin = null, hata = "";
         for(let k = 0; k < 3 && !pin; k++){ const a = await pinSor("Görüntüleme linki için PIN", "Karşı taraf linki açınca bu 6 haneli PIN'i girecek. PIN'i ona ayrıca (telefonla, yüz yüze) söyleyin.", hata); if(a === null) return;
           const c = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur"); if(c === null) return; if(a === c) pin = a; else hata = "PIN'ler aynı değil, baştan dene."; }
@@ -622,7 +653,8 @@
     function acKapa(id, ac){ const a = $$("#" + id), b = panel.querySelector(`[data-ac="${id}"]`); a.hidden = !ac; if(b) b.setAttribute("aria-expanded", ac ? "true" : "false"); }
     const panelCiz = () => { $$("#bl-depo").value = meta.depo; $$("#bl-token").value = ""; modCiz();
       $$("#bl-giris").hidden = meta.bagli; $$("#bl-bagli").hidden = !meta.bagli; $$("#bl-baslik").textContent = meta.bagli ? (izleyici() ? "Paylaşılan arşiv" : "Bulut eşitleme") : "Giriş";
-      $$("#bl-hizli").hidden = izleyici(); $$("#bl-pay-ac").hidden = izleyici(); $$("#bl-pay-ac small").textContent = pay ? "açık · " + pay.depo : "başkasına link · bölümleri göster / gizle";
+      $$("#bl-hizli").hidden = izleyici(); $$("#bl-pay-ac").hidden = izleyici(); $$("#bl-pay-ac small").textContent = pay ? "açık · " + (meta.paySon ? "son güncelleme " + new Date(meta.paySon).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : "kuruldu") : "görüntüleme linki · bölüm gizle";
+      $$("#bl-kes").hidden = !meta.bagli;
       const h = $$("#bl-hata"); h.className = "bl-hata"; h.textContent = meta.bagli ? "" : (meta.bagli === false && durumHata ? durumHata : ""); $$("#bl-hata2").textContent = durumHata; durumCiz(); };
     panel.querySelectorAll("[data-ac]").forEach(b => b.onclick = () => { const id = b.dataset.ac, ac = $$("#" + id).hidden; ["bl-link-alan", "bl-anahtar-alan"].forEach(x => acKapa(x, x === id && ac)); if(ac){ const i = $$("#" + id).querySelector("input"); if(i) setTimeout(() => i.focus(), 50); } });
     panel.querySelectorAll("[data-yapistir]").forEach(b => b.onclick = async () => { const i = $$("#" + b.dataset.yapistir); try { i.value = (await navigator.clipboard.readText()).trim(); if(i.id === "bl-link" && linkCoz(i.value)) $$("#bl-link-devam").click(); } catch(e){ i.focus(); bildirim("Kutuya basılı tutup Yapıştır'ı seç"); } });
@@ -649,7 +681,7 @@
     $$("#bl-yedek").onclick = () => yedekAl();
     $$("#bl-yukle").onclick = () => $$("#bl-dosya").click();
     $$("#bl-dosya").onchange = async e => { const f = e.target.files[0]; e.target.value = ""; if(!f) return; try { await yedekYukle(f); bildirim("Yedek yüklendi"); panel.hidden = true; } catch(x){ $$("#bl-hata2").textContent = x.message; } };
-    const sb = $$("#bl-sifirla"); sb.onclick = () => { if(sb.dataset.onay !== "1"){ sb.dataset.onay = "1"; sb.textContent = "Emin misin? Bu cihazdaki tüm veriler silinir"; setTimeout(() => { sb.dataset.onay = ""; sb.textContent = "Bu cihazı sıfırla"; }, 4000); return; } sifirla(); };
+    const sb = $$("#bl-sifirla"); sb.onclick = () => { if(sb.dataset.onay !== "1"){ sb.dataset.onay = "1"; sb.textContent = "Emin misin?"; bildirim("Bu cihazdaki tüm veriler silinir; onaylamak için yeniden dokun"); setTimeout(() => { sb.dataset.onay = ""; sb.textContent = "Bu cihazı sıfırla"; }, 4000); return; } sifirla(); };
     document.addEventListener("keydown", e => { if(e.key !== "Escape") return; if(!pinP.hidden) pinBitir(null); else if(!lnP.hidden) lnP.hidden = true; else if(!panel.hidden) panel.hidden = true; });
 
     /* --- yeni sürüm kontrolü: telefon eski sayfayı hafızadan açtıysa kendini yeniler --- */
@@ -2957,7 +2989,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 390</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 391</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
