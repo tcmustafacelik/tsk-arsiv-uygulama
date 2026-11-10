@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "413";
+  const SURUM = "414";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3021,6 +3021,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 
 .km-kan{display:grid;grid-template-columns:repeat(4,1fr);gap:5px} .km-kan button{border:1px solid var(--line2);background:#fff;border-radius:9px;padding:8px 2px;font:700 12.5px var(--f-ui);color:#22303D;cursor:pointer;white-space:nowrap}
 .km-kan button[aria-pressed="true"]{background:#FBEAEA;border-color:#E2B4B4;color:#8E3434;box-shadow:0 0 0 2px #F6DADA}
+.km-bl{display:flex;flex-direction:column;gap:6px;margin:6px 0} .km-bs{display:grid;grid-template-columns:1fr 1fr auto;gap:5px;padding:6px;border:1px solid #E6DCC6;border-radius:8px;background:#FBF8F1} .km-bs input{min-width:0;border:1px solid var(--line2);border-radius:7px;padding:6px 8px;font:600 13px var(--f-ui);background:#fff} .km-bs input.tam{grid-column:1/-1;font-weight:500} .km-bos .izb-aktar{margin-bottom:4px}
 .km-adr{display:flex;flex-direction:column;gap:6px} .km-adr-s{display:grid;grid-template-columns:auto 1fr auto;gap:6px;align-items:start}
 .km-radio{width:22px;height:22px;margin-top:7px;border-radius:50%;border:2px solid #B9C6D2;background:#fff;cursor:pointer;padding:0} .km-adr-s.on .km-radio{border-color:#2F6670;background:radial-gradient(circle,#2F6670 0 5px,#fff 6px)}
 .km-adr-s .isa-tsil{width:34px;height:36px} .km-adr-s.on textarea{border-color:#9CC4C8!important;background:#F4FAFA!important}
@@ -3288,7 +3289,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 413</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 414</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9972,7 +9973,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 
 /* ================= PERSONEL KİMLİĞİ (tur: "kimlik") =================
    Herkesin kimlik bilgileri tek yerde; veri personel kaydında durur (S.personel.rows), dilekçe ve izin belgeleri buradan alır. */
-const KM_ALAN = [["kita", "Kıt'ası", "tam"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi", "t"], ["duhul", "Duhulü", "t"], ["nasip", "Nasbı", "t"], ["sicil", "Sicili", "n"], ["ems", "EMS no.", "n"], ["tc", "T.C. kimlik no.", "n"], ["kan", "Kan grubu"], ["tel", "Telefon", "n tam"], ["adres", "Adres", "tam"], ["yakinAd", "Yakını adı soyadı"], ["yakinTel", "Yakını telefonu", "n"]];
+const KM_ALAN = [["kita", "Kıt'ası", "tam"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi", "t"], ["duhul", "Duhulü", "t"], ["nasip", "Nasbı", "t"], ["sicil", "Sicili", "n"], ["ems", "EMS no.", "n"], ["tc", "T.C. kimlik no.", "n"], ["kan", "Kan grubu"], ["silahModel", "Silah modeli"], ["silahSeri", "Silah seri no.", "n"], ["tel", "Telefon", "n tam"], ["adres", "Adres", "tam"], ["yakinAd", "Yakını adı soyadı"], ["yakinTel", "Yakını telefonu", "n"]];
 const KM_ZORUNLU = ["kita", "baba", "memleket", "dogum", "duhul", "nasip", "sicil", "ems", "tc", "kan", "tel", "adres"];
 let kmSecili = null, kmFiltre = "hepsi";
 const KM_KAN = ["0 RH ( + )", "0 RH ( - )", "A RH ( + )", "A RH ( - )", "B RH ( + )", "B RH ( - )", "AB RH ( + )", "AB RH ( - )"];   // izin belgesindeki yazılışla aynı
@@ -9984,6 +9985,7 @@ function kmAdresSec(p, cb){ const A = (Array.isArray(p.adresler) ? p.adresler : 
   altPencere("ks-perde", "ADRES SEÇ", p.ad || "Kayıtlı adresler", () => `<div class="ap-liste">${A.map((x, i) => apSatir(`data-ks="${i}"`, `<span class="ks-av km-adr-av">${i + 1}</span>`, esc(x.adres), x.adres === p.adres ? '<em class="ks-tik">✓</em>' : "")).join("")}</div>`, (b, kapat) => { if(b.dataset.ks){ kapat(); cb(A[+b.dataset.ks].adres); } }, { z: "E4F0F1", r: "2F6670" }); }
 const kmDeger = (p, a) => a === "kita" ? (p.kita || p.gorev || "") : (p[a] || "");
 const kmEksik = p => KM_ZORUNLU.filter(a => !String(kmDeger(p, a)).trim()).map(a => KM_ALAN.find(x => x[0] === a)[1]);
+const kmBos = d => { d.km ||= {}; d.km.bos ||= []; return d.km.bos; };   // kimsede olmayan (boştaki) silahlar: [{ id, seri, model, not }]
 const kmTel = p => { try { return isaTel(p) || ""; } catch(e){ return ""; } };
 function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return; const P = (S.personel.rows || []).filter(x => x.ad);
   if(!P.some(p => p.id === kmSecili)) kmSecili = (P.find(p => kmEksik(p).length) || P[0] || {}).id || null;
@@ -9993,6 +9995,9 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
     <div class="dl-ust"><span class="dl-ust-s km-s"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.kimlik.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.8"')}</svg></span><b>Personel kimliği</b><small>${P.length}</small><em class="km-ozet ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em></div>
     <div class="dl-seg km-filtre"><button type="button" data-km-f="hepsi" aria-pressed="${kmFiltre === "hepsi"}">Herkes</button><button type="button" data-km-f="eksik" aria-pressed="${kmFiltre === "eksik"}">Eksiği olanlar${eksikK ? ` (${eksikK})` : ""}</button></div>
     <div class="dl-liste">${L.map(sat).join("") || '<div class="yk-bos">Eksiği olan kimse yok</div>'}</div>
+    ${(() => { const B = kmBos(d); return `<details class="dl-bilgi km-bos"${B.length ? " open" : ""}><summary><span>Boştaki silahlar</span><em class="${B.length ? "dl-eksik" : "dl-tam"}">${B.length ? B.length + " boş" : "yok"}</em></summary>
+      <div class="km-bl">${B.map((x, i) => `<div class="km-bs"><input data-kmb="${i}:seri" value="${esc(x.seri || "")}" placeholder="Seri no" inputmode="numeric" aria-label="Seri no"><input data-kmb="${i}:model" value="${esc(x.model || "")}" placeholder="Model" aria-label="Model"><button type="button" class="isa-tsil" data-kmb-sil="${i}" aria-label="Sil">✕</button><input class="tam" data-kmb="${i}:not" value="${esc(x.not || "")}" placeholder="Not (ör. kimden kaldı)" aria-label="Not"></div>`).join("")}</div>
+      <button type="button" class="izb-aktar" data-kmb-ekle="1">＋ Boş silah ekle</button><small class="dl-not">Kişiye verilen silah, o kişinin kartındaki “Silah seri no.” kutusuna yazılır.</small></details>`; })()}
     ${p ? `<section class="dl-kart km-kart">
       <div class="izb-kisi"><span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small></span><span class="km-ek" data-km-ek>${kmEksik(p).length ? `<em class="dl-eksik">${kmEksik(p).length} eksik</em>` : '<em class="dl-tam">tamam</em>'}</span></div>
       <div class="dl-alanlar">${KM_ALAN.map(([a, t, o]) => { const v = p[a] || "", bos = KM_ZORUNLU.includes(a) && !String(kmDeger(p, a)).trim(), cl = `dl-al${/tam/.test(o || "") ? " tam" : ""}${bos ? " dl-bos" : ""}`;
@@ -10020,6 +10025,11 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(b.dataset.kmAdrEkle){ A.push({ id: "a" + yeniId().slice(0, 6), adres: "" }); kimlikCiz(); const t = document.querySelectorAll("#km-govde [data-km-adr]"); if(t.length) t[t.length - 1].focus(); return; }
   if(b.dataset.kmAdrSec != null){ const x = A[+b.dataset.kmAdrSec]; if(x && x.adres){ p.adres = x.adres; return yaz(); } return; }
   if(b.dataset.kmAdrSil != null){ const [x] = A.splice(+b.dataset.kmAdrSil, 1); if(x && x.adres === p.adres){ const y = A.find(z => z.adres); if(y) p.adres = y.adres; else delete p.adres; } if(!A.length) delete p.adresler; return yaz(); } });
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#km-govde [data-kmb-ekle], #km-govde [data-kmb-sil]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kimlik") return; const B = kmBos(d);
+  if(b.dataset.kmbEkle){ B.push({ id: "s" + yeniId().slice(0, 6), seri: "", model: "", not: "" }); kaydetBelge(d); kimlikCiz(); const t = document.querySelectorAll('#km-govde [data-kmb$=":seri"]'); if(t.length) t[t.length - 1].focus(); return; }
+  B.splice(+b.dataset.kmbSil, 1); kaydetBelge(d); kimlikCiz(); });
+document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#km-govde") || !el.dataset.kmb) return; const d = acikBelge(); if(!d || d.tur !== "kimlik") return;
+  const [i, a] = el.dataset.kmb.split(":"), x = kmBos(d)[+i]; if(!x) return; x[a] = el.value; kaydetBelge(d); });
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#km-govde") || el.dataset.kmAdr == null) return; const p = (S.personel.rows || []).find(x => x.id === kmSecili); if(!p) return;
   const A = kmAdresler(p), x = A[+el.dataset.kmAdr]; if(!x) return; const asil = !p.adres || x.adres === p.adres || A.length === 1, v = el.value.replace(/\s*\n\s*/g, " "); x.adres = v;
   if(asil){ if(v.trim()) p.adres = v; else delete p.adres; el.closest(".km-adr-s")?.classList.toggle("on", !!v.trim()); } kaydetBt("personel");
@@ -10031,9 +10041,9 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
   const sy = document.querySelector(`#km-govde [data-km-say="${CSS.escape(p.id)}"]`); if(sy){ sy.className = n ? "dl-eksik" : "dl-tam"; sy.textContent = n ? n + " eksik" : "tamam"; } });
 const TEMA_KIMLIK = { ana: "5F8F95", bas: "DDEDEE", basYazi: "214A50", bant: "EAF4F5", bantYazi: "2C5C62", serit: "F5FAFA", cizgi: "B9D2D4", soluk: "67858A", vurgu: "E6F0E4", vurguYazi: "2F5A3A", topSut: "EEF6F6", ustBand: "F0F7F7" };
 function tanimKimlik(){ const T = TEMA_KIMLIK, bh = t => H(t, { fill: T.bas, k: T.basYazi }), P = (S.personel.rows || []).filter(x => x.ad);
-  const body = P.map((p, i) => { const z = i % 2 ? T.serit : null, c = t => H(t || "", { fill: z }); return [H(i + 1, { fill: z, k: T.soluk }), c(`${p.rutbe || ""}\n${p.ad || ""}`.trim()), c(p.sicil), c(p.baba), c(p.memleket), c(p.dogum), c(p.duhul), c(p.nasip), c(p.ems), c(p.tc), c(p.kan), c(p.tel || kmTel(p))]; });
-  return { tema: T, dosya: "Personel_Kimlik_Bilgileri", baslik: "PERSONEL KİMLİK BİLGİLERİ", oran: [4, 17, 8, 9, 10, 8, 8, 8, 8, 10, 6, 10],
-    head: [["S/N", "RÜTBE / ADI SOYADI", "SİCİL", "BABA ADI", "MEMLEKETİ", "DOĞUM T.", "DUHUL", "NASIP", "EMS NO", "T.C. KİMLİK NO", "KAN", "TELEFON"].map(bh)], body, satirH: 12, xSatir: 30, xYazi: 10, xBasYazi: 9.5, xBaslikYazi: 15 }; }
+  const body = P.map((p, i) => { const z = i % 2 ? T.serit : null, c = t => H(t || "", { fill: z }); return [H(i + 1, { fill: z, k: T.soluk }), c(`${p.rutbe || ""}\n${p.ad || ""}`.trim()), c(p.sicil), c(p.baba), c(p.memleket), c(p.dogum), c(p.duhul), c(p.nasip), c(p.ems), c(p.tc), c(p.kan), c([p.silahModel, p.silahSeri].filter(Boolean).join("\n")), c(p.tel || kmTel(p))]; });
+  return { tema: T, dosya: "Personel_Kimlik_Bilgileri", baslik: "PERSONEL KİMLİK BİLGİLERİ", oran: [4, 16, 8, 8, 9, 8, 7, 7, 8, 10, 6, 8, 10],
+    head: [["S/N", "RÜTBE / ADI SOYADI", "SİCİL", "BABA ADI", "MEMLEKETİ", "DOĞUM T.", "DUHUL", "NASIP", "EMS NO", "T.C. KİMLİK NO", "KAN", "SİLAH", "TELEFON"].map(bh)], body, satirH: 12, xSatir: 30, xYazi: 10, xBasYazi: 9.5, xBaslikYazi: 15 }; }
 /* izin belgelerine aktarım: yalnız boş kutuları doldurur (çıktı biçimi değişmez) */
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-km-git]"); if(!b) return; const d = belgeTur("kimlik"); if(!d) return bildir("Personel kimliği belgesi yok");
   kmSecili = b.dataset.kmGit; kmFiltre = "hepsi"; belgeGit(d); setTimeout(() => { const k = $("#km-govde .km-kart"); if(k) k.scrollIntoView({ block: "start" }); }, 250); });
