@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "404";
+  const SURUM = "405";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -263,14 +263,15 @@
   const IPH = { "320x568": "iPhone SE (1.) / 5s", "375x667": "iPhone SE (2./3.) / 6 / 7 / 8", "414x736": "iPhone 6 / 7 / 8 Plus", "375x812": "iPhone X / XS / 11 Pro / 12 mini / 13 mini",
     "414x896@2": "iPhone XR / 11", "414x896@3": "iPhone XS Max / 11 Pro Max", "390x844": "iPhone 12 / 13 / 14 (Pro dahil 12–13)", "428x926": "iPhone 12–13 Pro Max / 14 Plus",
     "393x852": "iPhone 14 Pro / 15 / 15 Pro / 16", "430x932": "iPhone 14 Pro Max / 15 Plus / 15 Pro Max / 16 Plus", "402x874": "iPhone 16 Pro / 17 / 17 Pro", "440x956": "iPhone 16 Pro Max / 17 Pro Max", "420x912": "iPhone Air" };
-  const cihazAd = () => { const u = navigator.userAgent; return /iPhone/.test(u) ? "iPhone" : /iPad/.test(u) ? "iPad" : /Android/.test(u) ? "Android" : /Windows/.test(u) ? "Windows" : /Mac/.test(u) ? "Mac" : "cihaz"; };
+  const cihazAd = () => { const u = navigator.userAgent; return /iPhone/.test(u) ? "iPhone" : /iPad/.test(u) ? "iPad" : /Android/.test(u) ? "Android" : /Windows/.test(u) ? "Windows" : /Mac/.test(u) ? "Mac" : /Linux/.test(u) ? "Linux" : "cihaz"; };
   async function cihazBilgi(){ const u = navigator.userAgent; let m = "", s = "";
     try { if(navigator.userAgentData && navigator.userAgentData.getHighEntropyValues){ const h = await navigator.userAgentData.getHighEntropyValues(["model", "platform", "platformVersion"]); if(h.model) m = h.model; if(h.platform) s = h.platform + (h.platformVersion ? " " + h.platformVersion.split(".")[0] : ""); } } catch(e){}
     if(/iPhone/.test(u)){ const w = Math.min(screen.width, screen.height), hh = Math.max(screen.width, screen.height), d = Math.round(devicePixelRatio || 1); m = IPH[w + "x" + hh + "@" + d] || IPH[w + "x" + hh] || "iPhone"; const v = u.match(/OS (\d+)[_.](\d+)/); s = v ? "iOS " + v[1] + "." + v[2] : "iOS"; }
     else if(/iPad/.test(u) || (/Macintosh/.test(u) && navigator.maxTouchPoints > 1)){ m = "iPad"; s = "iPadOS"; }
     else if(!m){ const a = u.match(/Android ([\d.]+); ([^;)]+)/); if(a){ if(a[2].trim() !== "K") m = a[2].trim(); s = "Android " + a[1].split(".")[0]; } else { m = cihazAd(); } }
     const t = /CriOS|Chrome\//.test(u) && !/Edg/.test(u) ? "Chrome" : /FxiOS|Firefox/.test(u) ? "Firefox" : /Edg/.test(u) ? "Edge" : /Safari/.test(u) ? "Safari" : "";
-    return { m: m || cihazAd(), s, t, e: screen.width + "×" + screen.height }; }
+    let gpu = ""; try { const c = document.createElement("canvas").getContext("webgl"), x = c && c.getExtension("WEBGL_debug_renderer_info"); gpu = x ? String(c.getParameter(x.UNMASKED_RENDERER_WEBGL) || "") : ""; } catch(e){}
+    return { m: m || cihazAd(), s, t, e: screen.width + "×" + screen.height + (devicePixelRatio ? " @" + Math.round(devicePixelRatio * 10) / 10 + "x" : ""), cpu: navigator.hardwareConcurrency || 0, ram: navigator.deviceMemory || 0, gpu: gpu.replace(/^ANGLE \((.*)\)$/, "$1").slice(0, 300), dil: navigator.language || "" }; }
   async function ipAl(){ for(const u of ["https://api64.ipify.org?format=json", "https://api.ipify.org?format=json"]){ try { const c = new AbortController(), z = setTimeout(() => c.abort(), 5000); const r = await fetchAsil(u, { signal: c.signal, cache: "no-store" }); clearTimeout(z); if(r.ok){ const j = await r.json(); if(j && j.ip) return String(j.ip); } } catch(e){} } return ""; }
   async function gorSifrele(o, pubB64){ const pub = await crypto.subtle.importKey("spki", ub64(pubB64), { name: "RSA-OAEP", hash: "SHA-256" }, false, ["encrypt"]);
     const ak = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt"]), iv = crypto.getRandomValues(new Uint8Array(12));
@@ -283,9 +284,23 @@
     if(Date.now() - (meta.gorYaz || 0) < 1800000 && gorIpBu === (meta.gorIp || "")) return; meta.gorYaz = Date.now(); meta.gorIp = gorIpBu; metaYaz();
     try { const p = yol("gorulme/" + (meta.misafirId || "0") + ".json"), g = await gh(p, { headers: { Accept: "application/vnd.github.object+json" } }); let sha = null, eski = [];
       if(g.ok){ const j = await g.json(); sha = j.sha; try { const o = JSON.parse(new TextDecoder().decode(b64ToU8((j.content || "").replace(/\s/g, "")))); if(Array.isArray(o.kayit)) eski = o.kayit; } catch(e){} }
-      const c = await cihazBilgi(), kayit = { t: Date.now(), c: c.m, s: c.s, tr: c.t, e: c.e, ip: gorIpBu };
+      const c = await cihazBilgi(), kayit = { t: Date.now(), c: c.m, s: c.s, tr: c.t, e: c.e, ip: gorIpBu, cpu: c.cpu, ram: c.ram, gpu: c.gpu };
       const yeni = G.pub ? { t: kayit.t, c: cihazAd(), kayit: [await gorSifrele(kayit, G.pub), ...eski].slice(0, 20) } : { t: kayit.t, c: cihazAd() };   /* şifresiz eski düzende IP yazılmaz */
       await gh(p, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV misafir açtı", content: u8ToB64(new TextEncoder().encode(JSON.stringify(yeni))), ...(sha ? { sha } : {}) }) }); } catch(e){} }
+  /* kendi cihazların: her açılış (30 dk'da bir ya da IP değişince) ana depoya yazılır; arşiv şifresi varsa onunla şifrelenir. Son 40 kayıt. */
+  const ACY = "veri/acilislar.json";
+  const cihazNo = () => { try { let x = localStorage.getItem("tsk-cihaz-no"); if(!x){ x = b64u(crypto.getRandomValues(new Uint8Array(6))); localStorage.setItem("tsk-cihaz-no", x); } return x; } catch(e){ return ""; } };
+  async function acilisOku(){ const g = await gh(yol(ACY), { headers: { Accept: "application/vnd.github.object+json" } }); if(!g.ok) return { sha: null, kayit: [] };
+    const j = await g.json(); let o = {}; try { o = JSON.parse(new TextDecoder().decode(b64ToU8((j.content || "").replace(/\s/g, "")))); } catch(e){}
+    if(o.enc){ if(!sifre) return { sha: j.sha, kayit: [], kilitli: 1 }; try { o = JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64ToU8(o.iv) }, await anahtarK(sifre, b64ToU8(o.salt)), b64ToU8(o.veri)))); } catch(e){ return { sha: j.sha, kayit: [], kilitli: 1 }; } }
+    return { sha: j.sha, kayit: Array.isArray(o.kayit) ? o.kayit : [] }; }
+  let acIpBu = null;
+  async function kendiAcilisYaz(zorla){ if(ONIZLE || izleyici() || !meta.bagli || !token || !navigator.onLine) return; if(acIpBu === null) acIpBu = await ipAl();
+    if(!zorla && Date.now() - (meta.acYaz || 0) < 1800000 && acIpBu === (meta.acIp || "")) return; meta.acYaz = Date.now(); meta.acIp = acIpBu; metaYaz();
+    try { const u = await acilisOku(); if(u.kilitli) return; const c = await cihazBilgi();
+      const L = [{ t: Date.now(), no: cihazNo(), tur: cihaz(), c: c.m, s: c.s, tr: c.t, e: c.e, ip: acIpBu, cpu: c.cpu, ram: c.ram, gpu: c.gpu, dil: c.dil, v: SURUM }, ...(u.kayit[0] && u.kayit[0].no === cihazNo() && u.kayit[0].ip === acIpBu && Date.now() - u.kayit[0].t < 600000 ? u.kayit.slice(1) : u.kayit)].slice(0, 40);   /* aynı cihazdan kısa sürede ikinci kayıt öncekinin yerine geçer */
+      const icerik = sifre ? await paketleK({ kayit: L }, sifre) : JSON.stringify({ kayit: L });
+      await gh(yol(ACY), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: `TSK ARŞİV açılış (${cihaz()} · s${SURUM})`, content: u8ToB64(new TextEncoder().encode(icerik)), ...(u.sha ? { sha: u.sha } : {}) }) }); } catch(e){} }
   let payGorulme = {};
   async function payAnahtarCifti(){ const A = payAyar(); if(!A.kur || (A.kur.pub && A.kur.prv)) return;   /* açılış kayıtları için sahibe özel anahtar */
     const k = await crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" }, true, ["encrypt", "decrypt"]);
@@ -548,7 +563,8 @@
         <div class="bk-bol"><span class="bk-et">Bu cihazdaki veriler</span><div class="bk-tuslar"><button type="button" id="bl-yedek">Yedek al</button><button type="button" id="bl-yukle">Yedekten yükle</button><button type="button" class="sil" id="bl-sifirla">Sıfırla</button></div><input type="file" id="bl-dosya" accept=".json,application/json" hidden></div></details>
         <div class="bl-hata" id="bl-hata2" role="alert"></div>
       </div>
-      <div class="bk-bol"><span class="bk-et">Güvenlik</span><div class="bk-liste"><button class="bk-sat" type="button" id="bl-kilit"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><b>Uygulama kilidi</b><small id="bl-kilit-alt"></small></span><i>›</i></button></div></div>
+      <div class="bk-bol"><span class="bk-et">Güvenlik</span><div class="bk-liste"><button class="bk-sat" type="button" id="bl-kilit"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><b>Uygulama kilidi</b><small id="bl-kilit-alt"></small></span><i>›</i></button>
+        <button class="bk-sat" type="button" id="bl-acilis"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg><span><b>Açılış kayıtları</b><small>kendi cihazların · IP ve donanım</small></span><i>›</i></button></div></div>
       <button class="btn sil genis" type="button" id="bl-kes">Bağlantıyı kes</button>
     </div>`;
     document.body.appendChild(panel);
@@ -625,6 +641,10 @@
       .bp-mt{flex:none;display:flex;flex-direction:column;gap:5px}
       .bp-mb{display:flex;align-items:center;gap:5px;height:30px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font:600 11.5px var(--f-ui);color:var(--fg);cursor:pointer}
       .bp-mb svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round} .bp-mb.kal{color:#A04A3C;border-color:#EBD3CD;background:#FBF4F2}
+      .ac-liste{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:12px;background:var(--panel);overflow:auto;max-height:60vh}
+      .ac-s{display:flex;flex-direction:column;gap:2px;padding:9px 11px;border-bottom:1px solid var(--line2)} .ac-s:last-child{border-bottom:0} .ac-s.bu{background:#F1F6EE}
+      .ac-u{display:flex;align-items:center;gap:6px} .ac-u b{font:650 12.5px var(--f-ui)} .ac-u em{font:600 10px var(--f-ui);font-style:normal;padding:1px 6px;border-radius:5px;background:#DDEBD6;color:#3D6B3F}
+      .ac-s span{font:500 11.5px var(--f-ui);color:var(--muted);overflow-wrap:anywhere} .ac-s .mono{font-family:ui-monospace,Menlo,monospace;color:var(--fg)}
       .bp-gec{margin-top:4px} .bp-gec>summary{list-style:none;cursor:pointer;font:600 11px var(--f-ui);color:var(--accent);padding:2px 0} .bp-gec>summary::-webkit-details-marker{display:none} .bp-gec>summary::after{content:" ›"} .bp-gec[open]>summary::after{content:" ‹"}
       .bp-gs{display:flex;flex-direction:column;gap:1px;padding:6px 0;border-top:1px dashed var(--line2)} .bp-gs b{font:650 11.5px var(--f-ui)} .bp-gs span{font:500 11px var(--f-ui);color:var(--muted);overflow-wrap:anywhere} .bp-gs .mono{font-family:ui-monospace,Menlo,monospace}
       .bp-bos{padding:12px;font:500 12px var(--f-ui);color:var(--muted);text-align:center}
@@ -745,7 +765,7 @@
     const IK_L = '<svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></svg>', IK_X = '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg>';
     const zmn = t => new Date(t).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
     const gorYazi = m => { const g = payGorulme[m.id], k = g && g.kayit && g.kayit[0]; if(k) return "son açılış " + zmn(k.t) + " · " + k.c + (k.ip ? " · IP " + k.ip : ""); return g && g.t ? "son açılış " + zmn(g.t) + (g.c ? " · " + g.c : "") : "henüz açılmadı"; };
-    const gecmisHtml = m => { const g = payGorulme[m.id], K = (g && g.kayit) || []; if(!K.length) return ""; return `<details class="bp-gec"><summary>Açılış geçmişi · ${K.length}</summary>${K.map(k => `<div class="bp-gs"><b>${escH(zmn(k.t))}</b><span>${escH([k.c, k.s, k.tr].filter(Boolean).join(" · "))}</span><span class="mono">${k.ip ? "IP " + escH(k.ip) : "IP alınamadı"}${k.e ? " · ekran " + escH(k.e) : ""}</span></div>`).join("")}</details>`; };
+    const gecmisHtml = m => { const g = payGorulme[m.id], K = (g && g.kayit) || []; if(!K.length) return ""; return `<details class="bp-gec"><summary>Açılış geçmişi · ${K.length}</summary>${K.map(k => `<div class="bp-gs"><b>${escH(zmn(k.t))}</b><span>${escH([k.c, k.s, k.tr].filter(Boolean).join(" · "))}</span><span class="mono">${k.ip ? "IP " + escH(k.ip) : "IP alınamadı"}${k.e ? " · ekran " + escH(k.e) : ""}</span>${[k.cpu ? k.cpu + " çekirdek" : "", k.ram ? k.ram + " GB RAM" : "", k.gpu ? "GPU " + k.gpu : ""].filter(Boolean).length ? `<span>${escH([k.cpu ? k.cpu + " çekirdek" : "", k.ram ? k.ram + " GB RAM" : "", k.gpu ? "GPU " + k.gpu : ""].filter(Boolean).join(" · "))}</span>` : ""}</div>`).join("")}</details>`; };
     const misafirSatir = m => `<div class="bp-m"><span class="bp-mi">${escH((m.ad || "?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><div class="bp-md"><button type="button" class="bp-ad" data-bpad="${escH(m.id)}" aria-label="Adı değiştir">${escH(m.ad || "Misafir")}<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button><small data-gor="${escH(m.id)}">${escH(gorYazi(m))}</small><div data-gec="${escH(m.id)}">${gecmisHtml(m)}</div>
         <div class="bp-seg mini"><button type="button" data-bpmy="${escH(m.id)}" data-v="0" aria-pressed="${!m.duzenle}">Görüntüler</button><button type="button" data-bpmy="${escH(m.id)}" data-v="1" aria-pressed="${!!m.duzenle}">Düzenler</button></div></div>
         <div class="bp-mt"><button type="button" class="bp-mb" data-bpml="${escH(m.id)}" aria-label="${escH(m.ad)} için link">${IK_L}<span>Link</span></button><button type="button" class="bp-mb kal" data-bpmk="${escH(m.id)}" aria-label="${escH(m.ad)} kaldır">${IK_X}<span>Kaldır</span></button></div></div>`;
@@ -871,6 +891,16 @@
     $$("#bl-hizli").onclick = () => { tipKoy(lnP, "kendi"); lnP.querySelector("h2").textContent = "Kendi cihazların için link hazır"; lnP.querySelector(".bl-alt").textContent = "Yalnız kendin için: Notlar'a kaydet ya da WhatsApp'ta kendine gönder. Başka cihazında linke dokun, PIN'i girince tam yetkiyle bağlanır. Başkasına gönderme; misafir için 'Başkasına göster'i kullan."; let l = ""; try { l = localStorage.getItem(LS_LINK) || ""; } catch(e){} if(l && linkCoz(l)) linkGoster(l); else hizliOlustur(); };
     $$("#bl-kes").onclick = () => { const b = $$("#bl-kes"); if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misin? Bu cihazda anahtar silinir"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Bağlantıyı kes"; }, 4000); return; } kes(); try { localStorage.removeItem(LS_LINK); } catch(e){} panelCiz(); };
     $$("#bl-yedek").onclick = () => yedekAl();
+    const acP = document.createElement("div"); acP.className = "bl-perde"; acP.id = "bl-acp"; acP.hidden = true; acP.style.zIndex = 97; document.body.appendChild(acP);
+    const donanim = k => [k.cpu ? k.cpu + " çekirdek" : "", k.ram ? (k.ram >= 8 ? "≥8" : k.ram) + " GB RAM" : "", k.gpu ? "GPU " + k.gpu : ""].filter(Boolean).join(" · ");
+    const acSatir = (k, bu) => `<div class="ac-s${bu ? " bu" : ""}"><div class="ac-u"><b>${escH(new Date(k.t).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", year: "numeric", hour: "2-digit", minute: "2-digit" }))}</b>${bu ? '<em>bu cihaz</em>' : ""}</div>
+      <span>${escH([k.c, k.s, k.tr].filter(Boolean).join(" · "))}</span><span class="mono">${k.ip ? "IP " + escH(k.ip) : "IP alınamadı"}</span>${donanim(k) ? `<span>${escH(donanim(k))}</span>` : ""}${k.e ? `<span>Ekran ${escH(k.e)}${k.dil ? " · " + escH(k.dil) : ""}</span>` : ""}</div>`;
+    const acCiz = async () => { acP.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true"><div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><rect x="3" y="4" width="18" height="12" rx="2"/><path d="M8 20h8M12 16v4"/></svg></div><div style="flex:1;min-width:0"><h3>Güvenlik</h3><h2>Açılış kayıtları</h2></div><button class="bl-x" type="button" data-acx aria-label="Kapat">✕</button></div>
+        <p class="bl-alt">Arşivin senin cihazlarında açıldığı anlar: son 40 kayıt. Misafirlerin açılışları "Başkasına göster" ekranında, her misafirin altında.</p><div class="ac-liste" id="ac-liste"><div class="bp-bos"><span class="bl-spin"></span> Yükleniyor…</div></div></div>`; acP.hidden = false;
+      await kendiAcilisYaz(); const u = await acilisOku().catch(() => ({ kayit: [] })), no = cihazNo(), el = acP.querySelector("#ac-liste"); if(!el) return;
+      el.innerHTML = u.kilitli ? '<div class="bp-bos">Kayıtlar şifreli; bu cihazda arşiv şifresi yok.</div>' : u.kayit.length ? u.kayit.map(k => acSatir(k, k.no === no)).join("") : '<div class="bp-bos">Henüz kayıt yok.</div>'; };
+    acP.addEventListener("click", e => { if(e.target === acP || e.target.closest("[data-acx]")) acP.hidden = true; });
+    $$("#bl-acilis").onclick = () => { if(!meta.bagli){ bildirim("Önce buluta bağlanın"); return; } acCiz(); };
     const otoCiz = async () => { const o = await otoOku(), el = $$("#bl-oto"), b = $$("#bl-oto-geri"); if(!el) return; b.disabled = !o;
       el.innerHTML = o ? `<b>${new Date(o.t).toLocaleString("tr-TR", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" })}</b><small>${o.n} kayıt · sürüm ${o.surum}</small>` : "<b>Henüz yok</b><small>uygulama açıkken kendiliğinden alınır</small>"; };
     panel.querySelector(".bk-gel").addEventListener("toggle", e => { if(e.target.open) otoCiz(); });
@@ -899,7 +929,7 @@
     if(ONIZLE){ const sr = document.createElement("div"); sr.id = "onizle-serit"; sr.innerHTML = `<span><b>Önizleme</b> · karşı tarafın gördüğü</span><button type="button">Çık</button>`; document.body.appendChild(sr);
       const st3 = document.createElement("style"); st3.textContent = `#onizle-serit{position:fixed;z-index:90;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));white-space:nowrap;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:10px;background:#34475C;color:#fff;font:500 12px var(--f-ui);box-shadow:0 6px 20px rgba(0,0,0,.2);max-width:calc(100vw - 24px)} #onizle-serit button{border:0;border-radius:8px;padding:6px 12px;background:rgba(255,255,255,.18);color:#fff;font:600 12px var(--f-ui);cursor:pointer}`; document.head.appendChild(st3);
       sr.querySelector("button").onclick = () => { try { sessionStorage.removeItem("tsk-onizle"); } catch(e){} location.reload(); }; }
-    hazir.then(() => { durumCiz(); rolUygula(); setTimeout(() => otoYedekAl(), 4000); setInterval(() => otoYedekAl(), 3600000);
+    hazir.then(() => { durumCiz(); rolUygula(); setTimeout(() => otoYedekAl(), 4000); setInterval(() => otoYedekAl(), 3600000); setTimeout(() => kendiAcilisYaz(), 6000); setInterval(() => kendiAcilisYaz(), 600000);
       if(!ONIZLE && !izleyici() && payEski && payEski.depo && payEski.t && payEski.p){ const A = payAyar();
         if(!A.kur) payAyarYaz({ ...A, kur: { depo: payEski.depo, tk: tkGiz(payEski.t), dk: payEski.p, dkYuklu: payEski.p }, misafirler: [{ id: "0", ad: "İlk misafir", k: payEski.p, duzenle: !!A.duzenle, tarih: Date.now() }, ...(A.misafirler || [])] });
         payEski = null; try { localStorage.removeItem(PAY_LS); } catch(e){} } if(ONIZLE){ const b0 = document.getElementById("bulut-ikon"); if(b0) b0.querySelector("span").textContent = "önizleme"; return; }
@@ -3201,7 +3231,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 404</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 405</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
