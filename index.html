@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "402";
+  const SURUM = "403";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -243,10 +243,10 @@
           if(k.startsWith("arsiv/") && !(k in mem)) continue;
           if(!(k in mem) || !(k in K) || kOzet(mem[k]) === K[k]){ mem[k] = kopya(v); await yerelYaz(k, mem[k]); bildir(k); n++; } else c++; } }
       if(n){ degisti(); bildirim(`Misafirin ${n} değişikliği alındı${c ? ` · ${c} çakışmada sizinki kaldı` : ""}`); }
-      const R = payFiltre(), im = imza(R) + "|" + M.map(m => m.id + (m.duzenle ? "d" : "g") + m.k.slice(0, 6)).join(",") + "|" + String(pay.p).slice(0, 6);
+      const R = payFiltre(), im = imza(R) + "|" + M.map(m => m.id + (m.duzenle ? "d" : "g") + m.k.slice(0, 6) + (m.ad || "")).join(",") + "|" + String(pay.p).slice(0, 6);
       if(im !== meta.payImza || zorla){ const eksik = await payDosyalar(R); if(eksik) bildirim(`${eksik} dosya paylaşıma gönderilemedi; bir sonraki güncellemede yeniden denenecek`);
         for(const m of M){ const u = U[m.id] || await payOku(m).catch(() => ({ sha: null }));
-          await payMYaz(m, { ...R, "bt/paylasimGor": { ...R["bt/paylasimGor"], duzenle: !!m.duzenle, dk: pay.p, mid: m.id } }, u.sha); }
+          await payMYaz(m, { ...R, "bt/paylasimGor": { ...R["bt/paylasimGor"], duzenle: !!m.duzenle, dk: pay.p, mid: m.id, ad: m.ad || "" } }, u.sha); }
         meta.payImza = im; meta.payTaban = Object.fromEntries(Object.entries(R).map(([k, v]) => [k, kOzet(v)])); meta.payKaynak = Object.fromEntries(Object.keys(R).filter(k => k in mem && !(R[k] && R[k].gizli)).map(k => [k, kOzet(mem[k])])); }
       meta.paySon = Date.now(); metaYaz(); }
     catch(e){ payHata = e.message || "Paylaşım hatası"; }
@@ -336,7 +336,7 @@
   function ayarUygula(){ const a = mem["bt/ayar"] || {}; if(a.birlik) window.BIRLIK = a.birlik; if(a.gorevYeri) window.GD_YER = a.gorevYeri; rolUygula(); }
   function rolUygula(){ const h = document.documentElement, iz = izleyici(); h.classList.toggle("izleyici", iz); h.classList.toggle("salt", iz && !payGor().duzenle); if(iz) saltKilitle(document);
     const my = document.querySelector("#marka .marka-y"); let r = document.getElementById("misafir-rozet");
-    if(iz && my){ if(!r){ r = document.createElement("small"); r.id = "misafir-rozet"; my.appendChild(r); } r.textContent = ONIZLE ? "ÖNİZLEME · MİSAFİR" : "MİSAFİR KULLANICI"; }
+    if(iz && my){ if(!r){ r = document.createElement("small"); r.id = "misafir-rozet"; my.appendChild(r); } const ad = (payGor().ad || "").trim(); r.textContent = ONIZLE ? "ÖNİZLEME · MİSAFİR" : ad ? "MİSAFİR · " + ad.toLocaleUpperCase("tr") : "MİSAFİR KULLANICI"; r.title = ad; }
     else if(r) r.remove(); }
   /* salt görüntülemede yazı kutuları kilitlenir (arama, PIN ve bulut penceresi hariç) */
   function saltKilitle(kok){ if(!document.documentElement.classList.contains("salt") || !kok.querySelectorAll) return;
@@ -762,7 +762,7 @@
         const i = document.createElement("input"); i.className = "bp-adg"; i.value = m.ad || ""; i.maxLength = 40; b.replaceWith(i); i.focus(); i.select(); let bitti = false;
         const bit = async kaydet => { if(bitti) return; bitti = true; const ad = i.value.trim().replace(/\s+/g, " "), A = payAyar();
           if(kaydet && ad && ad !== m.ad){ if((A.misafirler || []).some(x => x.id !== id && (x.ad || "").toLocaleLowerCase("tr") === ad.toLocaleLowerCase("tr"))){ h().textContent = "Bu adla bir misafir zaten var."; }
-            else { await payAyarYaz({ ...A, misafirler: (A.misafirler || []).map(x => x.id === id ? { ...x, ad } : x) }); bildirim("Ad değişti: " + ad); } }
+            else { await payAyarYaz({ ...A, misafirler: (A.misafirler || []).map(x => x.id === id ? { ...x, ad } : x) }); payPlanla(1500); bildirim("Ad değişti: " + ad); } }
           payYeniden(); };
         i.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); bit(true); } else if(e.key === "Escape"){ e.preventDefault(); bit(false); } }); i.addEventListener("blur", () => bit(true)); return; }
       if(b.dataset.bpmy){ const A = payAyar(), v = b.dataset.v === "1", m = (A.misafirler || []).find(x => x.id === b.dataset.bpmy); if(!m || !!m.duzenle === v) return; const L = (A.misafirler || []).map(x => x.id === m.id ? { ...x, duzenle: v } : x);
@@ -807,7 +807,7 @@
       for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Misafir girişi", "Bu bir görüntüleme linkidir. Arşiv sahibinin size söylediği 6 haneli PIN'i girin.", hata, "Aç", "misafir"); if(pin === null) return; d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar deneyin"; }
       if(!d){ bildirim("PIN 5 kez yanlış girildi"); return; }
       panelCiz(); panel.hidden = false; const h = $$("#bl-hata"); h.className = "bl-hata bilgi"; h.innerHTML = '<span class="bl-spin"></span>Paylaşılan arşiv açılıyor…';
-      try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici", d.mid); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : "Paylaşılan arşiv açıldı"); gorulmeYaz(); }
+      try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici", d.mid); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : payGor().ad ? "Hoş geldiniz, " + payGor().ad : "Paylaşılan arşiv açıldı"); gorulmeYaz(); }
       catch(x){ meta.bagli = false; meta.rol = "sahip"; meta.misafirId = ""; token = ""; h.className = "bl-hata"; h.textContent = x.message; } }
 
     /* --- panel --- */
@@ -1421,6 +1421,7 @@ html.imz-acik,html.imz-acik body{overflow:hidden}
   .beyan-sonuc #by-vazgec{min-height:46px}
   .beyan-sonuc>.arac:last-child .uclar{flex-basis:100%;font-size:12px}
 }
+.ara-oge.tam{border-color:#C9B26A!important;background:#FFFAEB!important} .ara-oge.tam b::after{content:"tam eşleşme";margin-left:6px;padding:1px 6px;border-radius:5px;background:#F3E6BE;color:#7A5F1E;font:600 10px var(--f-ui);vertical-align:2px}
 .ara-vurgu{animation:araVurgu 3.4s ease-out;outline:3px solid #E2C35A;outline-offset:-1px;border-radius:6px}
 tr.ara-vurgu>td,.ara-vurgu{background-color:#FFF4CC!important}
 @keyframes araVurgu{0%,40%{outline-color:#D9A916}100%{outline-color:transparent}}
@@ -3167,7 +3168,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 402</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 403</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3850,7 +3851,9 @@ function araYap(){
   if(n.length < 2){ if(!$("#v-ara").hidden){ goster(SECIM.bolum ? "bolum" : "ana"); if(SECIM.bolum) bolumCiz(); } return; }
   if(!SECIM.belge) goster("ara");
   const R = []; const has = (...v) => v.some(x => x != null && araNorm(x).includes(n)), ilkBul = (...v) => v.find(x => x != null && araNorm(x).includes(n));
-  const ekle = (tur, baslik, alt, git, ipucu) => R.push({ tur, baslik, alt, git, ipucu: ipucu || q });
+  /* nokta atışı: tam eşleşen en üstte, sonra başı tutan, en son içinde geçen */
+  const puan = (...v) => { let p = 3; for(const x of v){ if(x == null) continue; const a = araNorm(x); if(!a) continue; if(a === n || /^[0-9]+$/.test(n) && a.replace(/^[A-Z]+/, "") === n) return 0; if(a.startsWith(n)) p = Math.min(p, 1); else if(a.includes(n)) p = Math.min(p, 2); } return p; };
+  const ekle = (tur, baslik, alt, git, ipucu, sonra) => R.push({ tur, baslik, alt, git, ipucu: ipucu || q, sonra, p: puan(baslik, ipucu) });
   S.yapi.klasorler.forEach(k => { if(has(k.ad, k.ust, k.kisa)) ekle("Klasör", k.ad, `${k.bolumler.length} bölüm`, () => { const ilk = k.bolumler.find(x => !x.sabit) || k.bolumler[0]; if(ilk) bolumAc(k.id, ilk.id); });
     k.bolumler.forEach(b => { if(has(b.ad)) ekle("Bölüm", b.ad, k.ad, () => bolumAc(k.id, b.id)); }); });
   S.belgeler.forEach(d => { if(has(d.ad)) ekle("Belge", d.ad, (d.yerler || []).map(y => `${klasorBul(y.k)?.ad || ""} · ${bolumBul(y.k, y.b)?.ad || ""}`).join(" | "), () => belgeGit(d)); });
@@ -3861,7 +3864,7 @@ function araYap(){
     () => { izbSecili = k.id; izbSekme = "belge"; belgeGit(belgeTur("izinb")); }); });
   (S.personel.rows || []).forEach(p => { if(has(p.ad, p.sicil, p.rutbe, p.gorev)) ekle("Personel listesi", `${p.rutbe} ${p.ad}`, `${p.sicil || ""} · ${p.gorev || ""}`, () => belgeGit(belgeTur("personel")), ilkBul(p.ad, p.sicil, p.gorev, p.rutbe) || p.ad); });
   (S.yoklama.rows || []).forEach(p => { if(has(p.ad, p.sicil, p.gorev, p.tel)) ekle("Yoklama", `${p.rutbe || ""} ${p.ad}`, `${p.vardiya || "GÜNDÜZ"} · ${p.gorev || ""}${p.tel ? " · " + p.tel : ""}`, () => belgeGit(belgeTur("yoklama")), ilkBul(p.ad, p.sicil, p.gorev, p.tel) || p.ad); });
-  (S.hedef.rows || []).forEach(h => { const v = Object.values(h).filter(x => typeof x === "string" || typeof x === "number"); if(has(...v)) ekle("Hedef", `${h.no || ""}`, `${h.tanim || ""} · ${h.koor || ""}`, () => belgeGit(belgeTur("hedef")), ilkBul(...v) || h.no); });
+  (S.hedef.rows || []).forEach((h, hi) => { const v = Object.values(h).filter(x => typeof x === "string" || typeof x === "number"); if(has(...v)) ekle("Hedef", `${h.no || ""}`, `${h.tanim || ""} · ${h.koor || ""}`, () => belgeGit(belgeTur("hedef")), ilkBul(...v) || h.no, () => hedefGit(hi)); });
   S.belgeler.filter(d => d.tur === "grid" && d.grid).forEach(d => { const bul = []; (d.grid.c || []).forEach(sat => (sat || []).forEach(x => { if(x && x.v != null && x.v !== "" && has(x.v)) bul.push(String(x.v)); }));
     if(bul.length) ekle("Tablo içeriği", d.ad, `${bul.length} eşleşme · “${bul[0].replace(/\s+/g, " ").slice(0, 70)}”`, () => belgeGit(d), bul[0]); });
   /* diğer belge türlerinin kendi verisi (tebliğ, toplu tebliğ, mevzi, şema, kapak, can dostu …): tüm yazılar taranır */
@@ -3869,17 +3872,23 @@ function araYap(){
   const yazilar = (o, L, d = 0) => { if(d > 7 || o == null) return L; if(typeof o === "string" || typeof o === "number"){ L.push(String(o)); return L; } if(Array.isArray(o)) o.forEach(x => yazilar(x, L, d + 1)); else if(typeof o === "object") for(const k in o) if(!ATLA.has(k) || (k === "ad" && d > 0)) yazilar(o[k], L, d + 1); return L; };   // belgenin kendi adı ayrıca aranır; içteki "ad" (kişi adı vb.) taranır
   S.belgeler.filter(d => d.tur !== "grid" && d.tur !== "tarama" && !/^(personel|yoklama|hedef|gdhg|izinb|izin)$/.test(d.tur)).forEach(d => { const bul = [...new Set(yazilar(d, []).filter(x => x.length < 2000 && araNorm(x).includes(n)))];
     if(bul.length) ekle("Belge içeriği", d.ad, `${bul.length} eşleşme · “${bul[0].replace(/\s+/g, " ").slice(0, 70)}”`, () => belgeGit(d), bul[0]); });
-  araSonuc = R.slice(0, 200);
-  $("#ara-baslik").textContent = `“${q}” · ${R.length} sonuç`;
+  R.forEach((r, i) => r.s = i); R.sort((a, b) => a.p - b.p || a.s - b.s);
+  araSonuc = R.slice(0, 200); const tam = R.filter(r => r.p === 0).length;
+  $("#ara-baslik").textContent = `“${q}” · ${R.length} sonuç${tam ? ` · ${tam} tam eşleşme` : ""}`;
   const gruplar = [...new Set(araSonuc.map(r => r.tur))];
   $("#ara-sonuc").innerHTML = R.length ? gruplar.map(g => `<h3 style="margin:10px 0 6px">${esc(g)}</h3><div class="ara-liste">${araSonuc.map((r, i) => r.tur !== g ? "" :
-      `<button class="ara-oge" type="button" data-ara="${i}"><b>${esc(r.baslik).replace(/[_.]/g, "$&<wbr>")}</b><span>${esc(r.alt)}</span></button>`).join("")}</div>`).join("")
+      `<button class="ara-oge${r.p === 0 ? " tam" : ""}" type="button" data-ara="${i}"><b>${esc(r.baslik).replace(/[_.]/g, "$&<wbr>")}</b><span>${esc(r.alt)}</span></button>`).join("")}</div>`).join("")
     : `<div class="bos"><strong>Sonuç bulunamadı</strong>Başka bir kelime deneyin (ad, soyad, sicil, belge ya da dosya adı, hedef numarası…). Boşluk, tire ve nokta yazmana gerek yok: “ta3010”, “1713726422” gibi.</div>`;
 }
 let araZaman; $("#ara").addEventListener("input", () => { clearTimeout(araZaman); araZaman = setTimeout(araYap, 180); });
 $("#ara").addEventListener("keydown", e => { if(e.key === "Escape"){ $("#ara").value = ""; araYap(); } else if(e.key === "Enter"){ const b = $("#ara-sonuc .ara-oge"); if(b) b.click(); } });
 $("#ara-temizle").addEventListener("click", () => { $("#ara").value = ""; araYap(); });
-$("#ara-sonuc").addEventListener("click", e => { const b = e.target.closest("[data-ara]"); if(!b) return; const r = araSonuc[+b.dataset.ara]; if(r){ r.git(); if(SECIM.belge && !$("#v-belge").hidden) bulAc($("#ara").value.trim()); else araVurgula(r.ipucu); } });
+$("#ara-sonuc").addEventListener("click", e => { const b = e.target.closest("[data-ara]"); if(!b) return; const r = araSonuc[+b.dataset.ara]; if(r){ r.git(); if(r.sonra) r.sonra(); else if(SECIM.belge && !$("#v-belge").hidden) bulAc($("#ara").value.trim()); else araVurgula(r.ipucu); } });
+/* aramadan seçilen hedefin kartına git (süzgeç varsa kaldırılır) */
+function hedefGit(i){ const a = $("#h-ara"); if(a && a.value || hFiltre !== null){ if(a) a.value = ""; hFiltre = null; try { hedefCiz(); } catch(e){} } let n = 0;
+  const dene = () => { const el = document.querySelector(`#h-tablo .hk[data-i="${i}"]`); if(!el){ if(n++ < 25) setTimeout(dene, 120); return; }
+    el.scrollIntoView({ block: "center", behavior: "smooth" }); el.classList.remove("ara-vurgu"); void el.offsetWidth; el.classList.add("ara-vurgu"); setTimeout(() => el.classList.remove("ara-vurgu"), 3500); };
+  setTimeout(dene, 150); }
 /* aramadan açılan sayfada aranan satırı bul, ekranın ortasına getir ve kısa süre vurgula */
 function araVurgula(ipucu){
   const hedef = araNorm(ipucu || ""); if(hedef.length < 2) return; let deneme = 0;
