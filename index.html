@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "382";
+  const SURUM = "383";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2756,7 +2756,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 382</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 383</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9280,7 +9280,10 @@ function stGrid(d){ const v = stVeri(d), { T, L } = stTopla(d), n = T.length, W 
   const g = { w: [6.5, 16, 22, ...T.flatMap(() => [9, 11.5]), 10], h: [], c: [], m: [] }, bos = () => Array.from({ length: W }, () => ({})), sat = h => { g.h.push(h); g.c.push(bos()); return g.c.length - 1; };
   const C = (val, o = {}) => ({ v: val ?? "", a: "c", va: "m", s: 8.5, k: "222222", br: I, ...o }), koy = (r, c, cs, rs, x) => { g.c[r][c] = x; for(let i = 0; i < rs; i++) for(let j = 0; j < cs; j++) if(i || j) g.c[r + i][c + j] = { br: x.br }; if(cs > 1 || rs > 1) g.m.push([r, c, r + rs - 1, c + cs - 1]); };
   { const r = sat(24); koy(r, 0, W, 1, { v: v.baslik, a: "c", va: "m", s: 12.5, b: 1, k: "1F1F1F" }); } sat(8);
-  const r1 = sat(18), r2 = sat(16), H = { b: 1, f: BAS, s: 8.5, k: "24452F" };
+  const H = { b: 1, f: BAS, s: 8.5, k: "24452F" };
+  if(!n){ const r = sat(22); [["Sıra No", 0], ["Rütbesi", 1], ["Adı Soyadı", 2], ["DEĞİŞİM", 3]].forEach(([t, c]) => g.c[r][c] = C(t, H));   // takipte test yokken tek satır başlık + bilgi satırı (iki katlı başlık boş kalınca bozuk görünüyordu)
+    const r2 = sat(22); koy(r2, 0, W, 1, C("Takibe alınmış spor testi yok", { k: "6A6A6A", i: 1 })); return g; }
+  const r1 = sat(18), r2 = sat(16);
   [["Sıra No", 0], ["Rütbesi", 1], ["Adı Soyadı", 2]].forEach(([t, c]) => koy(r1, c, 1, 2, C(t, H)));
   T.forEach((t, i) => { const c = 3 + i * 2; koy(r1, c, 2, 1, C(stTarih(t), H)); g.c[r2][c] = C("Ortalama", { ...H, b: 0, s: 8 }); g.c[r2][c + 1] = C("Durum", { ...H, b: 0, s: 8 }); });
   koy(r1, W - 1, 1, 2, C("DEĞİŞİM", H));
@@ -9296,7 +9299,7 @@ let stAcik = null;
 function sportakipCiz(){ const d = acikBelge(); if(!d || d.tur !== "sportakip") return; const v = stVeri(d), { T, L } = stTopla(d), tum = S.belgeler.filter(x => x.tur === "spor" && !x.sablon);
   $("#st-govde").innerHTML = `<label class="ko-al ko-tam"><span>Başlık</span><input data-st-g="baslik" value="${esc(v.baslik || "")}"></label>
     <div class="sa-blok"><div class="yk-gbas"><b>Testler</b><small>${T.length} / ${tum.length} test dahil</small></div>
-      <div class="st-testler">${tum.map(x => { const t = { d: x, v: spVeri(x) }, G = spGenel(t.v), dahil = !v.haric.includes(x.id); return `<button type="button" class="st-test" data-st-t="${x.id}" aria-pressed="${dahil}"><b>${esc(stTarih(t))}</b><small>${esc(x.ad)}</small><span>${G.oran == null ? "sonuç yok" : "%" + spSayiYaz(G.oran) + " başarı · ort " + spSayiYaz(G.ort)}</span></button>`; }).join("") || `<div class="yk-bos">Henüz spor testi yok</div>`}</div>
+      <div class="st-testler">${tum.map(x => { const t = { d: x, v: spVeri(x) }, G = spGenel(t.v), dahil = !v.haric.includes(x.id); return `<button type="button" class="st-test" data-st-t="${x.id}" aria-pressed="${dahil}"><b>${esc(stTarih(t))}</b><small>${esc(x.ad)}</small><span>${G.oran == null ? "sonuç yok" : "%" + spSayiYaz(G.oran) + " başarı · ort " + spSayiYaz(G.ort)}${dahil ? "" : " · takipte değil, eklemek için dokunun"}</span></button>`; }).join("") || `<div class="yk-bos">Henüz spor testi yok</div>`}</div>
       <details class="yardim"><summary>ⓘ Nasıl kullanılır</summary><div>Yeni test için Değerlendirme Çizelgeleri bölümünde testi çoğaltın (⧉); buraya kendiliğinden eklenir. Dokunarak testi takipten çıkarabilirsiniz.</div></details></div>
     <div class="sa-blok"><div class="yk-gbas"><b>Personel</b><small>${L.length} kişi</small></div>
       ${L.map((x, i) => `<div class="yk-k${stAcik === i ? " acik" : ""}"><button type="button" class="yk-s" data-st-ac="${i}"><span class="yk-n">${i + 1}</span><span class="kc-sy"><b>${esc(x.ad)}</b><small>${esc(x.rutbe)}</small></span><span class="sp-oz">${x.son != null ? `<span class="sp-roz ${x.deg > 0 ? "iyi" : x.deg < 0 ? "kot" : "gri"}">${spSayiYaz(x.son)}${x.deg != null ? " " + stDeg(x.deg).split(" ")[0] : ""}</span>` : `<span class="sp-roz gri">sonuç yok</span>`}</span></button>
