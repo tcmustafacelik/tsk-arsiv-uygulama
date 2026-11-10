@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "428";
+  const SURUM = "429";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3141,6 +3141,10 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .zm-s{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:7px 4px;cursor:pointer;text-align:left} .zm-l{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:10px;overflow:hidden} .zm-k+.zm-k{border-top:1px solid var(--line2)} .zm-k.acik{background:#F7F9FB} .zm-n{min-width:22px;text-align:center;font:700 11px var(--f-ui);color:var(--muted)} .zm-ic{flex:1;min-width:0;display:flex;flex-direction:column} .zm-ic b{font:700 12.5px var(--f-ui);color:#26313B} .zm-ic small{font:500 10.5px var(--f-ui);color:var(--muted)} .zm-s>em{font:700 11px var(--f-ui);font-style:normal;color:#3D5A73;background:#E8EFF5;border-radius:6px;padding:2px 7px;white-space:nowrap} .zm-form{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px 8px 10px} .zm-form .tam{grid-column:1/-1} .zm-is{grid-column:1/-1;display:flex;gap:6px;align-items:center} .zm-is .bosluk{flex:1} .zm-t{background:#E8EFF5!important;color:#3D5A73!important} .dl-ust-s.zm-ik{background:#E8EFF5;color:#3D5A73}
 .km-silb{display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D9DCC6;background:#F7F8F0;border-radius:9px;padding:7px 10px;cursor:pointer;text-align:left} .km-silT{font:700 12px var(--f-ui);color:#4A4F2C;margin-bottom:1px}
 .km-nav{display:flex;gap:6px;align-items:center;margin-bottom:8px}
+/* kayıt seçici standardı (kimlik, zimmet, el senedi…): oklar kutu boyunca uzanır, sağda sabit açma simgesi; yazı uzunsa kutu büyür ama düzen bozulmaz */
+.km-nav{align-items:stretch} .km-nav .km-ok{height:auto;min-height:44px;flex:0 0 34px;display:grid;place-items:center}
+.km-nav .km-kisi{min-height:44px;padding:8px 8px 8px 10px;gap:10px} .km-nav .km-kisi .ks-ad b{font:700 14px/1.3 var(--f-ui);overflow-wrap:anywhere}
+.km-nav .km-kisi>i{flex:none;align-self:center;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;background:rgba(255,255,255,.75);border:1px solid rgba(47,102,112,.14);font:700 11px var(--f-ui);color:#2F6670}
 /* başlık satırı (ad + sayı + Yeni) ile seçici arasında nefes payı; Yeni düğmesi biraz daha rahat */
 .dl-ust{min-height:34px} .dl-ust + .km-nav,.dl-ust + .km-nav-s{margin-top:12px} :is(#es-govde,#zm-govde,#km-govde,#sl-govde) > .dl-ust{padding:2px 2px 0}
 .dl-ust .dl-yeni{padding:7px 14px 7px 10px;border-radius:9px;font-size:12.5px;gap:6px} .km-ok{flex:0 0 32px;height:32px;border:1px solid var(--line2);background:#fff;border-radius:8px;font:600 17px/1 var(--f-ui);color:#2F6670;cursor:pointer;padding:0} .km-ok:disabled{opacity:.3}
@@ -3430,7 +3434,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 428</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 429</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3870,8 +3874,8 @@ function adimUygula(ileri){ adimYaz(); const A = ileri ? adimI : adimG, B = iler
   requestAnimationFrame(() => { scrollTo(0, sy); if(vb) vb.scrollTop = vs; }); bildir(ileri ? "Yinelendi" : "Son adım geri alındı"); }
 /* ===== kısa ekler satır sonunda bölünmesin: “(EK-2)”, “A-4”, “G-3” gibi tirelerde satır kırılmaz (yalnız ekranda; veri değişmez) ===== */
 const TIRE_RE = /([0-9A-Za-zÇĞİÖŞÜçğıöşü])-(?=[0-9A-Za-zÇĞİÖŞÜçğıöşü]{1,4}(?![0-9A-Za-zÇĞİÖŞÜçğıöşü]))/g;
-function tireKir(kok){ if(!kok) return; if(kok.nodeType === 3){ if(kok.nodeValue.indexOf("-") >= 0 && !(kok.parentNode && kok.parentNode.closest && kok.parentNode.closest("script,style,textarea,pre,[contenteditable],svg"))){ const v = kok.nodeValue.replace(TIRE_RE, "$1‑"); if(v !== kok.nodeValue) kok.nodeValue = v; } return; }
-  if(kok.nodeType !== 1 || kok.matches("script,style,textarea,pre,[contenteditable],svg,canvas")) return; const w = document.createTreeWalker(kok, NodeFilter.SHOW_TEXT); let n; const L = []; while((n = w.nextNode())) if(n.nodeValue.indexOf("-") >= 0) L.push(n); L.forEach(tireKir); }
+function tireKir(kok){ if(!kok) return; if(kok.nodeType === 3){ if((kok.nodeValue.indexOf("-") >= 0 || kok.nodeValue.indexOf(",") >= 0) && !(kok.parentNode && kok.parentNode.closest && kok.parentNode.closest("script,style,textarea,pre,[contenteditable],svg"))){ const v = kok.nodeValue.replace(TIRE_RE, "$1‑").replace(/,(?=[A-Za-zÇĞİÖŞÜçğıöşü])/g, ",​"); if(v !== kok.nodeValue) kok.nodeValue = v; } return; }
+  if(kok.nodeType !== 1 || kok.matches("script,style,textarea,pre,[contenteditable],svg,canvas")) return; const w = document.createTreeWalker(kok, NodeFilter.SHOW_TEXT); let n; const L = []; while((n = w.nextNode())) if(n.nodeValue.indexOf("-") >= 0 || n.nodeValue.indexOf(",") >= 0) L.push(n); L.forEach(tireKir); }
 new MutationObserver(M => { for(const m of M){ if(m.type === "characterData") tireKir(m.target); else m.addedNodes.forEach(tireKir); } }).observe(document.documentElement, { childList: true, subtree: true, characterData: true });
 tireKir(document.body);
 /* ===== değişen alan işareti: kaydedilmemiş değişiklik olan kutunun solunda turuncu çizgi ===== */
