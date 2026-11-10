@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "431";
+  const SURUM = "432";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3073,7 +3073,8 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 #kayit-cubugu{left:0;right:0;transform:none;bottom:0;width:auto;max-width:none;border-radius:14px 14px 0 0;border-width:1px 0 0;justify-content:flex-end;gap:6px;
   padding:7px max(10px,env(safe-area-inset-right,0px)) calc(7px + env(safe-area-inset-bottom,0px)) max(14px,env(safe-area-inset-left,0px));box-shadow:0 -4px 18px rgba(80,60,20,.10)}
 @media (min-width:900px){ #kayit-cubugu{padding-left:calc((100vw - 860px) / 2);padding-right:calc((100vw - 860px) / 2)} }
-#kayit-cubugu .k-metin{margin-right:auto;min-width:0;overflow:hidden} #kayit-cubugu .k-metin small{white-space:normal}
+#kayit-cubugu .k-metin{margin-right:auto;min-width:0;overflow:hidden;white-space:normal;grid-template-columns:auto 1fr;overflow-wrap:anywhere;line-height:1.3}
+#k-sgeri:not([hidden]) ~ .k-adim{display:none!important} .agac-ac{white-space:normal!important;height:auto!important;min-height:40px;text-align:left} #kayit-cubugu .k-metin small{white-space:normal}
 #kayit-cubugu .k-adim{width:36px;min-width:36px;padding:0!important;height:34px;font:700 17px var(--f-ui)!important;background:#fff;border:1px solid #E6D6B8;color:#7A5214}
 #kayit-cubugu .k-adim:disabled{opacity:.35}
 html.kayit-bekliyor body,html.cubuk-acik body{padding-bottom:calc(60px + env(safe-area-inset-bottom,0px))} html.kayit-bekliyor #v-belge,html.cubuk-acik #v-belge{padding-bottom:calc(70px + env(safe-area-inset-bottom,0px))!important}
@@ -3472,7 +3473,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 431</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 432</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3987,7 +3988,7 @@ function agacCiz0(){
   const el = $("#agac");
   if(!S.yapi.klasorler.length){ el.innerHTML = `<div class="bos"><strong>Klasörler yükleniyor…</strong>Veriler buluttan iniyor; internet yavaşsa biraz sürebilir.</div>`; return; }
   const sec = klasorBul(SECIM.klasor), bs = bolumBul(SECIM.klasor, SECIM.bolum);
-  el.innerHTML = `<button class="btn agac-ac" id="agac-ac" aria-expanded="${!agacKapali}"><span>☰</span><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${bs ? esc(sec.ad) + " · " + esc(bs.ad) : "Menü"}</span><span style="margin-left:auto">${agacKapali ? "▾" : "▴"}</span></button><div class="agac-icerik">
+  el.innerHTML = `<button class="btn agac-ac" id="agac-ac" aria-expanded="${!agacKapali}"><span>☰</span><span style="min-width:0;overflow-wrap:anywhere;text-align:left">${bs ? esc(sec.ad) + " · " + esc(bs.ad) : "Menü"}</span><span style="margin-left:auto">${agacKapali ? "▾" : "▴"}</span></button><div class="agac-icerik">
     <button class="kok-bas" id="kok-ac" type="button" aria-expanded="${kokAcik}"><b>TSK ARŞİV</b><span class="say">${new Set(S.yapi.klasorler.map(k => k.ust || k.id)).size} kategori</span><span class="kok-ok">${KK_OK}</span></button>
     <div class="kok-ic yeni"${kokAcik ? "" : " hidden"}>` + agacListe() + `</div>` +
     `<button type="button" class="ag-yeni-kat" id="kat-ekle">＋ Yeni kategori</button><button type="button" class="ag-arsiv" id="arsiv-indir"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4"/><path d="M5 19h14"/></svg><span><b>Bütün arşivi indir</b><small>belgeler PDF, dosyalar olduğu gibi · tek ZIP</small></span></button></div>`;
@@ -4713,7 +4714,7 @@ function bolumCiz(){
   const altS = ["", ...(b.alt || [])], bel = belgeleriBul(k.id, b.id).sort((x, y) => altS.indexOf(belgeAlt(x, k.id, b.id) || "") - altS.indexOf(belgeAlt(y, k.id, b.id) || "")), kpK = bolumKapakKart(k, b);   // kartlar baskı sırasıyla: ana ayraç, sonra her alt ayraç
   $("#b-belgeler").innerHTML = kpK + (bel.length ? bel.map(d => { if(d.gizli) return GIZLI_KART("belge"); const [z, r] = bkRenk(d.tur);
     return `<div class="kart belge bkk${d.sablon ? " sablon" : ""}" style="--bz:#${z};--br:#${r}"><div class="bkk-ust" data-ac="${esc(d.id)}"><span class="bkk-ik">${BKK_SIMGE}</span><span class="bkk-sy"><span class="tur">${d.sablon ? "ŞABLON" : { grid:"TABLO", personel:"PERSONEL", izin:"İZİN", hedef:"HEDEF", yoklama:"YOKLAMA", gdhg:"GDHG", izinb:"İZİN BELGESİ", sema:"ŞEMA", teblig:"TEBLİĞ", tebtut:"TEBLİĞ LİSTESİ", mevzi:"MEVZİ", candostu:"CAN DOSTU", kopek:"KÖPEK KARTI", tarama:"TARAMA", karsilama:"KARŞILAMA ORANI", kadro:"KADRO CETVELİ", sicil:"SİCİL AMİRLERİ", liste:"LİSTE", spor:"SPOR TESTİ", baslik:"BAŞLIK", sportakip:"SPOR TAKİP", kapak:"KAPAK", tazminat:"TAZMİNAT", cevrim:"ŞEMA" }[d.tur] || "BELGE"}</span><span class="ad">${esc(d.ad)}</span><span class="bilgi">${esc(belgeOzet(d, k.id))}</span></span></div>
-      <button class="bkk-kalem bkk-tasi" type="button" data-tasi="b:${esc(d.id)}" aria-label="Başka bölüme taşı" title="Başka bölüme taşı">⇄</button><button class="bkk-kalem" type="button" data-kart-ad="${esc(d.id)}" aria-label="${esc(d.ad)} adını değiştir" title="Adını değiştir">✎</button>${(b.alt || []).length ? altAyracSec(d, k.id, b) : ""}
+      <button class="bkk-kalem uz-dug" type="button" data-uz-ac aria-label="İşlemler" title="İşlemler">⋮</button><button class="bkk-kalem bkk-tasi" type="button" data-tasi="b:${esc(d.id)}" aria-label="Başka bölüme taşı" title="Başka bölüme taşı">⇄</button><button class="bkk-kalem" type="button" data-kart-ad="${esc(d.id)}" aria-label="${esc(d.ad)} adını değiştir" title="Adını değiştir">✎</button>${(b.alt || []).length ? altAyracSec(d, k.id, b) : ""}
       <div class="alt bkk-is"><button class="btn ana" data-ac="${esc(d.id)}"><span class="ys-d">Aç ve düzenle</span><span class="ys-g">Aç</span></button>${COGALTILIR.has(d.tur) ? `<button class="btn" type="button" data-cogalt="${esc(d.id)}" aria-label="${esc(d.ad)} belgesini çoğalt" title="Çoğalt">⧉ Çoğalt</button>` : ""}<button class="btn sil" type="button" data-kart-sil="${esc(d.id)}" aria-label="${esc(d.ad)} belgesini sil">Sil</button></div></div>`; }).join("")
     : kpK ? "" : ""); $("#b-bsay").textContent = bel.length + (kpK ? 1 : 0) || ""; $("#b-bsay").parentNode.hidden = !(bel.length || kpK);
   const dos = dosyalariBul(k.id, b.id).filter(a => !a.sert).sort((x, y) => x.ad.localeCompare(y.ad, "tr"));   // sertifikalar kendi belgesinde listelenir
@@ -4721,7 +4722,7 @@ function bolumCiz(){
   $("#b-dosyalar").innerHTML = dos.length ? dos.map(a => { if(a.gizli) return GIZLI_KART("dosya"); const uz = (a.ad.split(".").pop() || "").toUpperCase();
     const rs = /^image\//.test(a.tur || "") || /\.svg$/i.test(a.ad), tk = /^PDF$/.test(uz) ? "pdf" : /^XLS[XM]?$/.test(uz) ? "xlsx" : /^DOCX?$/.test(uz) ? "docx" : /^image\//.test(a.tur || "") ? "resim" : "diger";
     return `<div class="kart bkk dsy" data-id="${esc(a.id)}"><div class="bkk-ust"${rs || uz === "PDF" ? ` data-dsy-gor="${esc(a.id)}"` : ""}><span class="bkk-ik dsy-ik d-${tk}">${rs ? `<img data-dsy-img="${esc(a.id)}" alt="">` : `<b>${esc(uz.slice(0, 4))}</b>`}</span><span class="bkk-sy"><span class="ad">${esc(a.ad)}</span><span class="bilgi">${boyut(a.boyut || 0)} · ${new Date(a.tarih).toLocaleDateString("tr-TR")}</span></span></div>
-      <button class="bkk-kalem bkk-tasi" type="button" data-tasi="a:${esc(a.id)}" aria-label="Başka bölüme taşı" title="Başka bölüme taşı">⇄</button><button class="bkk-kalem" type="button" data-is="ad" aria-label="Adını değiştir" title="Adını değiştir">✎</button>
+      <button class="bkk-kalem uz-dug" type="button" data-uz-ac aria-label="İşlemler" title="İşlemler">⋮</button><button class="bkk-kalem bkk-tasi" type="button" data-tasi="a:${esc(a.id)}" aria-label="Başka bölüme taşı" title="Başka bölüme taşı">⇄</button><button class="bkk-kalem" type="button" data-is="ad" aria-label="Adını değiştir" title="Adını değiştir">✎</button>
       <div class="alt bkk-is">${beyanBolum && (a.tur === "application/pdf" || /^image\//.test(a.tur)) ? `<button class="btn ana" data-is="oku">Oku ve aktar</button>` : ""}${/^image\//.test(a.tur || "") ? `<button class="btn" data-is="parcala" title="Büyük baskı için sayfalara böl">✂ Parçala</button>` : ""}${rs || uz === "PDF" ? `<button class="btn${beyanBolum ? "" : " ana"}" type="button" data-dsy-gor="${esc(a.id)}">Aç</button>` : ""}<button class="btn${beyanBolum || rs || uz === "PDF" ? "" : " ana"}" data-is="indir">İndir</button><button class="btn sil" data-is="sil">Sil</button></div></div>`; }).join("")
     : (S.yuklendi.arsiv ? "" : `<div class="bos bkk-bos">Dosyalar yükleniyor…</div>`); $("#b-dsay").textContent = dos.length || ""; $("#b-birak").classList.toggle("bos-yer", !dos.length && !!S.yuklendi.arsiv);   /* boşken tek kutu: bırakma alanı */
 }
@@ -12825,6 +12826,63 @@ async function baskiExcel(kitaplar, Y, ilerle, hatalar){   // kitaplar: [{ ad, v
   $("#marka").addEventListener("click", git);
   $("#marka").addEventListener("keydown", e => { if(e.key === "Enter" || e.key === " "){ e.preventDefault(); git(); } });
 })();
+
+/* ===== BASILI TUT MENÜSÜ (tüm sistem) =====
+   Telefonda bir satıra/karta basılı tutunca, bilgisayarda sağ tıklayınca o satırın işlemleri açılır:
+   Aç/Düzenle · Yukarı/Aşağı/En üste/En alta taşı · Kopyala · Seç · Sil (geri alınabilir). Kartlarda kartın kendi düğmeleri listelenir. */
+const UZ = [];
+const uzE = o => UZ.push(o);
+const uzAB = () => acikBelge();
+[["personel", () => PL().rows, () => kaydetBt("personel"), () => personelCiz()], ["yoklama", () => YS().rows, () => ykKaydet(), () => yoklamaCiz()],
+ ["hedef", () => S.hedef.rows, () => kaydetBt("hedef"), () => hedefCiz(), { idx: true }], ["izinb", () => S.izinb.kisiler, () => kaydetBt("izinb"), () => izbhCiz()],
+ ["dilekce", () => dlVeri(uzAB()).kayitlar, () => kaydetBelge(uzAB()), () => dilekceCiz(), { kopya: true, ters: true }], ["izinsa", () => isaVeri(uzAB()).kayitlar, () => kaydetBelge(uzAB()), () => izinsaCiz(), { kopya: true, ters: true }],
+ ["tazminat"], ["sertifika"]].forEach(([k, dizi, kayd, ciz, o = {}]) => { const T = TS[k]; if(!T) return; uzE({ k, ts: k, kap: T.kap, satir: T.satir, id: T.id, dizi, kaydet: kayd, ciz: ciz || T.ciz, ...o }); });
+const uzSatirlar = (ciz, dz, ad) => ({ dizi: dz, kaydet: () => kaydetBelge(uzAB()), ciz, kopya: true, ad });
+uzE({ k: "es", kap: "#es-govde .es-tb", satir: ".es-tr[data-es-duz]", id: el => el.dataset.esDuz, ...uzSatirlar(() => elsenetCiz(), () => esAktif(esVeri(uzAB())).satirlar) });
+uzE({ k: "zm", kap: "#zm-govde .es-tb", satir: ".es-tr[data-zm-duz]", id: el => el.dataset.zmDuz, ...uzSatirlar(() => zimmetCiz(), () => zmAktif(zmVeri(uzAB())).satirlar) });
+uzE({ k: "sl", kap: "#sl-govde .sl-l", satir: ".sl-r", id: el => (el.querySelector("[data-sl-ac]") || {}).dataset?.slAc, grup: x => x.model || "", ...uzSatirlar(() => silahCiz(), () => slVeri(uzAB()).liste),
+  ad: el => { const b = el.querySelector(".sl-no"); return b ? "Seri " + b.textContent : ""; } });
+uzE({ k: "kart", kap: "#b-belgeler, #b-dosyalar", satir: ".kart.bkk:not(.gizli-kart)", vekil: true, id: () => "x", ad: el => (el.querySelector(".ad") || {}).textContent || "" });
+const uzEtiket = (e, el) => { const a = e.ad ? e.ad(el) : ""; if(a) return a.trim(); const b = el.querySelector("b, .ad, td:nth-child(2)"); return ((b && b.textContent) || el.textContent || "").trim().split("\n")[0].trim() || "Satır"; };
+function uzBul(t){ if(!t || !t.closest || t.closest("input,textarea,select,[contenteditable=true],.ap-perde,.imz-perde")) return null;
+  for(const e of UZ){ const el = t.closest(e.satir); if(el && el.closest(e.kap) && !document.documentElement.classList.contains("salt")) return { e, el }; } return null; }
+function uzIndeks(e, L, id){ return e.idx ? +id : L.findIndex(x => x && String(x.id) === String(id)); }
+function uzTasi(e, id, yon0){ const L = e.dizi(); if(!L) return; const yon = e.ters ? ({ ust: "alt", alt: "ust", "-1": 1, "1": -1 })[yon0] : yon0;   /* listede en yeni üstte gösteriliyorsa yön ters çevrilir */ const i = uzIndeks(e, L, id); if(i < 0) return; let j;
+  if(e.grup){ const g = e.grup(L[i]), es = L.map((x, k) => k).filter(k => e.grup(L[k]) === g), p = es.indexOf(i); j = yon === "ust" ? es[0] : yon === "alt" ? es[es.length - 1] : es[p + yon]; }
+  else j = yon === "ust" ? 0 : yon === "alt" ? L.length - 1 : i + yon;
+  if(j == null || j < 0 || j >= L.length || j === i) return bildir("Zaten en " + ((yon0 === "ust" || yon0 < 0) ? "üstte" : "altta")); const [x] = L.splice(i, 1); L.splice(j, 0, x); e.kaydet(); e.ciz(); bildir(`${e.ters ? L.length - j : j + 1}. sıraya taşındı`); }
+function uzKopya(e, id){ const L = e.dizi(), i = uzIndeks(e, L, id); if(i < 0) return; const x = kopya(L[i]); if(x && typeof x === "object" && "id" in x) x.id = String(L[i].id).replace(/[^a-z]/gi, "").slice(0, 3) + yeniId().slice(0, 7); L.splice(i + 1, 0, x); e.kaydet(); e.ciz(); bildir("Kopyası altına eklendi"); }
+function uzSil(e, id, ad){ let geri;
+  if(e.ts && TS[e.ts] && TS[e.ts].sil) geri = TS[e.ts].sil(new Set([id]));
+  else { const L = e.dizi(), i = uzIndeks(e, L, id); if(i < 0) return; const [x] = L.splice(i, 1); e.kaydet(); geri = () => { L.splice(i, 0, x); e.kaydet(); }; }
+  (e.ciz || (() => {}))(); geriAlinabilir(`${ad} silindi`, () => { geri && geri(); (e.ciz || (() => {}))(); }); }
+const UZ_IK = { ac: '<path d="M4 20h4L19 9l-4-4L4 16z"/>', yuk: '<path d="M12 19V5M6 11l6-6 6 6"/>', asa: '<path d="M12 5v14M6 13l6 6 6-6"/>', ust: '<path d="M5 4h14M12 20V8M7 13l5-5 5 5"/>', alt: '<path d="M5 20h14M12 4v12M7 11l5 5 5-5"/>',
+  kop: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', tas: '<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>', sec: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/>', sil: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/>', dug: '<circle cx="12" cy="12" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>' };
+function uzAc({ e, el }){ const id = e.id(el); if(id == null) return; const ad = uzEtiket(e, el), I = [];
+  if(e.vekil){ const ac = el.querySelector("[data-ac],[data-dsy-gor]"); if(ac) I.push({ ad: "Aç", ik: "ac", f: () => ac.click() });
+    const gor = new Set(); el.querySelectorAll("button").forEach(b => { if(b.disabled || b.matches(".uz-dug,[data-alt-ayrac]") || (b.offsetParent === null && !b.closest(".bkk-is") && !b.classList.contains("bkk-kalem"))) return; const t = (b.getAttribute("aria-label") || b.title || b.textContent || "").replace(/\s+/g, " ").trim(); if(!t || gor.has(t) || b.matches("[data-ac]")) return; gor.add(t);
+      const sil = /sil/i.test(t) || b.classList.contains("sil"); I.push({ ad: t.replace(new RegExp("^" + ad.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*"), "").replace(/^belgesini\s*/i, "").replace(/^./, c => c.toLocaleUpperCase("tr")), ik: sil ? "sil" : /taşı/i.test(t) ? "tas" : /ad|düzenle/i.test(t) ? "ac" : /çoğalt|kopya/i.test(t) ? "kop" : /indir/i.test(t) ? "asa" : "dug", kirmizi: sil, f: () => b.click() }); }); }
+  else { I.push({ ad: "Aç / düzenle", ik: "ac", f: () => { const h = el.matches("button,[data-ac]") ? el : el.querySelector("button,[data-ac],td") || el; h.click(); } });
+    if(e.dizi){ I.push({ ad: "Yukarı taşı", ik: "yuk", f: () => uzTasi(e, id, -1) }, { ad: "Aşağı taşı", ik: "asa", f: () => uzTasi(e, id, 1) }, { ad: "En üste taşı", ik: "ust", f: () => uzTasi(e, id, "ust") }, { ad: "En alta taşı", ik: "alt", f: () => uzTasi(e, id, "alt") }); }
+    if(e.kopya && e.dizi) I.push({ ad: "Kopyala", alt: "kopyası hemen altına eklenir", ik: "kop", f: () => uzKopya(e, id) });
+    if(e.ts) I.push({ ad: "Seç", alt: "birden çok satırı birlikte silmek ya da işlemek için", ik: "sec", f: () => { for(const x in tsSec) tsSec[x] = null; tsSec[e.ts] = new Set([id]); tsUygula(); } });
+    I.push({ ad: "Sil", alt: "yanlışlıkla olursa altta “Geri al” çıkar", ik: "sil", kirmizi: true, f: () => uzSil(e, id, ad) }); }
+  if(navigator.vibrate) try { navigator.vibrate(12); } catch(x){}
+  altPencere("ks-perde", "İŞLEMLER", ad, () => `<div class="ap-liste">${I.map((x, i) => apSatir(`data-uz="${i}"`, `<span class="ap-sim uz-ik${x.kirmizi ? " kz" : ""}"><svg viewBox="0 0 24 24">${UZ_IK[x.ik] || UZ_IK.dug}</svg></span>`, esc(x.ad), "", { kirmizi: x.kirmizi, alt: x.alt ? esc(x.alt) : "" })).join("")}</div>`,
+    (b, kapat) => { const x = I[+b.dataset.uz]; if(!x) return; kapat(); setTimeout(x.f, 30); }, { z: "EEF2F6", r: "3D5A73" }); }
+/* basılı tutma algılama: 480 ms kıpırdamadan basılı kalırsa menü; ardından gelen dokunuş (tıklama) yutulur */
+let uzZ = null, uzX = 0, uzY = 0, uzSon = 0, uzEl = null;
+const uzBirak = () => { clearTimeout(uzZ); uzZ = null; if(uzEl){ uzEl.classList.remove("uz-bas"); uzEl = null; } };
+document.addEventListener("pointerdown", e => { if(e.button > 0) return; const h = uzBul(e.target); if(!h) return; uzX = e.clientX; uzY = e.clientY; uzEl = h.el; uzEl.classList.add("uz-bas");
+  clearTimeout(uzZ); uzZ = setTimeout(() => { uzZ = null; if(uzEl) uzEl.classList.remove("uz-bas"); uzSon = Date.now(); uzAc(h); uzEl = null; }, 480); }, true);
+document.addEventListener("pointermove", e => { if(uzZ && Math.hypot(e.clientX - uzX, e.clientY - uzY) > 9) uzBirak(); }, true);
+["pointerup", "pointercancel", "scroll"].forEach(t => document.addEventListener(t, () => { if(uzZ) uzBirak(); }, true));
+document.addEventListener("click", e => { if(Date.now() - uzSon < 700 && !e.target.closest(".ap-perde")){ e.preventDefault(); e.stopImmediatePropagation(); } }, true);
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-uz-ac]"); if(!b) return; e.preventDefault(); e.stopImmediatePropagation(); const el = b.closest(".kart"), en = UZ.find(x => x.k === "kart"); if(el && en) uzAc({ e: en, el }); }, true);
+document.addEventListener("contextmenu", e => { const h = uzBul(e.target); if(!h) return; e.preventDefault(); if(Date.now() - uzSon < 900) return; uzBirak(); uzSon = Date.now(); uzAc(h); }, true);
+document.head.insertAdjacentHTML("beforeend", `<style>${UZ.map(e => e.kap.split(",").map(k => k.trim() + " " + e.satir).join(",")).join(",")}{-webkit-touch-callout:none;-webkit-user-select:none;user-select:none}
+.bkk>.bkk-kalem:not(.uz-dug){display:none!important} .bkk>.uz-dug{right:9px!important;font-size:17px!important;font-weight:700} .bkk:not(.gizli-kart) .bkk-ust{padding-right:42px!important}
+.uz-bas{transition:background .25s,transform .25s;transform:scale(.985);background-color:#F1F5F9!important} .uz-ik svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round} .uz-ik{--sz:#EEF2F6;--sr:#3D5A73} .uz-ik.kz{--sz:#FBEDEA;--sr:#A3412F}</style>`);
 </script>
 
 </body>
