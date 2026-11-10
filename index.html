@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "391";
+  const SURUM = "392";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -38,14 +38,16 @@
   /* ---------- IndexedDB ---------- */
   const ac = () => new Promise(ok => { try { const r = indexedDB.open(DBAD, 1); r.onupgradeneeded = () => { [BS, VS, MS].forEach(s => r.result.createObjectStore(s)); }; r.onsuccess = () => ok(r.result); r.onerror = () => ok(null); r.onblocked = () => ok(null); } catch(e){ ok(null); } });
   const islem = (st, mod, fn) => new Promise((ok, red) => { if(!idb) return ok(null); try { const t = idb.transaction(st, mod), s = t.objectStore(st); let sonuc; const r = fn(s); if(r) r.onsuccess = () => sonuc = r.result; t.oncomplete = () => ok(sonuc); t.onerror = () => red(t.error); t.onabort = () => red(t.error); } catch(e){ red(e); } });
-  const yerelYaz = (p, v) => islem(BS, "readwrite", s => v === undefined ? s.delete(p) : s.put(v, p)).catch(() => { try { const t = JSON.parse(localStorage.getItem(DBAD) || "{}"); if(v === undefined) delete t[p]; else t[p] = v; localStorage.setItem(DBAD, JSON.stringify(t)); } catch(e){} });
-  const metaYaz = () => islem(MS, "readwrite", s => s.put(kopya(meta), "bulut")).catch(() => {});
+  /* önizleme: sahip, karşı tarafın gördüğünü kendi cihazında görür; bu sırada hiçbir şey kaydedilmez, eşitlenmez */
+  let ONIZLE = false; try { ONIZLE = sessionStorage.getItem("tsk-onizle") === "1"; } catch(e){}
+  const yerelYaz = (p, v) => ONIZLE ? Promise.resolve() : islem(BS, "readwrite", s => v === undefined ? s.delete(p) : s.put(v, p)).catch(() => { try { const t = JSON.parse(localStorage.getItem(DBAD) || "{}"); if(v === undefined) delete t[p]; else t[p] = v; localStorage.setItem(DBAD, JSON.stringify(t)); } catch(e){} });
+  const metaYaz = () => ONIZLE ? Promise.resolve() : islem(MS, "readwrite", s => s.put(kopya(meta), "bulut")).catch(() => {});
   async function yerelOku(){
     if(idb){ const k = await islem(BS, "readonly", s => s.getAllKeys()) || [], d = await islem(BS, "readonly", s => s.getAll()) || []; k.forEach((x, i) => mem[x] = d[i]);
       const m = await islem(MS, "readonly", s => s.get("bulut")); if(m) Object.assign(meta, m); }
     else { try { Object.assign(mem, JSON.parse(localStorage.getItem(DBAD) || "{}")); } catch(e){} }
   }
-  async function hepsiniYerelYaz(){ if(idb){ for(const [p, v] of Object.entries(mem)) await yerelYaz(p, v); const k = await islem(BS, "readonly", s => s.getAllKeys()).catch(() => []) || []; for(const x of k) if(!(x in mem)) await yerelYaz(x, undefined); } else { try { localStorage.setItem(DBAD, JSON.stringify(mem)); } catch(e){} } }
+  async function hepsiniYerelYaz(){ if(ONIZLE) return; if(idb){ for(const [p, v] of Object.entries(mem)) await yerelYaz(p, v); const k = await islem(BS, "readonly", s => s.getAllKeys()).catch(() => []) || []; for(const x of k) if(!(x in mem)) await yerelYaz(x, undefined); } else { try { localStorage.setItem(DBAD, JSON.stringify(mem)); } catch(e){} } }
   /* ---------- şifreleme (AES-GCM, PBKDF2) ---------- */
   async function anahtar(salt){ const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(sifre), "PBKDF2", false, ["deriveKey"]);
     return crypto.subtle.deriveKey({ name: "PBKDF2", salt, iterations: 150000, hash: "SHA-256" }, k, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]); }
@@ -123,7 +125,7 @@
   }
   function yerelDegistir(veri){ Object.keys(mem).forEach(k => delete mem[k]); Object.assign(mem, kopya(veri)); hepsiniYerelYaz(); hepsiniBildir(); }
   async function esitle(neden){
-    if(!meta.bagli || !token || calisiyor) return; if(!navigator.onLine){ durumHata = ""; durumCiz(); return; }
+    if(ONIZLE) return; if(!meta.bagli || !token || calisiyor) return; if(!navigator.onLine){ durumHata = ""; durumCiz(); return; }
     calisiyor = true; durumCiz();
     try {
       if(meta.bekleyenDosya.length || meta.silinecekDosya.length) await dosyalariGonder();
@@ -166,7 +168,7 @@
     R["bt/paylasimGor"] = { gizli: G, duzenle: !!A.duzenle };
     return R; }
   let payCalisiyor = false, payZaman = null, payHata = "";
-  const payPlanla = (ms = 4000) => { if(izleyici() || !pay) return; clearTimeout(payZaman); payZaman = setTimeout(() => paylasimGonder(), ms); };
+  const payPlanla = (ms = 4000) => { if(ONIZLE || izleyici() || !pay) return; clearTimeout(payZaman); payZaman = setTimeout(() => paylasimGonder(), ms); };
   async function payOku(){ const r = await ghP(yolP(VERI), { headers: { Accept: "application/vnd.github.object+json" } }); if(r.status === 404) return { sha: null, veri: null }; if(r.status === 401) throw new Error("Paylaşım anahtarı geçersiz");
     if(!r.ok) throw new Error("Paylaşım deposu okunamadı (" + r.status + ")"); const j = await r.json(); let metin;
     if(j.content && j.encoding === "base64") metin = new TextDecoder().decode(b64ToU8(j.content.replace(/\n/g, ""))); else { const r2 = await ghP(yolP(VERI), { headers: { Accept: "application/vnd.github.raw+json" } }); metin = await r2.text(); }
@@ -223,7 +225,7 @@
   }
   function kes(){ const iz = izleyici(); meta.bagli = false; meta.sha = null; token = ""; meta.rol = "sahip"; if(iz){ Object.keys(mem).forEach(k => delete mem[k]); hepsiniYerelYaz(); hepsiniBildir(); } try { localStorage.removeItem("tsk-gh-token"); localStorage.removeItem("tsk-gh-sifre"); } catch(e){} metaYaz(); durumCiz(); }
   let alZaman = null;
-  function zamanlayiciKur(){ clearInterval(alZaman); if(!meta.bagli) return; const m = MODLAR[meta.mod] || MODLAR.an; alZaman = setInterval(() => { if(Date.now() - Math.max(meta.sonAl, meta.sonGonder) >= m.al - 1000 || meta.yerelDegisti) esitle("zaman"); }, Math.min(m.al, 60000)); }
+  function zamanlayiciKur(){ clearInterval(alZaman); if(!meta.bagli || ONIZLE) return; const m = MODLAR[meta.mod] || MODLAR.an; alZaman = setInterval(() => { if(Date.now() - Math.max(meta.sonAl, meta.sonGonder) >= m.al - 1000 || meta.yerelDegisti) esitle("zaman"); }, Math.min(m.al, 60000)); }
   /* ---------- uygulamaya sunulan arayüz (claude.use taklidi) ---------- */
   const snap = p => ({ id: p.split("/").pop(), exists: p in mem, data: () => kopya(mem[p]) });
   const ksnap = k => ({ docs: Object.keys(mem).filter(p => p.startsWith(k + "/") && p.split("/").length === 2).map(snap) });
@@ -234,7 +236,8 @@
   const payGor = () => mem["bt/paylasimGor"] || { gizli: {}, duzenle: false };
   let retZaman = 0;
   const yazabilir = p => { if(!izleyici()) return true; if(!payGor().duzenle || p === "bt/paylasimGor" || p === "bt/paylasim") return false; const v = mem[p]; return !(v && v.gizli); };
-  const reddet = p => { if(Date.now() - retZaman > 2500){ retZaman = Date.now(); bildirim(payGor().duzenle ? "Bu bölüm paylaşımda gizli; değiştirilemez" : "Bu paylaşımda yalnız görüntüleme yetkiniz var"); } setTimeout(() => bildir(p), 0); };
+  let sonDokunma = 0; ["pointerdown", "keydown", "input", "change"].forEach(t => document.addEventListener(t, () => { sonDokunma = Date.now(); }, true));
+  const reddet = p => { if(Date.now() - sonDokunma < 4000 && Date.now() - retZaman > 2500){   /* kendiliğinden yapılan kayıt denemelerinde uyarı çıkmaz */ retZaman = Date.now(); bildirim(payGor().duzenle ? "Bu bölüm paylaşımda gizli; değiştirilemez" : "Bu paylaşımda yalnız görüntüleme yetkiniz var"); } setTimeout(() => bildir(p), 0); };
   const db = {
     doc: p => ({ id: p.split("/").pop(), path: p,
       get: async () => snap(p),
@@ -277,7 +280,9 @@
     kok.querySelectorAll("select:not([disabled])").forEach(x => { if(!x.closest(".bl-perde")) x.disabled = true; }); }
   new MutationObserver(m => { if(!document.documentElement.classList.contains("salt")) return; m.forEach(x => x.addedNodes.forEach(n => { if(n.nodeType === 1){ saltKilitle(n); if(n.matches && n.matches("input,textarea,select")) saltKilitle(n.parentNode); } })); }).observe(document.documentElement, { childList: true, subtree: true });
   window.TSK_ROL = () => ({ izleyici: izleyici(), duzenle: !izleyici() || !!payGor().duzenle });
-  const hazir = (async () => { idb = await ac(); await yerelOku(); ayarUygula(); try { if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){} })();
+  const hazir = (async () => { idb = await ac(); await yerelOku();
+    if(ONIZLE){ if(meta.rol === "izleyici"){ ONIZLE = false; try { sessionStorage.removeItem("tsk-onizle"); } catch(e){} } else { const R = payFiltre(); Object.keys(mem).forEach(k => delete mem[k]); Object.assign(mem, kopya(R)); meta.rol = "izleyici"; } }
+    ayarUygula(); try { if(navigator.storage && navigator.storage.persist) navigator.storage.persist(); } catch(e){} })();
   window.claude = { use: async n => { await hazir; return ({ db, assets, downloads, user })[n] || null; } };
   /* geçmiş: GitHub'daki veri.json kayıt geçmişi (her kayıt bir sürüm). Eski bir sürüm okunabilir, belge oradan geri yüklenebilir. */
   window.TSK_GECMIS = {
@@ -469,6 +474,7 @@
       .bk-tuslar{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px} .bk-tuslar button{height:36px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer;white-space:nowrap} .bk-tuslar .sil{color:#A3412F}
       .bl-mod{border-radius:10px!important;padding:3px!important} .bl-mod button{padding:8px 4px!important;font-size:12.5px!important;border-radius:8px!important}
       #bl-pay .bl-kart{gap:12px}
+      .bp-iki{display:grid;grid-template-columns:1fr 1fr;gap:6px} .bp-iki .btn{min-height:42px;font:600 12.5px var(--f-ui);justify-content:center;text-align:center;line-height:1.2;padding:4px 8px}
       .bp-arac{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:5px} .bp-arac button{height:34px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer;white-space:nowrap;padding:0 6px}
       .bp-arac button[aria-pressed="true"]{background:#34475C;border-color:#34475C;color:#fff}
       .bp-c{flex:none;width:24px;height:24px;margin-right:5px;border-radius:7px;border:1.5px solid #9AA6B4;background:var(--panel);cursor:pointer;padding:0} .bp-c[aria-pressed="true"]{background:#34475C url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E") center/14px no-repeat;border-color:#34475C} .bp-c:disabled{opacity:.35}
@@ -590,7 +596,7 @@
       payP.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true"><div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div style="flex:1;min-width:0"><h3>Görüntüleme paylaşımı</h3><h2>${pay ? "Paylaşım açık" : "Paylaşımı kur"}</h2></div><button class="bl-x" type="button" data-bpx aria-label="Kapat">✕</button></div>
         ${pay ? `<div class="bk-durum" data-renk="${payHata ? "kirmizi" : "yesil"}"><i class="bl-r">●</i><div class="bk-dy"><strong>${escH(pay.depo.split("/")[1])}</strong><small id="bl-pay-durum">${escH(payDurumYazi())}</small></div><button class="btn" type="button" data-bpg>Güncelle</button></div>
           <div class="bk-bol"><span class="bk-et">Karşı tarafın yetkisi</span><div class="bp-seg"><button type="button" data-bpy="0" aria-pressed="${!A.duzenle}">Yalnız görüntüleme</button><button type="button" data-bpy="1" aria-pressed="${!!A.duzenle}">Düzenleyebilir</button></div></div>
-          <button class="btn ana genis" type="button" data-bpl>Görüntüleme linki oluştur</button>
+          <div class="bp-iki"><button class="btn ana" type="button" data-bpl>Görüntüleme linki oluştur</button><button class="btn" type="button" data-bpon>Karşı taraf nasıl görür?</button></div>
           <div class="bk-bol"><span class="bk-et">Bölümler <small>· kapalı göz: karşı tarafta buğulu, içeriği gönderilmez</small></span>
             <div class="bp-arac"><button type="button" data-bpsec aria-pressed="${!!paySec}">${paySec ? "Seçimi bitir" : "☑ Seçerek gizle"}</button><button type="button" data-bphep="0">Hepsini göster</button><button type="button" data-bphep="1">Hepsini gizle</button></div>
             <div class="bp-agac${paySec ? " sec" : ""}">${payAgac()}</div>
@@ -628,6 +634,7 @@
           const k = crypto.getRandomValues(new Uint8Array(24)); pay = { depo, t, p: b64u(k) }; payKaydet(); meta.payImza = ""; await paylasimGonder(true);
           if(payHata) throw new Error(payHata); payCiz(); bildirim("Paylaşım kuruldu"); }
         catch(x){ if(pay && !meta.paySon){ pay = null; payKaydet(); } h().textContent = x.message; } finally { if(b.isConnected){ b.disabled = false; b.innerHTML = eski; } } return; }
+      if(b.dataset.bpon != null){ try { sessionStorage.setItem("tsk-onizle", "1"); } catch(x){} location.reload(); return; }
       if(b.dataset.bpg != null){ b.disabled = true; b.innerHTML = '<span class="bl-spin"></span>'; await paylasimGonder(true); const op = [...payP.querySelectorAll(".bp-g")].map(x => x.open); payCiz(); payP.querySelectorAll(".bp-g").forEach((x, i) => x.open = op[i]); bildirim(payHata ? payHata : "Paylaşım güncellendi"); return; }
       if(b.dataset.bpl != null){ let pin = null, hata = "";
         for(let k = 0; k < 3 && !pin; k++){ const a = await pinSor("Görüntüleme linki için PIN", "Karşı taraf linki açınca bu 6 haneli PIN'i girecek. PIN'i ona ayrıca (telefonla, yüz yüze) söyleyin.", hata); if(a === null) return;
@@ -640,7 +647,8 @@
         pay = null; payKaydet(); meta.payImza = ""; meta.paySon = 0; metaYaz(); payCiz(); bildirim("Paylaşım kapatıldı"); } });
     /* izleyici: görüntüleme linkiyle açılış */
     async function izleKullan(ham){
-      if(meta.bagli && !izleyici()){ bildirim("Bu cihaz kendi arşivinize bağlı; görüntüleme linkini başka bir cihazda açın"); return; }
+      if(meta.bagli && !izleyici()){ const s2 = await sor("Bu cihaz sizin arşivinize bağlı", "Görüntüleme linki karşı tarafın telefonunda açılmalı. Burada açılırsa kendi arşivinizi görürsünüz. Karşı tarafın gördüğünü bu cihazda önizlemek ister misiniz? (Önizlemede hiçbir şey değiştirilemez.)", "Önizle", "Vazgeç");
+        if(s2 === 1){ try { sessionStorage.setItem("tsk-onizle", "1"); } catch(e){} location.reload(); } return; }
       const j = linkCoz(ham); if(!j){ bildirim("Görüntüleme linki bozuk"); return; }
       let d = null, hata = "";
       for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Paylaşılan arşiv", "Size söylenen 6 haneli PIN'i girin.", hata, "Aç"); if(pin === null) return; d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar deneyin"; }
@@ -668,7 +676,7 @@
       finally { btn.disabled = false; btn.innerHTML = eski; } }
     $$("#bl-baglan").onclick = () => { const t = $$("#bl-token").value.trim(); if(!t){ $$("#bl-hata").textContent = "Anahtarı yapıştır."; return; } anahtarlaBaglan(t, $$("#bl-baglan")); };
     $$("#bl-token").addEventListener("keydown", e => { if(e.key === "Enter") $$("#bl-baglan").click(); });
-    ik.onclick = () => { panelCiz(); panel.hidden = false; };
+    ik.onclick = () => { if(ONIZLE){ bildirim("Önizlemedesiniz; çıkmak için üstteki Çık'a dokunun"); return; } panelCiz(); panel.hidden = false; };
     $$("#bl-kapat").onclick = () => panel.hidden = true;
     panel.addEventListener("click", e => { if(e.target === panel) panel.hidden = true; });
     function modCiz(){ panel.querySelectorAll("[data-mod]").forEach(b => b.setAttribute("aria-checked", b.dataset.mod === meta.mod ? "true" : "false")); }
@@ -697,7 +705,10 @@
     let gelenLink = "", gelenIzle = "";
     if((location.hash || "").startsWith("#tsk-link=")){ gelenLink = location.hash.slice(10); try { history.replaceState(null, "", location.pathname + location.search); } catch(e){} }
     if((location.hash || "").startsWith("#tsk-izle=")){ gelenIzle = location.hash.slice(10); try { history.replaceState(null, "", location.pathname + location.search); } catch(e){} }
-    hazir.then(() => { durumCiz(); rolUygula();
+    if(ONIZLE){ const sr = document.createElement("div"); sr.id = "onizle-serit"; sr.innerHTML = `<span><b>Önizleme</b> · karşı tarafın gördüğü</span><button type="button">Çık</button>`; document.body.appendChild(sr);
+      const st3 = document.createElement("style"); st3.textContent = `#onizle-serit{position:fixed;z-index:90;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));white-space:nowrap;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:10px;background:#34475C;color:#fff;font:500 12px var(--f-ui);box-shadow:0 6px 20px rgba(0,0,0,.2);max-width:calc(100vw - 24px)} #onizle-serit button{border:0;border-radius:8px;padding:6px 12px;background:rgba(255,255,255,.18);color:#fff;font:600 12px var(--f-ui);cursor:pointer}`; document.head.appendChild(st3);
+      sr.querySelector("button").onclick = () => { try { sessionStorage.removeItem("tsk-onizle"); } catch(e){} location.reload(); }; }
+    hazir.then(() => { durumCiz(); rolUygula(); if(ONIZLE){ const b0 = document.getElementById("bulut-ikon"); if(b0) b0.querySelector("span").textContent = "önizleme"; return; }
       if(gelenIzle){ izleKullan(gelenIzle); return; }
       if(gelenLink){ if(meta.bagli && token){ bildirim("Bu cihaz zaten bağlı"); zamanlayiciKur(); esitle("acilis"); } else hizliKullan(gelenLink); return; }
       if(meta.bagli && token){ zamanlayiciKur(); esitle("acilis"); } else if(!Object.keys(mem).length){ panelCiz(); panel.hidden = false; } });
@@ -2106,6 +2117,11 @@ textarea.tek-satir{display:block;width:100%;box-sizing:border-box;min-height:38p
   #i-tablo tr.acik>td.boya,#i-tablo tr.acik>td.hesap:not(.i-toplam){display:none!important}
   #i-tablo tr.acik>td.i-mk{display:block!important;grid-column:2 / -1}
   .imk{display:flex;flex-direction:column;gap:6px;padding:8px;border-radius:10px;background:var(--z)}
+  .imk-dev{margin-top:-4px;border-top:1px dashed rgba(0,0,0,.12)} .imk-dv{display:flex;align-items:center;gap:8px;flex-wrap:wrap} .imk-dv small{flex:1 1 100%;font:500 11.5px var(--f-ui);color:#4A5868}
+  .imk-st{display:grid;grid-template-columns:34px 56px 34px;gap:4px} .imk-st button{height:34px;border:1px solid rgba(0,0,0,.1);border-radius:8px;background:rgba(255,255,255,.7);font:700 16px var(--f-ui);color:#34475C;cursor:pointer}
+  #i-tablo .imk-st input{width:100%!important;height:34px!important;text-align:center;font:700 14px var(--f-ui)!important;padding:0!important}
+  .imk-kal{margin-left:auto;height:30px;padding:0 10px;border:0;background:transparent;color:#A3412F;font:600 12px var(--f-ui);cursor:pointer}
+  .imk-ek{height:32px;border:1px dashed rgba(0,0,0,.18);border-radius:8px;background:rgba(255,255,255,.45);color:#3D5F8C;font:600 12px var(--f-ui);cursor:pointer}
   .imk-ust{display:flex;align-items:baseline;justify-content:space-between;font:600 11.5px var(--f-ui);color:#4A5868} .imk-ust>span{font:500 11.5px var(--f-ui);color:#4A5868} .imk-ust>span b{font:800 15px var(--f-ui);color:#1F2A36}
   .imk-t{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6px} .imk-t label{display:flex;flex-direction:column;gap:2px;margin:0;min-width:0} .imk-t small{font:600 10.5px var(--f-ui);color:#6A7684}
   #i-tablo .imk-t input[type=date]{position:relative;width:100%!important;min-width:0!important;box-sizing:border-box;height:36px!important;padding:0 6px!important;text-align:center;font:600 13.5px var(--f-ui)!important}
@@ -2989,7 +3005,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 391</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 392</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4818,12 +4834,16 @@ function izinCiz(){ { const ib = $("#i-bas"); if(ib && !odakIcinde("#i-bas")){ i
   tb.innerHTML = S.personel.rows.map((p, n) => {
     const k = S.izin.kayit[p.id] || { i: [], not: "" }; let toplam = 0, var_ = false; const u = izKullan(k);
     const hucre = Array.from({ length: N }, (_, j) => k.i[j] || {}).map((iz, j) => { const g = gunFark(iz.a, iz.k); if(g !== ""){ toplam += g; var_ = true; } const st = `style="background:#${IZIN_RENK[j]}"`, tr0 = izTur(iz);
-      return `<td class="boya ia" data-et="${j + 1}. izin · ayrılış" ${st}><input type="date" id="i-${p.id}-${j}-a" data-j="${j}" data-alan="a" value="${esc(iz.a || "")}" min="${yil}-01-01" max="${yil + 1}-01-31" aria-label="${j + 1}. izin ayrılış"></td>
+      return `<td class="boya ia" data-et="${j + 1}. izin · ayrılış" ${st}><input type="date" id="i-${p.id}-${j}-a" data-j="${j}" data-alan="a" value="${esc(iz.a || "")}" min="${yil}-01-01" max="${yil + 1}-01-31" aria-label="${j + 1}. izin ayrılış"${iz.bag ? ' disabled title="Önceki iznin bitişinden kendiliğinden başlar"' : ""}></td>
         <td class="boya" data-et="katılış" ${st}><input type="date" id="i-${p.id}-${j}-k" data-j="${j}" data-alan="k" value="${esc(iz.k || "")}" min="${yil}-01-01" max="${yil + 1}-01-31" aria-label="${j + 1}. izin katılış"></td>
         <td class="hesap" data-et="gün" ${st}>${g}</td>
-        <td class="i-mk"><div class="imk" style="--z:#${IZIN_RENK[j]}"><div class="imk-ust"><b>${j + 1}. izin</b><span>${g !== "" ? `<b>${g}</b> gün` : "—"}</span></div>
+        <td class="i-mk">${(() => { const ana = iz.bag && k.i.find(y => y.id === iz.bag), ai = ana ? k.i.indexOf(ana) : -1;
+          if(ana) return `<div class="imk imk-dev" style="--z:#${IZIN_RENK[j]}"><div class="imk-ust"><b>${j + 1}. izin · Mazeret</b><span>${g !== "" ? `<b>${g}</b> gün` : "—"}</span></div>
+            <div class="imk-dv"><small>${ai + 1}. iznin devamı · ${trTarih(iz.a) || "—"} → ${trTarih(iz.k) || "—"}</small><div class="imk-st"><button type="button" data-i-mg="${j}:-1" aria-label="Bir gün azalt">−</button><input type="number" min="1" max="99" inputmode="numeric" data-i-mgun="${j}" value="${g === "" ? 1 : g}" aria-label="Mazeret günü"><button type="button" data-i-mg="${j}:1" aria-label="Bir gün artır">＋</button></div><button type="button" class="imk-kal" data-i-mkal="${j}">Kaldır</button></div></div>`;
+          const cocuk = iz.id && k.i.some(y => y.bag === iz.id), devam = !cocuk && izTur(iz) !== "mazeret" && iz.k && k.i.length < 6;
+          return `<div class="imk" style="--z:#${IZIN_RENK[j]}"><div class="imk-ust"><b>${j + 1}. izin</b><span>${g !== "" ? `<b>${g}</b> gün` : "—"}</span></div>
           <div class="imk-t"><label><small>Ayrılış</small><input type="date" id="im-${p.id}-${j}-a" data-j="${j}" data-alan="a" value="${esc(iz.a || "")}" aria-label="${j + 1}. izin ayrılış"></label><label><small>Katılış</small><input type="date" id="im-${p.id}-${j}-k" data-j="${j}" data-alan="k" value="${esc(iz.k || "")}" aria-label="${j + 1}. izin katılış"></label></div>
-          <div class="i-tc">${IZ_SEC.map(([v, t]) => `<button type="button" data-i-tur="${j}:${v}" aria-pressed="${izSec(iz) === v}">${t}</button>`).join("")}</div></div></td>
+          <div class="i-tc">${IZ_SEC.map(([v, t]) => `<button type="button" data-i-tur="${j}:${v}" aria-pressed="${izSec(iz) === v}">${t}</button>`).join("")}</div>${devam ? `<button type="button" class="imk-ek" data-i-maz="${j}">＋ Devamına mazeret izni</button>` : ""}</div>`; })()}</td>
         <td class="boya i-tur" ${st}><div class="i-tc" role="radiogroup" aria-label="${j + 1}. izin türü">${IZ_SEC.map(([v, t]) => `<button type="button" data-i-tur="${j}:${v}" aria-pressed="${izSec(iz) === v}">${t}</button>`).join("")}</div></td>`; }).join("");
     const donem = k.i.map(iz => iz.a ? `${trTarih(iz.a).slice(0, 5)}${iz.k ? "–" + trTarih(iz.k).slice(0, 5) : ""}` : "").filter(Boolean);
     const kal = IZ_TUR.map(([v, t]) => ({ v, t, h: hak[v], k: hak[v] - u[v] }));
@@ -4838,11 +4858,14 @@ $("#i-tablo").addEventListener("click", e => { const b = e.target.closest("[data
 $("#i-tablo").addEventListener("change", e => { const tr = e.target.closest("tr"); if(!tr) return; const k = izinKayit(tr.dataset.id);
   if(e.target.dataset.alan === "not") k.not = e.target.value; else { const j = +e.target.dataset.j; while(k.i.length <= j) k.i.push({ a: "", k: "" }); k.i[j][e.target.dataset.alan] = e.target.value;
     while(k.i.length > 3 && !k.i[k.i.length - 1].a && !k.i[k.i.length - 1].k) k.i.pop(); }
-  izBelgeEsitle(); const akt = document.activeElement?.id; izinCiz(); if(akt) document.getElementById(akt)?.focus(); kaydetBt("izin"); });
+  izBagEsitle(k); izBelgeEsitle(); const akt = document.activeElement?.id; izinCiz(); if(akt) document.getElementById(akt)?.focus(); kaydetBt("izin"); });
 $("#i-tablo").addEventListener("input", e => { if(e.target.dataset.alan === "not"){ izinKayit(e.target.closest("tr").dataset.id).not = e.target.value; kaydetBt("izin"); } });
 /* izin çizelgesi → izin belgeleri: ayrılışı girilmiş her izin için kişinin izin belgesi kaydı kendiliğinden oluşur, izin değişince güncellenir, silinince kalkar.
    Uzman / sözleşmeli → "Uzman Erbaş - Sözleşmeli Erbaş/Er İzin Belgesi"; subay / astsubay → "Subay - Astsubay İzin Belgesi". Kayıt, izin satırına "iz" ile bağlıdır;
    elle açılmış (iz'siz) kayıtlara dokunulmaz. Haklar alanı izinden önce kalan günü, belgedeki kalan ise izinden sonrakini gösterir. */
+/* devam mazereti: yıllık (ya da yıllık + yol) iznin bittiği gün kendiliğinden başlar; gün sayısı korunur, bitişi ona göre kayar */
+function izBagEsitle(k){ (k.i || []).forEach(x => { if(!x.bag) return; const a = k.i.find(y => y.id === x.bag); if(!a || !a.k){ if(!a) delete x.bag; return; }
+    const n = Math.max(1, +gunFark(x.a, x.k) || 1); x.t = "mazeret"; delete x.yol; if(x.a !== a.k){ x.a = a.k; } x.k = izbGunEkle(x.a, n); }); }
 let izYeniId = false; const izSlotId = x => x.id || (izYeniId = true, x.id = "z" + yeniId().slice(0, 7));
 function izBelgeEsitle(){
   const hak = izHak(), istek = new Map(); izYeniId = false;
@@ -4864,13 +4887,25 @@ function izBelgeEsitle(){
         const son = L.map(x => x.pid === o.p.id || pAd(x.ad) === pAd(o.p.ad)).lastIndexOf(true); L.splice(son < 0 ? L.length : son + 1, 0, r); dB = true; }
       koy(r, { ad: o.p.ad, tur, ayr: o.x.a, yilGun: o.yil, mazGun: o.maz, yol: o.yol > 0, topYil: hak.yillik - o.once.yillik, topMaz: hak.mazeret - o.once.mazeret, topYol: hak.yol - o.once.yol }); if(r.__d){ delete r.__d; dB = true; } } }
   if(dB) kaydetBt("izinb"); if(dA && d) kaydetBelge(d); if(izYeniId) kaydetBt("izin"); return dA || dB; }
+$("#i-tablo").addEventListener("change", e => { const el = e.target.closest && e.target.closest("[data-i-mgun]"); if(!el) return; e.stopPropagation();
+  const tr = el.closest("tr"), k = izinKayit(tr.dataset.id), x = k.i[+el.dataset.iMgun]; const n = Math.max(1, Math.min(99, parseInt(el.value, 10) || 1)); if(!x || !x.a) return; x.k = izbGunEkle(x.a, n);
+  izBagEsitle(k); izBelgeEsitle(); izinCiz(); kaydetBt("izin"); }, true);
+$("#i-tablo").addEventListener("click", e => { const m = e.target.closest("[data-i-maz],[data-i-mg],[data-i-mkal]"); if(!m) return; const tr = m.closest("tr"), k = izinKayit(tr.dataset.id);
+  if(m.dataset.iMaz != null){ const j = +m.dataset.iMaz, a = k.i[j]; if(!a || !a.k) return bildir("Önce katılış tarihini girin"); if(k.i.length >= 6) return bildir("Bir kişiye en çok 6 izin satırı");
+    const N = izSlotSay(); while(k.i.length < Math.min(N, 6) && k.i.length <= j) k.i.push({ a: "", k: "" });
+    const bos = k.i.findIndex((y, i) => i > j && !y.a && !y.k && !y.bag);   // hemen sonraki boş satır kullanılır, yoksa araya eklenir
+    const c = { a: a.k, k: izbGunEkle(a.k, 1), t: "mazeret", bag: izSlotId(a) }; if(bos === j + 1) k.i[bos] = c; else k.i.splice(j + 1, 0, c);
+    while(k.i.length > 3 && !k.i[k.i.length - 1].a && !k.i[k.i.length - 1].k) k.i.pop(); bildir(`Mazeret izni ${trTarih(a.k)} tarihinden başlar; gününü aşağıdan ayarlayın`); }
+  else if(m.dataset.iMg){ const [j, d] = m.dataset.iMg.split(":").map(Number), x = k.i[j]; if(!x || !x.a) return; const n = Math.max(1, Math.min(99, (+gunFark(x.a, x.k) || 1) + d)); x.k = izbGunEkle(x.a, n); }
+  else { const j = +m.dataset.iMkal; k.i.splice(j, 1); while(k.i.length < 3) k.i.push({ a: "", k: "" }); }
+  izBagEsitle(k); izBelgeEsitle(); izinCiz(); kaydetBt("izin"); });
 $("#i-tablo").addEventListener("click", e => { const b = e.target.closest("[data-i-tur],[data-i-ekle]"); if(!b) return; const tr = b.closest("tr"), k = izinKayit(tr.dataset.id);
   if(b.dataset.iTur){ const [j, v] = b.dataset.iTur.split(":"); while(k.i.length <= +j) k.i.push({ a: "", k: "" }); const x = k.i[+j], h = izHak().yol, g = gunFark(x.a, x.k);
     const eskiYol = izYol(x) && g !== "" ? Math.min(h, g) : 0; delete x.t; delete x.yol; if(v === "yillikyol") x.yol = 1; else if(v !== "yillik") x.t = v;
     const yeniYol = v === "yillikyol" ? h : 0;   // yol izni eklenince dönüş yol günü kadar uzar, kalkınca geri gelir
     if(x.a && x.k && yeniYol !== eskiYol){ x.k = izbGunEkle(x.k, yeniYol - eskiYol); bildir(yeniYol > eskiYol ? `Yol izni eklendi · katılış ${trTarih(x.k)}` : `Yol izni kalktı · katılış ${trTarih(x.k)}`); } }
   else { const N = izSlotSay(); if(k.i.length >= 6) return bildir("Bir kişiye en çok 6 izin satırı"); while(k.i.length < N) k.i.push({ a: "", k: "" }); k.i.push({ a: "", k: "" }); }
-  izBelgeEsitle(); izinCiz(); kaydetBt("izin"); });
+  izBagEsitle(k); izBelgeEsitle(); izinCiz(); kaydetBt("izin"); });
 document.addEventListener("change", e => { const h = e.target.closest && e.target.closest("[data-i-hak]"); if(!h) return; const v = parseInt(h.value, 10); if(!(v >= 0 && v < 100)) return; S.izin.hak = { ...(S.izin.hak || {}), [h.dataset.iHak]: v }; izBelgeEsitle(); kaydetBt("izin"); izinCiz(); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-i-bos]"); if(!b) return; S.izin.musvedde = b.dataset.iBos === "1"; if(!S.izin.musvedde) delete S.izin.musvedde; kaydetBt("izin"); izinCiz(); bildir(S.izin.musvedde ? "Çıktı boş müsvedde: tarihler ve günler boş basılır" : "Çıktı dolu: girilen izinlerle basılır"); });
 $("#i-yil").addEventListener("change", e => { const y = parseInt(e.target.value, 10); if(y > 2000 && y < 2100){ S.izin.yil = y; izinCiz(); kaydetBt("izin"); } });
