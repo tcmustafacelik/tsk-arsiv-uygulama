@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "405";
+  const SURUM = "406";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -769,7 +769,8 @@
     const misafirSatir = m => `<div class="bp-m"><span class="bp-mi">${escH((m.ad || "?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><div class="bp-md"><button type="button" class="bp-ad" data-bpad="${escH(m.id)}" aria-label="Adı değiştir">${escH(m.ad || "Misafir")}<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button><small data-gor="${escH(m.id)}">${escH(gorYazi(m))}</small><div data-gec="${escH(m.id)}">${gecmisHtml(m)}</div>
         <div class="bp-seg mini"><button type="button" data-bpmy="${escH(m.id)}" data-v="0" aria-pressed="${!m.duzenle}">Görüntüler</button><button type="button" data-bpmy="${escH(m.id)}" data-v="1" aria-pressed="${!!m.duzenle}">Düzenler</button></div></div>
         <div class="bp-mt"><button type="button" class="bp-mb" data-bpml="${escH(m.id)}" aria-label="${escH(m.ad)} için link">${IK_L}<span>Link</span></button><button type="button" class="bp-mb kal" data-bpmk="${escH(m.id)}" aria-label="${escH(m.ad)} kaldır">${IK_X}<span>Kaldır</span></button></div></div>`;
-    function payCiz(){ const A = payAyar(); payTazele(); const M = payMis();
+    function payCiz(){ const acik = !payP.hidden, y0 = payP.scrollTop; payCiz0(); if(acik){ const k = payP.querySelector(".bl-kart"); if(k) k.classList.add("yerinde"); payP.scrollTop = y0; } }   /* açıkken yeniden çizimde açılış hareketi tekrarlanmaz, kaydırma yeri korunur */
+    function payCiz0(){ const A = payAyar(); payTazele(); const M = payMis();
       payP.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true"><div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div style="flex:1;min-width:0"><h3>Görüntüleme paylaşımı</h3><h2>${pay ? "Paylaşım açık" : "Paylaşımı kur"}</h2></div><button class="bl-x" type="button" data-bpx aria-label="Kapat">✕</button></div>
         ${pay ? `<div class="bk-durum" data-renk="${payHata ? "kirmizi" : "yesil"}"><i class="bl-r">●</i><div class="bk-dy"><strong>${escH(pay.depo.split("/")[1])}</strong><small id="bl-pay-durum">${escH(payDurumYazi())}</small></div><button class="btn" type="button" data-bpg>Güncelle</button></div>
           <div class="bk-bol"><span class="bk-et">Misafirler <small>· her birinin linki ayrı, ayrı kaldırılır</small></span>
@@ -787,6 +788,7 @@
             <li>3 · Buraya yapıştır<label>Paylaşım deposu<input id="bp-depo" type="text" value="tcmustafacelik/tsk-arsiv-paylasim"></label><div class="bl-satir"><input id="bp-token" type="password" placeholder="github_pat_…" autocomplete="off"><button class="btn" type="button" data-bpyap>Yapıştır</button></div></li></ol>
           <button class="btn ana genis" type="button" data-bpkur>Paylaşımı kur</button>`}
         <div class="bl-hata" id="bp-hata" role="alert"></div></div>`; }
+    st2.textContent += ".bl-kart.yerinde{animation:none!important}";
     let paySec = null;   // seçmeli gizle: seçilen kategori / bölüm / belge anahtarları
     const payAc = () => { paySec = null; payCiz(); payP.hidden = false; gorulmeCiz(); };
     payP.addEventListener("toggle", e => { if(e.target.classList && e.target.classList.contains("bp-g") && e.target.open) payP.querySelectorAll(".bp-g[open]").forEach(d => { if(d !== e.target) d.open = false; }); }, true);   /* bir kategori açılınca diğerleri kapanır */
@@ -809,6 +811,7 @@
       if(b.dataset.bpsg != null){ const G = { ...(payAyar().gizli || {}) }, n = paySec.size; paySec.forEach(k => { if(b.dataset.bpsg === "1") G[k] = 1; else delete G[k]; }); paySec = null; await payGizliYaz(G); payYeniden(); bildirim(`${n} öğe ${b.dataset.bpsg === "1" ? "gizlendi" : "gösterildi"}`); return; }
       if(b.dataset.bphep != null){ const gizle = b.dataset.bphep === "1";
         if(gizle){ const s2 = await sor("Hepsi gizlensin mi?", "Karşı taraf bütün bölümleri buğulu görür; hiçbir içerik gönderilmez.", "Hepsini gizle", "Vazgeç"); if(s2 !== 1) return; }
+        if(!gizle && !Object.keys(payAyar().gizli || {}).length){ bildirim("Zaten bütün bölümler görünür"); return; }
         const G = {}; if(gizle){ const K = (mem["bt/yapi"] || {}).klasorler || []; K.forEach(k => { G[k.ust ? "g:" + k.ust : "k:" + k.id] = 1; }); }
         await payGizliYaz(G); paySec = null; payCiz(); bildirim(gizle ? "Bütün bölümler gizlendi" : "Bütün bölümler görünür"); return; }
       if(b.dataset.bpad){ const id = b.dataset.bpad, m = payMis().find(x => x.id === id); if(!m) return;
@@ -3231,7 +3234,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 405</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 406</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
