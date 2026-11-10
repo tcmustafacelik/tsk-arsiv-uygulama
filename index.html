@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "392";
+  const SURUM = "393";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3005,7 +3005,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 392</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 393</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3305,15 +3305,17 @@ async function otoKaydet(){
   } finally { otoCalisiyor = false; kayitCubugu(); }
 }
 /* kaydedilmemiş değişiklikler nerede: her yol için kayıtlı hâlle karşılaştırılır, dokununca oraya gidilir */
-const DEG_AD = { ad: "adı", rutbe: "rütbe", tel: "telefon", memleket: "memleket", baba: "baba adı", dogum: "doğum tarihi", duhul: "duhul", nasip: "nasıp", sicil: "sicil", ems: "EMS no", tc: "T.C. no", kita: "kıt'a", adres: "adres", ayr: "ayrılış", kat: "katılış", gun: "gün", tur: "tür", ozu: "özü", metin: "metin", tarih: "tarih", gorev: "görev", ilgi: "ilgi", ek: "ekler", kayitlar: "", rows: "", kisiler: "", adresler: "adresler", kan: "kan grubu", bas: "başlangıç", bit: "bitiş", onay: "onaylayan", durum: "durum", not: "not" };
-const degEt = x => x && typeof x === "object" ? (x.ad || x.baslik || x.no || x.hedef || x.id || "satır") : String(x);
+const DEG_AD = { ad: "adı", rutbe: "rütbe", tel: "telefon", memleket: "memleket", baba: "baba adı", dogum: "doğum tarihi", duhul: "duhul", nasip: "nasıp", sicil: "sicil", ems: "EMS no", tc: "T.C. no", kita: "kıt'a", adres: "adres", ayr: "ayrılış", kat: "katılış", gun: "gün", tur: "tür", ozu: "özü", metin: "metin", tarih: "tarih", gorev: "görev", ilgi: "ilgi", ek: "ekler", kayitlar: "", rows: "", kisiler: "", adresler: "adresler", kan: "kan grubu", bas: "başlangıç", bit: "bitiş", onay: "onaylayan", durum: "durum", not: "not",
+  kayit: "", i: "", a: "ayrılış", k: "katılış", t: "tür", yilGun: "yıllık gün", mazGun: "mazeret gün", yol: "yol izni", topYil: "yıllık hak", topMaz: "mazeret hak", topYol: "yol hakkı", ayri: "ayrı kaldığı süreler", sebep: "sebep", kaynak: "kaynak", musvedde: "çıktı biçimi", hak: "haklar", bag: "devam", iz: "izin bağı", gorevler: "görev yerleri", pid: "kişi bağı", foto: "fotoğraf", toplamArti: "toplama +1 gün", gorevOto: "otomatik görev satırları", donemDisi: "dönem dışı izinler" };
+const degKisi = k => { const p = (S.personel.rows || []).find(x => x.id === k); return p ? p.ad : null; };
+const degEt = x => x && typeof x === "object" ? (x.ad || x.baslik || x.no || x.hedef || ("a" in x && "k" in x ? (x.a ? trTarih(x.a).slice(0, 5) + " izni" : "izin satırı") : "") || (x.ayr ? trTarih(x.ayr).slice(0, 5) + " satırı" : "") || "satır") : String(x);
 function degFark(a, b, yol, o){ if(o.length > 5 || JSON.stringify(a) === JSON.stringify(b)) return o; const on = yol ? yol + " · " : "";
   if(Array.isArray(a) && Array.isArray(b)){ const id = x => x && typeof x === "object" ? (x.id || x.ad) : x, am = new Map(a.map(x => [id(x), x])), bm = new Map(b.map(x => [id(x), x])), n0 = o.length;
     for(const x of b){ if(!am.has(id(x))) o.push(`${on}${degEt(x)} eklendi`); else degFark(am.get(id(x)), x, on + degEt(x), o); if(o.length > 5) return o; }
     for(const x of a) if(!bm.has(id(x))) o.push(`${on}${degEt(x)} silindi`);
     if(o.length === n0) o.push(`${yol || "liste"} sırası değişti`); return o; }
   if(a && b && typeof a === "object" && typeof b === "object"){ for(const k of new Set([...Object.keys(a), ...Object.keys(b)])){ if(JSON.stringify(a[k]) === JSON.stringify(b[k])) continue;
-      const et = DEG_AD[k] ?? k; if(a[k] && b[k] && typeof a[k] === "object" && typeof b[k] === "object") degFark(a[k], b[k], et ? on + et : yol, o); else o.push(on + (et || k)); if(o.length > 5) return o; } return o; }
+      const et = DEG_AD[k] ?? degKisi(k) ?? k; if(a[k] && b[k] && typeof a[k] === "object" && typeof b[k] === "object") degFark(a[k], b[k], et ? on + et : yol, o); else o.push(on + (et || k)); if(o.length > 5) return o; } return o; }
   o.push(yol || "değer"); return o; }
 /* “Enes DEMİR · memleket”, “Enes DEMİR · telefon” → “Enes DEMİR: memleket, telefon” */
 const degOzet = F => { const M = new Map(); F.forEach(x => { const i = x.lastIndexOf(" · "), k = i < 0 ? "" : x.slice(0, i), v = i < 0 ? x : x.slice(i + 3); M.set(k, [...(M.get(k) || []), v]); });
@@ -3327,12 +3329,16 @@ async function degisenlerAc(){ const yollar = Object.keys(kirli); if(!yollar.len
   for(const y of yollar){ const [kol, id] = y.split("/"); let once = null; try { const d = await db.doc(y).get(); once = d.exists ? d.data() : null; } catch(e){}
     const simdi = kopya(kirli[y]() ?? null), F = once ? degFark(once, simdi, "", []) : ["yeni oluşturuldu"];
     if(once && !F.length){ delete kirli[y]; continue; }   // aslında değişmemiş
-    const ilk = degIlk(once, simdi); let ad, git;
+    let ilk = degIlk(once, simdi); let ad, git;
+    if(!ilk && id === "izin" && once && simdi){ const A = once.kayit || {}, B = simdi.kayit || {}; const pk = Object.keys(B).find(z => JSON.stringify(A[z]) !== JSON.stringify(B[z])); if(pk) ilk = { id: pk, alanlar: [] }; }
     if(kol === "belgeler"){ const d = S.belgeler.find(x => x.id === id); ad = d ? d.ad : "Belge"; git = d && (() => { const v = d.dl || d.isa; if(ilk && v && (v.kayitlar || []).some(x => x.id === ilk.id)) v.aktif = ilk.id; belgeGit(d); }); }
     else { const [t, a] = DEG_BT[id] || [null, id]; ad = a; let d = t && belgeTur(t);
       if(id === "personel" && ilk && ilk.alanlar.length && ilk.alanlar.every(z => z === "adresler" || KM_ALAN.some(x => x[0] === z)) && belgeTur("kimlik")){ d = belgeTur("kimlik"); ad = "Personel kimliği"; }
-      git = d ? () => { if(ilk){ if(d.tur === "izinb") izbSecili = ilk.id; if(d.tur === "kimlik"){ kmSecili = ilk.id; kmFiltre = "hepsi"; } }
+      git = d ? () => { if(ilk){ if(d.tur === "izinb") izbSecili = ilk.id; if(d.tur === "kimlik"){ kmSecili = ilk.id; kmFiltre = "hepsi"; }
+            if(d.tur === "gdhg"){ const kk = (S.gdhg.kisiler || []).find(x => x.id === ilk.id); if(kk){ gdSecili = kk.id; gdSekme = gdSozMu(kk) ? "soz" : "belge"; } }   /* değişen kişinin sayfası açılır */
+            if(d.tur === "izin") iAcik = ilk.id; }
           belgeGit(d); if(ilk && d.tur === "yoklama"){ ykAcik = ilk.id; yoklamaCiz(); }
+          if(ilk && d.tur === "izin") setTimeout(() => { const tr = document.querySelector(`#i-tablo tr[data-id="${ilk.id}"]`); if(tr) tr.scrollIntoView({ block: "start" }); }, 300);
           setTimeout(() => { const el = document.querySelector(`#v-belge .dl-sat.on, #v-belge [aria-current="true"], #v-belge .km-kart`); if(el) el.scrollIntoView({ block: "center" }); }, 250); }
         : (id === "yapi" ? () => { belgeKapat && belgeKapat(); } : null); }
     L.push({ ad, F, git }); }
