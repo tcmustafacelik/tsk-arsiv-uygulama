@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "385";
+  const SURUM = "386";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1899,19 +1899,24 @@ textarea.tek-satir{display:block;width:100%;box-sizing:border-box;min-height:38p
   #i-tablo td input{min-width:0!important;width:100%;height:36px;border:1px solid rgba(0,0,0,.08)!important;border-radius:8px;background:rgba(255,255,255,.75)!important;padding:0 6px!important;font:600 13px var(--f-ui)}
   #i-tablo td.i-toplam{grid-column:2 / -1;flex-direction:row;justify-content:space-between;align-items:center;padding:6px 10px!important;background:var(--panel2)!important}
   #i-tablo td.i-not{grid-column:2 / -1}
+  #i-tablo tr.acik{grid-template-columns:22px minmax(0,1fr) minmax(0,1fr) 46px}
+  #i-tablo td.boya,#i-tablo td.hesap{overflow:hidden} #i-tablo td.boya input{max-width:100%;box-sizing:border-box;height:34px}
+  #i-tablo td.hesap[data-et="gün"]{align-self:stretch;justify-content:flex-end!important;padding-bottom:8px!important}
   #i-tablo td.i-tur{grid-column:2 / -1;padding:4px!important;border-radius:10px!important;margin-top:-4px} #i-tablo td.i-kal{display:none!important} #i-tablo td.i-kalm,#i-tablo td.i-ekle{grid-column:2 / -1}
   #i-tablo td.i-ekle .mini{height:34px;border:1px dashed var(--line);border-radius:10px;background:transparent;color:#3D5F8C;font:600 12.5px var(--f-ui)}
 }
 #i-tablo td.i-kalm{display:none} @media (max-width:640px){ #i-tablo tr.acik td.i-kalm{display:flex!important} }
-.i-tc{display:grid;grid-template-columns:1fr 1.35fr .8fr 1.1fr;gap:3px} .i-tc button{flex:1;min-width:0;height:28px;padding:0 6px;border:1px solid rgba(0,0,0,.07);border-radius:7px;background:rgba(255,255,255,.45);font:600 11.5px var(--f-ui);color:#6A7684;cursor:pointer;white-space:nowrap}
+.i-tc{display:grid;grid-template-columns:1fr 1.35fr .8fr 1.1fr;gap:3px} @media (max-width:640px){ .i-tc button{height:26px;font-size:11.5px;padding:0 2px} } .i-tc button{flex:1;min-width:0;height:28px;padding:0 6px;border:1px solid rgba(0,0,0,.07);border-radius:7px;background:rgba(255,255,255,.45);font:600 11.5px var(--f-ui);color:#6A7684;cursor:pointer;white-space:nowrap}
 .i-tc button[aria-pressed="true"]{background:#fff;color:#1F2A36;border-color:rgba(0,0,0,.18);box-shadow:0 1px 2px rgba(0,0,0,.06)}
 #i-tablo td.i-kal{font-weight:700;color:#2F5A3A} #i-tablo td.i-kal.asim{color:#9A3A2E}
 .i-km{display:grid;grid-template-columns:repeat(3,1fr);gap:6px} .i-km span{display:flex;flex-direction:column;align-items:center;padding:6px 4px;border-radius:9px;background:#F1F5F2} .i-km b{font:800 15px var(--f-ui);color:#2F5A3A} .i-km small{font:500 10.5px var(--f-ui);color:var(--muted);text-align:center}
 .i-km span.asim{background:#F8ECE9} .i-km span.asim b{color:#9A3A2E}
-.i-ayar{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;padding:8px 10px;border:1px solid var(--line2);border-radius:10px;background:var(--panel)}
+.i-ayar{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:flex-end;padding:8px 10px;border:1px solid var(--line2);border-radius:10px;background:var(--panel)}
 .i-et{font:600 11px var(--f-ui);color:var(--muted);margin-right:6px}
-.i-hak{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px} .i-hak label{display:flex;align-items:center;gap:5px;font:600 12.5px var(--f-ui);color:var(--fg)} .i-hak input{width:46px;height:32px;border:1px solid var(--line);border-radius:8px;text-align:center;font:700 13px var(--f-ui);background:var(--panel2)}
-.i-cikti{display:flex;align-items:center} .i-seg{display:inline-grid;grid-template-columns:1fr 1fr;gap:2px;padding:2px;border:1px solid var(--line2);border-radius:9px;background:var(--panel2)}
+.i-hak{display:flex;flex-direction:column;gap:4px;flex:1 1 260px;min-width:0} .i-hk{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.i-hk label{display:flex;flex-direction:column;gap:2px;margin:0;min-width:0} .i-hk small{font:600 11px var(--f-ui);color:var(--fg)} .i-hk span{display:flex;align-items:center;gap:4px;min-width:0}
+.i-hk input{width:100%;min-width:0;height:32px;border:1px solid var(--line);border-radius:8px;text-align:center;font:700 13px var(--f-ui);background:var(--panel2);box-sizing:border-box} .i-hk i{font:500 11px var(--f-ui);font-style:normal;color:var(--muted)}
+.i-cikti{display:flex;flex-direction:column;gap:4px;flex:1 1 200px} .i-seg{display:grid;grid-template-columns:1fr 1fr;gap:2px;padding:2px;border:1px solid var(--line2);border-radius:9px;background:var(--panel2)}
 .i-seg button{height:30px;padding:0 10px;border:0;border-radius:7px;background:transparent;font:600 12px var(--f-ui);color:var(--muted);cursor:pointer;white-space:nowrap} .i-seg button[aria-pressed="true"]{background:var(--panel);color:var(--accent);box-shadow:0 1px 3px rgba(30,45,60,.1)}
 select.sec-gizli{display:none!important}
 .sec-cip{display:inline-flex;flex:1 1 auto;min-width:0;max-width:100%;border:1px solid var(--line);border-radius:11px;overflow:hidden;background:var(--panel)} .sec-cip button{flex:1 1 auto;min-width:0;height:36px;padding:0 10px;border:0;background:transparent;font:600 12.5px var(--f-ui);color:var(--fg);white-space:nowrap} .sec-cip button+button{border-left:1px solid var(--line)} .sec-cip button[aria-pressed="true"]{background:var(--accent);color:#fff}
@@ -2769,7 +2774,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 385</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 386</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4588,7 +4593,7 @@ const izSlotSay = () => Math.min(6, Math.max(3, ...Object.values(S.izin.kayit ||
 const IZ_SIRA = ["1'inci", "2'nci", "3'üncü", "4'üncü", "5'inci", "6'ncı"];
 function izinCiz(){ { const ib = $("#i-bas"); if(ib && !odakIcinde("#i-bas")){ ib.innerHTML = basAlanHtml("izin"); otoBoyHepsi(ib); } }
   const tb = $("#i-tablo tbody"); const yil = S.izin.yil || 2027; $("#i-yil").value = yil; const N = izSlotSay(), hak = izHak(), bos = !!S.izin.musvedde;
-  if(!odakIcinde("#i-ayar")) $("#i-ayar").innerHTML = `<div class="i-hak"><span class="i-et">Yıllık haklar</span>${IZ_TUR.map(([v, t]) => `<label>${t}<input type="number" min="0" max="99" inputmode="numeric" data-i-hak="${v}" value="${hak[v]}"> gün</label>`).join("")}</div>
+  if(!odakIcinde("#i-ayar")) $("#i-ayar").innerHTML = `<div class="i-hak"><span class="i-et">Yıllık haklar</span><div class="i-hk">${IZ_TUR.map(([v, t]) => `<label><small>${t}</small><span><input type="number" min="0" max="99" inputmode="numeric" data-i-hak="${v}" value="${hak[v]}"><i>gün</i></span></label>`).join("")}</div></div>
     <div class="i-cikti"><span class="i-et">Çıktı</span><div class="i-seg"><button type="button" data-i-bos="0" aria-pressed="${!bos}">Dolu</button><button type="button" data-i-bos="1" aria-pressed="${bos}">Boş müsvedde</button></div></div>`;
   $("#i-tablo thead").innerHTML = `<tr><th rowspan="2">S.No</th><th rowspan="2">Rütbesi</th><th rowspan="2">Adı Soyadı</th>${Array.from({ length: N }, (_, j) => `<th colspan="4" style="background:#${IZIN_RENK[j]};color:#2B3A4A">${IZ_SIRA[j]} İzin</th>`).join("")}<th rowspan="2">Toplam Gün</th><th colspan="3">Kalan</th><th rowspan="2">Açıklama</th><th rowspan="2"></th></tr>
     <tr>${Array.from({ length: N }, () => ["Ayrılış", "Katılış", "Gün", "Tür"].map(t => `<th style="top:31px">${t}</th>`).join("")).join("")}${IZ_TUR.map(([v, t]) => `<th style="top:31px">${t}</th>`).join("")}</tr>`;
