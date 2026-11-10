@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "438";
+  const SURUM = "439";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3498,7 +3498,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 438</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 439</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11609,7 +11609,7 @@ function fyGrid(d, P){ const v = fyVeri(d), NC = FY_BP.length - 1, g = { w: FY_B
     g.sb.push(g.h.length);
     const q0 = sat(9); koy(q0, 0, 161, "FİZİKİ YETERLİLİK DEĞERLENDİRME TESTİ İÇİN DOKTOR MUAYENE KARTI", { cizgi: false, ...bd, ...ort, s: 10.5 }); koy(q0, 161, 186, "TEST - 1", { cizgi: false, ...bd, a: "r", s: 10.5 });
     const yas = fyYas(v, p), SOL = [["Adı ve Soyadı", p.ad], ["Sicil Nu.", p.sicil], ["Rütbesi", p.rutbe], ["Yaşı", yas == null ? "" : yas], ["Cinsiyeti", "E"]],
-      SAG = [["Ağırlığı", x.kilo], ["Boyu", x.boy], ["Kan Grubu", fyKan(p.kan)], ["Kan Basıncı", x.tansiyon], ["Tarih", fyTarihTr(v.tarih) || new Date().toLocaleDateString("tr-TR")]];
+      SAG = [["Ağırlığı", x.kilo], ["Boyu", x.boy], ["Kan Grubu", x.kan || fyKan(p.kan)], ["Kan Basıncı", x.tansiyon], ["Tarih", fyTarihTr(v.tarih) || new Date().toLocaleDateString("tr-TR")]];
     const ri = SOL.map(() => sat(7));
     ri.forEach((r, i) => { const z = { s: 10 }; koy(r, 0, 30, SOL[i][0], { ...bd, ...z }); koy(r, 30, 36, String(i + 1), { ...ort, ...z }); koy(r, 36, 89, String(SOL[i][1] ?? ""), z); koy(r, 89, 126, SAG[i][0], { ...bd, ...z }); koy(r, 126, 132, String(i + 6), { ...ort, ...z }); koy(r, 132, 161, String(SAG[i][1] ?? ""), z); });
     koy(ri[0], 161, 186, "", { img: (fyFotolar || {})[p.id] && { ...fyFotolar[p.id], pd: 1.2 } }, ri.length);
@@ -11644,7 +11644,7 @@ function fydtCiz(){ const d = acikBelge(); if(!d || d.tur !== "fydt") return; co
     <section class="dl-kart es-kart">
       ${bol("kisi", "Kimlik", [p.rutbe, p.ad, p.sicil && `[${p.sicil}]`].filter(Boolean).join(" "), `<div class="fy-kim">${[["T.C. kimlik no", p.tc], ["Doğum", p.dogum], ["Kan grubu", fyKan(p.kan)], ["Görevi", p.kita || p.gorev]].map(([a2, b2]) => `<div><small>${a2}</small><b>${esc(b2 || "—")}</b></div>`).join("")}</div>
         ${eks.length || !p.foto ? `<p class="dl-not">Eksik: ${esc([...eks, ...(p.foto ? [] : ["fotoğraf"])].join(", "))}. </p>` : ""}${belgeTur("kimlik") ? `<button type="button" class="es-sec" data-km-git="${esc(p.id)}">Personel kimliğinde aç ›</button>` : ""}`)}
-      ${bol("muayene", "Muayene", [x.kilo && x.kilo + " kg", x.boy && x.boy + " cm", x.tansiyon].filter(Boolean).join(" · ") || "girilmedi", `<div class="dl-alanlar">${al("Ağırlık (kg)", `data-fy-k="kilo"`, x.kilo, "n")}${al("Boy (cm)", `data-fy-k="boy"`, x.boy, "n")}${al("Kan basıncı", `data-fy-k="tansiyon"`, x.tansiyon)}</div>`)}
+      ${bol("muayene", "Muayene", [x.kilo && x.kilo + " kg", x.boy && x.boy + " cm", x.tansiyon].filter(Boolean).join(" · ") || "girilmedi", `<div class="dl-alanlar">${al("Ağırlık (kg)", `data-fy-k="kilo"`, x.kilo, "n")}${al("Boy (cm)", `data-fy-k="boy"`, x.boy, "n")}${al("Kan basıncı", `data-fy-k="tansiyon"`, x.tansiyon)}${al("Kan grubu (kartta)", `data-fy-k="kan"`, x.kan)}</div><p class="dl-not">Kan grubu boşsa Personel kimliğindeki (${esc(fyKan(p.kan) || "—")}) basılır.</p>`)}
       ${[0, 1, 2].map(i => { const t = x.t[i]; return bol("t" + i, ["Test bir", "Test iki", "Test üç (Spor Okulu)"][i], tOz(t), `<div class="dl-alanlar">${al("Test tarihi", `data-fy-t="${i}:tarih"`, t.tarih, "t")}${al("Katılmama nedeni", `data-fy-t="${i}:neden"`, t.neden, "tam")}${al("Boy (cm)", `data-fy-t="${i}:boy"`, t.boy, "n")}${al("Ağırlık (kg)", `data-fy-t="${i}:kilo"`, t.kilo, "n")}${al("Bel çevresi (cm)", `data-fy-t="${i}:bel"`, t.bel, "n")}${al("Mekik", `data-fy-t="${i}:mekik"`, t.mekik, "n")}${al("Şınav", `data-fy-t="${i}:sinav"`, t.sinav, "n")}${al("Koşu süresi", `data-fy-t="${i}:kosu"`, t.kosu, "s")}${al("Alternatif test", `data-fy-t="${i}:alt"`, t.alt, "n")}</div>`); }).join("")}
       ${bol("ayar", "Kart ayarları", [`sicil yılı ${v.sicilYili || "—"}`, v.tarih ? fyTarihTr(v.tarih) : "tarih: basım günü"].join(" · "), `<div class="dl-alanlar">${al("Sicil yılı", `data-fy-a="sicilYili"`, v.sicilYili, "n")}${al("Muayene tarihi", `data-fy-a="tarih"`, v.tarih, "t")}${al("Alt bilgi · sol", `data-fy-a="rapor"`, v.rapor)}${al("Alt bilgi · sağ (hazırlayan)", `data-fy-a="hazirlayan"`, v.hazirlayan, "tam")}</div><p class="dl-not">Alt bilginin solunda basım günü ve saati kendiliğinden yazılır, ortada sayfa numarası (1 / 2) çıkar.</p>`)}
       <div class="fy-esik"><b>Üst tablo · ${esc(grp || "yaş grubu bulunamadı")}</b>${e100 ? `<span>100 puan: şınav ${e100.sinav} · mekik ${e100.mekik} · koşu ${e100.kosu}</span><span>60 puan: şınav ${e60.sinav} · mekik ${e60.mekik} · koşu ${e60.kosu}</span>` : `<span>Doğum tarihi girilince kendiliğinden yazılır.</span>`}</div>
