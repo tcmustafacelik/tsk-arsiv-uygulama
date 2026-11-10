@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "436";
+  const SURUM = "437";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -8168,8 +8168,11 @@ async function gridPdf(d, a){
       else if(etiketMi(r, x)){ const e = Math.min(.6, Hc * .1); doc.setFillColor(...rgb(x.f)); doc.setDrawColor(...rgb(renkKar(x.f, "6F7F90", .35))); doc.setLineWidth(.2); doc.roundedRect(X + e, Y + e, Wc - 2 * e, Hc - 2 * e, Math.min(ETK_R, (Hc - 2 * e) / 2), Math.min(ETK_R, (Hc - 2 * e) / 2), "FD"); }
       else if(x && x.f){ doc.setFillColor(...rgb(x.f)); if(koseMi(tb, r, r2, c, c2)){ doc.saveGraphicsState(); doc.roundedRect(tb.x, tb.y, tb.w, tb.h, RD, RD, null); doc.clip(); doc.discardPath(); doc.rect(X, Y, Wc, Hc, "F"); doc.restoreGraphicsState(); } else doc.rect(X, Y, Wc, Hc, "F"); }   // köşe hücresi yuvarlak çerçeveden taşmasın
       if(x && x.rz && gosterDeger(x)){ const ph = Math.min(Hc * .62, 6.2), pw = Wc - Math.min(3, Wc * .1); doc.setFillColor(...rgb(x.rz)); doc.setDrawColor(...rgb(renkKar(x.rz, "6F7F90", .4))); doc.setLineWidth(.2); doc.roundedRect(X + (Wc - pw) / 2, Y + (Hc - ph) / 2, pw, ph, Math.min(ETK_R, ph / 2), Math.min(ETK_R, ph / 2), "FD"); }
-      if(x && x.img && x.img.data){ const pd = .7, bw = Wc - 2 * pd, bh = Hc - 2 * pd, o = x.img.w / x.img.h; let w = bw, h = bw / o; if(h > bh){ h = bh; w = bh * o; }
-        try { doc.addImage(x.img.data, x.img.tip || "JPEG", X + (Wc - w) / 2, Y + (Hc - h) / 2, w, h); } catch(e){ console.warn("resim", e); } }
+      if(x && x.img && x.img.data){ const o = x.img.w / x.img.h;
+        if(x.img.kapla){ let w = Wc, h = Wc / o; if(h < Hc){ h = Hc; w = Hc * o; }   /* hücreyi tam kaplar, taşan kısım kesilir: basılı gibi, sonradan yapıştırılmış görünmez */
+          try { doc.saveGraphicsState(); doc.rect(X, Y, Wc, Hc, null); doc.clip(); doc.discardPath(); doc.addImage(x.img.data, x.img.tip || "JPEG", X + (Wc - w) / 2, Y + (Hc - h) / 2, w, h); doc.restoreGraphicsState(); } catch(e){ console.warn("resim", e); } }
+        else { const pd = .7, bw = Wc - 2 * pd, bh = Hc - 2 * pd; let w = bw, h = bw / o; if(h > bh){ h = bh; w = bh * o; }
+          try { doc.addImage(x.img.data, x.img.tip || "JPEG", X + (Wc - w) / 2, Y + (Hc - h) / 2, w, h); } catch(e){ console.warn("resim", e); } } }
       const t = x && x.img && x.img.data ? "" : gosterDeger(x); if(t){
         doc.setFont(x.fn === "s" ? "LA" : "LS", x.b ? "bold" : "normal"); doc.setTextColor(...rgb(x.k || "222222"));
         let fs = (x.s || 11) * s * a.yazi * 1.0; const pad = Math.min(0.8, Wc * 0.08);
@@ -8194,7 +8197,7 @@ async function gridPdf(d, a){
       const xh = g.c[r]?.[c]; if(xh && (xh.ban || etiketMi(r, xh))) continue; const tb = tabHucre[r + ":" + c];
       const X = cx[c], Y = ry[r], X2 = cx[c2 + 1], Y2 = Y + yuk(r, r2);
       const kn = (rr, cc, yon) => (g.c[rr]?.[cc]?.br || {})[yon];
-      const ciz = (w, x1, y1, x2, y2) => { if(!w) return; if(w === 3 && g.tema){ doc.setDrawColor(...rgb(g.tema.ana)); doc.setLineWidth(1.6); doc.line(x1 + 0.8, y1, x2 + 0.8, y2); return; } doc.setDrawColor(...(g.tema ? rgb(g.tema.cizgi) : [68, 68, 68])); doc.setLineWidth(w === 2 ? 0.5 : g.tema ? (g.tema.ince || 0.15) : 0.2); doc.line(x1, y1, x2, y2); };
+      const ciz = (w, x1, y1, x2, y2) => { if(!w) return; if(w === 3 && g.tema){ doc.setDrawColor(...rgb(g.tema.ana)); doc.setLineWidth(1.6); doc.line(x1 + 0.8, y1, x2 + 0.8, y2); return; } doc.setDrawColor(...(g.tema ? rgb(g.tema.cizgi) : g.cizgiRenk ? rgb(g.cizgiRenk) : [68, 68, 68])); doc.setLineWidth(w === 2 ? 0.5 : g.tema ? (g.tema.ince || 0.15) : 0.2); doc.line(x1, y1, x2, y2); };
       const dis = (y2, yon) => tb && ({ t: r === tb.r1, b: r2 === tb.r2, l: c === tb.c0, r: c2 === tb.c1 })[yon];   // dış kenarları yuvarlak çerçeve çizer
       if(!dis(0, "t")) ciz(kn(r, c, "t"), X, Y, X2, Y); if(!dis(0, "l")) ciz(kn(r, c, "l"), X, Y, X, Y2); if(!dis(0, "r")) ciz(kn(r, c2, "r"), X2, Y, X2, Y2); if(!dis(0, "b")) ciz(kn(r2, c, "b"), X, Y2, X2, Y2);
     } });
@@ -11563,9 +11566,13 @@ const FY_SOY = ["Anası babası ölmüşse", "Tansiyonları yüksek mi?", "Şeke
 const FY_OZ = ["Ani kilo alıp verme", "Alerji varsa neye karşı", "Geçirilmiş karaciğer hastalığı", "Geçirilmiş sarılık, ne zaman", "Geçirilmiş ateşli romatizma", "Geçirilmiş böbrek hastalığı", "Geçirilmiş ameliyat", "Geçirilmiş kalp hastalığı", "Geçirilmiş iç kanama", "Sara nöbeti"];
 const FY_GOZ = ["Aşırı şişmanlık veya zayıflık", "Belde sırtta şekil bozukluğu", "Düztabanlık veya ayaklarda şekil bozukluğu", "Dizlerde şekil bozukluğu", "Göğüs kafesinde şekil bozukluğu", "Bacaklarda varisler", "İleri derecede işitme kusuru", "İleri derecede soluk beniz", "Nefes darlığı", "Yüksek ateş", "İshal, bulantı-kusma", "Sürekli karın ağrısı"];
 let fyFotolar = {};
-async function fyFotoHazirla(P){ const o = {}; for(const p of P){ const f = p.foto ? await izbFoto(p.foto) : null; if(f) o[p.id] = f; } fyFotolar = o; }
+const fyGriOnbellek = {};
+async function fyGri(f){ const cv = document.createElement("canvas"); cv.width = f.w; cv.height = f.h; const c = cv.getContext("2d"); c.drawImage(f.el, 0, 0);
+  const im = c.getImageData(0, 0, f.w, f.h), D = im.data; for(let i = 0; i < D.length; i += 4){ const y = Math.round(.299 * D[i] + .587 * D[i + 1] + .114 * D[i + 2]); D[i] = D[i + 1] = D[i + 2] = y; } c.putImageData(im, 0, 0);
+  return { data: cv.toDataURL("image/jpeg", .9), w: f.w, h: f.h, tip: "JPEG", kapla: true }; }
+async function fyFotoHazirla(P){ const o = {}; for(const p of P){ if(!p.foto) continue; if(!fyGriOnbellek[p.foto]){ const f = await izbFoto(p.foto); if(f) fyGriOnbellek[p.foto] = await fyGri(f); } if(fyGriOnbellek[p.foto]) o[p.id] = fyGriOnbellek[p.foto]; } fyFotolar = o; }
 const FY_BP = [0, 10, 20, 30, 35, 36, 39, 48, 52, 58, 60, 71, 77, 82, 89, 90, 96, 114, 125, 126, 132, 142, 156, 161, 186];
-function fyGrid(d, P){ const v = fyVeri(d), NC = FY_BP.length - 1, g = { w: FY_BP.slice(1).map((x, i) => (x - FY_BP[i]) / 1.9), h: [], c: [], m: [], sb: [] }, B = { t: 1, b: 1, l: 1, r: 1 };
+function fyGrid(d, P){ const v = fyVeri(d), NC = FY_BP.length - 1, g = { w: FY_BP.slice(1).map((x, i) => (x - FY_BP[i]) / 1.9), h: [], c: [], m: [], sb: [], cizgiRenk: "000000" }, B = { t: 1, b: 1, l: 1, r: 1 };
   const ci = x => { const i = FY_BP.indexOf(x); if(i < 0) throw new Error("FYDT ızgara: " + x); return i; };
   const sat = mm => { g.h.push(mm / 0.3528); g.c.push(Array.from({ length: NC }, () => ({}))); return g.h.length - 1; };
   const koy = (r1, x1, x2, t, o = {}, rs = 1) => { const c1 = ci(x1), c2 = ci(x2) - 1, r2 = r1 + rs - 1, br = o.cizgi === false ? {} : B; delete o.cizgi;
@@ -11578,7 +11585,7 @@ function fyGrid(d, P){ const v = fyVeri(d), NC = FY_BP.length - 1, g = { w: FY_B
     const r0 = sat(6); [sat(5), sat(5)]; sat(3); const rT = sat(8), rK = sat(6), rD = sat(6), rG = sat(9);
     [["Yaş Grubunuz", 0, 20], ["Şınav Sayısı", 20, 39], ["Mekik Sayısı", 39, 58], ["3000m Koşu", 58, 77], ["Alınacak Puan", 77, 96]].forEach(([t, a, b]) => koy(r0, a, b, t, { ...bd, ...ort, s: 7.8 }));
     [[e100, "100"], [e60, "60"]].forEach(([e, pu], i) => [grp, e ? e.sinav : "", e ? e.mekik : "", e ? e.kosu : "", pu].forEach((t, j) => koy(r0 + 1 + i, [0, 20, 39, 58, 77][j], [20, 39, 58, 77, 96][j], t == null ? "" : String(t), { ...ort, s: 7.8 })));
-    koy(r0, 156, 186, "FOTOĞRAF", { ...ort, s: 7, k: "9A9A9A", img: (fyFotolar || {})[p.id] }, rD - r0 + 1);
+    koy(r0, 156, 186, "", { img: (fyFotolar || {})[p.id] }, rD - r0 + 1);
     koy(rT, 0, 156, "TÜRK SİLAHLI KUVVETLERİ FİZİKİ YETERLİLİK DEĞERLENDİRME TEST KARTI", { ...bd, ...ort, s: 10 });
     koy(rK, 0, 96, `Kimlik : ${[p.rutbe, p.ad].filter(Boolean).join(" ")}${p.sicil ? ` [${p.sicil}]` : ""}`); koy(rK, 96, 156, `TC Kimlik No : ${p.tc || ""}`);
     koy(rD, 0, 48, `Doğum Yılı : ${dy || ""}`); koy(rD, 48, 96, "Cinsiyet : Erkek"); koy(rD, 96, 156, `Sicil Yılı : ${v.sicilYili || ""}`);
@@ -11604,7 +11611,7 @@ function fyGrid(d, P){ const v = fyVeri(d), NC = FY_BP.length - 1, g = { w: FY_B
       SAG = [["Ağırlığı", x.kilo], ["Boyu", x.boy], ["Kan Grubu", fyKan(p.kan)], ["Kan Basıncı", x.tansiyon], ["Tarih", fyTarihTr(v.tarih) || new Date().toLocaleDateString("tr-TR")]];
     const ri = SOL.map(() => sat(7));
     ri.forEach((r, i) => { const z = { s: 10 }; koy(r, 0, 30, SOL[i][0], { ...bd, ...z }); koy(r, 30, 36, String(i + 1), { ...ort, ...z }); koy(r, 36, 89, String(SOL[i][1] ?? ""), z); koy(r, 89, 126, SAG[i][0], { ...bd, ...z }); koy(r, 126, 132, String(i + 6), { ...ort, ...z }); koy(r, 132, 161, String(SAG[i][1] ?? ""), z); });
-    koy(ri[0], 161, 186, "FOTOĞRAF", { ...ort, s: 7, k: "9A9A9A", img: (fyFotolar || {})[p.id] }, ri.length);
+    koy(ri[0], 161, 186, "", { img: (fyFotolar || {})[p.id] }, ri.length);
     const h0 = sat(8), h1 = sat(8), R = Array.from({ length: 17 }, () => sat(11));
     koy(h0, 0, 90, "SORGULAMA", { ...bd, ...ort, s: 10 }); koy(h0, 90, 186, "GÖZLE MUAYENE", { ...bd, ...ort, s: 10 });
     [["SOY GEÇMİŞİ", 0, 35], ["EVET", 35, 52], ["HAYIR", 52, 71], ["AÇIKLAMA", 71, 90], ["", 90, 125], ["EVET", 125, 142], ["HAYIR", 142, 161], ["AÇIKLAMA", 161, 186]].forEach(([t, a, b2], j) => koy(h1, a, b2, t, { ...bd, ...(j % 4 ? ort : {}), s: 9.5 }));
