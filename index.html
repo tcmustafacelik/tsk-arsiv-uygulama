@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "403";
+  const SURUM = "404";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -236,17 +236,17 @@
     if(!r.ok) throw new Error("Paylaşım gönderilemedi (" + r.status + ")"); }
   async function paylasimGonder(zorla){
     if(izleyici() || ONIZLE || !payTazele() || !pay.t || payCalisiyor || !navigator.onLine) return; payCalisiyor = true; payHata = "";
-    try { const M = payMis(), U = {}; let n = 0, c = 0;
+    try { await payAnahtarCifti(); const M = payMis(), U = {}; let n = 0, c = 0;
       for(const m of M){ if(!m.duzenle) continue; const u = U[m.id] = await payOku(m);   /* düzenleme yetkisi olan misafirin değişiklikleri */
         if(!u.veri || (u.veri["bt/paylasimGor"] || {}).kapali) continue; const T = meta.payTaban || {}, K = meta.payKaynak || {};
         for(const [k, v] of Object.entries(u.veri)){ if(k === "bt/paylasimGor" || k === "bt/paylasim" || (v && v.gizli) || T[k] === kOzet(v)) continue;
           if(k.startsWith("arsiv/") && !(k in mem)) continue;
           if(!(k in mem) || !(k in K) || kOzet(mem[k]) === K[k]){ mem[k] = kopya(v); await yerelYaz(k, mem[k]); bildir(k); n++; } else c++; } }
       if(n){ degisti(); bildirim(`Misafirin ${n} değişikliği alındı${c ? ` · ${c} çakışmada sizinki kaldı` : ""}`); }
-      const R = payFiltre(), im = imza(R) + "|" + M.map(m => m.id + (m.duzenle ? "d" : "g") + m.k.slice(0, 6) + (m.ad || "")).join(",") + "|" + String(pay.p).slice(0, 6);
+      const R = payFiltre(), im = imza(R) + "|" + M.map(m => m.id + (m.duzenle ? "d" : "g") + m.k.slice(0, 6) + (m.ad || "")).join(",") + "|" + String(pay.p).slice(0, 6) + "|" + String((payAyar().kur || {}).pub || "").slice(-8);
       if(im !== meta.payImza || zorla){ const eksik = await payDosyalar(R); if(eksik) bildirim(`${eksik} dosya paylaşıma gönderilemedi; bir sonraki güncellemede yeniden denenecek`);
         for(const m of M){ const u = U[m.id] || await payOku(m).catch(() => ({ sha: null }));
-          await payMYaz(m, { ...R, "bt/paylasimGor": { ...R["bt/paylasimGor"], duzenle: !!m.duzenle, dk: pay.p, mid: m.id, ad: m.ad || "" } }, u.sha); }
+          await payMYaz(m, { ...R, "bt/paylasimGor": { ...R["bt/paylasimGor"], duzenle: !!m.duzenle, dk: pay.p, mid: m.id, ad: m.ad || "", ...(payAyar().kur.pub ? { pub: payAyar().kur.pub } : {}) } }, u.sha); }
         meta.payImza = im; meta.payTaban = Object.fromEntries(Object.entries(R).map(([k, v]) => [k, kOzet(v)])); meta.payKaynak = Object.fromEntries(Object.keys(R).filter(k => k in mem && !(R[k] && R[k].gizli)).map(k => [k, kOzet(mem[k])])); }
       meta.paySon = Date.now(); metaYaz(); }
     catch(e){ payHata = e.message || "Paylaşım hatası"; }
@@ -259,13 +259,43 @@
     await payAyarYaz({ ...A, misafirler: (A.misafirler || []).filter(x => x.id !== id), kur: { ...A.kur, dk: b64u(crypto.getRandomValues(new Uint8Array(24))) } });
     meta.payImza = ""; paylasimGonder(true); }   /* yeni anahtarla dosyalar arka planda gider; ilerleme üstte görünür */
   /* misafir: açtığında "son görülme" yazılır (en çok yarım saatte bir) */
+  /* misafir açılış kaydı: zaman, cihaz modeli, IP. Yalnız sahibin açabileceği şekilde şifrelenir (açık anahtarla), son 20 açılış tutulur */
+  const IPH = { "320x568": "iPhone SE (1.) / 5s", "375x667": "iPhone SE (2./3.) / 6 / 7 / 8", "414x736": "iPhone 6 / 7 / 8 Plus", "375x812": "iPhone X / XS / 11 Pro / 12 mini / 13 mini",
+    "414x896@2": "iPhone XR / 11", "414x896@3": "iPhone XS Max / 11 Pro Max", "390x844": "iPhone 12 / 13 / 14 (Pro dahil 12–13)", "428x926": "iPhone 12–13 Pro Max / 14 Plus",
+    "393x852": "iPhone 14 Pro / 15 / 15 Pro / 16", "430x932": "iPhone 14 Pro Max / 15 Plus / 15 Pro Max / 16 Plus", "402x874": "iPhone 16 Pro / 17 / 17 Pro", "440x956": "iPhone 16 Pro Max / 17 Pro Max", "420x912": "iPhone Air" };
   const cihazAd = () => { const u = navigator.userAgent; return /iPhone/.test(u) ? "iPhone" : /iPad/.test(u) ? "iPad" : /Android/.test(u) ? "Android" : /Windows/.test(u) ? "Windows" : /Mac/.test(u) ? "Mac" : "cihaz"; };
-  async function gorulmeYaz(){ if(!izleyici() || Date.now() - (meta.gorYaz || 0) < 1800000) return; meta.gorYaz = Date.now(); metaYaz();
-    try { const p = yol("gorulme/" + (meta.misafirId || "0") + ".json"), g = await gh(p, { headers: { Accept: "application/vnd.github.object+json" } }), sha = g.ok ? (await g.json()).sha : null;
-      await gh(p, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV misafir açtı", content: u8ToB64(new TextEncoder().encode(JSON.stringify({ t: Date.now(), c: cihazAd() }))), ...(sha ? { sha } : {}) }) }); } catch(e){} }
+  async function cihazBilgi(){ const u = navigator.userAgent; let m = "", s = "";
+    try { if(navigator.userAgentData && navigator.userAgentData.getHighEntropyValues){ const h = await navigator.userAgentData.getHighEntropyValues(["model", "platform", "platformVersion"]); if(h.model) m = h.model; if(h.platform) s = h.platform + (h.platformVersion ? " " + h.platformVersion.split(".")[0] : ""); } } catch(e){}
+    if(/iPhone/.test(u)){ const w = Math.min(screen.width, screen.height), hh = Math.max(screen.width, screen.height), d = Math.round(devicePixelRatio || 1); m = IPH[w + "x" + hh + "@" + d] || IPH[w + "x" + hh] || "iPhone"; const v = u.match(/OS (\d+)[_.](\d+)/); s = v ? "iOS " + v[1] + "." + v[2] : "iOS"; }
+    else if(/iPad/.test(u) || (/Macintosh/.test(u) && navigator.maxTouchPoints > 1)){ m = "iPad"; s = "iPadOS"; }
+    else if(!m){ const a = u.match(/Android ([\d.]+); ([^;)]+)/); if(a){ if(a[2].trim() !== "K") m = a[2].trim(); s = "Android " + a[1].split(".")[0]; } else { m = cihazAd(); } }
+    const t = /CriOS|Chrome\//.test(u) && !/Edg/.test(u) ? "Chrome" : /FxiOS|Firefox/.test(u) ? "Firefox" : /Edg/.test(u) ? "Edge" : /Safari/.test(u) ? "Safari" : "";
+    return { m: m || cihazAd(), s, t, e: screen.width + "×" + screen.height }; }
+  async function ipAl(){ for(const u of ["https://api64.ipify.org?format=json", "https://api.ipify.org?format=json"]){ try { const c = new AbortController(), z = setTimeout(() => c.abort(), 5000); const r = await fetchAsil(u, { signal: c.signal, cache: "no-store" }); clearTimeout(z); if(r.ok){ const j = await r.json(); if(j && j.ip) return String(j.ip); } } catch(e){} } return ""; }
+  async function gorSifrele(o, pubB64){ const pub = await crypto.subtle.importKey("spki", ub64(pubB64), { name: "RSA-OAEP", hash: "SHA-256" }, false, ["encrypt"]);
+    const ak = await crypto.subtle.generateKey({ name: "AES-GCM", length: 256 }, true, ["encrypt"]), iv = crypto.getRandomValues(new Uint8Array(12));
+    const v = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, ak, new TextEncoder().encode(JSON.stringify(o)))), k = new Uint8Array(await crypto.subtle.encrypt({ name: "RSA-OAEP" }, pub, await crypto.subtle.exportKey("raw", ak)));
+    return { k: b64u(k), iv: b64u(iv), v: b64u(v) }; }
+  async function gorCoz(x, prv){ const ham = await crypto.subtle.decrypt({ name: "RSA-OAEP" }, prv, ub64(x.k)); const ak = await crypto.subtle.importKey("raw", ham, "AES-GCM", false, ["decrypt"]);
+    return JSON.parse(new TextDecoder().decode(await crypto.subtle.decrypt({ name: "AES-GCM", iv: ub64(x.iv) }, ak, ub64(x.v)))); }
+  let gorIpBu = null;
+  async function gorulmeYaz(){ if(!izleyici()) return; const G = payGor(); if(gorIpBu === null) gorIpBu = await ipAl();
+    if(Date.now() - (meta.gorYaz || 0) < 1800000 && gorIpBu === (meta.gorIp || "")) return; meta.gorYaz = Date.now(); meta.gorIp = gorIpBu; metaYaz();
+    try { const p = yol("gorulme/" + (meta.misafirId || "0") + ".json"), g = await gh(p, { headers: { Accept: "application/vnd.github.object+json" } }); let sha = null, eski = [];
+      if(g.ok){ const j = await g.json(); sha = j.sha; try { const o = JSON.parse(new TextDecoder().decode(b64ToU8((j.content || "").replace(/\s/g, "")))); if(Array.isArray(o.kayit)) eski = o.kayit; } catch(e){} }
+      const c = await cihazBilgi(), kayit = { t: Date.now(), c: c.m, s: c.s, tr: c.t, e: c.e, ip: gorIpBu };
+      const yeni = G.pub ? { t: kayit.t, c: cihazAd(), kayit: [await gorSifrele(kayit, G.pub), ...eski].slice(0, 20) } : { t: kayit.t, c: cihazAd() };   /* şifresiz eski düzende IP yazılmaz */
+      await gh(p, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV misafir açtı", content: u8ToB64(new TextEncoder().encode(JSON.stringify(yeni))), ...(sha ? { sha } : {}) }) }); } catch(e){} }
   let payGorulme = {};
-  async function gorulmeOku(){ if(!payTazele()) return; try { const r = await ghP(`${API}/repos/${pay.depo}/contents/gorulme`); if(!r.ok) return; const L = await r.json(), o = {};
-    for(const x of L){ const r2 = await ghP(yolP("gorulme/" + x.name), { headers: { Accept: "application/vnd.github.raw+json" } }); if(r2.ok) try { o[x.name.replace(/\.json$/, "")] = JSON.parse(await r2.text()); } catch(e){} }
+  async function payAnahtarCifti(){ const A = payAyar(); if(!A.kur || (A.kur.pub && A.kur.prv)) return;   /* açılış kayıtları için sahibe özel anahtar */
+    const k = await crypto.subtle.generateKey({ name: "RSA-OAEP", modulusLength: 2048, publicExponent: new Uint8Array([1, 0, 1]), hash: "SHA-256" }, true, ["encrypt", "decrypt"]);
+    const pub = b64u(new Uint8Array(await crypto.subtle.exportKey("spki", k.publicKey))), prv = tkGiz(b64u(new Uint8Array(await crypto.subtle.exportKey("pkcs8", k.privateKey))));
+    const A2 = payAyar(); if(A2.kur && !A2.kur.pub) await payAyarYaz({ ...A2, kur: { ...A2.kur, pub, prv } }); }
+  async function gorulmeOku(){ if(!payTazele()) return; try { const r = await ghP(`${API}/repos/${pay.depo}/contents/gorulme`); if(!r.ok) return; const L = await r.json(), o = {}, kur = payAyar().kur || {};
+    let prv = null; try { if(kur.prv) prv = await crypto.subtle.importKey("pkcs8", ub64(tkAc(kur.prv)), { name: "RSA-OAEP", hash: "SHA-256" }, false, ["decrypt"]); } catch(e){}
+    for(const x of L){ const r2 = await ghP(yolP("gorulme/" + x.name), { headers: { Accept: "application/vnd.github.raw+json" } }); if(!r2.ok) continue; let j; try { j = JSON.parse(await r2.text()); } catch(e){ continue; }
+      const K = []; if(prv && Array.isArray(j.kayit)) for(const y of j.kayit){ try { K.push(await gorCoz(y, prv)); } catch(e){} }
+      o[x.name.replace(/\.json$/, "")] = { t: j.t, c: j.c, kayit: K }; }
     payGorulme = o; } catch(e){} }
   const payDurumYazi = () => payHata ? "Sorun: " + payHata : meta.paySon ? "Son güncelleme: " + new Date(meta.paySon).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "Henüz gönderilmedi";
   async function baglan(depo, t, s, mod, rol, mid){
@@ -595,6 +625,8 @@
       .bp-mt{flex:none;display:flex;flex-direction:column;gap:5px}
       .bp-mb{display:flex;align-items:center;gap:5px;height:30px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font:600 11.5px var(--f-ui);color:var(--fg);cursor:pointer}
       .bp-mb svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round} .bp-mb.kal{color:#A04A3C;border-color:#EBD3CD;background:#FBF4F2}
+      .bp-gec{margin-top:4px} .bp-gec>summary{list-style:none;cursor:pointer;font:600 11px var(--f-ui);color:var(--accent);padding:2px 0} .bp-gec>summary::-webkit-details-marker{display:none} .bp-gec>summary::after{content:" ›"} .bp-gec[open]>summary::after{content:" ‹"}
+      .bp-gs{display:flex;flex-direction:column;gap:1px;padding:6px 0;border-top:1px dashed var(--line2)} .bp-gs b{font:650 11.5px var(--f-ui)} .bp-gs span{font:500 11px var(--f-ui);color:var(--muted);overflow-wrap:anywhere} .bp-gs .mono{font-family:ui-monospace,Menlo,monospace}
       .bp-bos{padding:12px;font:500 12px var(--f-ui);color:var(--muted);text-align:center}
       .bp-ekle{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px} .bp-ekle input{height:40px;min-width:0;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font:500 14px var(--f-ui);color:var(--fg)} .bp-ekle .btn{height:40px;padding:0 14px}
       .bp-bd>summary{list-style:none;cursor:pointer} .bp-bd>summary::-webkit-details-marker{display:none} .bp-bd[open]>summary .bp-ok{transform:rotate(-90deg)} .bp-ok.yok{visibility:hidden} .bp-bd>summary.bp-s{color:var(--fg)}
@@ -712,8 +744,9 @@
             return D.length ? `<details class="bp-bd"><summary class="bp-s b${kG ? " mir" : ""}">${st}<i class="bp-ok">›</i></summary>${D.map(d => `<div class="bp-s d${bG ? " mir" : ""}">${BLG}<span>${escH(d.ad)}</span>${tus("d:" + d.id, G["d:" + d.id], bG)}</div>`).join("")}</details>` : `<div class="bp-s b${kG ? " mir" : ""}">${st}<i class="bp-ok yok" aria-hidden="true">›</i></div>`; }).join("")}`; }).join("")}</details>`; }).join(""); }
     const IK_L = '<svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></svg>', IK_X = '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg>';
     const zmn = t => new Date(t).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
-    const gorYazi = m => { const g = payGorulme[m.id]; return g && g.t ? "son açılış " + zmn(g.t) + (g.c ? " · " + g.c : "") : "henüz açılmadı"; };
-    const misafirSatir = m => `<div class="bp-m"><span class="bp-mi">${escH((m.ad || "?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><div class="bp-md"><button type="button" class="bp-ad" data-bpad="${escH(m.id)}" aria-label="Adı değiştir">${escH(m.ad || "Misafir")}<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button><small data-gor="${escH(m.id)}">${escH(gorYazi(m))}</small>
+    const gorYazi = m => { const g = payGorulme[m.id], k = g && g.kayit && g.kayit[0]; if(k) return "son açılış " + zmn(k.t) + " · " + k.c + (k.ip ? " · IP " + k.ip : ""); return g && g.t ? "son açılış " + zmn(g.t) + (g.c ? " · " + g.c : "") : "henüz açılmadı"; };
+    const gecmisHtml = m => { const g = payGorulme[m.id], K = (g && g.kayit) || []; if(!K.length) return ""; return `<details class="bp-gec"><summary>Açılış geçmişi · ${K.length}</summary>${K.map(k => `<div class="bp-gs"><b>${escH(zmn(k.t))}</b><span>${escH([k.c, k.s, k.tr].filter(Boolean).join(" · "))}</span><span class="mono">${k.ip ? "IP " + escH(k.ip) : "IP alınamadı"}${k.e ? " · ekran " + escH(k.e) : ""}</span></div>`).join("")}</details>`; };
+    const misafirSatir = m => `<div class="bp-m"><span class="bp-mi">${escH((m.ad || "?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><div class="bp-md"><button type="button" class="bp-ad" data-bpad="${escH(m.id)}" aria-label="Adı değiştir">${escH(m.ad || "Misafir")}<svg viewBox="0 0 24 24"><path d="M4 20h4L19 9l-4-4L4 16z"/></svg></button><small data-gor="${escH(m.id)}">${escH(gorYazi(m))}</small><div data-gec="${escH(m.id)}">${gecmisHtml(m)}</div>
         <div class="bp-seg mini"><button type="button" data-bpmy="${escH(m.id)}" data-v="0" aria-pressed="${!m.duzenle}">Görüntüler</button><button type="button" data-bpmy="${escH(m.id)}" data-v="1" aria-pressed="${!!m.duzenle}">Düzenler</button></div></div>
         <div class="bp-mt"><button type="button" class="bp-mb" data-bpml="${escH(m.id)}" aria-label="${escH(m.ad)} için link">${IK_L}<span>Link</span></button><button type="button" class="bp-mb kal" data-bpmk="${escH(m.id)}" aria-label="${escH(m.ad)} kaldır">${IK_X}<span>Kaldır</span></button></div></div>`;
     function payCiz(){ const A = payAyar(); payTazele(); const M = payMis();
@@ -745,7 +778,7 @@
     async function misafirLink(m){ const pin = await misafirPin(m.ad || "Misafir"); if(!pin) return; payTazele();
       const link = await linkYap2(pin, { r: pay.depo, t: pay.t, p: m.k, id: m.id }, "m");
       tipKoy(lnP, "misafir"); lnP.querySelector("h2").textContent = (m.ad || "Misafir") + " için link hazır"; lnP.querySelector(".bl-alt").textContent = "Bu link yalnız " + (m.ad || "bu misafir") + " içindir; PIN'i ona ayrıca söyleyin. Kaldırdığınızda yalnız bu link çalışmaz olur. Gizlediğiniz bölümler onda buğulu görünür, ana arşivinize erişemez."; linkGoster(link); }
-    const gorulmeCiz = async () => { await gorulmeOku(); payMis().forEach(m => { const el = payP.querySelector(`[data-gor="${CSS.escape(m.id)}"]`); if(el) el.textContent = gorYazi(m); }); };
+    const gorulmeCiz = async () => { await gorulmeOku(); payMis().forEach(m => { const el = payP.querySelector(`[data-gor="${CSS.escape(m.id)}"]`); if(el) el.textContent = gorYazi(m); const ge = payP.querySelector(`[data-gec="${CSS.escape(m.id)}"]`); if(ge && !ge.querySelector("details[open]")) ge.innerHTML = gecmisHtml(m); }); };
     const payGizliYaz = async G => { await db.doc("bt/paylasim").set({ ...payAyar(), gizli: G }); payPlanla(2500); };
     KAT["bl-pay"] = () => { payP.hidden = true; };
     payP.addEventListener("click", async e => { if(e.target === payP || e.target.closest("[data-bpx]")){ payP.hidden = true; return; }
@@ -807,7 +840,7 @@
       for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Misafir girişi", "Bu bir görüntüleme linkidir. Arşiv sahibinin size söylediği 6 haneli PIN'i girin.", hata, "Aç", "misafir"); if(pin === null) return; d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar deneyin"; }
       if(!d){ bildirim("PIN 5 kez yanlış girildi"); return; }
       panelCiz(); panel.hidden = false; const h = $$("#bl-hata"); h.className = "bl-hata bilgi"; h.innerHTML = '<span class="bl-spin"></span>Paylaşılan arşiv açılıyor…';
-      try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici", d.mid); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : payGor().ad ? "Hoş geldiniz, " + payGor().ad : "Paylaşılan arşiv açıldı"); gorulmeYaz(); }
+      try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici", d.mid); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : payGor().ad ? "Hoş geldiniz, " + payGor().ad + " · açılışlar (cihaz, IP) paylaşım sahibine kaydedilir" : "Paylaşılan arşiv açıldı"); gorulmeYaz(); }
       catch(x){ meta.bagli = false; meta.rol = "sahip"; meta.misafirId = ""; token = ""; h.className = "bl-hata"; h.textContent = x.message; } }
 
     /* --- panel --- */
@@ -3168,7 +3201,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 403</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 404</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
