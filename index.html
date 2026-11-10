@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "388";
+  const SURUM = "389";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -178,8 +178,9 @@
     const ist = new Set(anaL.filter(id => js.includes(id)));
     const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); const payL = pr.ok ? await pr.json() : [];
     for(const x of payL) if(!ist.has(x.name)) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya kaldırma", sha: x.sha }) });   // gizlenen dosya paylaşımdan silinir
-    const var_ = new Set(payL.map(x => x.name));
-    for(const id of ist){ if(var_.has(id)) continue; const b = await varlikAl(id).catch(() => null); if(!b) continue;
+    const var_ = new Set(payL.map(x => x.name)), eksik = [...ist].filter(id => !var_.has(id)); let n = 0;
+    const ilerle = () => { const t = `Dosyalar gönderiliyor · ${n} / ${eksik.length}`; document.querySelectorAll("[data-bpkur],[data-bpg] .bl-yz small").forEach(el => { if(el.matches("[data-bpkur]")) el.innerHTML = '<span class="bl-spin"></span>' + t; else el.textContent = t; }); };
+    for(const id of eksik){ n++; ilerle(); const b = await varlikAl(id).catch(() => null); if(!b) continue;
       const r = await ghP(yolP(DOSYA + id), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya", content: u8ToB64(await dosyaSifreleK(new Uint8Array(await b.arrayBuffer()), pay.p)) }) });
       if(!r.ok) throw new Error("Paylaşıma dosya gönderilemedi (" + r.status + ")"); } }
   async function paylasimGonder(zorla){
@@ -2948,7 +2949,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 388</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 389</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
