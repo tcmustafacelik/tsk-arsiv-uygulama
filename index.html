@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "425";
+  const SURUM = "426";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3129,6 +3129,11 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .es-onbas{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 2px 0;font:700 12px var(--f-ui);color:#5B6B7B} .cs-seg.mini button{padding:4px 10px;font-size:11.5px}
 .es-birim{display:grid;grid-template-columns:repeat(6,1fr);gap:5px} .es-birim button{border:1px solid var(--line2);background:#fff;border-radius:7px;padding:7px 0;font:700 12px var(--f-ui);color:#26313B;cursor:pointer} .es-birim button[aria-pressed="true"]{background:#2F4A66;border-color:#2F4A66;color:#fff}
 .es-pis{display:flex;align-items:center;gap:6px;margin-top:12px} .es-pis .bosluk{flex:1}
+/* alt pencerelerde kaydırma çubuğu görünmez, kutular kenara taşmaz; işlem düğmeleri altta hep görünür */
+.ap-ic{scrollbar-width:none;padding:2px 2px 4px;margin:0 -2px} .ap-ic::-webkit-scrollbar{display:none}
+.ap-ic :is(input,textarea){max-width:100%;box-sizing:border-box}
+.ap-ic .es-pis{position:sticky;bottom:-4px;z-index:2;margin:6px -2px -4px;padding:10px 2px calc(6px + env(safe-area-inset-bottom,0px));background:var(--panel);border-top:1px solid var(--line2)}
+.ap-ic .es-birim{grid-template-columns:repeat(8,1fr);gap:4px} .ap-ic .es-birim button{padding:6px 0;font-size:11.5px}
 .zm-l.kisa>.zm-k:nth-child(n+6){display:none} .zm-tum{border:0;background:none;color:#3D5A73;font:700 12px var(--f-ui);padding:6px;cursor:pointer} .zm-bas2{display:flex;align-items:center;gap:8px}
 .zm-s{display:flex;align-items:center;gap:8px;width:100%;border:0;background:none;padding:7px 4px;cursor:pointer;text-align:left} .zm-l{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:10px;overflow:hidden} .zm-k+.zm-k{border-top:1px solid var(--line2)} .zm-k.acik{background:#F7F9FB} .zm-n{min-width:22px;text-align:center;font:700 11px var(--f-ui);color:var(--muted)} .zm-ic{flex:1;min-width:0;display:flex;flex-direction:column} .zm-ic b{font:700 12.5px var(--f-ui);color:#26313B} .zm-ic small{font:500 10.5px var(--f-ui);color:var(--muted)} .zm-s>em{font:700 11px var(--f-ui);font-style:normal;color:#3D5A73;background:#E8EFF5;border-radius:6px;padding:2px 7px;white-space:nowrap} .zm-form{display:grid;grid-template-columns:1fr 1fr;gap:6px;padding:4px 8px 10px} .zm-form .tam{grid-column:1/-1} .zm-is{grid-column:1/-1;display:flex;gap:6px;align-items:center} .zm-is .bosluk{flex:1} .zm-t{background:#E8EFF5!important;color:#3D5A73!important} .dl-ust-s.zm-ik{background:#E8EFF5;color:#3D5A73}
 .km-silb{display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D9DCC6;background:#F7F8F0;border-radius:9px;padding:7px 10px;cursor:pointer;text-align:left} .km-silT{font:700 12px var(--f-ui);color:#4A4F2C;margin-bottom:1px}
@@ -3415,7 +3420,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 425</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 426</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10518,7 +10523,7 @@ const zmTarih = iso => { const m = /^(\d{4})-(\d\d)-(\d\d)$/.exec(iso || ""); re
 const ZM_BIRIM = [["AD", "Adet"], ["TK", "Takım"], ["ÇF", "Çift"], ["KT", "Kutu"], ["PK", "Paket"], ["KL", "Koli"], ["ÇV", "Çuval"], ["TP", "Top"], ["RL", "Rulo"], ["DS", "Deste"], ["DZ", "Düzine"], ["TB", "Tabaka"], ["KG", "Kilogram"], ["GR", "Gram"], ["TN", "Ton"], ["LT", "Litre"], ["MT", "Metre"], ["M2", "Metrekare"], ["M3", "Metreküp"], ["BD", "Bidon"], ["VR", "Varil"], ["ŞŞ", "Şişe"], ["TÜ", "Tüp"], ["SN", "Sandık"]];
 const zmMik = m => { const r = /^\s*([\d.,]*)\s*(.*?)\s*$/.exec(String(m || "")) || []; return { n: r[1] || "", b: (r[2] || "").toLocaleUpperCase("tr") }; };
 const zmBirimAd = b => (ZM_BIRIM.find(x => x[0] === b) || [, b || "seç"])[1];
-const ZM_ALAN = [["stok", "Stok No.", "n"], ["cins", "Cins ve özellikleri", "tam"], ["seri", "Seri numarası"], ["miktar", "Miktar"], ["kafile", "Kafile"], ["grup", "Stok grup"], ["skt", "Son kullanma tarihi", "tam"]];
+const ZM_ALAN = [["stok", "Stok No.", "n"], ["cins", "Cins ve özellikleri", "tam"], ["seri", "Seri numarası"], ["miktar", "Miktar"], ["kafile", "Kafile"], ["grup", "Stok grup"], ["skt", "Son kul. tarihi"]];
 /* ekran: üstte zimmet belgesi seçici (‹ kişi ›), katlanır özet bölümler, kalem tablosu (arama + sayfa sayfa), kaleme dokununca düzenleme penceresi */
 const zmAcikB = new Set(); let zmAra = "", zmGoster = 40;
 function zimmetCiz(){ const d = acikBelge(); if(!d || d.tur !== "zimmet") return; const v = zmVeri(d), k = zmAktif(v), p = zmKisi(k), L = v.kayitlar, Sx = k.satirlar, i = L.indexOf(k);
