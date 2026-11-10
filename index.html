@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "408";
+  const SURUM = "409";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1513,7 +1513,7 @@ html.imz-acik,html.imz-acik body{overflow:hidden}
 }
 .ara-oge.tam{border-color:#C9B26A!important;background:#FFFAEB!important} .ara-oge.tam b::after{content:"tam eşleşme";margin-left:6px;padding:1px 6px;border-radius:5px;background:#F3E6BE;color:#7A5F1E;font:600 10px var(--f-ui);vertical-align:2px}
 .ara-vurgu{animation:araVurgu 3.4s ease-out;outline:3px solid #E2C35A;outline-offset:-1px;border-radius:6px}
-tr.ara-vurgu>td,.ara-vurgu{background-color:#FFF4CC!important}
+tr.ara-vurgu>td,.ara-vurgu{background-color:#FFF4CC!important} tr.ara-vurgu{outline:2px solid #E2C35A;outline-offset:-1px} .onz-isik{position:absolute;z-index:2;background:rgba(255,214,77,.34);outline:2px solid #E2C35A;border-radius:3px;pointer-events:none;animation:araVurgu 3.4s ease-out}
 @keyframes araVurgu{0%,40%{outline-color:#D9A916}100%{outline-color:transparent}}
 @media (prefers-color-scheme:dark) and (max-width:0px){tr.ara-vurgu>td,.ara-vurgu{background-color:#4A4220!important}}
 .by-tuslar{display:grid;grid-template-columns:1fr 1fr;gap:8px} .by-tuslar .btn{justify-content:center;text-align:center;min-height:46px;white-space:normal;line-height:1.25}
@@ -3258,7 +3258,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 408</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 409</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3954,7 +3954,7 @@ function araYap(){
     () => { izbSecili = k.id; izbSekme = "belge"; belgeGit(belgeTur("izinb")); }); });
   (S.personel.rows || []).forEach(p => { if(has(p.ad, p.sicil, p.rutbe, p.gorev)) ekle("Personel listesi", `${p.rutbe} ${p.ad}`, `${p.sicil || ""} · ${p.gorev || ""}`, () => belgeGit(belgeTur("personel")), ilkBul(p.ad, p.sicil, p.gorev, p.rutbe) || p.ad); });
   (S.yoklama.rows || []).forEach(p => { if(has(p.ad, p.sicil, p.gorev, p.tel)) ekle("Yoklama", `${p.rutbe || ""} ${p.ad}`, `${p.vardiya || "GÜNDÜZ"} · ${p.gorev || ""}${p.tel ? " · " + p.tel : ""}`, () => belgeGit(belgeTur("yoklama")), ilkBul(p.ad, p.sicil, p.gorev, p.tel) || p.ad); });
-  (S.hedef.rows || []).forEach((h, hi) => { const v = Object.values(h).filter(x => typeof x === "string" || typeof x === "number"); if(has(...v)) ekle("Hedef", `${h.no || ""}`, `${h.tanim || ""} · ${h.koor || ""}`, () => belgeGit(belgeTur("hedef")), ilkBul(...v) || h.no, () => hedefGit(hi)); });
+  (S.hedef.rows || []).forEach((h, hi) => { const v = Object.values(h).filter(x => typeof x === "string" || typeof x === "number"); if(has(...v)) ekle("Hedef", `${h.no || ""}`, `${h.tanim || ""} · ${h.koor || ""}`, () => belgeGit(belgeTur("hedef")), ilkBul(...v) || h.no, () => hedefGit(hi, h.no)); });
   S.belgeler.filter(d => d.tur === "grid" && d.grid).forEach(d => { const bul = []; (d.grid.c || []).forEach(sat => (sat || []).forEach(x => { if(x && x.v != null && x.v !== "" && has(x.v)) bul.push(String(x.v)); }));
     if(bul.length) ekle("Tablo içeriği", d.ad, `${bul.length} eşleşme · “${bul[0].replace(/\s+/g, " ").slice(0, 70)}”`, () => belgeGit(d), bul[0]); });
   /* diğer belge türlerinin kendi verisi (tebliğ, toplu tebliğ, mevzi, şema, kapak, can dostu …): tüm yazılar taranır */
@@ -3973,11 +3973,36 @@ function araYap(){
 let araZaman; $("#ara").addEventListener("input", () => { clearTimeout(araZaman); araZaman = setTimeout(araYap, 180); });
 $("#ara").addEventListener("keydown", e => { if(e.key === "Escape"){ $("#ara").value = ""; araYap(); } else if(e.key === "Enter"){ const b = $("#ara-sonuc .ara-oge"); if(b) b.click(); } });
 $("#ara-temizle").addEventListener("click", () => { $("#ara").value = ""; araYap(); });
-$("#ara-sonuc").addEventListener("click", e => { const b = e.target.closest("[data-ara]"); if(!b) return; const r = araSonuc[+b.dataset.ara]; if(r){ r.git(); if(r.sonra) r.sonra(); else if(SECIM.belge && !$("#v-belge").hidden) bulAc($("#ara").value.trim()); else araVurgula(r.ipucu); } });
+$("#ara-sonuc").addEventListener("click", e => { const b = e.target.closest("[data-ara]"); if(!b) return; const r = araSonuc[+b.dataset.ara]; if(r){ r.git(); if(r.sonra) r.sonra(); else if(SECIM.belge && !$("#v-belge").hidden){ bulAc($("#ara").value.trim()); setTimeout(() => onizVurgula($("#ara").value.trim()), 600); } else araVurgula(r.ipucu); } });
+/* kâğıt önizlemesindeki tabloda da aranan satır sarı yanar (tam eşleşen hücre önce) */
+function onizVurgula(q, kaydir, deneme = 0){ const n = araNorm(q || ""); if(n.length < 2) return false; const kap = $("#v-belge"); if(!kap || kap.hidden) return false;
+  const gor = x => x.offsetParent !== null;
+  const T = [...kap.querySelectorAll(".kp-onizle tr, #h-on-kap tr, .tb-kagit tr")].filter(gor);
+  const esit = td => { const a = araNorm(td.textContent); return a === n || /^[0-9]+$/.test(n) && a.replace(/^[A-Z]+/, "") === n; };
+  let L = T.filter(tr => [...tr.cells].some(esit)); if(!L.length) L = T.filter(tr => araNorm(tr.textContent).includes(n)).slice(0, 3);
+  if(L.length){ L.forEach(tr => { tr.classList.remove("ara-vurgu"); void tr.offsetWidth; tr.classList.add("ara-vurgu"); setTimeout(() => tr.classList.remove("ara-vurgu"), 4500); });
+    if(kaydir) L[0].scrollIntoView({ block: "center", behavior: "smooth" }); return true; }
+  /* önizleme PDF resmiyse: yazıların yerinden satır bulunur, üstüne sarı bant konur */
+  const C = [...kap.querySelectorAll("canvas.onz-tuval")].filter(c => gor(c) && c._tc); const B = [];
+  for(const c of C){ const sat = new Map();
+    for(const it of c._tc.items){ if(!it.str || !it.str.trim()) continue; const [x0, y0] = c._v.convertToViewportPoint(it.transform[4], it.transform[5]), h = Math.abs(it.transform[3]) * c._v.scale, k = Math.round(y0 / Math.max(2, h * .5));
+      const r = sat.get(k) || { y: y0, h: 0, t: [] }; r.h = Math.max(r.h, h); r.t.push(it.str); sat.set(k, r); }
+    for(const r of sat.values()){ const a = araNorm(r.t.join(" ")); if(a.includes(n)) B.push({ c, r }); } }
+  if(B.length){ let ilk = null; B.slice(0, 6).forEach(({ c, r }) => { const p = c.parentElement; if(getComputedStyle(p).position === "static") p.style.position = "relative";
+      const d = document.createElement("div"); d.className = "onz-isik"; const ust = (r.y - r.h * 1.1), yuk = r.h * 1.55;
+      Object.assign(d.style, { top: (c.offsetTop + ust / c.height * c.offsetHeight) + "px", height: Math.max(6, yuk / c.height * c.offsetHeight) + "px", left: (c.offsetLeft + c.offsetWidth * .03) + "px", width: (c.offsetWidth * .94) + "px" });
+      p.appendChild(d); setTimeout(() => d.remove(), 6000); ilk ||= d; });
+    if(kaydir && ilk) ilk.scrollIntoView({ block: "center", behavior: "smooth" }); if(!(BUL.L || []).length) bulKapat(); return true; }   /* sayfada yazı olarak yoksa "bulunamadı" çubuğu kapanır */
+  if(deneme < 10){ const kapali = [...kap.querySelectorAll("details.lt-on:not([open])")].find(gor); if(kapali) kapali.open = true;   /* "Tablo görünümü" kapalıysa açılır */
+    const bekle = kapali || [...kap.querySelectorAll(".kp-onizle")].some(k => gor(k) && !k.querySelector("canvas.onz-tuval, table") ) || [...kap.querySelectorAll("canvas.onz-tuval")].some(c => gor(c) && !c._tc);
+    if(bekle){ setTimeout(() => onizVurgula(q, true, deneme + 1), 500); return true; } }
+  return false; }
 /* aramadan seçilen hedefin kartına git (süzgeç varsa kaldırılır) */
-function hedefGit(i){ const a = $("#h-ara"); if(a && a.value || hFiltre !== null){ if(a) a.value = ""; hFiltre = null; try { hedefCiz(); } catch(e){} } let n = 0;
+function hedefGit(i, no){ const a = $("#h-ara"); if(a && a.value || hFiltre !== null){ if(a) a.value = ""; hFiltre = null; try { hedefCiz(); } catch(e){} } let n = 0;
   const dene = () => { const el = document.querySelector(`#h-tablo .hk[data-i="${i}"]`); if(!el){ if(n++ < 25) setTimeout(dene, 120); return; }
-    el.scrollIntoView({ block: "center", behavior: "smooth" }); el.classList.remove("ara-vurgu"); void el.offsetWidth; el.classList.add("ara-vurgu"); setTimeout(() => el.classList.remove("ara-vurgu"), 3500); };
+    el.classList.remove("ara-vurgu"); void el.offsetWidth; el.classList.add("ara-vurgu"); setTimeout(() => el.classList.remove("ara-vurgu"), 3500);
+    const on = $("#h-on"); if(on && !on.open) on.open = true;   /* önizleme kapalıysa açılır, satırı orada da gösterir */
+    setTimeout(() => { if(!onizVurgula(no || "", true)) el.scrollIntoView({ block: "center", behavior: "smooth" }); }, 450); };
   setTimeout(dene, 150); }
 /* aramadan açılan sayfada aranan satırı bul, ekranın ortasına getir ve kısa süre vurgula */
 function araVurgula(ipucu){
@@ -10035,6 +10060,7 @@ function pdfOnizle(kap, uret, hemen){ if(!kap) return; clearTimeout(onzZaman.get
     const pdf = await lib.getDocument({ data: new Uint8Array(await blob.arrayBuffer()) }).promise, pg = await pdf.getPage(1), v0 = pg.getViewport({ scale: 1 }), w = Math.max(280, kap.clientWidth - 20);
     const v = pg.getViewport({ scale: w * Math.min(3, (window.devicePixelRatio || 1) * 1.5) / v0.width }), c = document.createElement("canvas"); c.width = Math.round(v.width); c.height = Math.round(v.height);
     const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); await pg.render({ canvasContext: x, viewport: v }).promise; if(kap.dataset.no !== no) return;
+    try { c._tc = await pg.getTextContent(); c._v = v; } catch(e){}   /* aramada satırı resmin üstünde işaretlemek için yazıların yeri */
     c.className = "onz-tuval"; kap.replaceChildren(c); } catch(e){ console.warn("önizleme", e); } }, hemen ? 0 : 450)); }
 /* kişi seçimi: tek satır, dokununca alttan liste (dilekçe ve izin belgesinde ortak) */
 const LISTE_ACIK = new Set();
