@@ -5,6 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <meta name="robots" content="noindex,nofollow">
 <meta name="theme-color" content="#F2F4F7">
+<meta property="og:title" content="TSK ARŞİV">
+<meta property="og:description" content="Arşive bağlanma bağlantısı · PIN ile açılır">
+<meta property="og:image" content="https://tcmustafacelik.github.io/tsk-arsiv-uygulama/icon-v4-512.png">
+<meta property="og:type" content="website">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"%3E  %3Cdefs%3E    %3ClinearGradient id="kk" x1="0" y1="0" x2="0.4" y2="1"%3E%3Cstop offset="0" stop-color="%233D5C85"/%3E%3Cstop offset="1" stop-color="%231D2D44"/%3E%3C/linearGradient%3E    %3ClinearGradient id="ka" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0" stop-color="%23EBDDB2"/%3E%3Cstop offset="1" stop-color="%23BFA765"/%3E%3C/linearGradient%3E    %3ClinearGradient id="kc" x1="0" y1="0" x2="0" y2="1"%3E%3Cstop offset="0" stop-color="%23FFFFFF"/%3E%3Cstop offset="1" stop-color="%23E7ECF3"/%3E%3C/linearGradient%3E  %3ClinearGradient id="kz" x1="0" y1="0" x2="1" y2="1"%3E%3Cstop offset="0" stop-color="%23F4F7FB"/%3E%3Cstop offset="1" stop-color="%23DCE5EF"/%3E%3C/linearGradient%3E%3C/defs%3E  %3Crect width="512" height="512" rx="116" fill="url(%23kz)"/%3E  %3Cg transform="translate(256 262) scale(0.84) translate(-256 -256)"%3E%3Cpath d="M256 34 L436 92 V236 C436 352 360 434 256 478 C152 434 76 352 76 236 V92 Z" fill="url(%23kk)"/%3E  %3Cpath d="M256 66 L408 115 V236 C408 335 344 405 256 444 C168 405 104 335 104 236 V115 Z" fill="none" stroke="url(%23ka)" stroke-width="7"/%3E  %3Cpath d="M256 150 L360 202 L256 254 L152 202 Z" fill="url(%23kc)"/%3E  %3Cpath d="M152 246 L256 298 L360 246" fill="none" stroke="%23A9BDD6" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/%3E  %3Cpath d="M152 292 L256 344 L360 292" fill="none" stroke="url(%23ka)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/%3E%3C/g%3E%3C/svg%3E">
 <link rel="apple-touch-icon" href="apple-touch-icon.png">
 <link rel="manifest" href="manifest.webmanifest">
@@ -18,7 +22,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "396";
+  const SURUM = "397";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -322,9 +326,19 @@
   async function linkYap(pin, icerik, on){ const salt = crypto.getRandomValues(new Uint8Array(16)), iv = crypto.getRandomValues(new Uint8Array(12)), n = 250000;
     const c = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await pinAnahtar(pin, salt, n), new TextEncoder().encode(JSON.stringify(icerik || { r: meta.depo, t: token, p: sifre }))));
     return SITE + (on || "#tsk-link=") + "TSK1." + b64u(new TextEncoder().encode(JSON.stringify({ s: b64u(salt), i: b64u(iv), c: b64u(c), n }))); }
-  function linkCoz(ham){ const m = String(ham || "").trim().match(/TSK1\.([A-Za-z0-9_-]+)/); if(!m) return null;
+  /* kısa link (sürüm 2): #k=… kendi cihaz, #m=… misafir. İçerik ikili paketlenir (depo varsayılansa yazılmaz, "github_pat_" ön eki atılır) */
+  const PAY_DEPO0 = "tcmustafacelik/tsk-arsiv-paylasim";
+  async function linkYap2(pin, d, tur){ const salt = crypto.getRandomValues(new Uint8Array(8)), iv = crypto.getRandomValues(new Uint8Array(12)), d0 = tur === "m" ? PAY_DEPO0 : VARSAYILAN_DEPO;
+    const duz = [d.r === d0 ? "" : d.r, /^github_pat_/.test(d.t) ? d.t.slice(11) : "!" + d.t, d.p || ""].join("\n");
+    const c = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await pinAnahtar(pin, salt, 250000), new TextEncoder().encode(duz)));
+    const o = new Uint8Array(21 + c.length); o[0] = 2; o.set(salt, 1); o.set(iv, 9); o.set(c, 21); return SITE + "#" + tur + "=" + b64u(o); }
+  function linkCoz(ham){ const h = String(ham || "").trim(), m2 = h.match(/(?:^|[#&?])([km])=([A-Za-z0-9_-]{40,})/) || (/^[A-Za-z0-9_-]{40,}$/.test(h) ? [0, "", h] : null);
+    if(m2 && !/TSK1\./.test(h)){ try { const b = ub64(m2[2]); if(b[0] === 2 && b.length > 40) return { v2: b, tur: m2[1] }; } catch(e){} }
+    const m = h.match(/TSK1\.([A-Za-z0-9_-]+)/); if(!m) return null;
     try { const j = JSON.parse(new TextDecoder().decode(ub64(m[1]))); return j && j.s && j.i && j.c ? j : null; } catch(e){ return null; } }
-  async function linkAc(j, pin){ try { const d = JSON.parse(new TextDecoder().decode(new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: ub64(j.i) }, await pinAnahtar(pin, ub64(j.s), j.n || 250000), ub64(j.c)))));
+  async function linkAc(j, pin){ if(j && j.v2){ try { const b = j.v2, duz = new TextDecoder().decode(new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: b.slice(9, 21) }, await pinAnahtar(pin, b.slice(1, 9), 250000), b.slice(21))));
+      const [r, t, p] = duz.split("\n"); return { r: r || (j.tur === "m" ? PAY_DEPO0 : VARSAYILAN_DEPO), t: t[0] === "!" ? t.slice(1) : "github_pat_" + t, p: p || "", ...(j.tur === "m" ? { rol: "izleyici" } : {}) }; } catch(e){ return null; } }
+    try { const d = JSON.parse(new TextDecoder().decode(new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: ub64(j.i) }, await pinAnahtar(pin, ub64(j.s), j.n || 250000), ub64(j.c)))));
     return d && d.t && d.r ? d : null; } catch(e){ return null; } }
 
   /* ---------- arayüz ---------- */
@@ -578,16 +592,17 @@
         const b = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur", "kendi"); if(b === null) return;
         if(a === b) pin = a; else hata = "PIN'ler aynı değil, baştan dene."; }
       if(!pin) return;
-      const link = await linkYap(pin); try { localStorage.setItem(LS_LINK, link); } catch(e){} linkGoster(link);
+      const link = await linkYap2(pin, { r: meta.depo, t: token, p: sifre }, "k"); try { localStorage.setItem(LS_LINK, link); } catch(e){} linkGoster(link);
     }
     async function hizliKullan(ham){
-      const j = linkCoz(ham); if(!j){ panelCiz(); panel.hidden = false; acKapa("bl-link-alan", true); $$("#bl-hata").textContent = "Bu bir TSK ARŞİV hızlı bağlantı linki değil."; return; }
+      const j = linkCoz(ham); if(!j){ panelCiz(); panel.hidden = false; acKapa("bl-link-alan", true); $$("#bl-hata").textContent = "Bu bir TSK ARŞİV bağlantı linki değil."; return; }
+      if(j.tur === "m"){ panel.hidden = true; return izleKullan(ham); }   /* misafir linki kendi bağlantısı gibi açılmaz */
       let d = null, hata = "";
       for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Kendi arşivine bağlan", "Kendi cihazların için belirlediğin 6 haneli PIN. (Bu link sahibine özeldir; misafir linki değildir.)", hata, "Bağlan", "kendi"); if(pin === null) return;
         d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar dene"; }
       if(!d){ bildirim("PIN 5 kez yanlış girildi"); return; }
       panelCiz(); panel.hidden = false; const h = $$("#bl-hata"); h.className = "bl-hata bilgi"; h.innerHTML = '<span class="bl-spin"></span>Bağlanıyor, veriler alınıyor…';
-      try { await baglan(d.r, d.t, d.p || "", meta.mod); try { localStorage.setItem(LS_LINK, SITE + "#tsk-link=" + String(ham).trim().match(/TSK1\.[A-Za-z0-9_-]+/)[0]); } catch(e){} h.className = "bl-hata"; panelCiz(); bildirim("Bağlandı, veriler alındı"); }
+      try { await baglan(d.r, d.t, d.p || "", meta.mod); try { const t1 = String(ham).trim().match(/TSK1\.[A-Za-z0-9_-]+/); localStorage.setItem(LS_LINK, t1 ? SITE + "#tsk-link=" + t1[0] : (/^https?:/.test(String(ham).trim()) ? String(ham).trim() : SITE + "#k=" + String(ham).trim())); } catch(e){} h.className = "bl-hata"; panelCiz(); bildirim("Bağlandı, veriler alındı"); }
       catch(x){ meta.bagli = false; token = ""; h.className = "bl-hata"; h.textContent = x.message; }
     }
     $$("#bl-kopyala").onclick = async () => { const v = $$("#bl-link-tam").value; try { await navigator.clipboard.writeText(v); } catch(e){ const t = $$("#bl-link-tam"); t.select(); try { document.execCommand("copy"); } catch(y){} } bildirim("Link kopyalandı"); };
@@ -660,7 +675,7 @@
       if(b.dataset.bpl != null){ let pin = null, hata = "";
         for(let k = 0; k < 3 && !pin; k++){ const a = await pinSor("Misafir için PIN belirle", "Misafir linki açınca bu 6 haneli PIN'i girecek. Kendi PIN'inizden FARKLI bir PIN seçin ve misafire ayrıca (telefonla, yüz yüze) söyleyin.", hata, "Devam", "misafir"); if(a === null) return;
           const c = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur", "misafir"); if(c === null) return; if(a === c) pin = a; else hata = "PIN'ler aynı değil, baştan dene."; }
-        if(!pin) return; const link = await linkYap(pin, { r: pay.depo, t: pay.t, p: pay.p, rol: "izleyici" }, "#tsk-izle=");
+        if(!pin) return; const link = await linkYap2(pin, { r: pay.depo, t: pay.t, p: pay.p }, "m");
         tipKoy(lnP, "misafir"); lnP.querySelector("h2").textContent = "Misafir linki hazır"; lnP.querySelector(".bl-alt").textContent = "Bu linki misafire gönderin, PIN'i ayrıca söyleyin. Misafir yalnız paylaştıklarınızı görür; gizlediğiniz bölümler onda buğulu görünür, ana arşivinize erişemez."; linkGoster(link); return; }
       if(b.dataset.bpk != null){ const s2 = await sor("Paylaşım kapatılsın mı?", "Paylaşım deposundaki kopya boşaltılır; karşı taraf bir sonraki açılışta hiçbir şey göremez. Ana arşivinize dokunulmaz.", "Kapat", "Vazgeç"); if(s2 !== 1) return;
         try { const u = await payOku(); const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); for(const x of (pr.ok ? await pr.json() : [])) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım kapandı", sha: x.sha }) });
@@ -670,7 +685,7 @@
     async function izleKullan(ham){
       if(meta.bagli && !izleyici()){ const s2 = await sor("Bu cihaz sizin arşivinize bağlı", "Görüntüleme linki karşı tarafın telefonunda açılmalı. Burada açılırsa kendi arşivinizi görürsünüz. Karşı tarafın gördüğünü bu cihazda önizlemek ister misiniz? (Önizlemede hiçbir şey değiştirilemez.)", "Önizle", "Vazgeç");
         if(s2 === 1){ try { sessionStorage.setItem("tsk-onizle", "1"); } catch(e){} location.reload(); } return; }
-      const j = linkCoz(ham); if(!j){ bildirim("Görüntüleme linki bozuk"); return; }
+      const j = linkCoz(ham); if(!j){ bildirim("Görüntüleme linki bozuk"); return; } if(j.tur === "k"){ bildirim("Bu, sahibin kendi cihaz linki; misafir linki değil"); return; }
       let d = null, hata = "";
       for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Misafir girişi", "Bu bir görüntüleme linkidir. Arşiv sahibinin size söylediği 6 haneli PIN'i girin.", hata, "Aç", "misafir"); if(pin === null) return; d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar deneyin"; }
       if(!d){ bildirim("PIN 5 kez yanlış girildi"); return; }
@@ -687,7 +702,7 @@
       const h = $$("#bl-hata"); h.className = "bl-hata"; h.textContent = meta.bagli ? "" : (meta.bagli === false && durumHata ? durumHata : ""); $$("#bl-hata2").textContent = durumHata; durumCiz(); };
     panel.querySelectorAll("[data-ac]").forEach(b => b.onclick = () => { const id = b.dataset.ac, ac = $$("#" + id).hidden; ["bl-link-alan", "bl-anahtar-alan"].forEach(x => acKapa(x, x === id && ac)); if(ac){ const i = $$("#" + id).querySelector("input"); if(i) setTimeout(() => i.focus(), 50); } });
     panel.querySelectorAll("[data-yapistir]").forEach(b => b.onclick = async () => { const i = $$("#" + b.dataset.yapistir); try { i.value = (await navigator.clipboard.readText()).trim(); if(i.id === "bl-link" && linkCoz(i.value)) $$("#bl-link-devam").click(); } catch(e){ i.focus(); bildirim("Kutuya basılı tutup Yapıştır'ı seç"); } });
-    $$("#bl-link-devam").onclick = () => { const v = $$("#bl-link").value; if(!linkCoz(v)){ $$("#bl-hata").textContent = "Linki tam olarak yapıştır (TSK1. ile başlayan kısım dahil)."; return; } $$("#bl-hata").textContent = ""; hizliKullan(v); };
+    $$("#bl-link-devam").onclick = () => { const v = $$("#bl-link").value; if(!linkCoz(v)){ $$("#bl-hata").textContent = "Linki tam olarak yapıştır."; return; } $$("#bl-hata").textContent = ""; hizliKullan(v); };
     $$("#bl-link").addEventListener("keydown", e => { if(e.key === "Enter") $$("#bl-link-devam").click(); });
     async function anahtarlaBaglan(t, btn){
       const h = $$("#bl-hata"); h.className = "bl-hata"; h.textContent = ""; const eski = btn.innerHTML; btn.disabled = true; btn.innerHTML = '<span class="bl-spin"></span>Bağlanıyor…';
@@ -726,6 +741,7 @@
     let gelenLink = "", gelenIzle = "";
     if((location.hash || "").startsWith("#tsk-link=")){ gelenLink = location.hash.slice(10); try { history.replaceState(null, "", location.pathname + location.search); } catch(e){} }
     if((location.hash || "").startsWith("#tsk-izle=")){ gelenIzle = location.hash.slice(10); try { history.replaceState(null, "", location.pathname + location.search); } catch(e){} }
+    if(/^#[km]=/.test(location.hash || "")){ const h = location.hash; if(h[1] === "m") gelenIzle = h; else gelenLink = h; try { history.replaceState(null, "", location.pathname + location.search); } catch(e){} }
     if(ONIZLE){ const sr = document.createElement("div"); sr.id = "onizle-serit"; sr.innerHTML = `<span><b>Önizleme</b> · karşı tarafın gördüğü</span><button type="button">Çık</button>`; document.body.appendChild(sr);
       const st3 = document.createElement("style"); st3.textContent = `#onizle-serit{position:fixed;z-index:90;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));white-space:nowrap;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:10px;background:#34475C;color:#fff;font:500 12px var(--f-ui);box-shadow:0 6px 20px rgba(0,0,0,.2);max-width:calc(100vw - 24px)} #onizle-serit button{border:0;border-radius:8px;padding:6px 12px;background:rgba(255,255,255,.18);color:#fff;font:600 12px var(--f-ui);cursor:pointer}`; document.head.appendChild(st3);
       sr.querySelector("button").onclick = () => { try { sessionStorage.removeItem("tsk-onizle"); } catch(e){} location.reload(); }; }
@@ -3026,7 +3042,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 396</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 397</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
