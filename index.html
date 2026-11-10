@@ -22,7 +22,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "397";
+  const SURUM = "398";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -33,6 +33,7 @@
   const mem = {}, dinle = {}, kdinle = {}, varlikBellek = {};
   let idb = null;
   /* meta: bulut ayarları ve durum (anahtar/şifre localStorage'da, bu cihazda) */
+  const veriYol = () => meta.rol === "izleyici" && meta.misafirId && meta.misafirId !== "0" ? "veri/m-" + meta.misafirId + ".json" : VERI;   /* her misafirin kendi kopyası */
   const meta = { rol: "sahip", depo: VARSAYILAN_DEPO, mod: "an", bagli: false, sha: null, imza: "", yerelDegisti: false, sonGonder: 0, sonAl: 0, bekleyenDosya: [], silinecekDosya: [] };
   let token = "", sifre = "";
   try { token = localStorage.getItem("tsk-gh-token") || ""; sifre = localStorage.getItem("tsk-gh-sifre") || ""; } catch(e){}
@@ -59,7 +60,9 @@
   async function coz(salt, iv, c){ try { return new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv }, await anahtar(salt), c)); } catch(e){ throw new Error("SIFRE"); } }
   const SIHIR = new TextEncoder().encode("TSKENC1");
   async function dosyaSifrele(u8){ if(!sifre) return u8; const { salt, iv, c } = await sifrele(u8); const o = new Uint8Array(7 + 16 + 12 + c.length); o.set(SIHIR); o.set(salt, 7); o.set(iv, 23); o.set(c, 35); return o; }
-  async function dosyaCoz(u8){ if(u8.length > 35 && SIHIR.every((b, i) => u8[i] === b)){ if(!sifre) throw new Error("SIFRE"); return coz(u8.slice(7, 23), u8.slice(23, 35), u8.slice(35)); } return u8; }
+  async function dosyaCoz(u8){ if(u8.length > 35 && SIHIR.every((b, i) => u8[i] === b)){ const dk = meta.rol === "izleyici" ? (mem["bt/paylasimGor"] || {}).dk : "";
+    if(dk){ try { return new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: u8.slice(23, 35) }, await anahtarK(dk, u8.slice(7, 23)), u8.slice(35))); } catch(e){ throw new Error("SIFRE"); } }
+    if(!sifre) throw new Error("SIFRE"); return coz(u8.slice(7, 23), u8.slice(23, 35), u8.slice(35)); } return u8; }
   async function paketle(veri){ const ham = new TextEncoder().encode(JSON.stringify(veri)); if(!sifre) return JSON.stringify(veri, null, 1);
     const { salt, iv, c } = await sifrele(ham); return JSON.stringify({ enc: 1, salt: u8ToB64(salt), iv: u8ToB64(iv), veri: u8ToB64(c), guncellendi: new Date().toISOString() }); }
   async function ac_paket(metin){ const j = JSON.parse(metin || "{}"); if(j && j.enc === 1){ if(!sifre) throw new Error("SIFRE"); return JSON.parse(new TextDecoder().decode(await coz(b64ToU8(j.salt), b64ToU8(j.iv), b64ToU8(j.veri)))); } return j; }
@@ -77,16 +80,16 @@
   const yol = p => `${API}/repos/${meta.depo}/contents/${p.split("/").map(encodeURIComponent).join("/")}`;
   async function gh(url, o = {}){ const r = await fetchAsil(url, { cache: "no-store", ...o, headers: bas(o.headers || {}) }); if(r.status === 401) throw new Error("ANAHTAR"); return r; }
   async function uzakOku(){
-    const r = await gh(yol(VERI), { headers: { Accept: "application/vnd.github.object+json" } });
+    const r = await gh(yol(veriYol()), { headers: { Accept: "application/vnd.github.object+json" } });
     if(r.status === 404) return { sha: null, veri: null };
     if(!r.ok) throw new Error("Depo okunamadı (" + r.status + ")");
     const j = await r.json(); let metin;
     if(j.content && j.encoding === "base64") metin = new TextDecoder().decode(b64ToU8(j.content.replace(/\n/g, "")));
-    else { const r2 = await gh(yol(VERI), { headers: { Accept: "application/vnd.github.raw+json" } }); metin = await r2.text(); }
+    else { const r2 = await gh(yol(veriYol()), { headers: { Accept: "application/vnd.github.raw+json" } }); metin = await r2.text(); }
     return { sha: j.sha, veri: await ac_paket(metin) };
   }
   async function uzakYaz(veri, mesaj){
-    const r = await gh(yol(VERI), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: mesaj, content: u8ToB64(new TextEncoder().encode(await paketle(veri))), ...(meta.sha ? { sha: meta.sha } : {}) }) });
+    const r = await gh(yol(veriYol()), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: mesaj, content: u8ToB64(new TextEncoder().encode(await paketle(veri))), ...(meta.sha ? { sha: meta.sha } : {}) }) });
     if(r.status === 409 || r.status === 422) throw new Error("CAKISMA");
     if(!r.ok) throw new Error("GitHub'a yazılamadı (" + r.status + ")");
     meta.sha = (await r.json()).content.sha;
@@ -136,7 +139,7 @@
       const u = await uzakOku();
       /* bu cihazdaki kopya eksikse (tarayıcı verisi silinmiş ya da yazılamamış) asla göndermeyiz: buluttakini yeniden indiririz */
       const yerelSay = Object.keys(mem).length, uzakSay = u.veri ? Object.keys(u.veri).length : 0;
-      if(izleyici() && !meta.yerelDegisti && u.veri){ if(u.sha !== meta.sha || imza(u.veri) !== imza(mem)){ meta.sha = u.sha; esit(u.veri); yerelDegistir(u.veri); rolUygula(); bildirim("Paylaşılan arşiv güncellendi"); } meta.sonAl = Date.now(); durumHata = ""; return; }   /* misafir: paylaşılan kopya olduğu gibi alınır */
+      if(izleyici() && !meta.yerelDegisti && u.veri){ if(u.sha !== meta.sha || imza(u.veri) !== imza(mem)){ meta.sha = u.sha; esit(u.veri); yerelDegistir(u.veri); rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım sahibi tarafından kapatıldı" : "Paylaşılan arşiv güncellendi"); } meta.sonAl = Date.now(); durumHata = ""; gorulmeYaz(); return; }   /* misafir: paylaşılan kopya olduğu gibi alınır */
       if(u.veri && (!("bt/yapi" in mem) || yerelSay < Math.max(meta.anahtar || 0, uzakSay) * 0.8)){
         meta.sha = u.sha; esit(u.veri); meta.yerelDegisti = false; meta.anahtar = uzakSay; yerelDegistir(u.veri); meta.sonAl = Date.now(); durumHata = "";
         bildirim("Bu cihazdaki kayıtlar eksikti; buluttan yeniden yüklendi"); return; }
@@ -154,9 +157,17 @@
   /* sahip: paylaşım deposuna gizlenen bölümler çıkarılmış kopya gönderilir. Gizli belge/dosya yalnız adsız bir taslak olarak gider (içeriği hiç gitmez),
      onu kullanan belgelerin hepsi gizliyse ortak veri (personel, izin…) hiç gönderilmez. Karşı tarafın düzenlemeleri yalnız düzenleme yetkisi açıkken alınır. */
   const PAY_LS = "tsk-pay";
-  let pay = null; try { pay = JSON.parse(localStorage.getItem(PAY_LS) || "null"); } catch(e){}
-  const payKaydet = () => { try { if(pay) localStorage.setItem(PAY_LS, JSON.stringify(pay)); else localStorage.removeItem(PAY_LS); } catch(e){} };
-  const payAyar = () => ({ gizli: {}, duzenle: false, ...(mem["bt/paylasim"] || {}) });
+  let payEski = null; try { payEski = JSON.parse(localStorage.getItem(PAY_LS) || "null"); } catch(e){}   /* eski sürüm: ayar yalnız o cihazdaydı */
+  /* paylaşım ayarı artık arşivle birlikte eşitlenir: sahibin her cihazı paylaşımı günceller. Anahtar düz yazılmaz. */
+  const GZ = "TSK-ARSIV-pay";
+  const tkGiz = t => b64u(new TextEncoder().encode(t).map((c, i) => c ^ GZ.charCodeAt(i % GZ.length)));
+  const tkAc = s => { try { return new TextDecoder().decode(ub64(s).map((c, i) => c ^ GZ.charCodeAt(i % GZ.length))); } catch(e){ return ""; } };
+  let pay = null;
+  const payAyar = () => ({ gizli: {}, duzenle: false, misafirler: [], ...(mem["bt/paylasim"] || {}) });
+  const payTazele = () => { const k = (mem["bt/paylasim"] || {}).kur; pay = k && k.depo && k.tk ? { depo: k.depo, t: tkAc(k.tk), p: k.dk } : null; return pay; };
+  const payMis = () => (payAyar().misafirler || []).filter(m => m && m.id && m.k);
+  const mYol = m => m.id === "0" ? VERI : "veri/m-" + m.id + ".json";
+  const payAyarYaz = async A => { mem["bt/paylasim"] = kopya(A); await yerelYaz("bt/paylasim", mem["bt/paylasim"]); degisti(); payTazele(); };
   const ghP = (url, o = {}) => fetchAsil(url, { cache: "no-store", ...o, headers: { Authorization: "Bearer " + pay.t, "X-GitHub-Api-Version": "2022-11-28", ...(o.headers || {}) } });
   const yolP = p => `${API}/repos/${pay.depo}/contents/${p.split("/").map(encodeURIComponent).join("/")}`;
   function payYerGizli(G, k, b){ const ku = ((mem["bt/yapi"] || {}).klasorler || []).find(x => x.id === k); return !!(G["k:" + k] || G["b:" + k + "|" + b] || (ku && ku.ust && G["g:" + ku.ust])); }
@@ -173,18 +184,19 @@
     R["bt/paylasimGor"] = { gizli: G, duzenle: !!A.duzenle };
     return R; }
   let payCalisiyor = false, payZaman = null, payHata = "";
-  const payPlanla = (ms = 4000) => { if(ONIZLE || izleyici() || !pay) return; clearTimeout(payZaman); payZaman = setTimeout(() => paylasimGonder(), ms); };
-  async function payOku(){ const r = await ghP(yolP(VERI), { headers: { Accept: "application/vnd.github.object+json" } }); if(r.status === 404) return { sha: null, veri: null }; if(r.status === 401) throw new Error("Paylaşım anahtarı geçersiz");
+  const payPlanla = (ms = 4000) => { if(ONIZLE || izleyici() || !payTazele()) return; clearTimeout(payZaman); payZaman = setTimeout(() => paylasimGonder(), ms); };
+  async function payOku(m){ const r = await ghP(yolP(mYol(m)), { headers: { Accept: "application/vnd.github.object+json" } }); if(r.status === 404) return { sha: null, veri: null }; if(r.status === 401) throw new Error("Paylaşım anahtarı geçersiz");
     if(!r.ok) throw new Error("Paylaşım deposu okunamadı (" + r.status + ")"); const j = await r.json(); let metin;
-    if(j.content && j.encoding === "base64") metin = new TextDecoder().decode(b64ToU8(j.content.replace(/\n/g, ""))); else { const r2 = await ghP(yolP(VERI), { headers: { Accept: "application/vnd.github.raw+json" } }); metin = await r2.text(); }
+    if(j.content && j.encoding === "base64") metin = new TextDecoder().decode(b64ToU8(j.content.replace(/\n/g, ""))); else { const r2 = await ghP(yolP(mYol(m)), { headers: { Accept: "application/vnd.github.raw+json" } }); metin = await r2.text(); }
     const k = JSON.parse(metin || "{}"); let veri = k;
-    if(k && k.enc === 1){ const salt = b64ToU8(k.salt); veri = JSON.parse(new TextDecoder().decode(new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64ToU8(k.iv) }, await anahtarK(pay.p, salt), b64ToU8(k.veri))))); }
+    if(k && k.enc === 1){ const salt = b64ToU8(k.salt); veri = JSON.parse(new TextDecoder().decode(new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: b64ToU8(k.iv) }, await anahtarK(m.k, salt), b64ToU8(k.veri))))); }
     return { sha: j.sha, veri }; }
   async function payDosyalar(R){ const js = JSON.stringify(R);
     const ana = await gh(`${API}/repos/${meta.depo}/contents/veri/dosyalar`); const anaL = ana.ok ? (await ana.json()).map(x => x.name) : [];
-    const ist = new Set(anaL.filter(id => js.includes(id)));
-    const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); const payL = pr.ok ? await pr.json() : [];
-    for(const x of payL) if(!ist.has(x.name)) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya kaldırma", sha: x.sha }) });   // gizlenen dosya paylaşımdan silinir
+    const ist = new Set(anaL.filter(id => js.includes(id))), kur = payAyar().kur || {}, yeniDk = kur.dkYuklu !== pay.p;
+    const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); let payL = pr.ok ? await pr.json() : [];
+    for(const x of payL) if(yeniDk || !ist.has(x.name)) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım dosya kaldırma", sha: x.sha }) });   // gizlenen dosya paylaşımdan silinir
+    if(yeniDk){ payL = []; const A = payAyar(); await payAyarYaz({ ...A, kur: { ...A.kur, dkYuklu: pay.p } }); }   /* eski anahtarla şifreli dosyalar silindi; yenileriyle gönderilir */
     const atla = [], var_ = new Set(payL.map(x => x.name)), eksik = [...ist].filter(id => !var_.has(id)); let n = 0;
     const ilerle = () => { const t = `Dosyalar gönderiliyor · ${n} / ${eksik.length}`; document.querySelectorAll("[data-bpkur]").forEach(el => el.innerHTML = '<span class="bl-spin"></span>' + t); const pd = document.getElementById("bl-pay-durum"); if(pd) pd.textContent = t; };
     for(const id of eksik){ n++; ilerle(); const b = await varlikAl(id).catch(() => null); if(!b) continue;
@@ -193,27 +205,47 @@
       if(r.status === 422 || r.status === 409){ const g = await ghP(yolP(DOSYA + id), { headers: { Accept: "application/vnd.github.object+json" } }); if(g.ok) r = await koy((await g.json()).sha); else { await new Promise(ok => setTimeout(ok, 1500)); r = await koy(); } }   // dosya önceki denemede gönderilmişse üstüne yazılır
       if(!r.ok) atla.push(id + " (" + r.status + ")"); }
     if(atla.length) console.warn("Paylaşıma gönderilemeyen dosyalar:", atla); return atla.length; }
+  const payStub = { "bt/paylasimGor": { kapali: 1, gizli: {}, duzenle: false } };
+  async function payMYaz(m, V, sha){ const koy = h => ghP(yolP(mYol(m)), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: `TSK ARŞİV paylaşım · ${m.ad || m.id} (${cihaz()} · s${SURUM})`, content: icerik, ...(h ? { sha: h } : {}) }) });
+    const icerik = u8ToB64(new TextEncoder().encode(await paketleK(V, m.k))); let r = await koy(sha);
+    if(r.status === 409 || r.status === 422){ const g = await ghP(yolP(mYol(m)), { headers: { Accept: "application/vnd.github.object+json" } }); r = await koy(g.ok ? (await g.json()).sha : null); }
+    if(!r.ok) throw new Error("Paylaşım gönderilemedi (" + r.status + ")"); }
   async function paylasimGonder(zorla){
-    if(izleyici() || !pay || !pay.depo || !pay.t || payCalisiyor || !navigator.onLine) return; payCalisiyor = true; payHata = "";
-    try { const A = payAyar(); let u = null;
-      if(A.duzenle || zorla){ u = await payOku();   // karşı tarafın değişiklikleri (yalnız düzenleme yetkisi açıkken)
-        if(A.duzenle && u.veri){ const T = meta.payTaban || {}, K = meta.payKaynak || {}; let n = 0, c = 0;
-          for(const [k, v] of Object.entries(u.veri)){ if(k === "bt/paylasimGor" || k === "bt/paylasim" || (v && v.gizli) || T[k] === kOzet(v)) continue;
-            if(k.startsWith("arsiv/") && !(k in mem)) continue;
-            if(!(k in mem) || !(k in K) || kOzet(mem[k]) === K[k]){ mem[k] = kopya(v); await yerelYaz(k, mem[k]); bildir(k); n++; } else c++; }
-          if(n){ degisti(); bildirim(`Paylaşılan kişinin ${n} değişikliği alındı${c ? ` · ${c} çakışmada sizinki kaldı` : ""}`); } } }
-      const R = payFiltre(), im = imza(R);
-      if(im !== meta.payImza || zorla){ if(!u) u = await payOku(); const eksik = await payDosyalar(R); if(eksik) bildirim(`${eksik} dosya paylaşıma gönderilemedi; bir sonraki güncellemede yeniden denenecek`);
-        const r = await ghP(yolP(VERI), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: `TSK ARŞİV paylaşım (${cihaz()} · s${SURUM})`, content: u8ToB64(new TextEncoder().encode(await paketleK(R, pay.p))), ...(u.sha ? { sha: u.sha } : {}) }) });
-        if(r.status === 409 || r.status === 422){ setTimeout(() => paylasimGonder(), 3000); throw new Error("Paylaşım aynı anda değişti; tekrar denenecek"); }
-        if(!r.ok) throw new Error("Paylaşım gönderilemedi (" + r.status + ")");
+    if(izleyici() || ONIZLE || !payTazele() || !pay.t || payCalisiyor || !navigator.onLine) return; payCalisiyor = true; payHata = "";
+    try { const M = payMis(), U = {}; let n = 0, c = 0;
+      for(const m of M){ if(!m.duzenle) continue; const u = U[m.id] = await payOku(m);   /* düzenleme yetkisi olan misafirin değişiklikleri */
+        if(!u.veri || (u.veri["bt/paylasimGor"] || {}).kapali) continue; const T = meta.payTaban || {}, K = meta.payKaynak || {};
+        for(const [k, v] of Object.entries(u.veri)){ if(k === "bt/paylasimGor" || k === "bt/paylasim" || (v && v.gizli) || T[k] === kOzet(v)) continue;
+          if(k.startsWith("arsiv/") && !(k in mem)) continue;
+          if(!(k in mem) || !(k in K) || kOzet(mem[k]) === K[k]){ mem[k] = kopya(v); await yerelYaz(k, mem[k]); bildir(k); n++; } else c++; } }
+      if(n){ degisti(); bildirim(`Misafirin ${n} değişikliği alındı${c ? ` · ${c} çakışmada sizinki kaldı` : ""}`); }
+      const R = payFiltre(), im = imza(R) + "|" + M.map(m => m.id + (m.duzenle ? "d" : "g") + m.k.slice(0, 6)).join(",") + "|" + String(pay.p).slice(0, 6);
+      if(im !== meta.payImza || zorla){ const eksik = await payDosyalar(R); if(eksik) bildirim(`${eksik} dosya paylaşıma gönderilemedi; bir sonraki güncellemede yeniden denenecek`);
+        for(const m of M){ const u = U[m.id] || await payOku(m).catch(() => ({ sha: null }));
+          await payMYaz(m, { ...R, "bt/paylasimGor": { ...R["bt/paylasimGor"], duzenle: !!m.duzenle, dk: pay.p, mid: m.id } }, u.sha); }
         meta.payImza = im; meta.payTaban = Object.fromEntries(Object.entries(R).map(([k, v]) => [k, kOzet(v)])); meta.payKaynak = Object.fromEntries(Object.keys(R).filter(k => k in mem && !(R[k] && R[k].gizli)).map(k => [k, kOzet(mem[k])])); }
       meta.paySon = Date.now(); metaYaz(); }
     catch(e){ payHata = e.message || "Paylaşım hatası"; }
     finally { payCalisiyor = false; const el = document.getElementById("bl-pay-durum"); if(el) el.textContent = payDurumYazi(); } }
+  /* misafir kaldırma: kopyası boşaltılır, dosya anahtarı değiştirilir (eski anahtarla dosyalar açılamaz) */
+  async function misafirKaldir(id){ const A = payAyar(), m = (A.misafirler || []).find(x => x.id === id); if(!m || !payTazele()) return;
+    try { const u = await payOku(m).catch(() => ({ sha: null })); await payMYaz(m, payStub, u.sha); } catch(e){}
+    const g = await ghP(yolP("gorulme/" + id + ".json"), { headers: { Accept: "application/vnd.github.object+json" } }).catch(() => null);
+    if(g && g.ok){ const sha = (await g.json()).sha; await ghP(yolP("gorulme/" + id + ".json"), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV misafir kaldırıldı", sha }) }).catch(() => {}); }
+    await payAyarYaz({ ...A, misafirler: (A.misafirler || []).filter(x => x.id !== id), kur: { ...A.kur, dk: b64u(crypto.getRandomValues(new Uint8Array(24))) } });
+    meta.payImza = ""; await paylasimGonder(true); }
+  /* misafir: açtığında "son görülme" yazılır (en çok yarım saatte bir) */
+  const cihazAd = () => { const u = navigator.userAgent; return /iPhone/.test(u) ? "iPhone" : /iPad/.test(u) ? "iPad" : /Android/.test(u) ? "Android" : /Windows/.test(u) ? "Windows" : /Mac/.test(u) ? "Mac" : "cihaz"; };
+  async function gorulmeYaz(){ if(!izleyici() || Date.now() - (meta.gorYaz || 0) < 1800000) return; meta.gorYaz = Date.now(); metaYaz();
+    try { const p = yol("gorulme/" + (meta.misafirId || "0") + ".json"), g = await gh(p, { headers: { Accept: "application/vnd.github.object+json" } }), sha = g.ok ? (await g.json()).sha : null;
+      await gh(p, { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV misafir açtı", content: u8ToB64(new TextEncoder().encode(JSON.stringify({ t: Date.now(), c: cihazAd() }))), ...(sha ? { sha } : {}) }) }); } catch(e){} }
+  let payGorulme = {};
+  async function gorulmeOku(){ if(!payTazele()) return; try { const r = await ghP(`${API}/repos/${pay.depo}/contents/gorulme`); if(!r.ok) return; const L = await r.json(), o = {};
+    for(const x of L){ const r2 = await ghP(yolP("gorulme/" + x.name), { headers: { Accept: "application/vnd.github.raw+json" } }); if(r2.ok) try { o[x.name.replace(/\.json$/, "")] = JSON.parse(await r2.text()); } catch(e){} }
+    payGorulme = o; } catch(e){} }
   const payDurumYazi = () => payHata ? "Sorun: " + payHata : meta.paySon ? "Son güncelleme: " + new Date(meta.paySon).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "Henüz gönderilmedi";
-  async function baglan(depo, t, s, mod, rol){
-    token = t; sifre = s; meta.depo = depo; meta.mod = mod; meta.rol = rol === "izleyici" ? "izleyici" : "sahip";
+  async function baglan(depo, t, s, mod, rol, mid){
+    token = t; sifre = s; meta.depo = depo; meta.mod = mod; meta.rol = rol === "izleyici" ? "izleyici" : "sahip"; meta.misafirId = meta.rol === "izleyici" ? (mid || "") : ""; meta.gorYaz = 0;
     const r = await fetchAsil(`${API}/repos/${depo}`, { headers: bas() }).catch(() => null);
     if(!r) throw new Error("İnternet bağlantısı yok."); if(r.status === 401) throw new Error("Anahtar geçersiz."); if(r.status === 404) throw new Error("Depo bulunamadı ya da anahtarın bu depoya erişimi yok.");
     if(!r.ok) throw new Error("GitHub'a ulaşılamadı (" + r.status + ")"); const j = await r.json(); if(!j.private) throw new Error("Bu depo herkese açık! Veriler yalnızca gizli (private) depoda tutulabilir.");
@@ -228,7 +260,7 @@
       meta.sha = u.sha; if(s2 === 1){ esit(u.veri); meta.yerelDegisti = false; yerelDegistir(u.veri); meta.sonAl = Date.now(); } else { await uzakYaz(mem, `TSK ARŞİV kayıt (${cihaz()} · s${SURUM})`); esit(mem); meta.yerelDegisti = false; meta.sonGonder = Date.now(); } }
     durumHata = ""; await metaYaz(); durumCiz(); zamanlayiciKur();
   }
-  function kes(){ const iz = izleyici(); meta.bagli = false; meta.sha = null; token = ""; meta.rol = "sahip"; if(iz){ Object.keys(mem).forEach(k => delete mem[k]); hepsiniYerelYaz(); hepsiniBildir(); } try { localStorage.removeItem("tsk-gh-token"); localStorage.removeItem("tsk-gh-sifre"); } catch(e){} metaYaz(); durumCiz(); }
+  function kes(){ const iz = izleyici(); meta.bagli = false; meta.sha = null; token = ""; meta.rol = "sahip"; meta.misafirId = ""; if(iz){ Object.keys(mem).forEach(k => delete mem[k]); hepsiniYerelYaz(); hepsiniBildir(); } try { localStorage.removeItem("tsk-gh-token"); localStorage.removeItem("tsk-gh-sifre"); } catch(e){} metaYaz(); durumCiz(); }
   let alZaman = null;
   function zamanlayiciKur(){ clearInterval(alZaman); if(!meta.bagli || ONIZLE) return; const m = MODLAR[meta.mod] || MODLAR.an; const al = izleyici() ? 30000 : m.al; alZaman = setInterval(() => { if(Date.now() - Math.max(meta.sonAl, meta.sonGonder) >= al - 1000 || meta.yerelDegisti) esitle("zaman"); }, Math.min(al, 60000)); }   /* misafir 30 sn'de bir yeniler */
   /* ---------- uygulamaya sunulan arayüz (claude.use taklidi) ---------- */
@@ -329,7 +361,7 @@
   /* kısa link (sürüm 2): #k=… kendi cihaz, #m=… misafir. İçerik ikili paketlenir (depo varsayılansa yazılmaz, "github_pat_" ön eki atılır) */
   const PAY_DEPO0 = "tcmustafacelik/tsk-arsiv-paylasim";
   async function linkYap2(pin, d, tur){ const salt = crypto.getRandomValues(new Uint8Array(8)), iv = crypto.getRandomValues(new Uint8Array(12)), d0 = tur === "m" ? PAY_DEPO0 : VARSAYILAN_DEPO;
-    const duz = [d.r === d0 ? "" : d.r, /^github_pat_/.test(d.t) ? d.t.slice(11) : "!" + d.t, d.p || ""].join("\n");
+    const duz = [d.r === d0 ? "" : d.r, /^github_pat_/.test(d.t) ? d.t.slice(11) : "!" + d.t, d.p || "", ...(d.id ? [d.id] : [])].join("\n");
     const c = new Uint8Array(await crypto.subtle.encrypt({ name: "AES-GCM", iv }, await pinAnahtar(pin, salt, 250000), new TextEncoder().encode(duz)));
     const o = new Uint8Array(21 + c.length); o[0] = 2; o.set(salt, 1); o.set(iv, 9); o.set(c, 21); return SITE + "#" + tur + "=" + b64u(o); }
   function linkCoz(ham){ const h = String(ham || "").trim(), m2 = h.match(/(?:^|[#&?])([km])=([A-Za-z0-9_-]{40,})/) || (/^[A-Za-z0-9_-]{40,}$/.test(h) ? [0, "", h] : null);
@@ -337,7 +369,7 @@
     const m = h.match(/TSK1\.([A-Za-z0-9_-]+)/); if(!m) return null;
     try { const j = JSON.parse(new TextDecoder().decode(ub64(m[1]))); return j && j.s && j.i && j.c ? j : null; } catch(e){ return null; } }
   async function linkAc(j, pin){ if(j && j.v2){ try { const b = j.v2, duz = new TextDecoder().decode(new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: b.slice(9, 21) }, await pinAnahtar(pin, b.slice(1, 9), 250000), b.slice(21))));
-      const [r, t, p] = duz.split("\n"); return { r: r || (j.tur === "m" ? PAY_DEPO0 : VARSAYILAN_DEPO), t: t[0] === "!" ? t.slice(1) : "github_pat_" + t, p: p || "", ...(j.tur === "m" ? { rol: "izleyici" } : {}) }; } catch(e){ return null; } }
+      const [r, t, p, id] = duz.split("\n"); return { r: r || (j.tur === "m" ? PAY_DEPO0 : VARSAYILAN_DEPO), t: t[0] === "!" ? t.slice(1) : "github_pat_" + t, p: p || "", ...(j.tur === "m" ? { rol: "izleyici", mid: id || "" } : {}) }; } catch(e){ return null; } }
     try { const d = JSON.parse(new TextDecoder().decode(new Uint8Array(await crypto.subtle.decrypt({ name: "AES-GCM", iv: ub64(j.i) }, await pinAnahtar(pin, ub64(j.s), j.n || 250000), ub64(j.c)))));
     return d && d.t && d.r ? d : null; } catch(e){ return null; } }
 
@@ -450,7 +482,7 @@
         <div class="bk-bol"><span class="bk-et">Bağlantılar</span><div class="bk-liste">
           <button class="bk-sat" type="button" id="bl-hizli"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg><span><b>Kendi cihazlarım</b><small>başka telefona / bilgisayara bağlanma linki</small></span><i>›</i></button>
           <button class="bk-sat" type="button" id="bl-pay-ac"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span><b>Başkasına göster</b><small>görüntüleme linki · bölüm gizle</small></span><i>›</i></button></div></div>
-        <div class="bk-bol"><span class="bk-et">Bu cihazdaki veriler</span><div class="bk-tuslar"><button type="button" id="bl-yedek">Yedek al</button><button type="button" id="bl-yukle">Yedekten yükle</button><button type="button" class="sil" id="bl-sifirla">Sıfırla</button></div><input type="file" id="bl-dosya" accept=".json,application/json" hidden></div>
+        <details class="bk-gel"><summary>Gelişmiş<small>yedek al · yedekten yükle · sıfırla</small><i>›</i></summary><div class="bk-bol"><span class="bk-et">Bu cihazdaki veriler</span><div class="bk-tuslar"><button type="button" id="bl-yedek">Yedek al</button><button type="button" id="bl-yukle">Yedekten yükle</button><button type="button" class="sil" id="bl-sifirla">Sıfırla</button></div><input type="file" id="bl-dosya" accept=".json,application/json" hidden></div></details>
         <div class="bl-hata" id="bl-hata2" role="alert"></div>
       </div>
       <div class="bk-bol"><span class="bk-et">Güvenlik</span><div class="bk-liste"><button class="bk-sat" type="button" id="bl-kilit"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9.5" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span><b>Uygulama kilidi</b><small id="bl-kilit-alt"></small></span><i>›</i></button></div></div>
@@ -520,6 +552,19 @@
       .bp-t[aria-pressed="true"]{background:#34475C;border-color:#34475C;color:#fff} .bp-t:disabled{opacity:.4;cursor:default}
       .bp-seg{display:grid;grid-template-columns:1fr 1fr;gap:3px;padding:3px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2)}
       .bp-seg button{height:34px;border:0;border-radius:8px;background:transparent;font:600 12.5px var(--f-ui);color:var(--muted);cursor:pointer} .bp-seg button[aria-pressed="true"]{background:var(--panel);color:var(--fg);box-shadow:0 1px 3px rgba(0,0,0,.1)}
+      .bp-mis{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:12px;background:var(--panel);overflow:hidden}
+      .bp-m{display:flex;align-items:flex-start;gap:10px;padding:10px;border-bottom:1px solid var(--line2)} .bp-m:last-child{border-bottom:0}
+      .bp-mi{flex:none;width:34px;height:34px;display:grid;place-items:center;border-radius:10px;background:#F5EEDB;color:#8A6420;font:700 14px var(--f-ui)}
+      .bp-md{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px} .bp-md b{font:650 13.5px var(--f-ui);overflow-wrap:anywhere} .bp-md small{font:500 11px var(--f-ui);color:var(--muted)}
+      .bp-seg.mini{margin-top:5px;padding:2px;border-radius:9px;max-width:230px} .bp-seg.mini button{height:28px;font-size:11.5px;border-radius:7px}
+      .bp-mt{flex:none;display:flex;flex-direction:column;gap:5px}
+      .bp-mb{display:flex;align-items:center;gap:5px;height:30px;padding:0 9px;border:1px solid var(--line);border-radius:8px;background:var(--panel2);font:600 11.5px var(--f-ui);color:var(--fg);cursor:pointer}
+      .bp-mb svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round} .bp-mb.kal{color:#A04A3C;border-color:#EBD3CD;background:#FBF4F2}
+      .bp-bos{padding:12px;font:500 12px var(--f-ui);color:var(--muted);text-align:center}
+      .bp-ekle{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px} .bp-ekle input{height:40px;min-width:0;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font:500 14px var(--f-ui);color:var(--fg)} .bp-ekle .btn{height:40px;padding:0 14px}
+      .bp-bd>summary{list-style:none;cursor:pointer} .bp-bd>summary::-webkit-details-marker{display:none} .bp-bd[open]>summary .bp-ok{transform:rotate(-90deg)} .bp-ok.yok{visibility:hidden} .bp-bd>summary.bp-s{color:var(--fg)}
+      .bk-gel{border:1px solid var(--line2);border-radius:12px;background:var(--panel)} .bk-gel>summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:42px;padding:6px 12px;cursor:pointer;font:600 13px var(--f-ui);color:var(--fg)} .bk-gel>summary::-webkit-details-marker{display:none}
+      .bk-gel>summary small{flex:1;font:500 11.5px var(--f-ui);color:var(--muted)} .bk-gel>summary i{font-style:normal;color:var(--muted);transform:rotate(90deg);transition:transform .15s} .bk-gel[open]>summary i{transform:rotate(-90deg)} .bk-gel>.bk-bol{padding:0 10px 10px}
       .bp-ok{flex:none;width:14px;text-align:center;font-style:normal;font-size:15px;color:var(--muted);transform:rotate(90deg);transition:transform .15s} .bp-g[open]>summary .bp-ok{transform:rotate(-90deg)}`;
     document.head.appendChild(st2);
     const $$ = s => document.querySelector(s);
@@ -626,12 +671,21 @@
         return `<details class="bp-g${gG ? " gz" : ""}"${acik ? " open" : ""} style="--z:${z};--r:${r}"><summary class="bp-s"><span class="bp-ik">${KLS}</span><span><b>${escH(g.ad)}</b><small>${nb} bölüm · ${nd} belge${say ? ` · <em>${say}</em>` : ""}</small></span>${tus(g.anah, gG)}<i class="bp-ok">›</i></summary>${g.uy.map(u => { const kG = gG || !!G["k:" + u.id];
           return `${g.uy.length > 1 ? `<div class="bp-s k${gG ? " mir" : ""}"><span>${escH(u.kisa || u.ad)}</span>${tus("k:" + u.id, G["k:" + u.id], gG)}</div>` : ""}${u.bolumler.map(b => { const bG = kG || !!G["b:" + u.id + "|" + b.id];
             const D = B.filter(d => (d.yerler || []).some(y => y.k === u.id && y.b === b.id));
-            return `<div class="bp-s b${kG ? " mir" : ""}"><span>${escH(b.ad)}<small>${D.length ? D.length + " belge" : "boş"}</small></span>${tus("b:" + u.id + "|" + b.id, G["b:" + u.id + "|" + b.id], kG)}</div>${D.map(d => `<div class="bp-s d${bG ? " mir" : ""}">${BLG}<span>${escH(d.ad)}</span>${tus("d:" + d.id, G["d:" + d.id], bG)}</div>`).join("")}`; }).join("")}`; }).join("")}</details>`; }).join(""); }
-    function payCiz(){ const A = payAyar();
+            const st = `<span>${escH(b.ad)}<small>${D.length ? D.length + " belge" : "boş"}${D.some(d => G["d:" + d.id]) ? ` · <em>${D.filter(d => G["d:" + d.id]).length} gizli</em>` : ""}</small></span>${tus("b:" + u.id + "|" + b.id, G["b:" + u.id + "|" + b.id], kG)}`;
+            return D.length ? `<details class="bp-bd"><summary class="bp-s b${kG ? " mir" : ""}">${st}<i class="bp-ok">›</i></summary>${D.map(d => `<div class="bp-s d${bG ? " mir" : ""}">${BLG}<span>${escH(d.ad)}</span>${tus("d:" + d.id, G["d:" + d.id], bG)}</div>`).join("")}</details>` : `<div class="bp-s b${kG ? " mir" : ""}">${st}<i class="bp-ok yok" aria-hidden="true">›</i></div>`; }).join("")}`; }).join("")}</details>`; }).join(""); }
+    const IK_L = '<svg viewBox="0 0 24 24"><path d="M10 14a4.5 4.5 0 0 0 6.4 0l3-3a4.5 4.5 0 0 0-6.4-6.4l-1.2 1.2"/><path d="M14 10a4.5 4.5 0 0 0-6.4 0l-3 3a4.5 4.5 0 0 0 6.4 6.4l1.2-1.2"/></svg>', IK_X = '<svg viewBox="0 0 24 24"><path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12"/></svg>';
+    const zmn = t => new Date(t).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" });
+    const gorYazi = m => { const g = payGorulme[m.id]; return g && g.t ? "son açılış " + zmn(g.t) + (g.c ? " · " + g.c : "") : "henüz açılmadı"; };
+    const misafirSatir = m => `<div class="bp-m"><span class="bp-mi">${escH((m.ad || "?").trim().charAt(0).toLocaleUpperCase("tr"))}</span><div class="bp-md"><b>${escH(m.ad || "Misafir")}</b><small data-gor="${escH(m.id)}">${escH(gorYazi(m))}</small>
+        <div class="bp-seg mini"><button type="button" data-bpmy="${escH(m.id)}" data-v="0" aria-pressed="${!m.duzenle}">Görüntüler</button><button type="button" data-bpmy="${escH(m.id)}" data-v="1" aria-pressed="${!!m.duzenle}">Düzenler</button></div></div>
+        <div class="bp-mt"><button type="button" class="bp-mb" data-bpml="${escH(m.id)}" aria-label="${escH(m.ad)} için link">${IK_L}<span>Link</span></button><button type="button" class="bp-mb kal" data-bpmk="${escH(m.id)}" aria-label="${escH(m.ad)} kaldır">${IK_X}<span>Kaldır</span></button></div></div>`;
+    function payCiz(){ const A = payAyar(); payTazele(); const M = payMis();
       payP.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true"><div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg></div><div style="flex:1;min-width:0"><h3>Görüntüleme paylaşımı</h3><h2>${pay ? "Paylaşım açık" : "Paylaşımı kur"}</h2></div><button class="bl-x" type="button" data-bpx aria-label="Kapat">✕</button></div>
         ${pay ? `<div class="bk-durum" data-renk="${payHata ? "kirmizi" : "yesil"}"><i class="bl-r">●</i><div class="bk-dy"><strong>${escH(pay.depo.split("/")[1])}</strong><small id="bl-pay-durum">${escH(payDurumYazi())}</small></div><button class="btn" type="button" data-bpg>Güncelle</button></div>
-          <div class="bk-bol"><span class="bk-et">Karşı tarafın yetkisi</span><div class="bp-seg"><button type="button" data-bpy="0" aria-pressed="${!A.duzenle}">Yalnız görüntüleme</button><button type="button" data-bpy="1" aria-pressed="${!!A.duzenle}">Düzenleyebilir</button></div></div>
-          <div class="bp-iki"><button class="btn ana" type="button" data-bpl>Görüntüleme linki oluştur</button><button class="btn" type="button" data-bpon>Karşı taraf nasıl görür?</button></div>
+          <div class="bk-bol"><span class="bk-et">Misafirler <small>· her birinin linki ayrı, ayrı kaldırılır</small></span>
+            <div class="bp-mis">${M.length ? M.map(misafirSatir).join("") : `<div class="bp-bos">Henüz misafir yok. Adını yazıp ekleyin; ona özel link oluşur.</div>`}</div>
+            <div class="bp-ekle"><input id="bp-ad" type="text" placeholder="Misafirin adı" maxlength="40" autocomplete="off"><button class="btn ana" type="button" data-bpekle>+ Ekle</button></div>
+            <button class="btn genis" type="button" data-bpon>Misafir nasıl görür? · önizle</button></div>
           <div class="bk-bol"><span class="bk-et">Bölümler <small>· kapalı göz: karşı tarafta buğulu, içeriği gönderilmez</small></span>
             <div class="bp-arac"><button type="button" data-bpsec aria-pressed="${!!paySec}">${paySec ? "Seçimi bitir" : "☑ Seçerek gizle"}</button><button type="button" data-bphep="0">Hepsini göster</button><button type="button" data-bphep="1">Hepsini gizle</button></div>
             <div class="bp-agac${paySec ? " sec" : ""}">${payAgac()}</div>
@@ -644,9 +698,17 @@
           <button class="btn ana genis" type="button" data-bpkur>Paylaşımı kur</button>`}
         <div class="bl-hata" id="bp-hata" role="alert"></div></div>`; }
     let paySec = null;   // seçmeli gizle: seçilen kategori / bölüm / belge anahtarları
-    const payAc = () => { paySec = null; payCiz(); payP.hidden = false; };
+    const payAc = () => { paySec = null; payCiz(); payP.hidden = false; gorulmeCiz(); };
     payP.addEventListener("toggle", e => { if(e.target.classList && e.target.classList.contains("bp-g") && e.target.open) payP.querySelectorAll(".bp-g[open]").forEach(d => { if(d !== e.target) d.open = false; }); }, true);   /* bir kategori açılınca diğerleri kapanır */
-    const payYeniden = () => { const op = [...payP.querySelectorAll(".bp-g")].map(x => x.open), y = payP.scrollTop; payCiz(); payP.querySelectorAll(".bp-g").forEach((x, i) => x.open = op[i]); payP.scrollTop = y; };
+    const payYeniden = () => { const sec = ".bp-g, .bp-bd", op = [...payP.querySelectorAll(sec)].map(x => x.open), y = payP.scrollTop, ad = (payP.querySelector("#bp-ad") || {}).value || ""; payCiz(); payP.querySelectorAll(sec).forEach((x, i) => x.open = op[i]); payP.scrollTop = y; const i2 = payP.querySelector("#bp-ad"); if(i2) i2.value = ad; };
+    async function misafirPin(ad){ let hata = "";
+      for(let k = 0; k < 3; k++){ const a = await pinSor(ad + " için PIN belirle", "Misafir linki açınca bu 6 haneli PIN'i girecek. Kendi PIN'inizden FARKLI bir PIN seçin ve ona ayrıca (telefonla, yüz yüze) söyleyin.", hata, "Devam", "misafir"); if(a === null) return null;
+        const c = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur", "misafir"); if(c === null) return null; if(a === c) return a; hata = "PIN'ler aynı değil, baştan dene."; }
+      return null; }
+    async function misafirLink(m){ const pin = await misafirPin(m.ad || "Misafir"); if(!pin) return; payTazele();
+      const link = await linkYap2(pin, { r: pay.depo, t: pay.t, p: m.k, id: m.id }, "m");
+      tipKoy(lnP, "misafir"); lnP.querySelector("h2").textContent = (m.ad || "Misafir") + " için link hazır"; lnP.querySelector(".bl-alt").textContent = "Bu link yalnız " + (m.ad || "bu misafir") + " içindir; PIN'i ona ayrıca söyleyin. Kaldırdığınızda yalnız bu link çalışmaz olur. Gizlediğiniz bölümler onda buğulu görünür, ana arşivinize erişemez."; linkGoster(link); }
+    const gorulmeCiz = async () => { await gorulmeOku(); payMis().forEach(m => { const el = payP.querySelector(`[data-gor="${CSS.escape(m.id)}"]`); if(el) el.textContent = gorYazi(m); }); };
     const payGizliYaz = async G => { await db.doc("bt/paylasim").set({ ...payAyar(), gizli: G }); payPlanla(2500); };
     KAT["bl-pay"] = () => { payP.hidden = true; };
     payP.addEventListener("click", async e => { if(e.target === payP || e.target.closest("[data-bpx]")){ payP.hidden = true; return; }
@@ -659,7 +721,22 @@
         if(gizle){ const s2 = await sor("Hepsi gizlensin mi?", "Karşı taraf bütün bölümleri buğulu görür; hiçbir içerik gönderilmez.", "Hepsini gizle", "Vazgeç"); if(s2 !== 1) return; }
         const G = {}; if(gizle){ const K = (mem["bt/yapi"] || {}).klasorler || []; K.forEach(k => { G[k.ust ? "g:" + k.ust : "k:" + k.id] = 1; }); }
         await payGizliYaz(G); paySec = null; payCiz(); bildirim(gizle ? "Bütün bölümler gizlendi" : "Bütün bölümler görünür"); return; }
-      if(b.dataset.bpy != null){ const A = payAyar(); await db.doc("bt/paylasim").set({ ...A, duzenle: b.dataset.bpy === "1" }); payCiz(); payPlanla(1500); bildirim(b.dataset.bpy === "1" ? "Karşı taraf artık düzenleyebilir" : "Karşı taraf yalnız görüntüleyebilir"); return; }
+      if(b.dataset.bpmy){ const A = payAyar(), v = b.dataset.v === "1", m = (A.misafirler || []).find(x => x.id === b.dataset.bpmy); if(!m || !!m.duzenle === v) return; const L = (A.misafirler || []).map(x => x.id === m.id ? { ...x, duzenle: v } : x);
+        await payAyarYaz({ ...A, misafirler: L }); payYeniden(); payPlanla(1500); bildirim(`${m.ad}: ${v ? "artık düzenleyebilir" : "yalnız görüntüler"}`); return; }
+      if(b.dataset.bpekle != null){ const i = payP.querySelector("#bp-ad"), ad = i.value.trim().replace(/\s+/g, " ");
+        if(!ad){ h().textContent = "Misafirin adını yazın."; i.focus(); return; } h().textContent = "";
+        const A = payAyar(); if((A.misafirler || []).some(m => (m.ad || "").toLocaleLowerCase("tr") === ad.toLocaleLowerCase("tr"))){ h().textContent = "Bu adla bir misafir zaten var."; return; }
+        const pin = await misafirPin(ad); if(!pin) return;
+        const m = { id: b64u(crypto.getRandomValues(new Uint8Array(6))).replace(/[-_]/g, "x"), ad, k: b64u(crypto.getRandomValues(new Uint8Array(24))), duzenle: false, tarih: Date.now() };
+        await payAyarYaz({ ...A, misafirler: [...(A.misafirler || []), m] }); i.value = ""; payYeniden();
+        const st = payP.querySelector("#bl-pay-durum"); if(st) st.innerHTML = '<span class="bl-spin"></span>Misafirin kopyası hazırlanıyor…';
+        await paylasimGonder(true); if(payHata){ h().textContent = payHata; payYeniden(); return; }
+        payYeniden(); gorulmeCiz(); payTazele(); const link = await linkYap2(pin, { r: pay.depo, t: pay.t, p: m.k, id: m.id }, "m");
+        tipKoy(lnP, "misafir"); lnP.querySelector("h2").textContent = ad + " için link hazır"; lnP.querySelector(".bl-alt").textContent = "Bu link yalnız " + ad + " içindir; PIN'i ona ayrıca söyleyin. Kaldırdığınızda yalnız bu link çalışmaz olur. Gizlediğiniz bölümler onda buğulu görünür, ana arşivinize erişemez."; linkGoster(link); return; }
+      if(b.dataset.bpml){ const m = payMis().find(x => x.id === b.dataset.bpml); if(m) misafirLink(m); return; }
+      if(b.dataset.bpmk){ const m = payMis().find(x => x.id === b.dataset.bpmk); if(!m) return;
+        const s2 = await sor(m.ad + " kaldırılsın mı?", "Onun linki çalışmaz olur, açık sayfası da boşalır. Diğer misafirler etkilenmez; dosyalar yeni anahtarla yeniden gönderilir.", "Kaldır", "Vazgeç"); if(s2 !== 1) return;
+        b.disabled = true; b.innerHTML = '<span class="bl-spin"></span>'; await misafirKaldir(m.id); payYeniden(); bildirim(payHata ? payHata : m.ad + " kaldırıldı"); return; }
       if(b.dataset.bpyap != null){ try { payP.querySelector("#bp-token").value = (await navigator.clipboard.readText()).trim(); } catch(x){ payP.querySelector("#bp-token").focus(); } return; }
       if(b.dataset.bpkur != null){ const depo = payP.querySelector("#bp-depo").value.trim().replace(/^https:\/\/github.com\//, "").replace(/\/$/, ""), t = payP.querySelector("#bp-token").value.trim();
         if(!depo || !t){ h().textContent = "Depo adını ve anahtarı girin."; return; } if(depo.toLowerCase() === meta.depo.toLowerCase()){ h().textContent = "Ana arşiv deposu paylaşılamaz; ikinci bir depo açın."; return; }
@@ -667,20 +744,16 @@
         try { const r = await fetchAsil(`${API}/repos/${depo}`, { headers: { Authorization: "Bearer " + t, "X-GitHub-Api-Version": "2022-11-28" } }).catch(() => null);
           if(!r) throw new Error("İnternet bağlantısı yok."); if(r.status === 401) throw new Error("Anahtar geçersiz."); if(r.status === 404) throw new Error("Depo bulunamadı ya da anahtarın bu depoya erişimi yok.");
           const j = await r.json(); if(!j.private) throw new Error("Bu depo herkese açık! Paylaşım deposu gizli (Private) olmalı.");
-          const k = crypto.getRandomValues(new Uint8Array(24)); pay = { depo, t, p: b64u(k) }; payKaydet(); meta.payImza = ""; await paylasimGonder(true);
-          if(payHata) throw new Error(payHata); payCiz(); bildirim("Paylaşım kuruldu"); }
-        catch(x){ if(pay && !meta.paySon){ pay = null; payKaydet(); } h().textContent = x.message; } finally { if(b.isConnected){ b.disabled = false; b.innerHTML = eski; } } return; }
+          const k = crypto.getRandomValues(new Uint8Array(24)), A0 = payAyar(); await payAyarYaz({ ...A0, kur: { depo, tk: tkGiz(t), dk: b64u(k), dkYuklu: "" }, misafirler: [] }); meta.payImza = ""; meta.paySon = 0; await paylasimGonder(true);
+          if(payHata) throw new Error(payHata); payCiz(); bildirim("Paylaşım kuruldu; şimdi misafir ekleyin"); }
+        catch(x){ if(pay && !meta.paySon){ const A1 = payAyar(); delete A1.kur; await payAyarYaz(A1); } h().textContent = x.message; } finally { if(b.isConnected){ b.disabled = false; b.innerHTML = eski; } } return; }
       if(b.dataset.bpon != null){ try { sessionStorage.setItem("tsk-onizle", "1"); } catch(x){} location.reload(); return; }
-      if(b.dataset.bpg != null){ b.disabled = true; b.innerHTML = '<span class="bl-spin"></span>'; await paylasimGonder(true); const op = [...payP.querySelectorAll(".bp-g")].map(x => x.open); payCiz(); payP.querySelectorAll(".bp-g").forEach((x, i) => x.open = op[i]); bildirim(payHata ? payHata : "Paylaşım güncellendi"); return; }
-      if(b.dataset.bpl != null){ let pin = null, hata = "";
-        for(let k = 0; k < 3 && !pin; k++){ const a = await pinSor("Misafir için PIN belirle", "Misafir linki açınca bu 6 haneli PIN'i girecek. Kendi PIN'inizden FARKLI bir PIN seçin ve misafire ayrıca (telefonla, yüz yüze) söyleyin.", hata, "Devam", "misafir"); if(a === null) return;
-          const c = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur", "misafir"); if(c === null) return; if(a === c) pin = a; else hata = "PIN'ler aynı değil, baştan dene."; }
-        if(!pin) return; const link = await linkYap2(pin, { r: pay.depo, t: pay.t, p: pay.p }, "m");
-        tipKoy(lnP, "misafir"); lnP.querySelector("h2").textContent = "Misafir linki hazır"; lnP.querySelector(".bl-alt").textContent = "Bu linki misafire gönderin, PIN'i ayrıca söyleyin. Misafir yalnız paylaştıklarınızı görür; gizlediğiniz bölümler onda buğulu görünür, ana arşivinize erişemez."; linkGoster(link); return; }
+      if(b.dataset.bpg != null){ b.disabled = true; b.innerHTML = '<span class="bl-spin"></span>'; await paylasimGonder(true); await gorulmeOku(); payYeniden(); bildirim(payHata ? payHata : "Paylaşım güncellendi"); return; }
       if(b.dataset.bpk != null){ const s2 = await sor("Paylaşım kapatılsın mı?", "Paylaşım deposundaki kopya boşaltılır; karşı taraf bir sonraki açılışta hiçbir şey göremez. Ana arşivinize dokunulmaz.", "Kapat", "Vazgeç"); if(s2 !== 1) return;
-        try { const u = await payOku(); const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); for(const x of (pr.ok ? await pr.json() : [])) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım kapandı", sha: x.sha }) });
-          await ghP(yolP(VERI), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım kapandı", content: u8ToB64(new TextEncoder().encode(await paketleK({ "bt/paylasimGor": { kapali: 1, gizli: {}, duzenle: false } }, pay.p))), ...(u.sha ? { sha: u.sha } : {}) }) }); } catch(x){}
-        pay = null; payKaydet(); meta.payImza = ""; meta.paySon = 0; metaYaz(); payCiz(); bildirim("Paylaşım kapatıldı"); } });
+        b.disabled = true; b.innerHTML = '<span class="bl-spin"></span>Kapatılıyor…'; payTazele();
+        try { for(const m of payMis()){ const u = await payOku(m).catch(() => ({ sha: null })); await payMYaz(m, payStub, u.sha).catch(() => {}); }
+          const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); for(const x of (pr.ok ? await pr.json() : [])) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım kapandı", sha: x.sha }) }); } catch(x){}
+        const A2 = payAyar(); delete A2.kur; A2.misafirler = []; await payAyarYaz(A2); meta.payImza = ""; meta.paySon = 0; metaYaz(); payCiz(); bildirim("Paylaşım kapatıldı"); } });
     /* izleyici: görüntüleme linkiyle açılış */
     async function izleKullan(ham){
       if(meta.bagli && !izleyici()){ const s2 = await sor("Bu cihaz sizin arşivinize bağlı", "Görüntüleme linki karşı tarafın telefonunda açılmalı. Burada açılırsa kendi arşivinizi görürsünüz. Karşı tarafın gördüğünü bu cihazda önizlemek ister misiniz? (Önizlemede hiçbir şey değiştirilemez.)", "Önizle", "Vazgeç");
@@ -690,14 +763,14 @@
       for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Misafir girişi", "Bu bir görüntüleme linkidir. Arşiv sahibinin size söylediği 6 haneli PIN'i girin.", hata, "Aç", "misafir"); if(pin === null) return; d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar deneyin"; }
       if(!d){ bildirim("PIN 5 kez yanlış girildi"); return; }
       panelCiz(); panel.hidden = false; const h = $$("#bl-hata"); h.className = "bl-hata bilgi"; h.innerHTML = '<span class="bl-spin"></span>Paylaşılan arşiv açılıyor…';
-      try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici"); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : "Paylaşılan arşiv açıldı"); }
-      catch(x){ meta.bagli = false; meta.rol = "sahip"; token = ""; h.className = "bl-hata"; h.textContent = x.message; } }
+      try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici", d.mid); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : "Paylaşılan arşiv açıldı"); gorulmeYaz(); }
+      catch(x){ meta.bagli = false; meta.rol = "sahip"; meta.misafirId = ""; token = ""; h.className = "bl-hata"; h.textContent = x.message; } }
 
     /* --- panel --- */
     function acKapa(id, ac){ const a = $$("#" + id), b = panel.querySelector(`[data-ac="${id}"]`); a.hidden = !ac; if(b) b.setAttribute("aria-expanded", ac ? "true" : "false"); }
     const panelCiz = () => { $$("#bl-depo").value = meta.depo; $$("#bl-token").value = ""; modCiz();
       $$("#bl-giris").hidden = meta.bagli; $$("#bl-bagli").hidden = !meta.bagli; $$("#bl-baslik").textContent = meta.bagli ? (izleyici() ? "Paylaşılan arşiv" : "Bulut eşitleme") : "Giriş";
-      $$("#bl-hizli").hidden = izleyici(); $$("#bl-pay-ac").hidden = izleyici(); $$("#bl-pay-ac small").textContent = pay ? "açık · " + (meta.paySon ? "son güncelleme " + new Date(meta.paySon).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : "kuruldu") : "görüntüleme linki · bölüm gizle";
+      $$("#bl-hizli").hidden = izleyici(); $$("#bl-pay-ac").hidden = izleyici(); $$("#bl-pay-ac small").textContent = payTazele() ? "açık · " + payMis().length + " misafir" + (meta.paySon ? " · " + new Date(meta.paySon).toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : "") : "misafir linki · bölüm gizle";
       $$("#bl-kes").hidden = !meta.bagli;
       const h = $$("#bl-hata"); h.className = "bl-hata"; h.textContent = meta.bagli ? "" : (meta.bagli === false && durumHata ? durumHata : ""); $$("#bl-hata2").textContent = durumHata; durumCiz(); };
     panel.querySelectorAll("[data-ac]").forEach(b => b.onclick = () => { const id = b.dataset.ac, ac = $$("#" + id).hidden; ["bl-link-alan", "bl-anahtar-alan"].forEach(x => acKapa(x, x === id && ac)); if(ac){ const i = $$("#" + id).querySelector("input"); if(i) setTimeout(() => i.focus(), 50); } });
@@ -745,7 +818,10 @@
     if(ONIZLE){ const sr = document.createElement("div"); sr.id = "onizle-serit"; sr.innerHTML = `<span><b>Önizleme</b> · karşı tarafın gördüğü</span><button type="button">Çık</button>`; document.body.appendChild(sr);
       const st3 = document.createElement("style"); st3.textContent = `#onizle-serit{position:fixed;z-index:90;left:50%;transform:translateX(-50%);bottom:calc(14px + env(safe-area-inset-bottom,0px));white-space:nowrap;display:flex;align-items:center;gap:10px;padding:6px 6px 6px 12px;border-radius:10px;background:#34475C;color:#fff;font:500 12px var(--f-ui);box-shadow:0 6px 20px rgba(0,0,0,.2);max-width:calc(100vw - 24px)} #onizle-serit button{border:0;border-radius:8px;padding:6px 12px;background:rgba(255,255,255,.18);color:#fff;font:600 12px var(--f-ui);cursor:pointer}`; document.head.appendChild(st3);
       sr.querySelector("button").onclick = () => { try { sessionStorage.removeItem("tsk-onizle"); } catch(e){} location.reload(); }; }
-    hazir.then(() => { durumCiz(); rolUygula(); if(ONIZLE){ const b0 = document.getElementById("bulut-ikon"); if(b0) b0.querySelector("span").textContent = "önizleme"; return; }
+    hazir.then(() => { durumCiz(); rolUygula();
+      if(!ONIZLE && !izleyici() && payEski && payEski.depo && payEski.t && payEski.p){ const A = payAyar();
+        if(!A.kur) payAyarYaz({ ...A, kur: { depo: payEski.depo, tk: tkGiz(payEski.t), dk: payEski.p, dkYuklu: payEski.p }, misafirler: [{ id: "0", ad: "İlk misafir", k: payEski.p, duzenle: !!A.duzenle, tarih: Date.now() }, ...(A.misafirler || [])] });
+        payEski = null; try { localStorage.removeItem(PAY_LS); } catch(e){} } if(ONIZLE){ const b0 = document.getElementById("bulut-ikon"); if(b0) b0.querySelector("span").textContent = "önizleme"; return; }
       if(gelenIzle){ izleKullan(gelenIzle); return; }
       if(gelenLink){ if(meta.bagli && token){ bildirim("Bu cihaz zaten bağlı"); zamanlayiciKur(); esitle("acilis"); } else hizliKullan(gelenLink); return; }
       if(meta.bagli && token){ zamanlayiciKur(); esitle("acilis"); } else if(!Object.keys(mem).length){ panelCiz(); panel.hidden = false; } });
@@ -3042,7 +3118,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 397</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 398</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
