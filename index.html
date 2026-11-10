@@ -18,7 +18,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "395";
+  const SURUM = "396";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -104,8 +104,8 @@
     const b = document.getElementById("bulut-ikon"); if(!b) return;
     let renk = "gri", yazi = "Bulut kapalı";
     if(meta.bagli){ if(durumHata){ renk = "kirmizi"; yazi = durumHata; } else if(meta.yerelDegisti || meta.bekleyenDosya.length){ renk = "turuncu"; yazi = "Gönderilmeyi bekleyen değişiklik var"; } else { renk = "yesil"; yazi = "Her şey buluta kaydedildi"; } }
-    if(meta.bagli && izleyici() && !durumHata && renk !== "turuncu"){ yazi = payGor().duzenle ? "Paylaşılan arşiv · düzenleme açık" : "Paylaşılan arşiv · yalnız görüntüleme"; }
-    b.dataset.renk = renk; b.title = yazi; b.querySelector("span").textContent = calisiyor ? "eşitleniyor…" : meta.bagli && izleyici() && renk === "yesil" ? (payGor().duzenle ? "paylaşım · düzenleme" : "paylaşım · görüntüleme") : ({ gri: "bulut kapalı", kirmizi: "sorun", turuncu: "bekliyor", yesil: "kaydedildi" })[renk];
+    if(meta.bagli && izleyici() && !durumHata && renk !== "turuncu"){ yazi = payGor().duzenle ? "Misafir kullanıcı · düzenleme açık" : "Misafir kullanıcı · yalnız görüntüleme"; }
+    b.dataset.renk = renk; b.title = yazi; b.querySelector("span").textContent = calisiyor ? "eşitleniyor…" : meta.bagli && izleyici() && renk === "yesil" ? (payGor().duzenle ? "düzenleme" : "görüntüleme") : ({ gri: "bulut kapalı", kirmizi: "sorun", turuncu: "bekliyor", yesil: "kaydedildi" })[renk];
     const kb = document.getElementById("bl-bagli"); if(kb) kb.dataset.renk = renk; const bkd = document.querySelector(".bk-durum"); if(bkd) bkd.dataset.renk = renk; const db2 = document.getElementById("bl-dbas"); if(db2) db2.textContent = calisiyor ? "Eşitleniyor…" : yazi;
     const d = document.getElementById("bl-durum"); if(d) d.textContent = meta.bagli ? `Son eşitleme: ${meta.sonGonder || meta.sonAl ? new Date(Math.max(meta.sonGonder, meta.sonAl)).toLocaleString("tr-TR", { day: "2-digit", month: "2-digit", hour: "2-digit", minute: "2-digit" }) : "—"}${sonrakiYazi()}` : "Bağlı değil. Veriler yalnızca bu cihazda.";
   }
@@ -132,6 +132,7 @@
       const u = await uzakOku();
       /* bu cihazdaki kopya eksikse (tarayıcı verisi silinmiş ya da yazılamamış) asla göndermeyiz: buluttakini yeniden indiririz */
       const yerelSay = Object.keys(mem).length, uzakSay = u.veri ? Object.keys(u.veri).length : 0;
+      if(izleyici() && !meta.yerelDegisti && u.veri){ if(u.sha !== meta.sha || imza(u.veri) !== imza(mem)){ meta.sha = u.sha; esit(u.veri); yerelDegistir(u.veri); rolUygula(); bildirim("Paylaşılan arşiv güncellendi"); } meta.sonAl = Date.now(); durumHata = ""; return; }   /* misafir: paylaşılan kopya olduğu gibi alınır */
       if(u.veri && (!("bt/yapi" in mem) || yerelSay < Math.max(meta.anahtar || 0, uzakSay) * 0.8)){
         meta.sha = u.sha; esit(u.veri); meta.yerelDegisti = false; meta.anahtar = uzakSay; yerelDegistir(u.veri); meta.sonAl = Date.now(); durumHata = "";
         bildirim("Bu cihazdaki kayıtlar eksikti; buluttan yeniden yüklendi"); return; }
@@ -225,7 +226,7 @@
   }
   function kes(){ const iz = izleyici(); meta.bagli = false; meta.sha = null; token = ""; meta.rol = "sahip"; if(iz){ Object.keys(mem).forEach(k => delete mem[k]); hepsiniYerelYaz(); hepsiniBildir(); } try { localStorage.removeItem("tsk-gh-token"); localStorage.removeItem("tsk-gh-sifre"); } catch(e){} metaYaz(); durumCiz(); }
   let alZaman = null;
-  function zamanlayiciKur(){ clearInterval(alZaman); if(!meta.bagli || ONIZLE) return; const m = MODLAR[meta.mod] || MODLAR.an; alZaman = setInterval(() => { if(Date.now() - Math.max(meta.sonAl, meta.sonGonder) >= m.al - 1000 || meta.yerelDegisti) esitle("zaman"); }, Math.min(m.al, 60000)); }
+  function zamanlayiciKur(){ clearInterval(alZaman); if(!meta.bagli || ONIZLE) return; const m = MODLAR[meta.mod] || MODLAR.an; const al = izleyici() ? 30000 : m.al; alZaman = setInterval(() => { if(Date.now() - Math.max(meta.sonAl, meta.sonGonder) >= al - 1000 || meta.yerelDegisti) esitle("zaman"); }, Math.min(al, 60000)); }   /* misafir 30 sn'de bir yeniler */
   /* ---------- uygulamaya sunulan arayüz (claude.use taklidi) ---------- */
   const snap = p => ({ id: p.split("/").pop(), exists: p in mem, data: () => kopya(mem[p]) });
   const ksnap = k => ({ docs: Object.keys(mem).filter(p => p.startsWith(k + "/") && p.split("/").length === 2).map(snap) });
@@ -273,7 +274,10 @@
   const resimDuzelt = async img => { const id = img.getAttribute("src").split("/_blob/")[1]; img.removeAttribute("src"); const b = await varlikAl(id).catch(() => null); if(b) img.src = URL.createObjectURL(b); };
   new MutationObserver(m => m.forEach(x => x.addedNodes.forEach(n => { if(n.querySelectorAll) n.querySelectorAll('img[src*="/_blob/"]').forEach(resimDuzelt); }))).observe(document.documentElement, { childList: true, subtree: true });
   function ayarUygula(){ const a = mem["bt/ayar"] || {}; if(a.birlik) window.BIRLIK = a.birlik; if(a.gorevYeri) window.GD_YER = a.gorevYeri; rolUygula(); }
-  function rolUygula(){ const h = document.documentElement, iz = izleyici(); h.classList.toggle("izleyici", iz); h.classList.toggle("salt", iz && !payGor().duzenle); if(iz) saltKilitle(document); }
+  function rolUygula(){ const h = document.documentElement, iz = izleyici(); h.classList.toggle("izleyici", iz); h.classList.toggle("salt", iz && !payGor().duzenle); if(iz) saltKilitle(document);
+    const my = document.querySelector("#marka .marka-y"); let r = document.getElementById("misafir-rozet");
+    if(iz && my){ if(!r){ r = document.createElement("small"); r.id = "misafir-rozet"; my.appendChild(r); } r.textContent = ONIZLE ? "ÖNİZLEME · MİSAFİR" : "MİSAFİR KULLANICI"; }
+    else if(r) r.remove(); }
   /* salt görüntülemede yazı kutuları kilitlenir (arama, PIN ve bulut penceresi hariç) */
   function saltKilitle(kok){ if(!document.documentElement.classList.contains("salt") || !kok.querySelectorAll) return;
     kok.querySelectorAll('input:not([type=search]):not([type=file]):not(.pinin):not(.sc-ara):not([readonly]), textarea:not([readonly])').forEach(i => { if(i.closest(".bl-perde") || i.id === "ara") return; i.readOnly = true; i.dataset.salt = "1"; });
@@ -441,13 +445,13 @@
     document.body.appendChild(panel);
     /* PIN penceresi */
     const pinP = document.createElement("div"); pinP.className = "bl-perde"; pinP.id = "bl-pin"; pinP.hidden = true; pinP.style.zIndex = 97;
-    pinP.innerHTML = `<div class="bl-kart bl-orta" role="dialog" aria-modal="true"><div class="bl-logo">🔒</div><h2></h2><p class="bl-alt"></p>
+    pinP.innerHTML = `<div class="bl-kart bl-orta" role="dialog" aria-modal="true"><div class="bl-logo">🔒</div><span class="bl-tip"></span><h2></h2><p class="bl-alt"></p>
       <div class="pinx"><input class="pinin" id="bl-pin-in" type="tel" inputmode="numeric" pattern="[0-9]*" maxlength="6" autocomplete="one-time-code" aria-label="PIN">${"<i></i>".repeat(6)}</div>
       <p class="pinerr" role="alert"></p><div class="bl-butonlar"><button class="btn" type="button" data-p="0">Vazgeç</button><button class="btn ana" type="button" data-p="1" disabled>Devam</button></div></div>`;
     document.body.appendChild(pinP);
     /* link hazır penceresi */
     const lnP = document.createElement("div"); lnP.className = "bl-perde"; lnP.id = "bl-linkhazir"; lnP.hidden = true; lnP.style.zIndex = 97;
-    lnP.innerHTML = `<div class="bl-kart bl-orta" role="dialog" aria-modal="true"><div class="bl-logo">✓</div><h2>Hızlı bağlantın hazır</h2>
+    lnP.innerHTML = `<div class="bl-kart bl-orta" role="dialog" aria-modal="true"><div class="bl-logo">✓</div><span class="bl-tip"></span><h2>Hızlı bağlantın hazır</h2>
       <p class="bl-alt">Bu linki Notlar'a kaydet ya da WhatsApp'ta kendine gönder. Başka bir cihazda linke dokun, TSK ARŞİV açılır; PIN'i girince bağlanır.</p>
       <div class="bl-link"><span>🔗</span><code id="bl-link-on"></code></div><textarea id="bl-link-tam" readonly aria-hidden="true" tabindex="-1" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0"></textarea>
       <div class="bl-butonlar${navigator.share ? "" : " tek"}" id="bl-ln-tus"><button class="btn ana" type="button" id="bl-kopyala">Kopyala</button>${navigator.share ? `<button class="btn" type="button" id="bl-paylas">Paylaş</button>` : ""}</div>
@@ -474,6 +478,10 @@
       .bk-tuslar{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px} .bk-tuslar button{height:36px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer;white-space:nowrap} .bk-tuslar .sil{color:#A3412F}
       .bl-mod{border-radius:10px!important;padding:3px!important} .bl-mod button{padding:8px 4px!important;font-size:12.5px!important;border-radius:8px!important}
       #bl-pay .bl-kart{gap:12px}
+      .bl-tip{align-self:center;padding:3px 9px;border-radius:7px;font:700 10.5px var(--f-ui);letter-spacing:.07em;background:#E9EDF2;color:#4A5868}
+      .bl-kart[data-tip="kendi"] .bl-tip{background:#E3ECF6;color:#2F5A8C} .bl-kart[data-tip="kendi"] .bl-logo{background:#E3ECF6}
+      .bl-kart[data-tip="misafir"] .bl-tip{background:#F5EEDB;color:#7A5214} .bl-kart[data-tip="misafir"] .bl-logo{background:#F5EEDB}
+      #misafir-rozet{display:block;margin-top:2px;padding:2px 7px;border-radius:6px;background:#F5EEDB;color:#7A5214;font:700 9.5px var(--f-ui);letter-spacing:.05em;width:max-content;max-width:100%}
       .bp-iki{display:grid;grid-template-columns:1fr 1fr;gap:6px} .bp-iki .btn{min-height:42px;font:600 12.5px var(--f-ui);justify-content:center;text-align:center;line-height:1.2;padding:4px 8px}
       .bp-arac{display:grid;grid-template-columns:1.3fr 1fr 1fr;gap:5px} .bp-arac button{height:34px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer;white-space:nowrap;padding:0 6px}
       .bp-arac button[aria-pressed="true"]{background:#34475C;border-color:#34475C;color:#fff}
@@ -508,7 +516,10 @@
     let pinCoz = null;
     const pinIn = $$("#bl-pin-in"), pinOk = pinP.querySelector('[data-p="1"]');
     const pinBoya = () => { const v = pinIn.value; pinP.querySelectorAll(".pinx i").forEach((x, k) => { x.classList.toggle("f", k < v.length); x.classList.toggle("on", k === Math.min(v.length, 5)); }); pinOk.disabled = v.length < 6; };
-    function pinSor(baslik, metin, hata, okYazi){ return new Promise(ok => { if(pinCoz) pinCoz(null); pinCoz = ok;
+    /* PIN ve link pencerelerinde hangi iş olduğu belli olsun: kendi cihazın (mavi), misafir (amber), uygulama kilidi (gri) */
+    const TIP = { kendi: ["KENDİ CİHAZIN", "📱"], misafir: ["MİSAFİR · GÖRÜNTÜLEME", "👁"], kilit: ["UYGULAMA KİLİDİ", "🔒"] };
+    const tipKoy = (el, tip) => { const t = TIP[tip] || TIP.kilit, k = el.querySelector(".bl-kart"); k.dataset.tip = tip || "kilit"; el.querySelector(".bl-tip").textContent = t[0]; el.querySelector(".bl-logo").textContent = t[1]; };
+    function pinSor(baslik, metin, hata, okYazi, tip){ tipKoy(pinP, tip); return new Promise(ok => { if(pinCoz) pinCoz(null); pinCoz = ok;
       pinP.querySelector("h2").textContent = baslik; pinP.querySelector(".bl-alt").textContent = metin; pinP.querySelector(".pinerr").textContent = hata || "";
       pinP.querySelector(".pinx").classList.toggle("err", !!hata); pinOk.textContent = okYazi || "Devam"; pinIn.value = ""; pinBoya(); pinP.hidden = false; setTimeout(() => pinIn.focus(), 60); }); }
     const pinBitir = v => { pinP.hidden = true; const f = pinCoz; pinCoz = null; if(f) f(v); };
@@ -563,8 +574,8 @@
     async function hizliOlustur(ilk){
       let pin = null, hata = "";
       for(let k = 0; k < 3 && !pin; k++){
-        const a = await pinSor(ilk ? "Hızlı bağlantı için PIN belirle" : "PIN belirle", "Diğer cihazlarda anahtar yazmadan bağlanmak için 6 haneli bir PIN seç.", hata); if(a === null) return;
-        const b = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur"); if(b === null) return;
+        const a = await pinSor(ilk ? "Kendi cihazların için PIN belirle" : "PIN belirle", "Yalnız SENİN diğer telefon / bilgisayarın için. Anahtar yazmadan bağlanmak için 6 haneli bir PIN seç. Başkasına verme.", hata, "Devam", "kendi"); if(a === null) return;
+        const b = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur", "kendi"); if(b === null) return;
         if(a === b) pin = a; else hata = "PIN'ler aynı değil, baştan dene."; }
       if(!pin) return;
       const link = await linkYap(pin); try { localStorage.setItem(LS_LINK, link); } catch(e){} linkGoster(link);
@@ -572,7 +583,7 @@
     async function hizliKullan(ham){
       const j = linkCoz(ham); if(!j){ panelCiz(); panel.hidden = false; acKapa("bl-link-alan", true); $$("#bl-hata").textContent = "Bu bir TSK ARŞİV hızlı bağlantı linki değil."; return; }
       let d = null, hata = "";
-      for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("PIN'ini gir", "Hızlı bağlantı için belirlediğin 6 haneli PIN.", hata, "Bağlan"); if(pin === null) return;
+      for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Kendi arşivine bağlan", "Kendi cihazların için belirlediğin 6 haneli PIN. (Bu link sahibine özeldir; misafir linki değildir.)", hata, "Bağlan", "kendi"); if(pin === null) return;
         d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar dene"; }
       if(!d){ bildirim("PIN 5 kez yanlış girildi"); return; }
       panelCiz(); panel.hidden = false; const h = $$("#bl-hata"); h.className = "bl-hata bilgi"; h.innerHTML = '<span class="bl-spin"></span>Bağlanıyor, veriler alınıyor…';
@@ -647,10 +658,10 @@
       if(b.dataset.bpon != null){ try { sessionStorage.setItem("tsk-onizle", "1"); } catch(x){} location.reload(); return; }
       if(b.dataset.bpg != null){ b.disabled = true; b.innerHTML = '<span class="bl-spin"></span>'; await paylasimGonder(true); const op = [...payP.querySelectorAll(".bp-g")].map(x => x.open); payCiz(); payP.querySelectorAll(".bp-g").forEach((x, i) => x.open = op[i]); bildirim(payHata ? payHata : "Paylaşım güncellendi"); return; }
       if(b.dataset.bpl != null){ let pin = null, hata = "";
-        for(let k = 0; k < 3 && !pin; k++){ const a = await pinSor("Görüntüleme linki için PIN", "Karşı taraf linki açınca bu 6 haneli PIN'i girecek. PIN'i ona ayrıca (telefonla, yüz yüze) söyleyin.", hata); if(a === null) return;
-          const c = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur"); if(c === null) return; if(a === c) pin = a; else hata = "PIN'ler aynı değil, baştan dene."; }
+        for(let k = 0; k < 3 && !pin; k++){ const a = await pinSor("Misafir için PIN belirle", "Misafir linki açınca bu 6 haneli PIN'i girecek. Kendi PIN'inizden FARKLI bir PIN seçin ve misafire ayrıca (telefonla, yüz yüze) söyleyin.", hata, "Devam", "misafir"); if(a === null) return;
+          const c = await pinSor("PIN'i tekrar gir", "Aynı 6 haneyi bir kez daha gir.", "", "Oluştur", "misafir"); if(c === null) return; if(a === c) pin = a; else hata = "PIN'ler aynı değil, baştan dene."; }
         if(!pin) return; const link = await linkYap(pin, { r: pay.depo, t: pay.t, p: pay.p, rol: "izleyici" }, "#tsk-izle=");
-        lnP.querySelector("h2").textContent = "Görüntüleme linki hazır"; lnP.querySelector(".bl-alt").textContent = "Bu linki göndereceğiniz kişiye iletin; PIN'i ayrıca söyleyin. Gizlediğiniz bölümleri buğulu görür, içini göremez."; linkGoster(link); return; }
+        tipKoy(lnP, "misafir"); lnP.querySelector("h2").textContent = "Misafir linki hazır"; lnP.querySelector(".bl-alt").textContent = "Bu linki misafire gönderin, PIN'i ayrıca söyleyin. Misafir yalnız paylaştıklarınızı görür; gizlediğiniz bölümler onda buğulu görünür, ana arşivinize erişemez."; linkGoster(link); return; }
       if(b.dataset.bpk != null){ const s2 = await sor("Paylaşım kapatılsın mı?", "Paylaşım deposundaki kopya boşaltılır; karşı taraf bir sonraki açılışta hiçbir şey göremez. Ana arşivinize dokunulmaz.", "Kapat", "Vazgeç"); if(s2 !== 1) return;
         try { const u = await payOku(); const pr = await ghP(`${API}/repos/${pay.depo}/contents/veri/dosyalar`); for(const x of (pr.ok ? await pr.json() : [])) await ghP(yolP(DOSYA + x.name), { method: "DELETE", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım kapandı", sha: x.sha }) });
           await ghP(yolP(VERI), { method: "PUT", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ message: "TSK ARŞİV paylaşım kapandı", content: u8ToB64(new TextEncoder().encode(await paketleK({ "bt/paylasimGor": { kapali: 1, gizli: {}, duzenle: false } }, pay.p))), ...(u.sha ? { sha: u.sha } : {}) }) }); } catch(x){}
@@ -661,7 +672,7 @@
         if(s2 === 1){ try { sessionStorage.setItem("tsk-onizle", "1"); } catch(e){} location.reload(); } return; }
       const j = linkCoz(ham); if(!j){ bildirim("Görüntüleme linki bozuk"); return; }
       let d = null, hata = "";
-      for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Paylaşılan arşiv", "Size söylenen 6 haneli PIN'i girin.", hata, "Aç"); if(pin === null) return; d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar deneyin"; }
+      for(let k = 0; k < 5 && !d; k++){ const pin = await pinSor("Misafir girişi", "Bu bir görüntüleme linkidir. Arşiv sahibinin size söylediği 6 haneli PIN'i girin.", hata, "Aç", "misafir"); if(pin === null) return; d = await linkAc(j, pin); if(!d) hata = "PIN yanlış, tekrar deneyin"; }
       if(!d){ bildirim("PIN 5 kez yanlış girildi"); return; }
       panelCiz(); panel.hidden = false; const h = $$("#bl-hata"); h.className = "bl-hata bilgi"; h.innerHTML = '<span class="bl-spin"></span>Paylaşılan arşiv açılıyor…';
       try { await baglan(d.r, d.t, d.p || "", meta.mod, "izleyici"); h.className = "bl-hata"; panelCiz(); panel.hidden = true; rolUygula(); bildirim(payGor().kapali ? "Bu paylaşım kapatılmış" : "Paylaşılan arşiv açıldı"); }
@@ -694,7 +705,7 @@
     $$("#bl-mod").addEventListener("keydown", e => { if(!/Arrow(Left|Right)/.test(e.key)) return; const t = [...panel.querySelectorAll("[data-mod]")]; const i = t.findIndex(b => b.dataset.mod === meta.mod); const n = t[(i + (e.key === "ArrowRight" ? 1 : t.length - 1)) % t.length]; n.click(); n.focus(); });
     $$("#bl-simdi").onclick = async () => { const b = $$("#bl-simdi"); b.disabled = true; await esitle("elle"); b.disabled = false; panelCiz(); if(!durumHata) bildirim("Eşitlendi"); };
     $$("#bl-pay-ac").onclick = () => { panel.hidden = true; payAc(); };
-    $$("#bl-hizli").onclick = () => { lnP.querySelector("h2").textContent = "Hızlı bağlantın hazır"; lnP.querySelector(".bl-alt").textContent = "Bu linki Notlar'a kaydet ya da WhatsApp'ta kendine gönder. Başka bir cihazda linke dokun, TSK ARŞİV açılır; PIN'i girince bağlanır."; let l = ""; try { l = localStorage.getItem(LS_LINK) || ""; } catch(e){} if(l && linkCoz(l)) linkGoster(l); else hizliOlustur(); };
+    $$("#bl-hizli").onclick = () => { tipKoy(lnP, "kendi"); lnP.querySelector("h2").textContent = "Kendi cihazların için link hazır"; lnP.querySelector(".bl-alt").textContent = "Yalnız kendin için: Notlar'a kaydet ya da WhatsApp'ta kendine gönder. Başka cihazında linke dokun, PIN'i girince tam yetkiyle bağlanır. Başkasına gönderme; misafir için 'Başkasına göster'i kullan."; let l = ""; try { l = localStorage.getItem(LS_LINK) || ""; } catch(e){} if(l && linkCoz(l)) linkGoster(l); else hizliOlustur(); };
     $$("#bl-kes").onclick = () => { const b = $$("#bl-kes"); if(b.dataset.onay !== "1"){ b.dataset.onay = "1"; b.textContent = "Emin misin? Bu cihazda anahtar silinir"; setTimeout(() => { b.dataset.onay = ""; b.textContent = "Bağlantıyı kes"; }, 4000); return; } kes(); try { localStorage.removeItem(LS_LINK); } catch(e){} panelCiz(); };
     $$("#bl-yedek").onclick = () => yedekAl();
     $$("#bl-yukle").onclick = () => $$("#bl-dosya").click();
@@ -3015,7 +3026,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 395</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 396</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
