@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "415";
+  const SURUM = "416";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -50,7 +50,8 @@
   const metaYaz = () => ONIZLE ? Promise.resolve() : islem(MS, "readwrite", s => s.put(kopya(meta), "bulut")).catch(() => {});
   async function yerelOku(){
     if(idb){ const k = await islem(BS, "readonly", s => s.getAllKeys()) || [], d = await islem(BS, "readonly", s => s.getAll()) || []; k.forEach((x, i) => mem[x] = d[i]);
-      const m = await islem(MS, "readonly", s => s.get("bulut")); if(m) Object.assign(meta, m); }
+      const m = await islem(MS, "readonly", s => s.get("bulut")); if(m) Object.assign(meta, m);
+      tabanV = await islem(MS, "readonly", s => s.get("tabanV")).catch(() => null) || null; }
     else { try { Object.assign(mem, JSON.parse(localStorage.getItem(DBAD) || "{}")); } catch(e){} }
   }
   async function hepsiniYerelYaz(){ if(ONIZLE) return; if(idb){ for(const [p, v] of Object.entries(mem)) await yerelYaz(p, v); const k = await islem(BS, "readonly", s => s.getAllKeys()).catch(() => []) || []; for(const x of k) if(!(x in mem)) await yerelYaz(x, undefined); } else { try { localStorage.setItem(DBAD, JSON.stringify(mem)); } catch(e){} } }
@@ -101,10 +102,29 @@
      Bu cihazda değişen anahtar buradan, yalnız bulutta değişen anahtar buluttan alınır; böylece bir cihazın kaydı başka yerde eklenen kayıtları silmez. */
   const kOzet = x => { const s = JSON.stringify(x) || ""; let h = 0; for(let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return s.length + ":" + h; };
   function tabanYap(v){ meta.taban = Object.fromEntries(Object.keys(v || {}).map(k => [k, kOzet(v[k])])); }
-  function esit(v){ meta.imza = imza(v); tabanYap(v); }
+  /* tabanın tam kopyası (bt/… ve belgeler/…): aynı kayıt iki yerde birden değişince alan alan birleştirmek için */
+  let tabanV = null;
+  function tabanVYap(v){ if(ONIZLE) return; const o = {}; for(const k of Object.keys(v || {})) if(/^(bt|belgeler)\//.test(k)){ const j = JSON.stringify(v[k]); if(j && j.length < 400000) o[k] = JSON.parse(j); }
+    tabanV = o; islem(MS, "readwrite", s => s.put(o, "tabanV")).catch(() => {}); }
+  function esit(v){ meta.imza = imza(v); tabanYap(v); tabanVYap(v); }
+  const jEs = (a, b) => JSON.stringify(a) === JSON.stringify(b), duz = x => x && typeof x === "object" && !Array.isArray(x);
+  const idDizi = a => Array.isArray(a) && a.length > 0 && a.every(x => duz(x) && x.id != null);
+  /* üç yollu birleştirme: taban (b), bu cihaz (l), bulut (u). Yalnız bir tarafta değişen alan o taraftan; ikisinde de değişirse bu cihaz */
+  function derin(b, l, u){ if(jEs(l, b)) return kopya(u); if(l === undefined && u !== undefined && !jEs(u, b)) return kopya(u);   // silme ile yeni değer çakışırsa değer kalır
+    if(jEs(u, b) || jEs(l, u)) return kopya(l);
+    if(duz(l) && duz(u)){ const r = {}, B = duz(b) ? b : {}; for(const k of new Set([...Object.keys(u), ...Object.keys(l)])){ const v = derin(B[k], l[k], u[k]); if(v !== undefined) r[k] = v; } return r; }
+    if((idDizi(l) || !l || !l.length) && (idDizi(u) || !u || !u.length) && Array.isArray(l) && Array.isArray(u)){ const B = new Map((Array.isArray(b) ? b : []).filter(duz).map(x => [String(x.id), x])), Lm = new Map(l.map(x => [String(x.id), x])), Um = new Map(u.map(x => [String(x.id), x]));
+      const sira = (A, Bd) => A.map(x => String(x.id)).filter(i => Bd.has(i)).join("|"), bSira = [...B.keys()].filter(i => Lm.has(i) && Um.has(i)).join("|");
+      const ana = sira(l, B) !== bSira && sira(u, B) === bSira ? l : u, out = [];
+      const ekle = id => { if(out.some(x => String(x.id) === id)) return; const x = derin(B.get(id), Lm.get(id), Um.get(id)); if(x !== undefined) out.push(x); };
+      ana.forEach(x => ekle(String(x.id))); (ana === l ? u : l).forEach(x => { const id = String(x.id); if(!B.has(id)) ekle(id); else if(!out.some(y => String(y.id) === id)){ const v = derin(B.get(id), Lm.get(id), Um.get(id)); if(v !== undefined) out.push(v); } });
+      return out; }
+    return kopya(l); }
   function birlestir(yerel, uzak){ const T = meta.taban, R = { ...uzak };
     for(const k of new Set([...Object.keys(yerel), ...Object.keys(T || {})])){ const l = k in yerel ? kOzet(yerel[k]) : null;
-      if(T){ const t = k in T ? T[k] : null; if(l === t) continue; if(l === null) delete R[k]; else R[k] = yerel[k]; }   // yalnız bu cihazda değişenler
+      if(T){ const t = k in T ? T[k] : null; if(l === t) continue; if(l === null) delete R[k];
+        else if(k in uzak && kOzet(uzak[k]) !== t && tabanV && k in tabanV && kOzet(tabanV[k]) === t){ try { R[k] = derin(tabanV[k], yerel[k], uzak[k]); } catch(e){ R[k] = yerel[k]; } }   // ikisinde de değişmiş: alan alan
+        else R[k] = yerel[k]; }   // yalnız bu cihazda değişenler
       else if(l !== null) R[k] = yerel[k]; }   // taban yoksa: ortak anahtarda bu cihaz, yalnız bulutta olan anahtar korunur
     return R; }
   const imza = v => { const s = JSON.stringify(Object.keys(v).sort().map(k => [k, v[k]])); let h = 0; for(let i = 0; i < s.length; i++) h = (h * 31 + s.charCodeAt(i)) | 0; return s.length + ":" + h; };
@@ -3021,6 +3041,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 
 .km-kan{display:grid;grid-template-columns:repeat(4,1fr);gap:5px} .km-kan button{border:1px solid var(--line2);background:#fff;border-radius:9px;padding:8px 2px;font:700 12.5px var(--f-ui);color:#22303D;cursor:pointer;white-space:nowrap}
 .km-kan button[aria-pressed="true"]{background:#FBEAEA;border-color:#E2B4B4;color:#8E3434;box-shadow:0 0 0 2px #F6DADA}
+.km-silb{display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D9DCC6;background:#F7F8F0;border-radius:9px;padding:7px 10px;cursor:pointer;text-align:left} .km-silL{flex:1;display:flex;flex-direction:column;gap:3px;min-width:0} .km-silL>span{display:flex;gap:8px;align-items:baseline;min-width:0} .km-silL b{font:700 13px var(--f-ui);color:#3D4223;font-variant-numeric:tabular-nums} .km-silL b.yok{font-weight:500;color:var(--muted)} .km-silL small{font:500 11px var(--f-ui);color:var(--muted);line-height:1.3} .km-silb>i{font-style:normal;color:#777B5E}
 .km-slgit{display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D9DCC6;background:#F7F8F0;border-radius:10px;padding:10px 12px;font:700 13px var(--f-ui);color:#3D4223;cursor:pointer;text-align:left} .km-slgit span{flex:1} .km-slgit i{font-style:normal;color:#777B5E}
 .sl-s{background:#ECEEDF!important;color:#4A4F2C!important} .sl-grup{display:flex;flex-direction:column;gap:6px} .sl-gb{display:flex;align-items:center;gap:8px} .sl-gb em{font:700 11px var(--f-ui);font-style:normal;color:#4A4F2C;background:#ECEEDF;border-radius:6px;padding:3px 8px;white-space:nowrap}
 .sl-model{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:7px 9px;font:700 13px var(--f-ui);background:#fff;resize:none}
@@ -3295,7 +3316,7 @@ html.kayit-bekliyor #geri-al{display:none} html.kayit-bekliyor #v-belge{padding-
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 415</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 416</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4182,7 +4203,7 @@ function anaCiz(){
   const D = S.gdhg && S.gdhg.donem || {}; const bas = D.bas, son = D.son || (typeof gdDonemSonu === "function" ? gdDonemSonu(D.bas) : "");
   /* konu kutuları: doğrudan belgeye */
   const izinde = (S.personel.rows || []).filter(p => ((S.izin.kayit || {})[p.id]?.i || []).some(i => i.a && i.k && i.a <= bugun && bugun < i.k)).length;
-  const say = { sertifika: d => { const n = srHepsi(d).length; return n ? `${n} sertifika` : "henüz yok"; }, kimlik: () => { const P = (S.personel.rows || []).filter(x => x.ad), e = P.filter(p => kmEksik(p).length).length; return e ? `${e} kişide eksik` : `${P.length} kişi · tamam`; }, dilekce: d => { try { const v = dlVeri(d); return `${v.kayitlar.length} dilekçe`; } catch(e){ return "Dilekçe yaz"; } }, silah: d => { try { const L = slVeri(d).liste, b = L.filter(x => !slSahip(x.seri)).length; return `${L.length} silah${b ? ` · ${b} boş` : ""}`; } catch(e){ return "Silah listesi"; } }, personel: () => `${(S.personel.rows || []).filter(x => x.ad).length} personel`, izin: () => izinde ? `${izinde} kişi izinde` : "İzinde kimse yok",
+  const say = { sertifika: d => { const n = srHepsi(d).length; return n ? `${n} sertifika` : "henüz yok"; }, kimlik: () => { const P = (S.personel.rows || []).filter(x => x.ad), e = P.filter(p => kmEksik(p).length).length; return e ? `${e} kişide eksik` : `${P.length} kişi · tamam`; }, dilekce: d => { try { const v = dlVeri(d); return `${v.kayitlar.length} dilekçe`; } catch(e){ return "Dilekçe yaz"; } }, silah: d => { try { const L = slVeri(d).liste, b = L.filter(x => !slSahip(x)).length; return `${L.length} silah${b ? ` · ${b} boş` : ""}`; } catch(e){ return "Silah listesi"; } }, personel: () => `${(S.personel.rows || []).filter(x => x.ad).length} personel`, izin: () => izinde ? `${izinde} kişi izinde` : "İzinde kimse yok",
     yoklama: () => `${(S.yoklama.rows || []).length} kişi`, gdhg: () => `${(S.gdhg?.kisiler || []).filter(k => k.ad).length} kişi · ${1 + ((S.gdhgSet?.liste || []).length)} kayıt`,
     izinb: () => `${(S.izinb?.kisiler || []).filter(k => k.ad).length} belge`, hedef: () => `${(S.hedef.rows || []).length} hedef`, sema: d => `${((d && d.sema && d.sema.kutular) || []).length} kutu`, baslik: d => `${((d && d.bs && d.bs.sayfalar) || []).length} başlık`, spor: d => { const G = spGenel(spVeri(d)); return G.bas + G.bsz ? `%${spSayiYaz(G.oran)} başarı` : `${spVeri(d).kisiler.length} kişi`; } };
   const AD = { sertifika: "Sertifikalar", kimlik: "Personel kimliği", silah: "Silahlar", dilekce: "Dilekçe", personel: "Personel", izin: "İzin çizelgesi", yoklama: "Yoklama", gdhg: "GDHG onay", izinb: "İzin belgeleri", hedef: "Hedefler", sema: "Teşkilat", baslik: "Başlık yap", spor: "Spor testi" };
@@ -5846,7 +5867,7 @@ function gdhgCiz(){
   if(gdSekme === "belge" || gdSekme === "soz") gdBelgeCiz(); else if(gdSekme === "liste") gdListeCiz(); else gdImzaCiz();
 }
 /* ===== belge geçmişi (bulut kayıtlarından) ===== */
-function belgeYollari(d){ const ek = { kimlik: ["bt/personel"], silah: ["bt/personel"], personel: ["bt/personel"], izin: ["bt/izin", "bt/personel"], yoklama: ["bt/yoklama"], hedef: ["bt/hedef", "bt/hedefSet"], gdhg: ["bt/gdhg", "bt/gdhgSet"], izinb: ["bt/izinb"] }[d.tur] || []; return ["belgeler/" + d.id, ...ek]; }
+function belgeYollari(d){ const ek = { kimlik: ["bt/personel"],  personel: ["bt/personel"], izin: ["bt/izin", "bt/personel"], yoklama: ["bt/yoklama"], hedef: ["bt/hedef", "bt/hedefSet"], gdhg: ["bt/gdhg", "bt/gdhgSet"], izinb: ["bt/izinb"] }[d.tur] || []; return ["belgeler/" + d.id, ...ek]; }
 function gecmisOzet(d, veri){
   const v = p => veri[p];
   try {
@@ -9980,7 +10001,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 
 /* ================= PERSONEL KİMLİĞİ (tur: "kimlik") =================
    Herkesin kimlik bilgileri tek yerde; veri personel kaydında durur (S.personel.rows), dilekçe ve izin belgeleri buradan alır. */
-const KM_ALAN = [["kita", "Kıt'ası", "tam"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi", "t"], ["duhul", "Duhulü", "t"], ["nasip", "Nasbı", "t"], ["sicil", "Sicili", "n"], ["ems", "EMS no.", "n"], ["tc", "T.C. kimlik no.", "n"], ["kan", "Kan grubu"], ["silahModel", "Silah modeli"], ["silahSeri", "Silah seri no.", "n"], ["tel", "Telefon", "n tam"], ["adres", "Adres", "tam"], ["yakinAd", "Yakını adı soyadı"], ["yakinTel", "Yakını telefonu", "n"]];
+const KM_ALAN = [["kita", "Kıt'ası", "tam"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi", "t"], ["duhul", "Duhulü", "t"], ["nasip", "Nasbı", "t"], ["sicil", "Sicili", "n"], ["ems", "EMS no.", "n"], ["tc", "T.C. kimlik no.", "n"], ["kan", "Kan grubu"], ["tel", "Telefon", "n tam"], ["adres", "Adres", "tam"], ["yakinAd", "Yakını adı soyadı"], ["yakinTel", "Yakını telefonu", "n"]];
 const KM_ZORUNLU = ["kita", "baba", "memleket", "dogum", "duhul", "nasip", "sicil", "ems", "tc", "kan", "tel", "adres"];
 let kmSecili = null, kmFiltre = "hepsi";
 const KM_KAN = ["0 RH ( + )", "0 RH ( - )", "A RH ( + )", "A RH ( - )", "B RH ( + )", "B RH ( - )", "AB RH ( + )", "AB RH ( - )"];   // izin belgesindeki yazılışla aynı
@@ -10001,7 +10022,7 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
     <div class="dl-ust"><span class="dl-ust-s km-s"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.kimlik.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.8"')}</svg></span><b>Personel kimliği</b><small>${P.length}</small><em class="km-ozet ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em></div>
     <div class="dl-seg km-filtre"><button type="button" data-km-f="hepsi" aria-pressed="${kmFiltre === "hepsi"}">Herkes</button><button type="button" data-km-f="eksik" aria-pressed="${kmFiltre === "eksik"}">Eksiği olanlar${eksikK ? ` (${eksikK})` : ""}</button></div>
     <div class="dl-liste">${L.map(sat).join("") || '<div class="yk-bos">Eksiği olan kimse yok</div>'}</div>
-    ${belgeTur("silah") ? (() => { const L = slVeri(belgeTur("silah")).liste, b = L.filter(x => !slSahip(x.seri)).length; return `<button type="button" class="km-slgit" data-sl-git="1"><span>Silah seri numaraları</span><em class="${b ? "dl-eksik" : "dl-tam"}">${L.length} silah${b ? ` · ${b} BOŞ` : ""}</em><i>›</i></button>`; })() : ""}
+    ${belgeTur("silah") ? (() => { const L = slVeri(belgeTur("silah")).liste, b = L.filter(x => !slSahip(x)).length; return `<button type="button" class="km-slgit" data-sl-git="1"><span>Silah seri numaraları</span><em class="${b ? "dl-eksik" : "dl-tam"}">${L.length} silah${b ? ` · ${b} BOŞ` : ""}</em><i>›</i></button>`; })() : ""}
     ${p ? `<section class="dl-kart km-kart">
       <div class="izb-kisi"><span class="ks-av">${esc(ksBas(p.ad))}</span><span class="ks-ad"><b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small></span><span class="km-ek" data-km-ek>${kmEksik(p).length ? `<em class="dl-eksik">${kmEksik(p).length} eksik</em>` : '<em class="dl-tam">tamam</em>'}</span></div>
       <div class="dl-alanlar">${KM_ALAN.map(([a, t, o]) => { const v = p[a] || "", bos = KM_ZORUNLU.includes(a) && !String(kmDeger(p, a)).trim(), cl = `dl-al${/tam/.test(o || "") ? " tam" : ""}${bos ? " dl-bos" : ""}`;
@@ -10011,7 +10032,7 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
             <button type="button" class="izb-aktar" data-km-adr-ekle="1">＋ Adres ekle</button></div>`; }
           if(o === "t") return `<label class="${cl}"><span>${t}${v && !dlIso(v) ? ` <i>kayıtlı: ${esc(v)} · takvimden seçin</i>` : ""}</span><input type="date" data-km-k="${a}" value="${esc(dlIso(v))}"${tarihYil(v)}></label>`;
           const ph = a === "kita" ? (p.gorev || "") : a === "tel" ? kmTel(p) : "";
-          return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-km-k="${a}"${/n/.test(o || "") ? ' inputmode="numeric"' : ""} placeholder="${esc(ph)}">${esc(v)}</textarea></label>`; }).join("")}</div>
+          return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-km-k="${a}"${/n/.test(o || "") ? ' inputmode="numeric"' : ""} placeholder="${esc(ph)}">${esc(v)}</textarea></label>`; }).join("")}${belgeTur("silah") ? (() => { const W = kmSilahlar(p); return `<div class="dl-al tam km-sil"><span>Silahları <i>Silah seri numaraları listesinden</i></span><button type="button" class="km-silb" data-sl-git="1"><span class="km-silL">${W.length ? W.map(x => `<span><b>${esc(x.seri)}</b><small>${esc(x.model || "")}</small></span>`).join("") : '<span><b class="yok">Zimmetli silah yok</b></span>'}</span><i>›</i></button></div>`; })() : ""}</div>
       <details class="dl-bilgi km-nere"><summary><span>Bu bilgiler nereye gider?</span><em class="dl-not">her belge yalnız kendi alanını alır</em></summary>
         <div class="km-nl">
           <div><b>Dilekçe</b><span class="km-o">otomatik</span><small>kıt'a, baba adı, memleket, doğum, duhul, nasıp, sicil, EMS, T.C.</small></div>
@@ -10041,7 +10062,7 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
   const sy = document.querySelector(`#km-govde [data-km-say="${CSS.escape(p.id)}"]`); if(sy){ sy.className = n ? "dl-eksik" : "dl-tam"; sy.textContent = n ? n + " eksik" : "tamam"; } });
 const TEMA_KIMLIK = { ana: "5F8F95", bas: "DDEDEE", basYazi: "214A50", bant: "EAF4F5", bantYazi: "2C5C62", serit: "F5FAFA", cizgi: "B9D2D4", soluk: "67858A", vurgu: "E6F0E4", vurguYazi: "2F5A3A", topSut: "EEF6F6", ustBand: "F0F7F7" };
 function tanimKimlik(){ const T = TEMA_KIMLIK, bh = t => H(t, { fill: T.bas, k: T.basYazi }), P = (S.personel.rows || []).filter(x => x.ad);
-  const body = P.map((p, i) => { const z = i % 2 ? T.serit : null, c = t => H(t || "", { fill: z }); return [H(i + 1, { fill: z, k: T.soluk }), c(`${p.rutbe || ""}\n${p.ad || ""}`.trim()), c(p.sicil), c(p.baba), c(p.memleket), c(p.dogum), c(p.duhul), c(p.nasip), c(p.ems), c(p.tc), c(p.kan), c([p.silahModel, p.silahSeri].filter(Boolean).join("\n")), c(p.tel || kmTel(p))]; });
+  const body = P.map((p, i) => { const z = i % 2 ? T.serit : null, c = t => H(t || "", { fill: z }); return [H(i + 1, { fill: z, k: T.soluk }), c(`${p.rutbe || ""}\n${p.ad || ""}`.trim()), c(p.sicil), c(p.baba), c(p.memleket), c(p.dogum), c(p.duhul), c(p.nasip), c(p.ems), c(p.tc), c(p.kan), c(kmSilahlar(p).map(x => x.seri).join("\n")), c(p.tel || kmTel(p))]; });
   return { tema: T, dosya: "Personel_Kimlik_Bilgileri", baslik: "PERSONEL KİMLİK BİLGİLERİ", oran: [4, 16, 8, 8, 9, 8, 7, 7, 8, 10, 6, 8, 10],
     head: [["S/N", "RÜTBE / ADI SOYADI", "SİCİL", "BABA ADI", "MEMLEKETİ", "DOĞUM T.", "DUHUL", "NASIP", "EMS NO", "T.C. KİMLİK NO", "KAN", "SİLAH", "TELEFON"].map(bh)], body, satirH: 12, xSatir: 30, xYazi: 10, xBasYazi: 9.5, xBaslikYazi: 15 }; }
 /* izin belgelerine aktarım: yalnız boş kutuları doldurur (çıktı biçimi değişmez) */
@@ -10050,39 +10071,38 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 const kmKisi = x => { const R = S.personel.rows || []; return (x.pid && R.find(p => p.id === x.pid)) || R.find(p => pAd(p.ad) === pAd(x.ad)) || null; };
 /* ================= SİLAH SERİ NUMARALARI (tur: "silah") =================
    d.sl.liste = [{ id, model, seri }] → sayım tutanağı gibi modele göre gruplu liste.
-   Kimde olduğu personel kaydındaki silahSeri'den bulunur (tek kaynak); karşılığı olmayan BOŞ yazılır. */
+   Kimde olduğu her satırın pid'inde tutulur; Personel kimliği buradan okur. Kimsede olmayan BOŞ yazılır. */
 const slVeri = d => { d.sl ||= {}; d.sl.liste ||= []; return d.sl; };
 const slN = v => String(v || "").replace(/\s+/g, "").toLocaleUpperCase("tr");
-const slSahip = seri => { const n = slN(seri); return n ? (S.personel.rows || []).find(p => p.ad && slN(p.silahSeri) === n) || null : null; };
+const slSahip = x => x && x.pid ? (S.personel.rows || []).find(p => p.id === x.pid && p.ad) || null : null;   // zimmet silah listesinde tutulur (bir kişide birden çok silah olabilir)
+const kmSilahlar = p => { const d = belgeTur("silah"); return d && p ? slVeri(d).liste.filter(x => x.pid === p.id && slN(x.seri)) : []; };
 const slGruplar = L => { const G = []; L.forEach(x => { let g = G.find(y => y.model === (x.model || "")); if(!g) G.push(g = { model: x.model || "", L: [] }); g.L.push(x); }); return G; };
-function silahCiz(){ const d = acikBelge(); if(!d || d.tur !== "silah") return; const L = slVeri(d).liste, G = slGruplar(L), bos = L.filter(x => !slSahip(x.seri)).length;
+function silahCiz(){ const d = acikBelge(); if(!d || d.tur !== "silah") return; const L = slVeri(d).liste, G = slGruplar(L), bos = L.filter(x => !slSahip(x)).length;
   $("#sl-govde").innerHTML = `
     <div class="dl-ust"><span class="dl-ust-s sl-s"><svg viewBox="0 0 24 24" aria-hidden="true">${PANO_SIMGE.silah.replace(/<(rect|circle|path)/g, '<$1 fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"')}</svg></span><b>Silahlar</b><small>${L.length}</small><em style="white-space:nowrap" class="km-ozet ${bos ? "dl-eksik" : "dl-tam"}">${L.length - bos} zimmetli${bos ? ` · ${bos} BOŞ` : ""}</em></div>
     ${G.map((g, gi) => `<section class="dl-kart sl-grup">
       <div class="sl-gb"><textarea class="oto-boy sl-model" rows="1" data-tek data-sl-model="${gi}" placeholder="Cinsi / modeli (ör. 7,62 mm G3 A4 P. Tüfeği)">${esc(g.model)}</textarea><em>${g.L.length} adet</em></div>
-      <div class="sl-l">${g.L.map(x => { const p = slSahip(x.seri); return `<div class="sl-s1"><input data-sl-seri="${esc(x.id)}" value="${esc(x.seri)}" placeholder="Seri no" inputmode="numeric" aria-label="Seri no"><button type="button" class="sl-kim${p ? "" : " bos"}" data-sl-kim="${esc(x.id)}">${p ? `<b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small>` : "<b>BOŞ</b>"}</button><button type="button" class="isa-tsil" data-sl-sil="${esc(x.id)}" aria-label="Sil">✕</button></div>`; }).join("")}</div>
+      <div class="sl-l">${g.L.map(x => { const p = slSahip(x); return `<div class="sl-s1"><input data-sl-seri="${esc(x.id)}" value="${esc(x.seri)}" placeholder="Seri no" inputmode="numeric" aria-label="Seri no"><button type="button" class="sl-kim${p ? "" : " bos"}" data-sl-kim="${esc(x.id)}">${p ? `<b>${esc(p.ad)}</b><small>${esc(p.rutbe || "")}</small>` : "<b>BOŞ</b>"}</button><button type="button" class="isa-tsil" data-sl-sil="${esc(x.id)}" aria-label="Sil">✕</button></div>`; }).join("")}</div>
       <button type="button" class="izb-aktar" data-sl-ekle="${gi}">＋ Seri no ekle</button></section>`).join("")}
     <button type="button" class="izb-aktar tam" data-sl-yeni="1">＋ Yeni silah cinsi</button>
-    <small class="dl-not">Kişiye dokunup zimmetini değiştirebilirsiniz; seçilen kişinin Personel kimliğindeki silah bilgisi de değişir. Kimsede olmayan silah BOŞ yazılır.</small>`;
+    <small class="dl-not">Kişiye dokunup zimmetini değiştirebilirsiniz; bir kişiye birden çok silah verilebilir. Personel kimliğinde kişinin silahları buradan görünür. Kimsede olmayan silah BOŞ yazılır.</small>`;
   otoBoyHepsi($("#sl-govde")); }
-function slKisiYaz(x, pid){ const n = slN(x.seri), eski = slSahip(x.seri); if(eski){ delete eski.silahSeri; delete eski.silahModel; }
-  if(pid){ const p = (S.personel.rows || []).find(y => y.id === pid); if(p){ const onceki = p.silahSeri && slN(p.silahSeri) !== n ? p.silahSeri : ""; p.silahSeri = x.seri; if(x.model) p.silahModel = x.model; if(onceki) bildir(`${p.ad} üzerindeki ${onceki} artık BOŞ`); } }
-  kaydetBt("personel"); }
+function slKisiYaz(x, pid){ if(pid) x.pid = pid; else delete x.pid; }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#sl-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "silah") return; const v = slVeri(d), L = v.liste, G = slGruplar(L), yaz = () => { kaydetBelge(d); silahCiz(); };
   if(b.dataset.slYeni){ L.push({ id: "w" + yeniId().slice(0, 7), model: "", seri: "" }); yaz(); const t = document.querySelectorAll("#sl-govde .sl-model"); if(t.length) t[t.length - 1].focus(); return; }
   if(b.dataset.slEkle != null){ const g = G[+b.dataset.slEkle]; if(!g) return; const son = g.L[g.L.length - 1], i = L.indexOf(son); L.splice(i + 1, 0, { id: "w" + yeniId().slice(0, 7), model: g.model, seri: "" }); yaz(); const t = document.querySelectorAll(`#sl-govde .sl-grup:nth-of-type(${+b.dataset.slEkle + 1}) [data-sl-seri]`); if(t.length) t[t.length - 1].focus(); return; }
-  if(b.dataset.slSil){ const x = L.find(y => y.id === b.dataset.slSil); if(!x) return; const p = slSahip(x.seri); if(p){ delete p.silahSeri; delete p.silahModel; kaydetBt("personel"); } v.liste = L.filter(y => y !== x); yaz(); return; }
-  if(b.dataset.slKim){ const x = L.find(y => y.id === b.dataset.slKim); if(!x) return; if(!slN(x.seri)) return bildir("Önce seri numarasını yazın"); const P = (S.personel.rows || []).filter(y => y.ad), s0 = slSahip(x.seri);
+  if(b.dataset.slSil){ const x = L.find(y => y.id === b.dataset.slSil); if(!x) return; v.liste = L.filter(y => y !== x); yaz(); return; }
+  if(b.dataset.slKim){ const x = L.find(y => y.id === b.dataset.slKim); if(!x) return; if(!slN(x.seri)) return bildir("Önce seri numarasını yazın"); const P = (S.personel.rows || []).filter(y => y.ad).map(y => { const n = kmSilahlar(y).filter(z => z !== x).length; return n ? { ...y, rutbe: `${y.rutbe || ""} · ${n} silahı var` } : y; }), s0 = slSahip(x);
     return kisiSecAc(`${x.seri} kimde`, [{ id: "__bos", ad: "BOŞ (kimseye verilmedi)", rutbe: "" }, ...P], s0 ? s0.id : "__bos", id => { slKisiYaz(x, id === "__bos" ? "" : id); yaz(); }); } });
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#sl-govde")) return; const d = acikBelge(); if(!d || d.tur !== "silah") return; const v = slVeri(d), L = v.liste;
-  if(el.dataset.slSeri){ const x = L.find(y => y.id === el.dataset.slSeri); if(!x) return; const p = slSahip(x.seri); x.seri = el.value.trim(); if(p){ if(x.seri) p.silahSeri = x.seri; else { delete p.silahSeri; delete p.silahModel; } kaydetBt("personel"); } kaydetBelge(d); return; }
-  if(el.dataset.slModel != null){ const g = slGruplar(L)[+el.dataset.slModel]; if(!g) return; const m = el.value.replace(/\s*\n\s*/g, " "); g.L.forEach(x => { x.model = m; const p = slSahip(x.seri); if(p){ p.silahModel = m; } }); kaydetBt("personel"); kaydetBelge(d); } });
+  if(el.dataset.slSeri){ const x = L.find(y => y.id === el.dataset.slSeri); if(!x) return; x.seri = el.value.trim(); kaydetBelge(d); return; }
+  if(el.dataset.slModel != null){ const g = slGruplar(L)[+el.dataset.slModel]; if(!g) return; const m = el.value.replace(/\s*\n\s*/g, " "); g.L.forEach(x => { x.model = m; }); kaydetBelge(d); } });
 document.addEventListener("change", e => { const el = e.target; if(el.closest && el.closest("#sl-govde") && el.dataset.slSeri != null) silahCiz(); });
 const TEMA_SILAH = { ana: "7A7F55", bas: "E6E8D6", basYazi: "3D4223", bant: "F0F1E6", bantYazi: "4A4F2C", serit: "F8F9F2", cizgi: "C8CBAE", soluk: "777B5E", vurgu: "E6F0E4", vurguYazi: "2F5A3A", topSut: "F2F3EA", ustBand: "F4F5EC" };
 function tanimSilah(){ const d = belgeTur("silah"), T = TEMA_SILAH, bh = t => H(t, { fill: T.bas, k: T.basYazi }), L = d ? slVeri(d).liste.filter(x => slN(x.seri)) : []; let n = 0; const body = [];
   slGruplar(L).forEach(g => { body.push({ bant: `${g.model || "Cinsi belirtilmemiş"}  ·  ${g.L.length} adet`, fill: T.bant, k: T.bantYazi });
-    g.L.forEach(x => { const p = slSahip(x.seri), z = n % 2 ? T.serit : null; n++; body.push([H(n, { fill: z, k: T.soluk }), H(x.seri, { fill: z }), p ? H(`${p.rutbe || ""} ${p.ad}`.trim(), { fill: z }) : H("BOŞ", { fill: "F3EEDD", k: "7A5B1E" })]); }); });
-  const b = L.filter(x => !slSahip(x.seri)).length; if(L.length) body.push({ bant: `TOPLAM ${L.length} ADET  ·  ${L.length - b} ZİMMETLİ  ·  ${b} BOŞ`, fill: T.bas, k: T.basYazi });
+    g.L.forEach(x => { const p = slSahip(x), z = n % 2 ? T.serit : null; n++; body.push([H(n, { fill: z, k: T.soluk }), H(x.seri, { fill: z }), p ? H(`${p.rutbe || ""} ${p.ad}`.trim(), { fill: z }) : H("BOŞ", { fill: "F3EEDD", k: "7A5B1E" })]); }); });
+  const b = L.filter(x => !slSahip(x)).length; if(L.length) body.push({ bant: `TOPLAM ${L.length} ADET  ·  ${L.length - b} ZİMMETLİ  ·  ${b} BOŞ`, fill: T.bas, k: T.basYazi });
   return { tema: T, dosya: "Silah_Seri_Numaralari", baslik: "SİLAH SERİ NUMARALARI", oran: [8, 30, 62], head: [["S.NU.", "SERİ NUMARASI", "ZİMMETLİ PERSONEL"].map(bh)], body, satirH: 9, xSatir: 22, xYazi: 11, xBasYazi: 10, xBaslikYazi: 15 }; }
 /* ================= DİLEKÇE (tur: "dilekce") =================
    d.dl = { garnizon, aktif, kayitlar: [{ id, pid, tur: "izin"|"mazeret"|"diger", tarih, bas, gun, sebep, ozu, metin, elle, imza }] }
