@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "440";
+  const SURUM = "441";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3142,6 +3142,12 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .es-birim{display:grid;grid-template-columns:repeat(6,1fr);gap:5px} .es-birim button{border:1px solid var(--line2);background:#fff;border-radius:7px;padding:7px 0;font:700 12px var(--f-ui);color:#26313B;cursor:pointer} .es-birim button[aria-pressed="true"]{background:#2F4A66;border-color:#2F4A66;color:#fff}
 .es-pis{display:flex;align-items:center;gap:6px;margin-top:12px} .es-pis .bosluk{flex:1}
 /* kayıt başlığı: altındaki kartla tek parça; üstte ince gri şerit (‹ ad · 4/5 ⌄ › … ＋ Yeni), altında seçili kaydın adı */
+.sp-yc{display:flex;flex-wrap:wrap;gap:6px;margin:4px 0 10px} .sp-yc button{min-width:58px;height:32px!important;padding:0 10px!important;border:1px solid var(--line2);border-radius:8px;background:var(--panel);font:600 12.5px var(--f-ui)!important;color:#3D4D5E;cursor:pointer}
+.sp-yc button[aria-pressed="true"]{background:#2F6B47;border-color:#2F6B47;color:#fff}
+.sp-cl{display:grid;grid-template-columns:1fr 1fr;gap:0 14px;border-top:1px solid var(--line2)} .sp-cs{display:flex;align-items:center;gap:10px;padding:5px 2px;border-bottom:1px solid var(--line2);min-width:0}
+.sp-cs b{flex:0 0 34px;font:700 12.5px var(--f-ui);color:#2E6B41;text-align:right;font-variant-numeric:tabular-nums} .sp-cs input{flex:1;min-width:0;height:30px!important;border:0!important;background:transparent!important;box-shadow:none!important;padding:0 4px!important;font:600 14px var(--f-ui)!important;color:var(--fg);font-variant-numeric:tabular-nums}
+.sp-cs input:focus{background:#F1F7F2!important;border-radius:6px} .sp-cs input:placeholder-shown{color:var(--muted)}
+.sp-sev{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px} .sp-sevs{display:flex;align-items:center;gap:6px} .sp-sevs input{width:64px;height:30px;text-align:center} .sp-sevs span{font:500 11.5px var(--f-ui);color:var(--muted);flex:1}
 .sp-gzet{font:600 10.5px var(--f-ui);font-style:normal;color:#7A6A4A;background:#F3EEDD;border-radius:5px;padding:1px 6px;margin-left:4px;vertical-align:1px}
 .kb{display:flex;flex-direction:column;border:1px solid var(--line2);border-bottom:0;border-radius:14px 14px 0 0;background:var(--panel);overflow:hidden}
 .kb.yalniz{border-bottom:1px solid var(--line2);border-radius:14px}
@@ -3149,6 +3155,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kb2{display:flex;flex-direction:column;gap:8px;min-width:0}
 .km-foto{display:flex;gap:12px;align-items:center;padding:10px 2px 12px;border-bottom:1px solid var(--line2)} .km-foto>img,.km-foto>span{flex:none;width:56px;height:72px;border-radius:6px;object-fit:cover;border:1px solid var(--line2);background:#F4F6F8}
 .km-foto>span{display:grid;place-items:center;text-align:center;font:600 10px/1.3 var(--f-ui);color:var(--muted)} .km-foto>div{display:flex;flex-direction:column;gap:2px;min-width:0} .km-foto b{font:700 13px var(--f-ui)} .km-foto small{font:500 11px/1.4 var(--f-ui);color:var(--muted)} .km-fis{display:flex;gap:6px;margin-top:5px}
+.fy-fotolar{display:flex;gap:14px;margin-top:10px} .fy-fotolar>div{display:flex;flex-direction:column;gap:4px;align-items:flex-start} .fy-fotolar small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-fotolar img,.fy-fotolar span{width:52px;height:60px;object-fit:cover;border:1px solid var(--line2);border-radius:4px;display:grid;place-items:center;font:500 10px var(--f-ui);color:var(--muted)}
 .fy-kim{display:grid;grid-template-columns:1fr 1fr;gap:8px 12px} .fy-kim>div{display:flex;flex-direction:column;gap:1px;min-width:0} .fy-kim>div:last-child{grid-column:1/-1} .fy-kim small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-kim b{font:600 12.5px/1.35 var(--f-ui);color:var(--fg);overflow-wrap:anywhere}
 .fy-esik{display:flex;flex-direction:column;gap:2px;margin-top:10px;padding:9px 11px;border-radius:9px;background:#F1F7F2;border:1px solid #D5E6D9} .fy-esik b{font:700 12px var(--f-ui);color:#2F6B47} .fy-esik span{font:500 11.5px var(--f-ui);color:#3F5F4B}
 #fy-govde .fy-onz2{margin-top:10px}
@@ -3498,7 +3505,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 440</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 441</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6929,7 +6936,7 @@ async function izbFoto(id){
 async function izbPdf(L){
   const doc = await yeniPdf({ kagit: "A4", yon: "yatay" }); doc.setLineWidth(0.18); doc.setDrawColor(...izbRGB(izbKenar())); let ilk = true;
   for(const k of L){
-    const V = izbDegerler(k), foto = await izbFoto(k.foto || ((typeof kmKisi === "function" && kmKisi(k)) || {}).foto);
+    const V = izbDegerler(k), foto = await izbFoto(k.foto || (((typeof kmKisi === "function" && kmKisi(k)) || {}).fotoIzin) || ((typeof kmKisi === "function" && kmKisi(k)) || {}).foto);
     for(const yuz of izbArka ? ["on", "arka"] : ["on"]){
       if(!ilk){ doc.addPage("a4", "landscape"); doc.setLineWidth(0.18); doc.setDrawColor(...izbRGB(izbKenar())); } ilk = false;
       const { m, k: kk } = izbYerlesim(yuz); izbCiz(izbPdfCizici(doc, m.l, m.t, kk), yuz, V, foto);
@@ -6969,7 +6976,7 @@ async function izbExcel(L){
   G.tasvip.forEach((t, i) => { const r = i + 3; yaz(tv, "A" + r, t.ad, { k: 1 }); yaz(tv, "B" + r, { formula: `IF(A${r}="","",IFERROR(VLOOKUP(A${r},'VERİ LİSTESİ'!$A$2:$C$100,3,0),"${String(t.rutbe || "").replace(/"/g, "")}"))`, result: izbMakam(t.ad).rutbe }, { k: 1 }); yaz(tv, "C" + r, t.gorev, { k: 1 }); });
   /* ÖN ve ARKA YÜZ (her kişi için) */
   for(const k of L){
-    const V = izbDegerler(k), foto = await izbFoto(k.foto || ((typeof kmKisi === "function" && kmKisi(k)) || {}).foto), ek = L.length > 1 ? " · " + (k.ad || "").slice(0, 14) : "";
+    const V = izbDegerler(k), foto = await izbFoto(k.foto || (((typeof kmKisi === "function" && kmKisi(k)) || {}).fotoIzin) || ((typeof kmKisi === "function" && kmKisi(k)) || {}).foto), ek = L.length > 1 ? " · " + (k.ad || "").slice(0, 14) : "";
     for(const yuz of izbArka ? ["on", "arka"] : ["on"]){
       const o = izbOlcu(yuz), s = o.s, n = s.w.length, ad = ((yuz === "on" ? "ÖN YÜZ" : "ARKA YÜZ") + ek).replace(/[\\/?*[\]:]/g, " ").slice(0, 31);
       const ws = wb.addWorksheet(ad, { views: [{ showGridLines: false }], pageSetup: { paperSize: 9, orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 1,
@@ -7057,7 +7064,7 @@ function izbBelgeCiz(){
 let izbOnizZ = null;
 function izbOnizle(k){
   clearTimeout(izbOnizZ); izbOnizZ = setTimeout(async () => {
-    const kap = $("#izb-onizleme"); if(!kap || !k) return; const foto = await izbFoto(k.foto || ((typeof kmKisi === "function" && kmKisi(k)) || {}).foto), V = izbDegerler(k);
+    const kap = $("#izb-onizleme"); if(!kap || !k) return; const foto = await izbFoto(k.foto || (((typeof kmKisi === "function" && kmKisi(k)) || {}).fotoIzin) || ((typeof kmKisi === "function" && kmKisi(k)) || {}).foto), V = izbDegerler(k);
     const yuzler = izbArka ? ["on", "arka"] : ["on"]; kap.innerHTML = "";
     for(const yuz of yuzler){
       const { m, k: kk } = izbYerlesim(yuz); const W = 1188, s = W / 297; const cv = document.createElement("canvas"); cv.width = W; cv.height = Math.round(210 * s); cv.className = "izb-sayfa"; cv.setAttribute("aria-label", (yuz === "on" ? "Ön yüz" : "Arka yüz") + " önizlemesi");
@@ -8208,7 +8215,7 @@ async function gridPdf(d, a){
 }
 /* sayfa altı: solda "sayfa / toplam", ortada gizlilik, sağda birlik bilgisi (her sayfada) */
 function pdfAltBilgi(doc, ab, m){ const n = doc.getNumberOfPages(), W = doc.internal.pageSize.getWidth(), H = doc.internal.pageSize.getHeight(), y = H - Math.max(4, m.b * .42);
-  if(ab.fy){ const k = ab.sayfaBasina || n; for(let p = 1; p <= n; p++){ doc.setPage(p); doc.setTextColor(30, 30, 30); doc.setFont("LS", "normal"); doc.setFontSize(8.5); if(ab.sol) doc.text(ab.sol, m.l, y); doc.text(`${(p - 1) % k + 1} / ${k}`, W / 2, y, { align: "center" }); const sag = (ab.sagListe && ab.sagListe[Math.floor((p - 1) / k)]) || ab.sag; if(sag){ let fs = 8; while(doc.getTextWidth(sag) > W / 2 - m.r - 14 && fs > 5){ fs -= .25; doc.setFontSize(fs); } doc.text(sag, W - m.r, y, { align: "right" }); } } return; }
+  if(ab.fy){ const k = ab.sayfaBasina || n; for(let p = 1; p <= n; p++){ doc.setPage(p); doc.setTextColor(0, 0, 0); doc.setFont("LA", "normal"); doc.setFontSize(9); if(ab.sol) doc.text(ab.sol, m.l, y); doc.text(`${(p - 1) % k + 1} / ${k}`, W / 2, y, { align: "center" }); const sag = (ab.sagListe && ab.sagListe[Math.floor((p - 1) / k)]) || ab.sag; if(sag){ let fs = 8; while(doc.getTextWidth(sag) > W / 2 - m.r - 14 && fs > 5){ fs -= .25; doc.setFontSize(fs); } doc.text(sag, W - m.r, y, { align: "right" }); } } return; }
   for(let p = 1; p <= n; p++){ doc.setPage(p); doc.setTextColor(40, 40, 40); doc.setFont("LS", "normal"); doc.setFontSize(7.5); doc.text(`${p} / ${n}`, m.l, y);
     if(ab.gizlilik){ doc.setFont("LS", "bold"); doc.setFontSize(9); doc.text(ab.gizlilik, W / 2, y, { align: "center" }); }
     if(ab.sag){ doc.setFont("LS", "normal"); let fs = 7.5; doc.setFontSize(fs); const en = W / 2 - m.r - 22; while(doc.getTextWidth(ab.sag) > en && fs > 4.5){ fs -= .25; doc.setFontSize(fs); } doc.text(ab.sag, W - m.r, y, { align: "right" }); } } }
@@ -10218,9 +10225,15 @@ async function sporCikti(d, a, tur){ const g = gridTema(spGrid(d), { seritYok: t
 /* ---- puan cetveli: satır = puan, sütun = yaş grubu, hücre = gereken tekrar / süre / mesafe ---- */
 const spSeviye = b => [...new Set([...(b.puanlar || []), ...b.cetvel.map(r => +r.puan)].filter(x => isFinite(x)))].sort((a, c) => c - a);
 const spCetSut = (b, v) => b.cetvel.some(r => !r.yas) ? ["", ...spYaslar(v)] : spYaslar(v);
-function spCetvelHtml(b, v){ const P = spSeviye(b), Y = spCetSut(b, v), h = (y, p) => (b.cetvel.find(r => (r.yas || "") === y && +r.puan === p) || {}).deger ?? "";
-  return `<div class="sp-ctab"><table><thead><tr><th>Puan</th>${Y.map(y => `<th>${y || "Hepsi"}</th>`).join("")}<th></th></tr></thead><tbody>${P.map(p => `<tr><th><input inputmode="decimal" data-sp-cp="${b.id}|${p}" value="${p}" aria-label="Puan"></th>${Y.map(y => `<td><input inputmode="decimal" data-sp-ct="${b.id}|${y}|${p}" value="${esc(h(y, p))}" placeholder="${b.birim === "sure" ? "dk:sn" : "—"}" aria-label="${y || "Hepsi"} yaş, ${p} puan"></td>`).join("")}<td><button type="button" class="sp-cx" data-sp-cx="${b.id}|${p}" aria-label="${p} puan satırını sil">✕</button></td></tr>`).join("")}</tbody></table></div>
-    ${P.length ? "" : `<div class="uclar">Cetvel boş: puanı her kişiye elle yazarsınız. Puan satırı eklerseniz puan kendiliğinden hesaplanır.</div>`}<div class="sp-cet-is"><button type="button" class="btn kucuk" data-sp-ce="${b.id}">＋ Puan satırı</button>${b.ornek ? `<button type="button" class="btn kucuk" data-sp-co="${b.id}">✓ Değerleri kontrol ettim</button>` : ""}</div>`; }
+/* puan cetveli: yaş grubu seçilir (çipler alt satıra sarar, yana kaymaz); seçili grubun puan → değer listesi iki sütun halinde, sade */
+const spCetSec = {}, spSevDuz = new Set();
+function spCetvelHtml(b, v){ const P = spSeviye(b), Y = spCetSut(b, v), y = Y.includes(spCetSec[b.id]) ? spCetSec[b.id] : Y[0], h = p => (b.cetvel.find(r => (r.yas || "") === y && +r.puan === p) || {}).deger ?? "";
+  if(spSevDuz.has(b.id)) return `<div class="sp-sev">${P.map(p => `<div class="sp-sevs"><input inputmode="decimal" data-sp-cp="${b.id}|${p}" value="${p}" aria-label="Puan"><span>puan</span><button type="button" class="sp-cx" data-sp-cx="${b.id}|${p}" aria-label="${p} puan satırını sil">✕</button></div>`).join("")}</div>
+    <div class="sp-cet-is"><button type="button" class="btn kucuk" data-sp-ce="${b.id}">＋ Puan satırı</button><button type="button" class="btn ana kucuk" data-sp-sd="${b.id}">✓ Bitti</button></div>`;
+  return `${Y.length > 1 ? `<div class="sp-yc">${Y.map(g => `<button type="button" data-sp-cy="${b.id}|${g}" aria-pressed="${g === y}">${g || "Hepsi"}</button>`).join("")}</div>` : ""}
+    ${P.length ? `<div class="sp-cl">${P.map(p => `<label class="sp-cs"><b>${p}</b><input inputmode="${b.birim === "sure" ? "numeric" : "decimal"}" data-sp-ct="${b.id}|${y}|${p}" value="${esc(h(p))}" placeholder="${b.birim === "sure" ? "dk:sn" : "—"}" aria-label="${y || "Hepsi"} yaş, ${p} puan"></label>`).join("")}</div>`
+      : `<div class="uclar">Cetvel boş: puanı her kişiye elle yazarsınız. Puan satırı eklerseniz puan kendiliğinden hesaplanır.</div>`}
+    <div class="sp-cet-is"><button type="button" class="btn kucuk" data-sp-ce="${b.id}">＋ Puan satırı</button>${P.length ? `<button type="button" class="btn kucuk" data-sp-sd="${b.id}">Puan seviyelerini düzenle</button>` : ""}${b.ornek ? `<button type="button" class="btn kucuk" data-sp-co="${b.id}">✓ Değerleri kontrol ettim</button>` : ""}</div>`; }
 /* ---- düzenleyici ---- */
 let spAcik = null, spBransAcik = null;
 const spRozet = h => h.durum ? `<span class="sp-roz ${h.durum === "BAŞARILI" ? "iyi" : h.durum === "BAŞARISIZ" ? "kot" : "gri"}">${h.ort != null ? spSayiYaz(h.ort) + " · " : ""}${h.durum}</span>` : `<span class="sp-roz gri">girilmedi</span>`;
@@ -10298,6 +10311,8 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
     return geriAlinabilir("Değerler temizlendi", () => { v.tarih = eski.tarih; eski.K.forEach(e => { const k = L.find(x => x.id === e.id); if(!k) return; k.s = e.s; k.aciklama = e.aciklama; if(e.yok) k.yok = e.yok; }); yaz(); }); }
   if(ds.spAc){ spAcik = spAcik === ds.spAc ? null : ds.spAc; return sporCiz(); }
   if(ds.spBac){ spBransAcik = spBransAcik === ds.spBac ? null : ds.spBac; return sporCiz(); }
+  if(ds.spCy){ const [bid, g] = ds.spCy.split("|"); spCetSec[bid] = g; return sporCiz(); }
+  if(ds.spSd){ if(spSevDuz.has(ds.spSd)) spSevDuz.delete(ds.spSd); else spSevDuz.add(ds.spSd); return sporCiz(); }
   if(ds.spGz){ const [id, g] = ds.spGz.split(":"), br = v.branslar.find(x => x.id === id); if(br){ if(g === "1") br.gizli = true; else delete br.gizli; } return yaz(); }
   if(ds.sp === "kapat"){ spAcik = null; return yaz(); } if(ds.sp === "bkapat"){ spBransAcik = null; return yaz(); }
   if(ds.spBe != null){ const [ad, br] = ds.spBe.split("|"), x = { id: yid("b"), ad, birim: br, cetvel: [] }; B.push(x); spBransAcik = ad ? null : x.id; yaz(); if(!ad){ const i = document.querySelector(`#sp-govde [data-sp-b="${x.id}:ad"]`); if(i) i.focus(); } return bildir(`${ad || "Yeni branş"} eklendi`); }
@@ -11625,10 +11640,79 @@ function fyGrid(d, P){ const v = fyVeri(d), NC = FY_BP.length - 1, g = { w: FY_B
   });
   return g; }
 const fyKapsamListe = (d) => { const v = fyVeri(d); return v.kapsam === "hepsi" ? fyKisiler() : [fyAktif(v)].filter(Boolean); };
+/* ---- FYDT kartı PDF: orijinal karttan ölçülerek (mm) birebir çizim; ön ve arka yüz ayrı tablolar, ayrı fotoğraflar ---- */
+/* ölçüler orijinal karttan (mm). Ön yüzde her test bloğu iki ayrı tablodur: solda Test Tarihi/Yaş Grubu/Katılmama satırları, sağda Test/Ölçüm sütunları; satırları hizalı değildir */
+const FYP = { X: [5.4, 10.5, 52.1, 87.4, 112.5, 162.9, 194.5],
+  BL: [{ t: 60.5, lh: 68.7, ls: 5.97, rt: 60.5, rh: 71.0, rs: 6.1, b: 119.5 }, { t: 119.5, lh: 129.9, ls: 6.03, rt: 120.5, rh: 133.8, rs: 6.03, b: 181.4 }, { t: 181.4, lh: 192.0, ls: 6.07, rt: 182.4, rh: 196.0, rs: 5.87, b: 244.4 }],
+  KX: [34.7, 58.6, 82.2, 106.6, 130.9, 155.3], KY: [8.3, 13.8, 19.3, 24.7], HX: [5.4, 169.2], HY: [30.2, 36.4, 42.7, 48.9, 60.5], FOTO_ON: [170.2, 30.6, 195.1, 60.4],
+  AX: [5.2, 30.0, 35.0, 88.6, 118.8, 125.2, 175.2], AY: [22.6, 28.5, 34.5, 40.5, 46.3, 52.5], FOTO_AR: [175.9, 22.6, 202.2, 52.6],
+  SX: [5.2, 33.9, 47.5, 64.0, 97.4], SY: [52.5, 58.1, 64.1], SR: [74.8, 85.6, 96.4, 107.1, 117.9, 128.6, 134.7, 145.8, 156.7, 171.1, 182.1, 193.4, 204.3, 215.5, 228.0, 239.6, 248.0],
+  GX: [97.4, 127.0, 140.7, 157.6, 202.2], GY: [53.4, 59.1, 64.8], GR: [75.7, 87.1, 101.5, 112.4, 123.4, 134.4, 146.0, 157.2, 168.2, 178.8, 189.8, 201.2] };
+const fyPx = mm => mm;
+async function fyGriVeri(id){ if(!id) return null; if(fyGriOnbellek[id]) return fyGriOnbellek[id]; const f = await izbFoto(id); if(!f) return null; return fyGriOnbellek[id] = await fyGri(f); }
+async function fyPdfYap(d, P, sol){ const v = fyVeri(d), doc = await yeniPdf({ yon: "dikey", kagit: "A4" }); doc.setDrawColor(0, 0, 0); doc.setTextColor(0, 0, 0);
+  const lw = () => doc.setLineWidth(0.3), kutu = (x1, y1, x2, y2) => { lw(); doc.rect(x1, y1, x2 - x1, y2 - y1); };
+  const yaz = (t, x1, y1, x2, y2, o = {}) => { t = String(t ?? ""); if(!t) return; const s = o.s || 12, pad = o.pad ?? 1; doc.setFont(o.f || "LS", o.b ? "bold" : "normal"); doc.setFontSize(s);
+    let L = doc.splitTextToSize(t, Math.max(1, x2 - x1 - 2 * pad)), fs = s; while(o.sigdir && L.length * fs * .3528 * 1.08 > y2 - y1 && fs > 6){ fs -= .25; doc.setFontSize(fs); L = doc.splitTextToSize(t, x2 - x1 - 2 * pad); }
+    const lh = fs * .3528 * 1.08, blok = L.length * lh, y = o.va === "t" ? y1 + pad * .6 + lh * .8 : y1 + (y2 - y1 - blok) / 2 + lh * .8, al = o.al || "l", tx = al === "c" ? (x1 + x2) / 2 : al === "r" ? x2 - pad : x1 + pad;
+    L.forEach((ln, i) => doc.text(ln, tx, y + i * lh, { align: al === "c" ? "center" : al === "r" ? "right" : "left" })); if(o.u){ const w = doc.getTextWidth(L[0]); doc.setLineWidth(.25); doc.line(tx, y + .6, tx + w, y + .6); } };
+  const resim = (r, k, ic) => { if(!r) return; const [x1, y1, x2, y2] = k; try { doc.addImage(r.data, "JPEG", x1 + ic, y1 + ic, x2 - x1 - 2 * ic, y2 - y1 - 2 * ic); } catch(e){ console.warn(e); } };
+  for(let pi = 0; pi < P.length; pi++){ const p = P[pi], x = fyK(v, p), grp = fyGrup(v, p), e100 = fyEsik(grp, 100), e60 = fyEsik(grp, 60), dy = fyDYil(p);
+    if(pi) doc.addPage();
+    /* ---------- ön yüz ---------- */
+    const { KX, KY } = FYP; [["Yaş Grubunuz", "Şınav Sayısı", "Mekik Sayısı", "3000m Koşu", "Alınacak Puan"], [grp, e100 && e100.sinav, e100 && e100.mekik, e100 && e100.kosu, "100"], [grp, e60 && e60.sinav, e60 && e60.mekik, e60 && e60.kosu, "60"]]
+      .forEach((R, ri) => R.forEach((t, ci) => { kutu(KX[ci], KY[ri], KX[ci + 1], KY[ri + 1]); yaz(t == null ? "" : t, KX[ci], KY[ri], KX[ci + 1], KY[ri + 1], { al: "c", b: ri === 0, s: 10.5, pad: .5, sigdir: true }); }));
+    const [hx1, hx2] = FYP.HX, HY = FYP.HY;
+    kutu(hx1, HY[0], hx2, HY[1]); yaz("TÜRK SİLAHLI KUVVETLERİ FİZİKİ YETERLİLİK DEĞERLENDİRME TEST KARTI", hx1, HY[0], hx2, HY[1], { al: "c", b: 1, s: 11.5, sigdir: true });
+    kutu(hx1, HY[1], 116.5, HY[2]); kutu(116.5, HY[1], hx2, HY[2]); yaz(`Kimlik : ${[p.rutbe, p.ad].filter(Boolean).join(" ")}${p.sicil ? ` [${p.sicil}]` : ""}`, hx1, HY[1], 116.5, HY[2], { s: 11, sigdir: true }); yaz(`TC Kimlik No : ${p.tc || ""}`, 116.5, HY[1], hx2, HY[2], { s: 11, sigdir: true });
+    kutu(hx1, HY[2], 68.4, HY[3]); kutu(68.4, HY[2], 116.5, HY[3]); kutu(116.5, HY[2], hx2, HY[3]); yaz(`Doğum Yılı : ${dy || ""}`, hx1, HY[2], 68.4, HY[3], { s: 11 }); yaz("Cinsiyet : Erkek", 68.4, HY[2], 116.5, HY[3], { s: 11 }); yaz(`Sicil Yılı : ${v.sicilYili || ""}`, 116.5, HY[2], hx2, HY[3], { s: 11 });
+    kutu(hx1, HY[3], hx2, HY[4]); yaz(`Görevi : ${p.kita || p.gorev || ""}`, hx1, HY[3], hx2, HY[4], { s: 11, va: "t", sigdir: true });
+    resim(await fyGriVeri(x.fotoOn || p.foto), FYP.FOTO_ON, 0);
+    const X = FYP.X, Z = 11, cz = (x1, y1, x2, y2) => { lw(); doc.line(x1, y1, x2, y2); };
+    const ETK = ["TEST BİR", "TEST İKİ", "TSK SPOR OK. VE EĞT.MRK.K.LIĞI"]; let y = HY[4];
+    ETK.forEach((et, bi) => { const t = x.t[bi] || {}, son = bi === 2, B = FYP.BL[bi], ust = son ? " :" : ":", tek = son ? "Tekrar Sayısı :" : "Tekrar Sayisi:";
+      const OL = [["Boy", "boy", "cm."], ["Ağırlık", "kilo", "kg."], ["Bel Çevresi", "bel", "cm."], ["Mekik Testi", "mekik", tek], ["Şınav Testi", "sinav", tek], ["Koşu Testi", "kosu", son ? "Süre:" : "Süre :"], ["Alternatif Test", "alt", tek]];
+      kutu(X[0], B.t, X[6], B.b); cz(X[1], B.t, X[1], B.b);   /* blok çerçevesi ve dik etiket sütunu */
+      /* sol tablo */
+      cz(X[2], B.t, X[2], B.lh); cz(X[1], B.lh, X[3], B.lh); yaz(`Test Tarihi : ${t.tarih ? fyTarihTr(t.tarih) : "....../...../......"}`, X[1], B.t, X[2], B.lh, { s: Z, sigdir: true }); yaz(`Yaş Grubu${ust}${t.tarih ? " " + grp : ""}`, X[2], B.t, X[3], B.lh, { s: Z, sigdir: true });
+      for(let j = 1; j <= 7; j++) cz(X[1], B.lh + j * B.ls, X[3], B.lh + j * B.ls);
+      yaz(`Katılmama Nedeni*${ust}${t.neden ? " " + t.neden : ""}`, X[1], B.lh, X[3], B.lh + B.ls, { s: Z, sigdir: true });
+      /* sağ tablo */
+      const rb = B.rh + 7 * B.rs; cz(X[3], B.rt, X[6], B.rt); [3, 4, 5].forEach(c => cz(X[c], B.rt, X[c], rb)); cz(X[3], B.rh, X[6], B.rh);
+      [[3, "Test/Ölçüm"], [4, "Test / Ölçüm Sonucu"], [5, "Teste Giren Personel İmzası"]].forEach(([c, t2]) => yaz(t2, X[c], B.rt, X[c + 1], B.rh, { al: "c", s: Z, sigdir: true }));
+      OL.forEach(([ad, k, birim], j) => { const y1 = B.rh + j * B.rs, y2 = y1 + B.rs, deg = t[k] || ""; cz(X[3], y2, X[6], y2); yaz(ad, X[3], y1, X[4], y2, { s: Z, sigdir: true });
+        if(birim.endsWith(".")){ yaz(birim, X[4], y1, X[5], y2 + 1.2, { al: "r", s: Z }); if(deg) yaz(deg, X[4], y1, X[5] - 9, y2, { al: "r", s: Z }); }
+        else if(k === "kosu" && son){ const [dk, sn] = String(deg).split(":"); yaz(birim, X[4], y1, X[5], y2, { s: Z }); yaz(`${dk || ""}  dk.`, X[4] + 14, y1, X[4] + 34, y2, { al: "r", s: Z }); yaz(`${sn || ""}  sn.`, X[4] + 30, y1, X[4] + 50, y2, { al: "r", s: Z }); }
+        else yaz(`${birim}${deg ? " " + deg : ""}`, X[4], y1, X[5], y2, { s: Z }); });
+      if(son){ cz(X[1], rb, X[6], rb); yaz("Heyet Başkanı (Rütbe, Adı,Soyadı, İmza) :", X[1], rb, X[6], B.b, { s: Z }); }
+      doc.setFont("LS", "normal"); let fs = Z; doc.setFontSize(fs); while(doc.getTextWidth(et) > B.b - B.t - 3 && fs > 7){ fs -= .25; doc.setFontSize(fs); }
+      doc.text(et, (X[0] + X[1]) / 2 + fs * .3528 * .35, (B.t + B.b) / 2 + doc.getTextWidth(et) / 2, { angle: 90 }); y = B.b; });
+    yaz("AÇIKLAMALAR :", X[0], y + .6, X[6], y + 4.6, { b: 1, u: 1, s: 9.5, pad: .3, va: "t" });
+    pdfZengin(doc, { va: "t", k: "000000", vr: ["a. Katılmadı :", "b. Testi Tamamlamadı :", "c. Sağlık Nedeni ile Sadece Bir Branştan Muaf :", "d. Muaf :"].map(t2 => ({ t: t2, b: 1 })) }, FY_ACIK.replace(/^AÇIKLAMALAR :\n/, ""), X[0] - .3, y + 4.2, X[6] - X[0] + .6, 32, .3, 9, "left");
+    /* ---------- arka yüz ---------- */
+    doc.addPage();
+    doc.setFont("LS", "bold"); doc.setFontSize(11.5); doc.text("FİZİKİ YETERLİLİK DEĞERLENDİRME TESTİ İÇİN DOKTOR MUAYENE KARTI", 90, 20.3, { align: "center" });
+    doc.setFont("LA", "bold"); doc.setFontSize(14); doc.text("TEST - 1", 198.6, 20.6, { align: "right" });
+    const { AX, AY } = FYP, yas = fyYas(v, p), SOL = [["Adı ve Soyadı", p.ad], ["Sicil Nu.", p.sicil], ["Rütbesi", p.rutbe], ["Yaşı", yas == null ? "" : yas], ["Cinsiyeti", "E"]],
+      SAG = [["Ağırlığı", x.kilo], ["Boyu", x.boy], ["Kan Grubu", x.kan || fyKan(p.kan)], ["Kan Basıncı", x.tansiyon], ["Tarih", fyTarihTr(v.tarih) || new Date().toLocaleDateString("tr-TR")]];
+    for(let i = 0; i < 5; i++){ const a = AY[i], b = AY[i + 1]; [[0, SOL[i][0], 1], [1, String(i + 1)], [2, SOL[i][1]], [3, SAG[i][0], 1], [4, String(i + 6)], [5, SAG[i][1]]].forEach(([c, t2, bb]) => { kutu(AX[c], a, AX[c + 1], b); yaz(t2 ?? "", AX[c], a, AX[c + 1], b, { b: bb, s: 11, sigdir: true, pad: .8 }); }); }
+    kutu(...[FYP.FOTO_AR[0], FYP.FOTO_AR[1], FYP.FOTO_AR[2], FYP.FOTO_AR[3]]); resim(await fyGriVeri(p.foto), FYP.FOTO_AR, .6);
+    const tablo = (TX, TY, ust, bas, satirlar, RS) => { kutu(TX[0], TY[0], TX[4], TY[1]); yaz(ust, TX[0], TY[0], TX[4], TY[1], { al: "c", b: 1, s: 11 });
+      bas.forEach((t2, c) => { kutu(TX[c], TY[1], TX[c + 1], TY[2]); yaz(t2, TX[c], TY[1], TX[c + 1], TY[2], { b: 1, s: 11, pad: .6, sigdir: true }); });
+      let a = TY[2]; satirlar.forEach((t2, i) => { const b = fyPx(RS[i]); for(let c = 0; c < 4; c++) kutu(TX[c], a, TX[c + 1], b); yaz(t2, TX[0], a, TX[1], b, { s: 11, b: t2 === "ÖZ GEÇMİŞ", va: t2 === "ÖZ GEÇMİŞ" ? "m" : "t", pad: .6, sigdir: true }); a = b; }); };
+    tablo(FYP.SX, FYP.SY, "SORGULAMA", ["SOY GEÇMİŞİ", "EVET", "HAYIR", "AÇIKLAMA"], [...FY_SOY, "ÖZ GEÇMİŞ", ...FY_OZ], FYP.SR);
+    tablo(FYP.GX, FYP.GY, "GÖZLE MUAYENE", ["", "EVET", "HAYIR", "AÇIKLAMA"], FY_GOZ, FYP.GR);
+    doc.setFont("LS", "bold"); doc.setFontSize(12); doc.text("SONUÇ :", 98.2, 205.6);
+    doc.setFont("LS", "normal"); lw(); doc.rect(100.2, 213.4, 4.4, 4.4); doc.rect(100.2, 221.4, 4.4, 4.4); doc.text("FYDT'ye katılabilir.", 108, 217.2); doc.text("İleri tetkik için hastaneye sevk.", 108, 225.2);
+    doc.text("Tabip (imza)", 182.3, 243, { align: "center" }); }
+  pdfAltBilgi(doc, { fy: true, sol, sag: v.hazirlayan || "", sagListe: P.map(p => (v.k[p.id] || {}).hazirlayan || v.hazirlayan || ""), sayfaBasina: 2 }, { l: 5.9, r: 15.4, b: 13.1 });
+  return new Blob([doc.output("arraybuffer")], { type: "application/pdf" }); }
+
 async function fydtCikti(d, a, tur){ const v = fyVeri(d), P = fyKapsamListe(d); if(!P.length) throw new Error("personel yok");
   const z = new Date(), zs = `${z.toLocaleDateString("tr-TR")} ${z.toLocaleTimeString("tr-TR")}`;
   const a2 = { ...a, yon: "dikey", kagit: "A4", sigdir: "bol", baslikSatir: 0, satir: 1, yazi: 1, kenar: 11, kenarSol: 12, kenarAlt: 14, delgec: false, doldur: false,
     altBilgi: { fy: true, sol: `${v.rapor || "FYDT Kartı"} (${zs})`, sag: v.hazirlayan || "", sagListe: P.map(p => (v.k[p.id] || {}).hazirlayan || v.hazirlayan || ""), sayfaBasina: 2 } };
+  if(tur === "pdf") return await fyPdfYap(d, P, `${v.rapor || "FYDT Kartı"} (${zs})`);
   await fyFotoHazirla(P); const sahte = { ...d, grid: fyGrid(d, P) };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
 /* ---- ekran ---- */
@@ -11643,6 +11727,7 @@ function fydtCiz(){ const d = acikBelge(); if(!d || d.tur !== "fydt") return; co
   kap.innerHTML = `${kayitBas({ ad: "FYDT kartları", n: P.length, secId: p.id, ozet: `<em class="kb-oz dl-tam">${grp ? grp + " yaş" : "yaş yok"}</em>`, liste: P.map(y => ({ id: y.id, ad: y.ad, nokta: ["tc", "dogum", "sicil"].some(k => !y[k]) })) })}
     <section class="dl-kart es-kart">
       ${bol("kisi", "Kimlik", [p.rutbe, p.ad, p.sicil && `[${p.sicil}]`].filter(Boolean).join(" "), `<div class="fy-kim">${[["T.C. kimlik no", p.tc], ["Doğum", p.dogum], ["Kan grubu", fyKan(p.kan)], ["Görevi", p.kita || p.gorev]].map(([a2, b2]) => `<div><small>${a2}</small><b>${esc(b2 || "—")}</b></div>`).join("")}</div>
+        <div class="fy-fotolar"><div><small>Ön yüz fotoğrafı</small>${x.fotoOn || p.foto ? `<img src="/_blob/${esc(x.fotoOn || p.foto)}" alt="">` : `<span>yok</span>`}<button type="button" class="mini" data-fy-foto="on">${x.fotoOn ? "Değiştir" : "＋ Ekle"}</button></div><div><small>Arka yüz (kimlikteki)</small>${p.foto ? `<img src="/_blob/${esc(p.foto)}" alt="">` : `<span>yok</span>`}</div><input type="file" id="fy-foto-dosya" accept="image/*" hidden></div>
         ${eks.length || !p.foto ? `<p class="dl-not">Eksik: ${esc([...eks, ...(p.foto ? [] : ["fotoğraf"])].join(", "))}. </p>` : ""}${belgeTur("kimlik") ? `<button type="button" class="es-sec" data-km-git="${esc(p.id)}">Personel kimliğinde aç ›</button>` : ""}`)}
       ${bol("muayene", "Muayene", [x.kilo && x.kilo + " kg", x.boy && x.boy + " cm", x.tansiyon].filter(Boolean).join(" · ") || "girilmedi", `<div class="dl-alanlar">${al("Ağırlık (kg)", `data-fy-k="kilo"`, x.kilo, "n")}${al("Boy (cm)", `data-fy-k="boy"`, x.boy, "n")}${al("Kan basıncı", `data-fy-k="tansiyon"`, x.tansiyon)}${al("Kan grubu (kartta)", `data-fy-k="kan"`, x.kan)}${al("Alt bilgi · sağ (bu kişiye özel)", `data-fy-k="hazirlayan"`, x.hazirlayan, "tam")}</div><p class="dl-not">Kan grubu boşsa Personel kimliğindeki (${esc(fyKan(p.kan) || "—")}) basılır. Alt bilgi sağ boşsa Kart ayarlarındaki genel yazı (${esc(v.hazirlayan || "—")}) basılır.</p>`)}
       ${[0, 1, 2].map(i => { const t = x.t[i]; return bol("t" + i, ["Test bir", "Test iki", "Test üç (Spor Okulu)"][i], tOz(t), `<div class="dl-alanlar">${al("Test tarihi", `data-fy-t="${i}:tarih"`, t.tarih, "t")}${al("Katılmama nedeni", `data-fy-t="${i}:neden"`, t.neden, "tam")}${al("Boy (cm)", `data-fy-t="${i}:boy"`, t.boy, "n")}${al("Ağırlık (kg)", `data-fy-t="${i}:kilo"`, t.kilo, "n")}${al("Bel çevresi (cm)", `data-fy-t="${i}:bel"`, t.bel, "n")}${al("Mekik", `data-fy-t="${i}:mekik"`, t.mekik, "n")}${al("Şınav", `data-fy-t="${i}:sinav"`, t.sinav, "n")}${al("Koşu süresi", `data-fy-t="${i}:kosu"`, t.kosu, "s")}${al("Alternatif test", `data-fy-t="${i}:alt"`, t.alt, "n")}</div>`); }).join("")}
@@ -11652,13 +11737,15 @@ function fydtCiz(){ const d = acikBelge(); if(!d || d.tur !== "fydt") return; co
     <div class="es-onbas"><span>Kâğıttaki hali · ön ve arka yüz</span><div class="cs-seg mini"><button type="button" data-fy-kap="kisi" aria-pressed="${v.kapsam !== "hepsi"}">Seçili kişi</button><button type="button" data-fy-kap="hepsi" aria-pressed="${v.kapsam === "hepsi"}">Tüm personel</button></div></div>
     <div class="kp-onizle fy-onz"></div><div class="kp-onizle fy-onz2"></div>`;
   fyOnizle(d, true); }
-const fyOnizle = (d, hemen) => { const P = [fyAktif(fyVeri(d))].filter(Boolean); const uret = async sayfa => { await fyFotoHazirla(P); const g = fyGrid(d, P); const a2 = { yon: "dikey", kagit: "A4", sigdir: "bol", baslikSatir: 0, satir: 1, yazi: 1, kenar: 11, kenarSol: 12, kenarAlt: 14, doldur: false, altBilgi: { fy: true, sol: `${fyVeri(d).rapor || ""} (önizleme)`, sag: (fyVeri(d).k[(P[0] || {}).id] || {}).hazirlayan || fyVeri(d).hazirlayan || "", sayfaBasina: 2 } };
-    const b = await gridPdf({ ...d, grid: g }, a2); if(sayfa === 1) return b; await baskiKutuphane(false); const src = await PDFLib.PDFDocument.load(await b.arrayBuffer()), o = await PDFLib.PDFDocument.create(); const [pg] = await o.copyPages(src, [1]); o.addPage(pg); return new Blob([await o.save()], { type: "application/pdf" }); };
+const fyOnizle = (d, hemen) => { const P = [fyAktif(fyVeri(d))].filter(Boolean); const uret = async sayfa => { const b = await fyPdfYap(d, P, `${fyVeri(d).rapor || ""} (önizleme)`); if(sayfa === 1) return b; await baskiKutuphane(false); const src = await PDFLib.PDFDocument.load(await b.arrayBuffer()), o = await PDFLib.PDFDocument.create(); const [pg] = await o.copyPages(src, [1]); o.addPage(pg); return new Blob([await o.save()], { type: "application/pdf" }); };
   pdfOnizle($("#fy-govde .fy-onz"), () => uret(1), hemen); pdfOnizle($("#fy-govde .fy-onz2"), () => uret(2), hemen); };
 document.addEventListener("toggle", e => { const g = e.target; if(!g.matches || !g.matches("#fy-govde .es-b")) return; if(g.open) fyAcikB.add(g.dataset.fyBol); else fyAcikB.delete(g.dataset.fyBol); }, true);
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#fy-govde")) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return; const x = fyK(v, p), ds = el.dataset;
   if(ds.fyA) v[ds.fyA] = el.value; else if(ds.fyK) x[ds.fyK] = el.value; else if(ds.fyT){ const [i, k] = ds.fyT.split(":"); x.t[+i][k] = el.value; } else return;
   kaydetBelge(d); fyOnizle(d); });
+document.addEventListener("click", e => { if(e.target.closest && e.target.closest("[data-fy-foto]")) $("#fy-foto-dosya").click(); });
+document.addEventListener("change", async e => { if(e.target.id !== "fy-foto-dosya") return; const f = e.target.files[0]; e.target.value = ""; const d = acikBelge(); if(!f || !d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return;
+  try { const bl = await vesikalik(f), r = await assets.upload(bl, { type: "image/jpeg" }); fyK(v, p).fotoOn = r.id; kaydetBelge(d); fydtCiz(); bildir("Ön yüz fotoğrafı eklendi"); } catch(err){ uyar("Fotoğraf yüklenemedi: " + (err.message || err), true); } });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#fy-govde [data-fy-kap]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; fyVeri(d).kapsam = b.dataset.fyKap; kaydetBelge(d); fydtCiz(); });
 
 /* ================= KÖPEK TANITMA KARTI (tur: "kopek") =================
