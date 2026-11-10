@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "430";
+  const SURUM = "431";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3131,7 +3131,33 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .es-onbas{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:4px 2px 0;font:700 12px var(--f-ui);color:#5B6B7B} .cs-seg.mini button{padding:4px 10px;font-size:11.5px}
 .es-birim{display:grid;grid-template-columns:repeat(6,1fr);gap:5px} .es-birim button{border:1px solid var(--line2);background:#fff;border-radius:7px;padding:7px 0;font:700 12px var(--f-ui);color:#26313B;cursor:pointer} .es-birim button[aria-pressed="true"]{background:#2F4A66;border-color:#2F4A66;color:#fff}
 .es-pis{display:flex;align-items:center;gap:6px;margin-top:12px} .es-pis .bosluk{flex:1}
-.kb{display:flex;flex-direction:column;gap:6px;padding:2px 2px 4px}
+/* kayıt başlığı: altındaki kartla tek parça; üstte ince gri şerit (‹ ad · 4/5 ⌄ › … ＋ Yeni), altında seçili kaydın adı */
+.kb{display:flex;flex-direction:column;border:1px solid var(--line2);border-bottom:0;border-radius:14px 14px 0 0;background:var(--panel);overflow:hidden}
+.kb + section{margin-top:-12px!important;border-top-left-radius:0!important;border-top-right-radius:0!important}
+.kb-ust{display:flex;align-items:center;gap:2px;min-height:40px;padding:4px 6px;background:#F4F6F9;border-bottom:1px solid var(--line2)}
+.kb-orta{display:inline-flex;align-items:center;gap:7px;min-width:0;height:32px;padding:0 8px;border:0;background:none;border-radius:7px;cursor:pointer;color:#3D4D5E}
+.kb-orta svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
+.kb-ad{font:700 11px var(--f-ui);letter-spacing:.07em;text-transform:uppercase;white-space:nowrap} .kb-say{font:600 11.5px var(--f-ui);color:#7F8C99;font-variant-numeric:tabular-nums;white-space:nowrap}
+.kb-ok{width:30px;height:30px;flex:none;display:grid;place-items:center;border:0;background:none;border-radius:7px;font:500 19px/1 var(--f-ui);color:#3D5A73;cursor:pointer;padding:0 0 2px} .kb-ok:disabled{opacity:.25;cursor:default}
+.kb-bos{flex:1} .kb-oz{font:600 11px var(--f-ui);font-style:normal;border-radius:6px;padding:2px 7px;margin-right:4px;white-space:nowrap}
+.kb-yeni{height:30px;flex:none;border:1px solid #C9DCCF;background:#fff;color:#2F6B47;border-radius:7px;padding:0 10px;font:700 12px var(--f-ui);cursor:pointer;white-space:nowrap}
+.kb-sec{display:flex;align-items:center;gap:11px;width:100%;border:0;background:none;padding:12px 14px 11px;text-align:left;cursor:pointer;color:var(--fg)}
+.kb-av{flex:none;width:36px;height:36px;border-radius:10px;display:grid;place-items:center;background:#E8EEF4;color:#3D5A73;font:700 12px var(--f-ui)}
+.kb-ic{flex:1;min-width:0;display:flex;flex-direction:column;gap:3px} .kb-ic b{font:700 15.5px/1.3 var(--f-ui);color:#1F2A36;overflow-wrap:anywhere} .kb-ic small{font:500 11.5px/1.4 var(--f-ui);color:var(--muted)}
+.kb-ic small *{font-size:inherit!important;line-height:inherit!important;padding-top:0!important;padding-bottom:0!important}
+.kb-cip{display:inline-block;font-weight:700!important;color:#3D5A73;background:#E8EEF4;border-radius:5px;padding:0 6px!important;margin-right:6px}
+.kb .kb-ok,.kb .kb-orta{background:none!important;border:0!important;box-shadow:none!important;min-height:0!important}
+.kb .kb-sec{padding:13px 14px 12px!important;box-shadow:none!important;border:0!important;min-height:0!important;border-radius:0!important}
+.kb .kb-yeni{box-shadow:none!important;min-height:0!important}
+@media (hover:hover){ .kb .kb-orta:hover,.kb .kb-ok:not(:disabled):hover{background:#E8EDF2!important} .kb .kb-sec:hover{background:#FAFBFC!important} }
+/* araç düğmeleri (Seç · Sırala · Yeni): başlık satırına sığmazsa alt satıra geçer, taşmaz; ayrı duran Sırala altındakine yapışmaz */
+.dl-ust{flex-wrap:wrap;row-gap:8px} .dl-ust>b{white-space:nowrap} .sq-ac{border-radius:8px!important}
+[data-sq-ac="gdhg"]{align-self:flex-start;margin:0 0 10px!important} #gd-kisiler [data-sq-ac="gdhg"] + *{margin-top:0}
+/* boşluk standardı: ekran blokları arasında eşit nefes payı; açıklama yazıları okunur boyda */
+:is(#km-govde,#es-govde,#zm-govde,#sl-govde,#sr-govde){gap:12px!important} :is(#km-govde,#es-govde,#zm-govde,#sl-govde,#sr-govde) > .sl-grup{margin-top:0}
+.kp-govde > .dl-not,#dl-govde > .dl-not,#isa-govde > .dl-not{display:block;font:500 11.5px/1.55 var(--f-ui);color:var(--muted);padding:2px 4px 0}
+.kp-govde > .izb-aktar.tam{align-self:stretch;min-height:40px;border-radius:9px;font-size:12.5px;display:flex;align-items:center;justify-content:center;gap:6px}
+.sl-grup{gap:8px} .sl-gb{padding:0 2px}
 .kb-ust{display:flex;align-items:center;gap:6px;min-height:32px} .kb-ad{font:700 11px var(--f-ui);letter-spacing:.07em;text-transform:uppercase;color:#6A7886} .kb-say{font:600 11px var(--f-ui);color:#8A96A3;font-variant-numeric:tabular-nums}
 .kb-oz{font:600 11px var(--f-ui);font-style:normal;border-radius:6px;padding:2px 7px;margin-left:2px} .kb-bos{flex:1}
 .kb-ok{width:30px;height:30px;display:grid;place-items:center;border:1px solid var(--line2);background:var(--panel);border-radius:8px;font:600 16px/1 var(--f-ui);color:#3D5A73;cursor:pointer;padding:0} .kb-ok:disabled{opacity:.3;cursor:default}
@@ -3446,7 +3472,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 430</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 431</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3865,11 +3891,12 @@ async function vazgec(sessiz, yalniz){
 }
 /* ===== kayıt başlığı standardı (kimlik, zimmet, el senedi): üstte ince satır (ad · sıra · ‹ › · Yeni), altında seçili kaydın adı.
    Kutu içinde kutu yok; ada dokununca bütün kayıtların listesi açılır. Telefonda ve bilgisayarda aynı. ===== */
-function kayitBas(o){ const i = o.i || 0, n = o.n || 0, S2 = o.sec;
-  return `<div class="kb"><div class="kb-ust"><span class="kb-ad">${esc(o.ad)}</span>${n ? `<span class="kb-say">${S2 ? (i + 1) + " / " + n : n}</span>` : ""}${o.ozet || ""}<span class="kb-bos"></span>
-      ${S2 && n > 1 ? `<button type="button" class="kb-ok" ${o.gec}="-1"${i > 0 ? "" : " disabled"} aria-label="Önceki">‹</button><button type="button" class="kb-ok" ${o.gec}="1"${i < n - 1 ? "" : " disabled"} aria-label="Sonraki">›</button>` : ""}
+function kayitBas(o){ const i = o.i || 0, n = o.n || 0, S2 = o.sec, cok = S2 && n > 1;
+  return `<div class="kb"><div class="kb-ust">${cok ? `<button type="button" class="kb-ok" ${o.gec}="-1"${i > 0 ? "" : " disabled"} aria-label="Önceki">‹</button>` : ""}
+      ${S2 ? `<button type="button" class="kb-orta" ${S2.veri}><span class="kb-ad">${esc(o.ad)}</span>${n ? `<span class="kb-say">${i + 1} / ${n}</span>` : ""}<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></button>` : `<span class="kb-orta"><span class="kb-ad">${esc(o.ad)}</span>${n ? `<span class="kb-say">${n}</span>` : ""}</span>`}
+      ${cok ? `<button type="button" class="kb-ok" ${o.gec}="1"${i < n - 1 ? "" : " disabled"} aria-label="Sonraki">›</button>` : ""}<span class="kb-bos"></span>${o.ozet || ""}
       ${o.yeni ? `<button type="button" class="kb-yeni" ${o.yeni}>＋ Yeni</button>` : ""}</div>
-    ${S2 ? `<button type="button" class="kb-sec" ${S2.veri}>${S2.av ? `<span class="kb-av">${S2.av}</span>` : ""}<span class="kb-ic">${S2.cip ? `<span class="kb-cip">${S2.cip}</span>` : ""}<b>${S2.baslik}</b>${S2.alt ? `<small>${S2.alt}</small>` : ""}</span><span class="kb-tum">Tümü<svg viewBox="0 0 24 24"><path d="m6 9 6 6 6-6"/></svg></span></button>` : ""}</div>`; }
+    ${S2 ? `<button type="button" class="kb-sec" ${S2.veri}>${S2.av ? `<span class="kb-av">${S2.av}</span>` : ""}<span class="kb-ic"><b>${S2.baslik}</b>${S2.alt || S2.cip ? `<small>${S2.cip ? `<span class="kb-cip">${S2.cip}</span>` : ""}${S2.alt || ""}</small>` : ""}</span></button>` : ""}</div>`; }
 /* ===== adım adım geri al / yinele (kaydetmeden önce) =====
    Her değişiklik kısa bir duraklamadan sonra bir “adım” olur. ↶ son adımı geri alır, ↷ yeniden uygular. Kaydedince ya da yoksayınca adımlar sıfırlanır. */
 const adimG = [], adimI = [], adimSon = {}, adimTaban = {}; let adimZ = null, adimUyg = false;
@@ -5285,7 +5312,7 @@ function srListeCiz(d){ const el = $("#sr-liste"); if(!el) return; const L = srL
   if(!srHepsi(d).length){ el.innerHTML = `<div class="an-bos">Henüz sertifika yok.<br>“＋ Yükle” ile PDF ya da resim seçin; PDF'lerde ad, konu ve tarih kendiliğinden okunur.</div>`; return; }
   if(!L.length){ el.innerHTML = `<div class="an-bos">Aramaya uyan sertifika yok</div>`; return; }
   el.innerHTML = srGruplar(L).map(([g, A], gi) => `<section class="sr-grup"><div class="sr-gb"><b>${esc(g)}</b><small>${A.length} sertifika</small><button type="button" class="mini" data-sr-bir="${gi}">⇩ Birleştir</button></div>
-    <div class="sr-ic">${A.map(a => `<button type="button" class="sirt-sat iki sr-sat" data-sr-id="${esc(a.id)}" style="--sr:${SIRT[gi % SIRT.length]}"><b>${esc(srGorunum === "konu" ? [srRutbe(a), srAdi(a)].filter(Boolean).join(" ") : a.sert.konu || "Konu girilmedi")}</b><small>${esc([a.sert.tarih, /pdf/i.test(a.tur || a.ad) ? "PDF" : "Resim", a.sert.no ? "No " + a.sert.no.slice(0, 8) + "…" : ""].filter(Boolean).join(" · "))}</small></button>`).join("")}</div></section>`).join("");
+    <div class="sr-ic">${A.map(a => `<button type="button" class="sirt-sat iki sr-sat" data-sr-id="${esc(a.id)}" style="--sr:${SIRT[gi % SIRT.length]}"><b>${esc(srGorunum === "konu" ? [srRutbe(a), srAdi(a)].filter(Boolean).join(" ") : a.sert.konu || "Konu girilmedi")}</b><small>${esc([a.sert.tarih, /pdf/i.test(a.tur || a.ad) ? "PDF" : "Resim", a.sert.no ? "No " + a.sert.no : ""].filter(Boolean).join(" · "))}</small></button>`).join("")}</div></section>`).join("");
   el.__gruplar = srGruplar(L); }
 /* yükleme: dosyaları oku → onay penceresinde kişi / konu / tarih düzeltilir → kaydedilir */
 async function srYukle(files){ const d = acikBelge(); if(!d || !files.length) return; if(!db){ uyar("Yüklemek için bağlantı gerekiyor.", true); return; }
@@ -10321,7 +10348,7 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
   if(p && !kmAcikG.size){ const g = KM_GRUP.findIndex(g => kmGEksik(p, g)); kmAcikG.add(g < 0 ? 0 : g); }
   const W = p && belgeTur("silah") ? kmSilahlar(p) : null;
   $("#km-govde").innerHTML = `
-    ${kayitBas({ ad: "Personel kimliği", i, n: P.length, gec: "data-km-gec", ozet: `<em class="kb-oz ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em>`,
+    ${kayitBas({ ad: "Kimlik", i, n: P.length, gec: "data-km-gec", ozet: `<em class="kb-oz ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em>`,
       sec: p ? { veri: 'data-km-liste="1"', av: esc(ksBas(p.ad)), baslik: esc(p.ad), alt: `${esc(p.rutbe || "")}${p.rutbe ? " · " : ""}<span data-km-ek>${kmCipY(kmEksik(p).length)}</span>` } : null })}
     ${p ? `
     <section class="dl-kart km-kart">
@@ -10578,7 +10605,7 @@ function zimmetCiz(){ const d = acikBelge(); if(!d || d.tur !== "zimmet") return
   const n = normMetin(zmAra), F = Sx.map((x, j) => [x, j]).filter(([x]) => !n || normMetin([x.stok, x.cins, x.seri, x.kafile].join(" ")).includes(n)), G = F.slice(0, zmGoster);
   const eden = [k.eden.ad, k.eden.rutbe, k.eden.gorev].filter(Boolean).join(" · "), bilgi = zmTarih(k.tarih);
   $("#zm-govde").innerHTML = `
-    ${kayitBas({ ad: "Zimmet belgeleri", i, n: L.length, gec: "data-zm-gec", yeni: 'data-zm="yeni"', sec: { veri: 'data-zm="liste"', av: esc(ksBas(p ? p.ad : "?")), baslik: esc(p ? p.ad : "Kişi seçilmedi"), alt: esc([p && p.rutbe, Sx.length + " kalem"].filter(Boolean).join(" · ")) } })}
+    ${kayitBas({ ad: "Zimmetler", i, n: L.length, gec: "data-zm-gec", yeni: 'data-zm="yeni"', sec: { veri: 'data-zm="liste"', av: esc(ksBas(p ? p.ad : "?")), baslik: esc(p ? p.ad : "Kişi seçilmedi"), alt: esc([p && p.rutbe, Sx.length + " kalem"].filter(Boolean).join(" · ")) } })}
     <section class="dl-kart es-kart">
       ${bol("alan", "Teslim alan", p ? [p.ad, p.rutbe, k.alan.gorev].filter(Boolean).join(" · ") : "seçilmedi", `${ksSatir(p, 'data-zm="kisi"')}<label class="dl-al tam" style="margin-top:8px"><span>Görevi <i>boş kalabilir</i></span><input data-zm-a="gorev" value="${esc(k.alan.gorev || "")}"></label>`, !p)}
       ${bol("eden", "Teslim eden", eden || "girilmedi", `<div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-zm-e="ad" value="${esc(k.eden.ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-zm-e="rutbe" value="${esc(k.eden.rutbe)}"></label><label class="dl-al tam"><span>Görevi</span><input data-zm-e="gorev" value="${esc(k.eden.gorev)}"></label></div><button type="button" class="es-sec" data-zm="eden-sec">Personel listesinden seç</button>`, !eden)}
