@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "518";
+  const SURUM = "519";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3257,6 +3257,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kd-gorev{font:500 11.5px/1.4 var(--f-ui);color:var(--muted);padding:0 2px 12px}
 .kd-k-et{display:inline-flex;align-items:center;gap:5px} .kd-k-et svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 #p-tablo .p-oz{gap:4px!important} #p-tablo .p-oz .p-dosya{width:32px!important;height:32px;min-height:32px!important} #p-tablo .p-oz [data-p-ac]{gap:8px!important;padding-left:4px!important;padding-right:2px!important} #p-tablo td.sn{width:26px!important;padding-left:4px!important;padding-right:0!important}
+#h-uclar .hd-uc{align-items:center;text-align:center;gap:2px;padding:9px 6px!important;justify-content:center} #h-uclar .hd-uc small{justify-content:center;white-space:nowrap} #h-uclar .hd-uc>*{max-width:100%} #h-uclar .hd-uc em{margin-top:4px;padding:2px 8px;border-radius:6px;background:rgba(63,100,135,.08)} #h-uclar .hd-uc[aria-pressed="true"] em{background:rgba(176,113,31,.14)}
 .tek-sat{display:block;white-space:nowrap;overflow:hidden;min-width:0;max-width:100%} .p-oy .p-alt{font-variant-numeric:tabular-nums}
 .hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 8px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#3F6487;text-decoration:underline;cursor:pointer}
 .mf-sad-s{display:flex;flex-direction:column;gap:4px} .mf-sad-sec{display:flex;flex-direction:column;gap:6px} .mf-sad-sec small{color:var(--muted);font:600 11px var(--f-ui)} .mf-sad-sec button{text-align:left;border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 10px;font:500 12.5px var(--f-ui);color:var(--fg);cursor:pointer} .mf-sad-sec .mf-sad-vaz{align-self:flex-start;color:var(--muted)} .mf-sad-sec em{font-size:12px;color:var(--muted)} .mf-sad-s .mf-ysil{width:34px;height:36px;flex:none} .mf-sad-s small{color:var(--muted);font:500 11.5px var(--f-ui)} .mf-sad-s span{display:flex;gap:8px;align-items:center} .mf-sad-s input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-sad-s input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} #mfd-govde .mf-sad{margin-top:16px}
@@ -3651,7 +3652,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 518</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 519</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6238,9 +6239,9 @@ function hedefOzet(){
   const say = {}; S.hedef.rows.forEach(r => { const g = grupBul(r) || "__yok"; say[g] = (say[g] || 0) + 1; });
   $("#h-ozet").innerHTML = `<button class="chip" data-g="" aria-pressed="${hFiltre === null}"><b class="hepsi"></b><em>Tümü<small>${S.hedef.rows.length} hedef</small></em></button>` + gruplar().map(g => `<button class="chip" data-g="${esc(g.id)}" aria-pressed="${hFiltre === g.id}"><b style="background:#${g.renk}"></b><em>${esc(g.ad)}<small>${say[g.id] || 0} hedef</small></em></button>`).join("") +
     (say.__yok ? `<button class="chip" data-g="__yok" aria-pressed="${hFiltre === "__yok"}"><b style="background:#fff"></b><em>Renk grubu olmayan<small>${say.__yok} hedef</small></em></button>` : "");
-  const u = istikametUclari(); $("#h-uclar").innerHTML = u ? (() => { const o = S.hedef.rows.filter(r => hIstV(r) != null).sort((a, b) => Math.abs(hIstV(a) - 3200) - Math.abs(hIstV(b) - 3200))[0] || {};
-    const k = (y, ad, v, no, d) => `<button type="button" class="hd-uc" data-hd-yak="${y}" aria-pressed="${hYak === y}"><small><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>${ad}</small><b>${esc(v)}</b><span>${esc(no || "")}</span><em>${hYak === y ? "✓ yakın 15 hedef" : "yakın 15 hedef ›"}</em></button>`;
-    return k("sol", "En sol", u.sol.ist, u.sol.no, '<path d="M10 6l-6 6 6 6M4 12h16"/>') + k("orta", "3200'e yakın", o.ist ?? "", o.no, '<path d="M12 4v16M8 8l4-4 4 4"/>') + k("sag", "En sağ", u.sag.ist, u.sag.no, '<path d="M14 6l6 6-6 6M20 12H4"/>'); })() : "";
+  const u = istikametUclari(); $("#h-uclar").classList.add("ts-grup"); $("#h-uclar").innerHTML = u ? (() => { const o = S.hedef.rows.filter(r => hIstV(r) != null).sort((a, b) => Math.abs(hIstV(a) - 3200) - Math.abs(hIstV(b) - 3200))[0] || {};
+    const k = (y, ad, v, no, d) => `<button type="button" class="hd-uc" data-hd-yak="${y}" aria-pressed="${hYak === y}"><small class="tek-sat"><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>${ad}</small><b class="tek-sat">${esc(v)}</b><span class="tek-sat">${esc(no || "")}</span><em class="tek-sat">${hYak === y ? "✓ 15 hedef" : "15 hedef"}</em></button>`;
+    return k("sol", "En sol", u.sol.ist, u.sol.no, '<path d="M10 6l-6 6 6 6M4 12h16"/>') + k("orta", "3200", o.ist ?? "", o.no, '<path d="M12 4v16M8 8l4-4 4 4"/>') + k("sag", "En sağ", u.sag.ist, u.sag.no, '<path d="M14 6l6 6-6 6M20 12H4"/>'); })() : "";
 }
 /* hedef listesi: her hedef bir satır kartı (numara grup renginde); dokununca bütün alanlar düzenlenir. Değerler olduğu gibi saklanır, hesap yapılmaz. */
 let hAcik = null, hOnAcik = (() => { try { return localStorage.getItem("hOnAcik") === "1"; } catch(e){ return false; } })();
