@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "513";
+  const SURUM = "514";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3227,7 +3227,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .rs-oz{font:700 10px var(--f-ui);font-style:normal;color:#7A5A1C;background:#F7F1E3;border-radius:6px;padding:2px 6px} .rsd-on{display:flex;align-items:center;gap:12px;padding:4px 2px 8px} .rsd-on .rs-buyuk{width:56px!important;height:56px!important} .rsd-on .rs-buyuk svg{width:44px!important;height:44px!important} .rsd-on b{font:700 15px var(--f-ui)}
 .rsd-seg{grid-template-columns:repeat(auto-fit,minmax(58px,1fr))!important;display:grid!important} .rsd-n{grid-template-columns:repeat(7,1fr)!important}
 .yk-mf{border:1px solid #CFE2D2;border-radius:12px;background:var(--panel);margin-top:14px} .yk-mf>summary{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;list-style:none} .yk-mf>summary::-webkit-details-marker{display:none} .yk-mf>summary b{font:700 14px var(--f-ui)} .yk-mf>summary small{flex:1;min-width:0;color:var(--muted);font:500 11.5px var(--f-ui)} .yk-mf>summary i{font-style:normal;color:var(--muted);transition:transform .15s} .yk-mf[open]>summary i{transform:rotate(90deg)}
-.hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 6px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#3F6487;text-decoration:underline;cursor:pointer}
+.hd-yak{display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:4px;margin:0 0 8px} .hd-yak button{display:flex;align-items:center;justify-content:flex-start;gap:6px;text-align:left;min-height:36px} @media (min-width:700px){.hd-yak{grid-template-columns:repeat(4,minmax(0,1fr))}}
+.hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 8px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#3F6487;text-decoration:underline;cursor:pointer}
 .mf-sad-s{display:flex;flex-direction:column;gap:4px} .mf-sad-sec{display:flex;flex-direction:column;gap:6px} .mf-sad-sec small{color:var(--muted);font:600 11px var(--f-ui)} .mf-sad-sec button{text-align:left;border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 10px;font:500 12.5px var(--f-ui);color:var(--fg);cursor:pointer} .mf-sad-sec .mf-sad-vaz{align-self:flex-start;color:var(--muted)} .mf-sad-sec em{font-size:12px;color:var(--muted)} .mf-sad-s .mf-ysil{width:34px;height:36px;flex:none} .mf-sad-s small{color:var(--muted);font:500 11.5px var(--f-ui)} .mf-sad-s span{display:flex;gap:8px;align-items:center} .mf-sad-s input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-sad-s input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} #mfd-govde .mf-sad{margin-top:16px}
 .yk-mf-ic{gap:12px!important}
 .mf-yon button{display:flex;align-items:center;justify-content:center;gap:6px} .mf-yon svg,.mf-mk svg,.mf-ok svg,.mf-bi svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -3620,7 +3621,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 513</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 514</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3753,7 +3754,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
           <section class="hd-kart"><div class="hd-bas"><b>Renk grupları</b><small>Dokununca liste o gruba süzülür</small></div><div class="ozet hd-gruplar" id="h-ozet"></div></section>
           <div class="hd-uclar" id="h-uclar"></div>
           <details class="hd-kart hd-ayar"><summary><span class="hd-bas"><b>Renkleri ve açıklama adlarını düzenle</b><small>Liste başlığı, grup renkleri, boyama kuralları</small></span><i aria-hidden="true">▾</i></summary><div class="lj-izgara" id="h-ayar"></div></details>
-          <details class="lt-on hd-on" id="h-on"><summary><span>▦</span>Tablo görünümü<small>kâğıttaki hali</small></summary><div class="lt-on-kap" id="h-on-kap"></div></details>
+          <details class="lt-on hd-on" id="h-on"><summary><span>▦</span>Tablo görünümü<small>kâğıttaki hali</small></summary><div id="h-fil"></div><div class="lt-on-kap" id="h-on-kap"></div></details>
           <div class="hd-say" id="h-say"></div><div id="h-tablo" class="hd-liste"></div>
         </div>
 
@@ -6175,11 +6176,21 @@ const H_ETIKET = ["S.Nu", "Hedef numarası", "Koordinat", "Rakım", "Mesafe", "M
 function hedefOnHtml(){ const W = H_ORAN.reduce((a, b) => a + b, 0), n = araNorm($("#h-ara").value || "");
   let h = `<colgroup>${H_ORAN.map(w => `<col style="width:${(w / W * 100).toFixed(2)}%">`).join("")}</colgroup><tr>${H_BASLIK.map(t => `<td class="hb" style="background:#DDE6EC;font-weight:700;text-align:center;color:#24394A">${esc(t)}</td>`).join("")}</tr>`;
   /* renk grubu seçildiyse tablo görünümünde de yalnız o grubun hedefleri */
-  S.hedef.rows.filter(r => !hFiltre || (hFiltre === "__yok" ? !grupBul(r) : grupBul(r) === hFiltre)).forEach((r, i) => { const g = grupBul(r), z = i % 2 ? "#F6F8FA" : "#fff";
+  let R = S.hedef.rows.filter(r => !hFiltre || (hFiltre === "__yok" ? !grupBul(r) : grupBul(r) === hFiltre));
+  /* yalnız ekranda: istikamet açısına göre en sol / en sağ / 3200 milyeme en yakın 15 hedef (çıktıya girmez) */
+  if(hYak){ const v = r => { const x = parseFloat(String(r.ist ?? "").replace(/[^\d.,-]/g, "").replace(",", ".")); return isFinite(x) ? x : null; }, D = R.filter(r => v(r) != null);
+    const k = hYak === "sol" ? (r => v(r)) : hYak === "sag" ? (r => -v(r)) : (r => Math.abs(v(r) - 3200)); R = D.sort((a, b) => k(a) - k(b)).slice(0, 15); }
+  hFilCiz(R.length);
+  R.forEach((r, i) => { const g = grupBul(r), z = i % 2 ? "#F6F8FA" : "#fff";
     h += `<tr>${H_ALAN.map(a => { const v = String(r[a] ?? ""), isik = n && v && araNorm(v).includes(n), bg = (a === "no" || a === "barut") && g ? "#" + HR(g) : a === "ucus" ? "#" + HR("ucus") : z;
       return `<td class="${isik ? "lt-isik" : ""}" style="background:${bg};font-weight:700;text-align:${a === "tanim" ? "left" : "center"}">${esc(v)}</td>`; }).join("")}</tr>`; });
-  const fg = hFiltre && (hFiltre === "__yok" ? { ad: "Renk grubu olmayan" } : gruplar().find(x => x.id === hFiltre));
-  return `${fg ? `<div class="hd-fil">Yalnız <b>${esc(fg.ad)}</b> gösteriliyor · <button type="button" class="hd-fil-x" data-hd-tum="1">Tümünü göster</button></div>` : ""}<table class="lt-on-t hd-on-t">${h}</table>`; }
+  return `<table class="lt-on-t hd-on-t">${h}</table>`; }
+let hYak = null;
+const HYAK = [["", "Tümü", '<path d="M4 6h16M4 12h16M4 18h16"/>'], ["sol", "En sola yakın 15", '<path d="M10 6l-6 6 6 6M4 12h16"/>'], ["sag", "En sağa yakın 15", '<path d="M14 6l6 6-6 6M20 12H4"/>'], ["orta", "3200'e yakın 15", '<path d="M12 3v18M7 8l5-5 5 5"/><circle cx="12" cy="14" r="2.5"/>']];
+function hFilCiz(n){ const el = $("#h-fil"); if(!el) return; const fg = hFiltre && (hFiltre === "__yok" ? { ad: "Renk grubu olmayan" } : gruplar().find(x => x.id === hFiltre));
+  el.innerHTML = `<div class="dl-seg hd-yak">${HYAK.map(([k, ad, d]) => `<button type="button" data-hd-yak="${k}" aria-pressed="${(hYak || "") === k}"><svg class="sg-ik" viewBox="0 0 24 24" aria-hidden="true">${d}</svg><span>${ad}</span></button>`).join("")}</div>
+    ${fg || hYak ? `<div class="hd-fil"><b>${fg ? esc(fg.ad) : "Bütün gruplar"}</b>${hYak ? ` · ${esc(HYAK.find(x => x[0] === hYak)[1])}` : ""} · ${n} hedef${fg ? ` · <button type="button" class="hd-fil-x" data-hd-tum="1">Bütün gruplar</button>` : ""}</div>` : ""}`; }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-hd-yak]"); if(!b) return; hYak = b.dataset.hdYak || null; const k = $("#h-on-kap"); if(k){ k.innerHTML = hedefOnHtml(); ltOnSigdir(k); } });
 document.addEventListener("click", e => { if(!e.target.closest || !e.target.closest("[data-hd-tum]")) return; hFiltre = null; hedefCiz(); });
 /* ===== Atış Esasları kayıtları: aynı belgede birden çok hedef listesi (ör. farklı mevzi / dönem) =====
    Etkin liste S.hedef'te (bt/hedef) durur; diğerleri bt/hedefSet içinde saklanır. Kayıt değiştirince yer değiştirirler. */
