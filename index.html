@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "517";
+  const SURUM = "518";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3256,6 +3256,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kd-bil{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:6px;margin:0 0 8px} .kd-bil div{display:flex;flex-direction:column;gap:1px;padding:6px 9px;border:1px solid #E6EAEE;border-radius:8px;background:#fff;min-width:0} .kd-bil small{font:600 10px var(--f-ui);color:var(--muted);text-transform:uppercase;letter-spacing:.04em} .kd-bil b{font:700 12.5px var(--f-ui);overflow-wrap:anywhere} .kd-bil a{color:#3F6487;text-decoration:none}
 .kd-gorev{font:500 11.5px/1.4 var(--f-ui);color:var(--muted);padding:0 2px 12px}
 .kd-k-et{display:inline-flex;align-items:center;gap:5px} .kd-k-et svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+#p-tablo .p-oz{gap:4px!important} #p-tablo .p-oz .p-dosya{width:32px!important;height:32px;min-height:32px!important} #p-tablo .p-oz [data-p-ac]{gap:8px!important;padding-left:4px!important;padding-right:2px!important} #p-tablo td.sn{width:26px!important;padding-left:4px!important;padding-right:0!important}
+.tek-sat{display:block;white-space:nowrap;overflow:hidden;min-width:0;max-width:100%} .p-oy .p-alt{font-variant-numeric:tabular-nums}
 .hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 8px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#3F6487;text-decoration:underline;cursor:pointer}
 .mf-sad-s{display:flex;flex-direction:column;gap:4px} .mf-sad-sec{display:flex;flex-direction:column;gap:6px} .mf-sad-sec small{color:var(--muted);font:600 11px var(--f-ui)} .mf-sad-sec button{text-align:left;border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 10px;font:500 12.5px var(--f-ui);color:var(--fg);cursor:pointer} .mf-sad-sec .mf-sad-vaz{align-self:flex-start;color:var(--muted)} .mf-sad-sec em{font-size:12px;color:var(--muted)} .mf-sad-s .mf-ysil{width:34px;height:36px;flex:none} .mf-sad-s small{color:var(--muted);font:500 11.5px var(--f-ui)} .mf-sad-s span{display:flex;gap:8px;align-items:center} .mf-sad-s input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-sad-s input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} #mfd-govde .mf-sad{margin-top:16px}
 .yk-mf-ic{gap:12px!important}
@@ -3649,7 +3651,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 517</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 518</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3752,7 +3754,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
         <!-- PERSONEL -->
         <div id="e-personel" hidden style="display:flex;flex-direction:column;gap:10px"><div id="p-lst"></div><div id="p-bas"></div>
           <div class="arac"><button class="btn ana" id="p-ekle">+ Personel ekle</button><button class="btn" id="p-al" type="button" hidden>⇣ Listelerden al</button></div><div class="p-kisa" id="p-kisa"></div>
-          <div class="tablo-kap"><table class="liste" id="p-tablo"><thead><tr><th style="width:52px">S.No</th><th>Rütbesi</th><th>Adı Soyadı</th><th>Sicil</th><th>Doğum</th><th>Katılış</th><th>Görevi</th><th style="width:96px"></th></tr></thead><tbody></tbody></table></div>
+          <div class="tablo-kap"><table class="liste ts-grup" id="p-tablo"><thead><tr><th style="width:52px">S.No</th><th>Rütbesi</th><th>Adı Soyadı</th><th>Sicil</th><th>Doğum</th><th>Katılış</th><th>Görevi</th><th style="width:96px"></th></tr></thead><tbody></tbody></table></div>
         </div>
 
         <!-- İZİN -->
@@ -4172,7 +4174,7 @@ const KB_IK = { sira: '<path d="M7 4v16M4 7l3-3 3 3M17 20V4M14 17l3 3 3-3"/>', k
 const kbIk = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${KB_IK[k]}</svg>`;
 function kayitBas(o){ const L = o.liste || [], at = o.attr || "data-kb-sec", sq = o.sq && SQ[o.sq], kil = sq && !!(sq.tut() || {}).srKilit;
   return `<div class="kb2"><div class="kb2-ust"><span class="kb-ad">${esc(o.ad)}</span>${o.n ? `<span class="kb-say">${o.n}</span>` : ""}<span class="kb-bos"></span>${o.ozet || ""}${sq && L.length > 1 ? `<button type="button" class="kb-sq${kil ? " kilitli" : ""}" data-sq-ac="${o.sq}" title="${kil ? "Sıra kilitli" : "Sırala · basılı tutup sürükle"}">${kbIk(kil ? "kilit" : "sira")}<span>${kil ? "Kilitli" : "Sırala"}</span></button>` : ""}${o.yeni ? `<button type="button" class="kb-yeni" ${o.yeni}>＋ Yeni</button>` : ""}</div>
-    ${L.length ? `<div class="kb2-serit kb2-izgara" role="tablist"${sq ? ` data-kb-sq="${o.sq}"` : ""}>${L.map(x => `<button type="button" role="tab" class="kb2-c${x.id === o.secId ? " on" : ""}" ${at}="${esc(x.id)}" aria-selected="${x.id === o.secId}">${kbRutbeIk(x)}<span class="kb2-y">${esc(x.ad)}</span>${x.nokta ? '<i class="kb2-n" title="eksik var"></i>' : ""}</button>`).join("")}</div>` : ""}</div>`; }
+    ${L.length ? `<div class="kb2-serit kb2-izgara ts-grup" role="tablist"${sq ? ` data-kb-sq="${o.sq}"` : ""}>${L.map(x => `<button type="button" role="tab" class="kb2-c${x.id === o.secId ? " on" : ""}" ${at}="${esc(x.id)}" aria-selected="${x.id === o.secId}">${kbRutbeIk(x)}<span class="kb2-y tek-sat">${esc(x.ad)}</span>${x.nokta ? '<i class="kb2-n" title="eksik var"></i>' : ""}</button>`).join("")}</div>` : ""}</div>`; }
 /* seçili çip görünür yere kaydırılır (yalnız yatayda; sayfa kaymaz) */
 /* SEKME / SEÇENEK DÜĞMELERİ: anlamına göre küçük simge (bütün sistemde aynı kalıp). Simgesi olmayan düğmeye dokunulmaz. */
 const SG_P = { yazi: '<path d="M6 19 12 5l6 14M8.5 14h7"/>', dolgu: '<path d="M5 11 11 5l7 7-6 6z"/><path d="M19 15c1 1.5 1.5 2.5 0 3.5"/>', kenar: '<rect x="4" y="4" width="16" height="16" rx="1.5" stroke-dasharray="3 2"/>', satir: '<path d="M4 7h16M4 12h16M4 17h16"/>', sutun: '<path d="M7 4v16M12 4v16M17 4v16"/>', sade: '<circle cx="12" cy="12" r="1.5"/><path d="M5 12h3M16 12h3"/>', oval: '<ellipse cx="12" cy="12" rx="8" ry="5"/>', boya: '<path d="M12 3a9 9 0 1 0 0 18c1.2 0 1.5-1 1-2s0-2 1.5-2H17a4 4 0 0 0 4-4c0-5-4-10-9-10z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="7.5" r="1"/><circle cx="16" cy="10" r="1"/>', mesaj: '<path d="M5 5h14v10H9l-4 4z"/><path d="M8.5 9h7M8.5 12h4"/>', kisi: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>', kisiler: '<circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M15.5 14.6c2.3.2 4 1.6 4.6 4.4"/>',
@@ -4208,6 +4210,13 @@ function smIkonla(){ document.querySelectorAll("#v-belge details>summary:not([da
   for(const n of [...sm.childNodes]) if(n.nodeType === 3 && /^\s*ⓘ/.test(n.textContent)) n.textContent = n.textContent.replace(/^\s*ⓘ\s*/, "");
   sm.insertAdjacentHTML("afterbegin", ik); }); }
 (() => { let z = 0; new MutationObserver(() => { cancelAnimationFrame(z); z = requestAnimationFrame(smIkonla); }).observe(document.documentElement, { childList: true, subtree: true }); })();
+/* TEK SATIR STANDARDI: .tek-sat yazılar kesilmez ve alta kaymaz; sığmazsa yazı boyu adım adım küçülür (en az %72) */
+function tekSatSigdir(){ const G = new Map(); document.querySelectorAll(".tek-sat").forEach(el => { if(!el.offsetParent) return; el.style.fontSize = ""; const b = parseFloat(getComputedStyle(el).fontSize); let f = b;
+    while(el.scrollWidth > el.clientWidth + 1 && f > b * .72){ f -= .5; el.style.fontSize = f + "px"; }
+    const g = el.closest(".ts-grup"); if(g){ const k = el.className; if(!G.has(g)) G.set(g, {}); const o = G.get(g); (o[k] ||= []).push([el, f]); } });
+  /* aynı listedeki aynı tür yazılar aynı boyda: en küçüğe eşitlenir (standart görünüm) */
+  G.forEach(o => Object.values(o).forEach(L => { const m = Math.min(...L.map(x => x[1])); L.forEach(([el]) => el.style.fontSize = m + "px"); })); }
+(() => { let z = 0; const t = () => { cancelAnimationFrame(z); z = requestAnimationFrame(() => tekSatSigdir()); }; new MutationObserver(t).observe(document.documentElement, { childList: true, subtree: true }); addEventListener("resize", t); })();
 function segIkonla(kok){ (kok || document).querySelectorAll(`:is(${SG_KAP})>button`).forEach(b => { if(b.querySelector("svg")) return;
   const t = b.textContent.trim().toLocaleLowerCase("tr"), m = SG_E.find(([r]) => r.test(t)); if(!m) return; b.classList.add("sg-ikli"); b.insertAdjacentHTML("afterbegin", `<svg class="sg-ik" viewBox="0 0 24 24" aria-hidden="true">${SG_P[m[1]]}</svg>`); }); }
 (() => { let z = 0; new MutationObserver(() => { cancelAnimationFrame(z); z = requestAnimationFrame(() => segIkonla()); }).observe(document.documentElement, { childList: true, subtree: true }); })();
@@ -5816,7 +5825,7 @@ function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === 
     (b, kapat) => { if(b.dataset.kd == null) return; const x = kdTopla(p)[+b.dataset.kd]; if(!x || !x.d) return; kapat(); if(x.k === "gdhg" && x.gk){ gdSecili = x.gk.id; } if(x.git) x.git(); belgeGit(x.d); }, { z: "EFF4FA", r: "3F6487" }); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-p-dosya]"); if(!b) return; e.stopPropagation(); kisiDosyasi(b.dataset.pDosya); });
 const pOzet = r => { const [ra, rd, rk] = rutbeSimge(r.rutbe, r), sn = sinifBul(r.rutbe);
-  return `<span class="kb2-av rs-${rk} p-rs" title="${esc(ra)}"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span><span class="p-oy"><b>${esc(r.ad || "Yeni personel")}</b><small>${esc([r.rutbe, r.sicil, r.dogum].filter(Boolean).join(" · ") || "bilgi girilmedi")}</small>${notHtml(acikBelge(), r.id).replace(/ data-not="[^"]*"/, "")}</span>`; };
+  return `<span class="kb2-av rs-${rk} p-rs" title="${esc(ra)}"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span><span class="p-oy"><b class="tek-sat">${esc(r.ad || "Yeni personel")}</b><small class="tek-sat">${esc(r.rutbe || "rütbe girilmedi")}</small><small class="tek-sat p-alt">${esc([r.sicil, r.dogum].filter(Boolean).join(" · ") || "sicil girilmedi")}</small>${notHtml(acikBelge(), r.id).replace(/ data-not="[^"]*"/, "")}</span>`; };
 $("#p-tablo").addEventListener("click", e => { const b = e.target.closest("[data-p-ac]"); if(!b) return; const tr = b.closest("tr"), ac = !tr.classList.contains("acik"); document.querySelectorAll("#p-tablo tr.acik").forEach(x => x.classList.remove("acik")); if(ac){ tr.classList.add("acik"); pAcik = tr.dataset.id; otoBoyHepsi(tr); } else pAcik = null; });
 $("#p-tablo").addEventListener("input", e => { const tr = e.target.closest("tr"); const r = PL().rows.find(x => x.id === tr?.dataset.id); if(!r) return; r[e.target.dataset.alan] = e.target.value; kaydetBt("personel"); const oz = tr.querySelector(".p-oy"); if(oz) oz.outerHTML = pOzet(r); });
 $("#p-tablo").addEventListener("click", e => {
