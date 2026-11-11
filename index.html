@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "452";
+  const SURUM = "453";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3515,7 +3515,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 452</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 453</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10757,7 +10757,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(z === "sil"){ const i = v.kayitlar.indexOf(k); v.kayitlar.splice(i, 1); v.aktif = (v.kayitlar[i] || v.kayitlar[i - 1] || {}).id; yaz(); return geriAlinabilir("Zimmet belgesi silindi", () => { v.kayitlar.splice(i, 0, k); v.aktif = k.id; yaz(); }); }
   if(z === "kisi") return kisiSecAc("Teslim alan", (S.personel.rows || []).filter(x => x.ad), k.pid, id => { k.pid = id; yaz(); }); });
 /* ortak yerleşim: 8 sütun (mm), her satır [hücre…]; hücre { t, cs, b, al, h, cizgi } */
-const ZM_SUT = [9, 26, 52, 17, 25, 17, 25, 15];
+const ZM_SUT = [9, 26, 52, 17, 25, 17, 25, 15], ZM_SUT_N = [8, 23, 48, 10, 17, 10, 18, 13, 43];   // notlu: 9. sütun “Not”
 function zmIcerik(d, notlu = CIKTI_NOTLU){ const v = zmVeri(d), k = zmAktif(v), p = zmKisi(k) || {}, R = [];
   const c = (t, o = {}) => ({ t: String(t ?? ""), cs: 1, b: false, al: "c", ...o });
   R.push({ h: 7, c: [c("TAŞINIR MAL TESLİM TESELLÜM AYRINTI  BELGESİ", { cs: 8, b: true, sz: 10.5 })] });
@@ -10767,13 +10767,16 @@ function zmIcerik(d, notlu = CIKTI_NOTLU){ const v = zmVeri(d), k = zmAktif(v), 
   R.push({ h: 6, c: [c("Zimmetlenen Seri Numarası / Kafile Listesi", { cs: 8, b: true })] });
   R.push({ h: 8, bas: true, c: ["S.No", "Stok No.", "Cins ve Özellikleri", "Kafile", "Seri Numarası", "Stok Grup", "Son Kullanma Tarihi", "Miktar"].map(t => c(t, { b: true })) });
   k.satirlar.forEach((x, i) => R.push({ h: 4.7, c: [c(i + 1), c(x.stok), c(x.cins, { al: "l" }), c(x.kafile), c(x.seri), c(x.grup), c(x.skt), c(x.miktar)] }));
-  if(notlu){ const N = k.satirlar.map((x, i) => [i + 1, notAl(d, x.id)]).filter(([, n]) => n && n.g); { const gn = notAl(d, "_genel"); if(gn && gn.g) N.unshift(["Genel", gn]); }
-    if(N.length){ R.push({ h: 3, c: [c("", { cs: 8, cizgi: false })] }); R.push({ h: 5.5, bas: true, c: [c("S.No", { b: true }), c("NOTLAR", { cs: 7, b: true, al: "l" })] }); N.forEach(([sn, n]) => R.push({ h: 5, c: [c(sn), c(n.t, { cs: 7, al: "l" })] })); } }
-  R.push({ h: 4, c: [c("", { cs: 8, cizgi: false })] });
-  R.push({ h: 6, c: [c("TESLİM EDEN", { cs: 3, b: true }), c("TESLİM ALAN", { cs: 5, b: true })] });
-  const al = (a, x, y, h = 6) => R.push({ h, c: [c(a, { cs: 2, b: true, al: "l" }), c(x, { al: "l" }), c(y, { cs: 5, al: "l" })] });
+  /* notlu: görünür satır notları kendi satırının yanında yeni “NOT” sütununda (genel not tablonun altında tek satır) */
+  const sN = notlu ? k.satirlar.map(x => { const n = notAl(d, x.id); return n && n.g ? n.t : ""; }) : [], gn = notlu ? notAl(d, "_genel") : null, notS = sN.some(Boolean);
+  if(notS){ R.forEach((r, ri) => { if(r.bas) r.c.push(c("Not", { b: true })); else if(ri > 5){ r.h = 4.3; r.c.push(c(sN[ri - 6], { al: "l", sz: 6.2 })); } else r.c[r.c.length - 1].cs++; }); }
+  const tm = notS ? 9 : 8;
+  if(gn && gn.g){ R.push({ h: 3, c: [c("", { cs: tm, cizgi: false })] }); R.push({ h: 5.5, c: [c("Genel Not", { cs: 2, b: true, al: "l" }), c(gn.t, { cs: tm - 2, al: "l" })] }); }
+  R.push({ h: 4, c: [c("", { cs: tm, cizgi: false })] });
+  R.push({ h: 6, c: [c("TESLİM EDEN", { cs: 3, b: true }), c("TESLİM ALAN", { cs: tm - 3, b: true })] });
+  const al = (a, x, y, h = 6) => R.push({ h, c: [c(a, { cs: 2, b: true, al: "l" }), c(x, { al: "l" }), c(y, { cs: tm - 3, al: "l" })] });
   al("İmzası", "", "", 13); al("Adı ve Soyadı", k.eden.ad, p.ad || ""); al("Rütbesi", k.eden.rutbe, p.rutbe || ""); al("Görevi", k.eden.gorev, k.alan.gorev || "");
-  return { R, dosya: `Zimmet_${dosyaAdi(p.ad || "Belge")}_${zmTarih(k.tarih)}` }; }
+  return { R, ...(notS ? { sut: ZM_SUT_N } : {}), dosya: `Zimmet_${dosyaAdi(p.ad || "Belge")}_${zmTarih(k.tarih)}` }; }
 /* ===== ortak resmî form çizici (zimmet, el senedi): I = { R: [{ h, bas, c: [{ t, cs, rs, b, al, sz, cizgi }] }], sut: [mm], yon } → PDF · Excel · Word aynı yerleşim ===== */
 function tgYer(I){ const n = I.sut.length, dolu = I.R.map(() => new Array(n).fill(null)), Y = [];
   I.R.forEach((r, ri) => { let col = 0; const L = [];
