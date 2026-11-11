@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "450";
+  const SURUM = "451";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3156,7 +3156,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .km-fotolar{padding:10px 2px 12px;border-bottom:1px solid var(--line2)} .km-fust{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px} .km-fb{display:block;font:700 13px var(--f-ui)}
 .km-fg{display:flex;justify-content:center;gap:18px} .km-fk{width:96px} .km-fk{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
 .km-fres{position:relative;width:100%;max-width:84px;aspect-ratio:35/45;padding:0;border:1px solid var(--line2);border-radius:8px;background:#F4F6F8;overflow:hidden;cursor:pointer}
-.km-fres img{width:100%;height:100%;object-fit:cover;display:block} .km-fres img.soluk{opacity:.35}
+.km-fres img{width:100%;height:100%;object-fit:contain;background:#fff;display:block} .km-fres img.soluk{opacity:.35}
 .km-fres i{position:absolute;inset:0;display:grid;place-items:center;font:600 20px var(--f-ui);font-style:normal;color:#3D5A73}
 .km-fad{display:flex;align-items:center;gap:4px;font:600 11.5px var(--f-ui);color:var(--fg);white-space:nowrap}
 .km-fsil{width:20px;height:20px;padding:0;border:0;border-radius:6px;background:#FBEDEA;color:#A3412F;font:700 10px var(--f-ui);cursor:pointer;display:grid;place-items:center}
@@ -3512,7 +3512,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 450</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 451</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11685,7 +11685,9 @@ async function fyPdfYap(d, P, sol){ const v = fyVeri(d), doc = await yeniPdf({ y
     let L = doc.splitTextToSize(t, Math.max(1, x2 - x1 - 2 * pad)), fs = s; while(o.sigdir && L.length * fs * .3528 * 1.08 > y2 - y1 && fs > 6){ fs -= .25; doc.setFontSize(fs); L = doc.splitTextToSize(t, x2 - x1 - 2 * pad); }
     const lh = fs * .3528 * 1.08, blok = L.length * lh, y = o.va === "t" ? y1 + pad * .6 + lh * .8 : y1 + (y2 - y1 - blok) / 2 + lh * .8, al = o.al || "l", tx = al === "c" ? (x1 + x2) / 2 : al === "r" ? x2 - pad : x1 + pad;
     L.forEach((ln, i) => doc.text(ln, tx, y + i * lh, { align: al === "c" ? "center" : al === "r" ? "right" : "left" })); if(o.u){ const w = doc.getTextWidth(L[0]); doc.setLineWidth(.25); doc.line(tx, y + .6, tx + w, y + .6); } };
-  const resim = (r, k, ic) => { if(!r) return; const [x1, y1, x2, y2] = k; try { doc.addImage(r.data, "JPEG", x1 + ic, y1 + ic, x2 - x1 - 2 * ic, y2 - y1 - 2 * ic); } catch(e){ console.warn(e); } };
+  /* fotoğraf kutuyu doldurur ama oranı bozulmaz: taşan kısım yanlardan eşit, alttan kesilir (baş hiçbir zaman kesilmez) */
+  const resim = (r, k, ic) => { if(!r) return; const [x1, y1, x2, y2] = k, X = x1 + ic, Y = y1 + ic, Wb = x2 - x1 - 2 * ic, Hb = y2 - y1 - 2 * ic, o = r.w / r.h; let w = Wb, h = Wb / o; if(h < Hb){ h = Hb; w = Hb * o; }
+    try { doc.saveGraphicsState(); doc.rect(X, Y, Wb, Hb, null); doc.clip(); doc.discardPath(); doc.addImage(r.data, "JPEG", X + (Wb - w) / 2, Y, w, h); doc.restoreGraphicsState(); } catch(e){ console.warn(e); } };
   for(let pi = 0; pi < P.length; pi++){ const p = P[pi], x = fyK(v, p), grp = fyGrup(v, p), e100 = fyEsik(grp, 100), e60 = fyEsik(grp, 60), dy = fyDYil(p);
     if(pi) doc.addPage();
     /* ---------- ön yüz ---------- */
