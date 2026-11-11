@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "453";
+  const SURUM = "454";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3125,6 +3125,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .zm-mik{display:grid;grid-template-columns:1fr auto;gap:5px} .zm-mik input{min-width:0} .zm-bir{display:flex;flex-direction:column;align-items:center;justify-content:center;min-width:66px;border:1px solid #C9D7E3;background:#EEF3F8;border-radius:9px;padding:3px 8px;cursor:pointer} .zm-bir b{font:700 13px var(--f-ui);color:#2F4A66} .zm-bir small{font:500 9.5px var(--f-ui);color:var(--muted)}
 .zm-bl{display:grid;grid-template-columns:repeat(auto-fill,minmax(72px,1fr));gap:6px} .zm-bs{display:flex;flex-direction:column;align-items:center;gap:1px;border:1px solid var(--line2);background:#fff;border-radius:9px;padding:8px 4px;cursor:pointer} .zm-bs b{font:700 14px var(--f-ui);color:#26313B} .zm-bs small{font:500 10px var(--f-ui);color:var(--muted)} .zm-bs[aria-pressed="true"]{background:#2F4A66;border-color:#2F4A66} .zm-bs[aria-pressed="true"] b,.zm-bs[aria-pressed="true"] small{color:#fff}
 .not-dug{flex:0 0 auto;width:32px;height:32px;display:inline-grid;place-items:center;border:1px solid var(--line2);background:#fff;border-radius:8px;color:#8592A0;cursor:pointer;padding:0} .not-dug svg{width:16px;height:16px} .not-dug.g{background:#E8F0F8;border-color:#B9CDE2;color:#2F5F8C} .not-dug.s{background:#F1F1F1;border-color:#D6D6D6;color:#666}
+.not-al{margin-top:10px} .not-al-b{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:5px} .not-al-b>span{font:600 12px var(--f-ui);color:var(--muted)} .not-al textarea{background:#F5F8FC}
 .not-sat{margin-top:3px;font:500 11.5px/1.35 var(--f-ui);color:#2F5F8C;background:#EEF4FA;border-left:3px solid #9DB9D6;border-radius:5px;padding:3px 7px;white-space:normal;cursor:pointer} .not-sat i{font-style:normal;font-weight:700;font-size:9.5px;letter-spacing:.04em;text-transform:uppercase;margin-right:6px;opacity:.8} .not-sat.s{color:#5A5A5A;background:#F3F3F3;border-left-color:#BDBDBD}
 .not-t{width:100%;box-sizing:border-box;border:1px solid var(--line2);border-radius:9px;padding:9px;font:500 14px var(--f-ui);resize:vertical} .not-seg{margin-top:8px} .zm-onseg{margin-top:4px} .km-notS{display:flex;align-items:center;gap:8px;padding:10px 0 0} .km-notS>.not-sat,.km-notS>.deg-not{flex:1;margin:0} #p-tablo td.islem .not-dug{width:30px;height:30px;vertical-align:middle;margin-right:2px}
 .es-bc{display:grid;grid-template-columns:1fr 1fr;gap:6px} .es-bc button{display:flex;flex-direction:column;align-items:flex-start;gap:1px;border:1px solid var(--line2);background:#fff;border-radius:9px;padding:7px 9px;cursor:pointer;text-align:left} .es-bc b{font:700 12.5px var(--f-ui);color:#26313B} .es-bc small{font:500 10.5px var(--f-ui);color:var(--muted)} .es-bc button[aria-pressed="true"]{background:#2F4A66;border-color:#2F4A66} .es-bc button[aria-pressed="true"] b,.es-bc button[aria-pressed="true"] small{color:#fff} .es-bir{width:100%}
@@ -3515,7 +3516,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 453</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 454</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10496,6 +10497,18 @@ const notGorVar = d => !!(d && d.notlar && Object.values(d.notlar).some(n => n &
 const NOT_IK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 4h10l4 4v12H5z"/><path d="M8 11h8M8 15h5"/></svg>';
 const notDug = (d, id, ad) => { const n = notAl(d, id); return `<button type="button" class="not-dug${n ? (n.g ? " g" : " s") : ""}" data-not="${esc(id)}" data-not-ad="${esc(ad || "")}" aria-label="Not" title="Not">${NOT_IK}</button>`; };
 const notHtml = (d, id) => { const n = notAl(d, id); return n ? `<div class="not-sat ${n.g ? "g" : "s"}" data-not="${esc(id)}"><i>${n.g ? "Not" : "Gizli not"}</i>${esc(n.t)}</div>` : ""; };
+/* kalem penceresinde doğrudan düzenlenen not alanı (zimmet, el senedi) */
+const notAlanH = (d, id) => { const n = (d.notlar && d.notlar[id]) || {}, g = n.g !== false;
+  return `<div class="dl-al tam not-al"><div class="not-al-b"><span>Not</span><div class="cs-seg mini"><button type="button" data-satnot-g="1" aria-pressed="${g}">Görünür</button><button type="button" data-satnot-g="0" aria-pressed="${!g}">Görünmez</button></div></div>
+    <textarea class="oto-boy" rows="1" data-satnot="${esc(id)}" placeholder="Bu satıra not yazın (boş bırakılırsa not olmaz)">${esc(n.t || "")}</textarea>
+    <small class="dl-not">${g ? "Görünür: listede ve “Notlu” çıktıda Not sütununda yer alır." : "Görünmez: yalnız sizin ekranınızda durur; çıktıya ve paylaşıma gitmez."}</small></div>`; };
+function satNotYaz(d, id, t, g){ d.notlar ||= {}; const o = d.notlar[id] || {}; t = t != null ? t : (o.t || ""); g = g != null ? g : o.g !== false;
+  if(String(t).trim()) d.notlar[id] = { t: String(t).replace(/\s*\n\s*/g, " ").trim(), g }; else delete d.notlar[id]; if(!Object.keys(d.notlar).length) delete d.notlar; kaydetBelge(d); }
+document.addEventListener("input", e => { const el = e.target; if(!el.dataset || el.dataset.satnot == null) return; const d = acikBelge(); if(!d) return; const gb = el.closest(".not-al").querySelector('[data-satnot-g="1"]');
+  satNotYaz(d, el.dataset.satnot, el.value, gb.getAttribute("aria-pressed") === "true"); });
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-satnot-g]"); if(!b) return; const d = acikBelge(), w = b.closest(".not-al"), ta = w && w.querySelector("[data-satnot]"); if(!d || !ta) return;
+  const g = b.dataset.satnotG === "1"; w.querySelectorAll("[data-satnot-g]").forEach(x => x.setAttribute("aria-pressed", x === b)); w.querySelector(".dl-not").textContent = g ? "Görünür: listede ve “Notlu” çıktıda Not sütununda yer alır." : "Görünmez: yalnız sizin ekranınızda durur; çıktıya ve paylaşıma gitmez.";
+  if(ta.value.trim()) satNotYaz(d, ta.dataset.satnot, ta.value, g); });
 const notCiz = d => { notPanelCiz(); const f = { elsenet: elsenetCiz, zimmet: zimmetCiz, silah: silahCiz, personel: personelCiz, kimlik: kimlikCiz }[d.tur]; if(f) f(); };
 function notDuzen(d, id, ad){ const n = (d.notlar && d.notlar[id]) || {}; let t = n.t || "", g = n.g !== false;
   altPencere("not-perde", "SATIR NOTU", ad || "Not", () => `<textarea id="not-t" class="not-t" rows="3" placeholder="Notunuzu yazın…">${esc(t)}</textarea>
@@ -10609,7 +10622,8 @@ document.addEventListener("toggle", e => { const g = e.target; if(!g.matches || 
 function esSatirDuzen(d, x, yeniMi){ const k = esAktif(esVeri(d)), B = ES_BICIM[k.bicim] || ES_BICIM[3], bir = () => String(x.birim || "").toLocaleUpperCase("tr").replace(/\.$/, "");
   altPencere("ks-perde", yeniMi ? "YENİ MALZEME" : "MALZEME", x.cins || "Malzeme", () => `<div class="dl-alanlar es-form">${B.alan.filter(a => a !== "birim").map(a => `<label class="dl-al${a === "cins" || a === "aciklama" ? " tam" : ""}"><span>${ES_ET[a]}</span><textarea class="oto-boy" rows="1" data-tek data-esx="${a}"${a === "stok" || a === "miktar" ? ' inputmode="numeric"' : ""}${a === "durum" ? ' placeholder="ör. Faal"' : ""}>${esc(x[a] || "")}</textarea></label>`).join("")}</div>
       ${B.alan.includes("birim") ? `<div class="dl-al tam"><span>Ölçü birimi</span><div class="es-birim">${ZM_BIRIM.map(([k2, a]) => `<button type="button" data-zb="${k2}" aria-pressed="${bir() === k2}" title="${a}">${k2}</button>`).join("")}</div><small class="dl-not">${esc(zmBirimAd(bir()))}</small></div>` : ""}
-      <div class="es-pis">${notDug(d, x.id, x.cins)}<button type="button" class="mini" data-esy="-1">↑</button><button type="button" class="mini" data-esy="1">↓</button><span class="bosluk"></span><button type="button" class="mini sil" data-esd="1">Sil</button><button type="button" class="btn ana" data-ap="x">Tamam</button></div>`,
+      ${notAlanH(d, x.id)}
+      <div class="es-pis"><button type="button" class="mini" data-esy="-1">↑</button><button type="button" class="mini" data-esy="1">↓</button><span class="bosluk"></span><button type="button" class="mini sil" data-esd="1">Sil</button><button type="button" class="btn ana" data-ap="x">Tamam</button></div>`,
     (b, kapat, yenile) => { const Sx = k.satirlar, i = Sx.indexOf(x);
       if(b.dataset.zb){ x.birim = b.dataset.zb; kaydetBelge(d); return yenile(), otoBoyHepsi($("#ks-perde")); }
       if(b.dataset.esy){ const j = i + +b.dataset.esy; if(j >= 0 && j < Sx.length){ [Sx[i], Sx[j]] = [Sx[j], Sx[i]]; kaydetBelge(d); bildir(`${j + 1}. sıraya taşındı`); } return; }
@@ -10717,7 +10731,8 @@ function zmSatirDuzen(d, x, yeniMi){ const k = zmAktif(zmVeri(d)), m = () => zmM
   altPencere("ks-perde", yeniMi ? "YENİ KALEM" : "KALEM", x.cins || "Kalem", () => `<div class="dl-alanlar es-form">${ZM_ALAN.filter(([a]) => a !== "miktar").map(([a, t, o]) => `<label class="dl-al${o === "tam" ? " tam" : ""}"><span>${t}</span><textarea class="oto-boy" rows="1" data-tek data-zmx="${a}"${o === "n" ? ' inputmode="numeric"' : ""}>${esc(x[a] || "")}</textarea></label>`).join("")}
         <label class="dl-al tam"><span>Miktar</span><input inputmode="decimal" data-zmx="miktarN" value="${esc(m().n)}" placeholder="0"></label></div>
       <div class="dl-al tam"><span>Ölçü birimi</span><div class="es-birim">${ZM_BIRIM.map(([k2, a]) => `<button type="button" data-zb="${k2}" aria-pressed="${m().b === k2}" title="${a}">${k2}</button>`).join("")}</div><small class="dl-not">${esc(zmBirimAd(m().b))}</small></div>
-      <div class="es-pis">${notDug(d, x.id, x.cins)}<button type="button" class="mini" data-zmy="-1">↑</button><button type="button" class="mini" data-zmy="1">↓</button><span class="bosluk"></span><button type="button" class="mini sil" data-zmd="1">Sil</button><button type="button" class="btn ana" data-ap="x">Tamam</button></div>`,
+      ${notAlanH(d, x.id)}
+      <div class="es-pis"><button type="button" class="mini" data-zmy="-1">↑</button><button type="button" class="mini" data-zmy="1">↓</button><span class="bosluk"></span><button type="button" class="mini sil" data-zmd="1">Sil</button><button type="button" class="btn ana" data-ap="x">Tamam</button></div>`,
     (b, kapat, yenile) => { const Sx = k.satirlar, i = Sx.indexOf(x);
       if(b.dataset.zb){ x.miktar = [m().n || "1", b.dataset.zb].join(" "); kaydetBelge(d); yenile(); $("#ks-perde").dataset.zmId = x.id; return otoBoyHepsi($("#ks-perde")); }
       if(b.dataset.zmy){ const j = i + +b.dataset.zmy; if(j >= 0 && j < Sx.length){ [Sx[i], Sx[j]] = [Sx[j], Sx[i]]; kaydetBelge(d); bildir(`${j + 1}. sıraya taşındı`); } return; }
