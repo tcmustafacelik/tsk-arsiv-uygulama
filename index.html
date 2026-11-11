@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "455";
+  const SURUM = "456";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3516,7 +3516,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 455</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 456</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10779,7 +10779,7 @@ const ZM_SUT = [9, 26, 52, 17, 25, 17, 25, 15], ZM_SUT_N = [8, 23, 48, 10, 17, 1
 function zmIcerik(d, notlu = CIKTI_NOTLU){ const v = zmVeri(d), k = zmAktif(v), p = zmKisi(k) || {}, R = [];
   const c = (t, o = {}) => ({ t: String(t ?? ""), cs: 1, b: false, al: "c", ...o });
   R.push({ h: 7, c: [c("TAŞINIR MAL TESLİM TESELLÜM AYRINTI  BELGESİ", { cs: 8, b: true, sz: 10.5 })] });
-  R.push({ h: 6, c: [c("", { cs: 5, cizgi: false }), c("Rapor Tarihi:", { cs: 2, b: true, al: "r" }), c(zmTarih(k.tarih))] });
+  R.push({ h: 6, c: [c("", { cs: 5 }), c("Rapor Tarihi:", { cs: 2, b: true, al: "r" }), c(zmTarih(k.tarih))] });
   R.push({ h: 7, c: [c("Taşınır Malın Birliği :", { cs: 2, b: true, al: "l" }), c(k.birlik, { cs: 6, al: "l" })] });
   R.push({ h: 9, c: [c("Teslim Alan Kısım/Birim:", { cs: 2, b: true, al: "l" }), c(k.kisim, { cs: 6, al: "l" })] });
   R.push({ h: 6, c: [c("Zimmetlenen Seri Numarası / Kafile Listesi", { cs: 8, b: true })] });
@@ -10789,8 +10789,7 @@ function zmIcerik(d, notlu = CIKTI_NOTLU){ const v = zmVeri(d), k = zmAktif(v), 
   const sN = notlu ? k.satirlar.map(x => { const n = notAl(d, x.id); return n && n.g ? n.t : ""; }) : [], gn = notlu ? notAl(d, "_genel") : null, notS = sN.some(Boolean);
   if(notS){ R.forEach((r, ri) => { if(r.bas) r.c.push(c("Not", { b: true })); else if(ri > 5){ r.h = 4.3; r.c.push(c(sN[ri - 6], { al: "l", sz: 6.2 })); } else r.c[r.c.length - 1].cs++; }); }
   const tm = notS ? 9 : 8;
-  if(gn && gn.g){ R.push({ h: 3, c: [c("", { cs: tm, cizgi: false })] }); R.push({ h: 5.5, c: [c("Genel Not", { cs: 2, b: true, al: "l" }), c(gn.t, { cs: tm - 2, al: "l" })] }); }
-  R.push({ h: 4, c: [c("", { cs: tm, cizgi: false })] });
+  if(gn && gn.g) R.push({ h: 5.5, c: [c("Genel Not", { cs: 2, b: true, al: "l" }), c(gn.t, { cs: tm - 2, al: "l" })] });   /* boşluksuz: tablo baştan sona kesintisiz */
   R.push({ h: 6, c: [c("TESLİM EDEN", { cs: 3, b: true }), c("TESLİM ALAN", { cs: tm - 3, b: true })] });
   const al = (a, x, y, h = 6) => R.push({ h, c: [c(a, { cs: 2, b: true, al: "l" }), c(x, { al: "l" }), c(y, { cs: tm - 3, al: "l" })] });
   al("İmzası", "", "", 13); al("Adı ve Soyadı", k.eden.ad, p.ad || ""); al("Rütbesi", k.eden.rutbe, p.rutbe || ""); al("Görevi", k.eden.gorev, k.alan.gorev || "");
