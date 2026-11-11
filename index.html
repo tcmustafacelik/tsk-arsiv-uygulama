@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "495";
+  const SURUM = "496";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3218,6 +3218,9 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .sg-ikli{display:inline-flex!important;align-items:center;justify-content:center;gap:5px} .sg-ik{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
 .sg-ikli[aria-pressed="true"],.sg-ikli.on,.sg-ikli[aria-selected="true"]{color:#2D557E!important} .sg-ikli[aria-pressed="true"] .sg-ik,.sg-ikli.on .sg-ik,.sg-ikli[aria-selected="true"] .sg-ik{opacity:1;color:#3D6A99}
 .dl-seg-tur .sg-ikli,.gd-cs-sec .sg-ikli{flex-direction:column;gap:2px} .gd-cs-sec .sg-ikli{white-space:nowrap}
+.rs-buyuk{width:34px!important;height:34px!important;border-radius:9px!important} .rs-buyuk svg{width:26px!important;height:26px!important} .rs-grup{font:700 11px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 2px 6px}
+.rs-oz{font:700 10px var(--f-ui);font-style:normal;color:#7A5A1C;background:#F7F1E3;border-radius:6px;padding:2px 6px} .rsd-on{display:flex;align-items:center;gap:12px;padding:4px 2px 8px} .rsd-on .rs-buyuk{width:56px!important;height:56px!important} .rsd-on .rs-buyuk svg{width:44px!important;height:44px!important} .rsd-on b{font:700 15px var(--f-ui)}
+.rsd-seg{grid-template-columns:repeat(auto-fit,minmax(58px,1fr))!important;display:grid!important} .rsd-n{grid-template-columns:repeat(7,1fr)!important}
 :root{--sec-z:#FBEFD8;--sec-k:#C98A2E;--sec-y:#5E3B0C;--sec-i:#B0711F}
 .kb2-c.on{background:var(--sec-z);border-color:var(--sec-k);color:var(--sec-y);font-weight:700;box-shadow:inset 0 0 0 1px var(--sec-k),0 1px 5px rgba(176,113,31,.20)} .kb2-c.on .kb2-av{background:var(--sec-i);color:#fff} .kb2-c.on::after{content:"✓";position:absolute;right:8px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:var(--sec-i);color:#fff;font:800 9.5px/16px var(--f-ui);text-align:center}
 .dl-sat.on,.dl-sat[aria-current="true"]{border-color:var(--sec-k)!important;border-left-color:var(--sec-k)!important;background:var(--sec-z)!important;box-shadow:inset 0 0 0 1px var(--sec-k)!important} .dl-sat.on b,.dl-sat[aria-current="true"] b{color:var(--sec-y)}
@@ -3566,7 +3569,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 495</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 496</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4009,7 +4012,22 @@ const RT_CIZGI = n => { const h = Math.min(2.1, 12 / n); return Array.from({ len
 const RT_KIDEM = (n, y0) => Array.from({ length: n }, (_, i) => `<path d="M8 ${y0 + i * 2.3}h8" style="stroke-width:1.3"/>`).join("");
 const yilFark = t => t == null ? 0 : (Date.now() - t) / (365.2425 * 864e5);
 const RT_SERIT = n => Array.from({ length: n }, (_, i) => `<path d="M6 ${12 - (n - 1) * 1.8 + i * 3.6}h12"/>`).join("");
-function rutbeSimge(r0, p = {}){ const r = String(r0 || ""), t = r.replace(/\s+/g, "");
+/* RÜTBE SİMGELERİ — galeri ve elle düzeltme. Kullanıcı bir rütbenin simgesini değiştirirse S.personel.rsOzel[ad] = { b, n, df, ay } saklanır. */
+const RS_LISTE = [["Generaller", [["Orgeneral", "Org."], ["Korgeneral", "Korg."], ["Tümgeneral", "Tümg."], ["Tuğgeneral", "Tuğg."]]], ["Üst subaylar", [["Albay", "Alb."], ["Yarbay", "Yb."], ["Binbaşı", "Bnb."]]],
+  ["Subaylar", [["Yüzbaşı", "Yzb."], ["Üsteğmen", "Ütğm."], ["Teğmen", "Tğm."], ["Asteğmen", "Asteğm."]]],
+  ["Astsubaylar", [["Astsubay Kıdemli Başçavuş", "Asb.Kd.Bçvş."], ["Astsubay Başçavuş", "Asb.Bçvş."], ["Astsubay Kıdemli Üstçavuş", "Asb.Kd.Üçvş."], ["Astsubay Üstçavuş", "Asb.Üçvş."], ["Astsubay Kıdemli Çavuş", "Asb.Kd.Çvş."], ["Astsubay Çavuş", "Asb.Çvş."]]],
+  ["Uzman erbaşlar", [["Uzman Çavuş", "Uzm.Çvş."], ["Uzman Onbaşı", "Uzm.Onb."]]], ["Erbaş ve er", [["Çavuş", "Söz.Çvş."], ["Onbaşı", "Söz.Onb."], ["Er", "Söz.Er"]]],
+  ["Sivil", [["Doktor / Tabip", "Tabip"], ["Devlet memuru", "Devlet Memuru"], ["İşçi", "İşçi"]]]];
+const RS_BICIM = [["yildiz", "Yıldız"], ["cizgi", "Çizgi"], ["v", "V şerit"], ["serit", "Kalın şerit"], ["bos", "Boş apolet"]];
+const rsOzelCiz = o => { const n = Math.max(0, Math.min(7, +o.n || 0)), ay = o.ay ? RT_AY : "";
+  if(o.b === "yildiz") return ay + RT_YILDIZ(Math.max(1, Math.min(4, n)), o.df ? 9.5 : 12) + (o.df ? RT_DEFNE : "");
+  if(o.b === "cizgi") return ay + RT_CIZGI(Math.max(1, n));
+  if(o.b === "v") return ay + RT_V(Math.max(1, Math.min(4, n))) + (o.df ? RT_DEFNE : "");
+  if(o.b === "serit") return ay + Array.from({ length: Math.max(1, Math.min(3, n)) }, (_, i) => `<path d="M5 ${12 + (i - (Math.min(3, n) - 1) / 2) * 4.2}h14" style="stroke-width:2.6"/>`).join("");
+  return '<path d="M8 20V6.5a4 4 0 0 1 8 0V20z"/><circle cx="12" cy="7" r="1" class="dolu"/>'; };
+function rutbeSimge(r0, p = {}){ const R = rutbeSimgeHam(r0, p), oz = ((S.personel || {}).rsOzel || {})[R[0].split(" · ")[0]]; if(!oz) return R;
+  const kd = /^Uzman Çavuş/.test(R[0]) ? RT_KIDEM(Math.min(4, Math.floor(yilFark(nasipZ(p)) / 3)), 16.4) : ""; return [R[0], rsOzelCiz(oz) + kd, R[2]]; }
+function rutbeSimgeHam(r0, p = {}){ const r = String(r0 || ""), t = r.replace(/\s+/g, "");
   const G = [["Org", 4], ["Korg", 3], ["Tümg", 2], ["Tuğg", 1]].find(([k]) => new RegExp("(^|[.\\s])" + k + "\\b", "i").test(r)); if(G) return [G[0] + "eneral", RT_YILDIZ(G[1], 9) + RT_DEFNE + '<path d="M5 16c3 1.4 11 1.4 14 0"/>', "gen"];
   const U = [["Alb", 3, "Albay"], ["Yb", 2, "Yarbay"], ["Bnb", 1, "Binbaşı"]].find(([k]) => new RegExp("(^|[.\\s])" + k + "\\b", "i").test(r)); if(U) return [U[2], RT_YILDIZ(U[1], 9.5) + RT_DEFNE, "ust"];
   if(/Yzb/i.test(r)) return ["Yüzbaşı", RT_YILDIZ(3, 12), "subay"]; if(/Ütğm|Ütgm|Üteğ/i.test(r)) return ["Üsteğmen", RT_YILDIZ(2, 12), "subay"];
@@ -5411,13 +5429,31 @@ function sqUygula(){ for(const [k, c] of Object.entries(SQ)){ if(c.var && !c.var
     let b = document.querySelector(`[data-sq-ac="${k}"]`); const T = c.tut() || {}, t = T.srKilit ? "🔒 Sıra" : "⇅ Sırala";
     if(!b || !b.isConnected){ yer.insertAdjacentHTML(c.dugme[1], `<button type="button" class="btn kucuk sq-ac" data-sq-ac="${k}"></button>`); b = document.querySelector(`[data-sq-ac="${k}"]`); }
     if(b && b.textContent !== t) b.textContent = t; } }
+function rsGaleri(){ const ik = (r, p) => { const [ad, d, k] = rutbeSimge(r, p); return `<span class="kb2-av rs-${k} rs-buyuk"><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg></span>`; };
+  altPencere("rs-perde", "RÜTBE SİMGELERİ", "Yanlış olana dokunup düzeltin", () => RS_LISTE.map(([g, L]) => `<div class="rs-grup">${esc(g)}</div><div class="ap-liste">${L.map(([ad, kis]) => apSatir(`data-rs-ad="${esc(ad)}" data-rs-r="${esc(kis)}"`, ik(kis, { nasip: "" }), esc(ad), ((S.personel.rsOzel || {})[ad] ? '<em class="rs-oz">düzeltildi</em>' : ""), { alt: esc(kis) })).join("")}</div>`).join("") + '<div class="tz-not2">Simgeler sade temsildir. Yanlış görünen rütbeye dokunup biçimini ve sayısını değiştirebilirsiniz; değişiklik bütün sistemdeki kişi kutularına uygulanır.</div>',
+    (b) => { if(!b.dataset.rsAd) return; rsDuzenle(b.dataset.rsAd, b.dataset.rsR); }, { z: "E6EEF7", r: "2D557E" }); }
+const RS_VARS = { "Orgeneral": ["yildiz", 4, 1], "Korgeneral": ["yildiz", 3, 1], "Tümgeneral": ["yildiz", 2, 1], "Tuğgeneral": ["yildiz", 1, 1], "Albay": ["yildiz", 3, 1], "Yarbay": ["yildiz", 2, 1], "Binbaşı": ["yildiz", 1, 1], "Yüzbaşı": ["yildiz", 3], "Üsteğmen": ["yildiz", 2], "Teğmen": ["yildiz", 1], "Asteğmen": ["serit", 1],
+  "Astsubay Kıdemli Başçavuş": ["cizgi", 7, 0, 1], "Astsubay Başçavuş": ["cizgi", 6, 0, 1], "Astsubay Kıdemli Üstçavuş": ["cizgi", 5, 0, 1], "Astsubay Üstçavuş": ["cizgi", 4, 0, 1], "Astsubay Kıdemli Çavuş": ["cizgi", 3, 0, 1], "Astsubay Çavuş": ["cizgi", 2, 0, 1],
+  "Uzman Çavuş": ["v", 2], "Uzman Onbaşı": ["v", 1], "Çavuş": ["v", 2], "Onbaşı": ["v", 1], "Er": ["bos", 0] };
+function rsDuzenle(ad, kis){ const O = () => (S.personel.rsOzel ||= {}), v = RS_VARS[ad] || ["yildiz", 1];
+  let T = O()[ad] ? { ...O()[ad] } : { b: v[0], n: v[1], df: v[2] || 0, ay: v[3] || 0 };
+  const yaz = () => { O()[ad] = { ...T }; kaydetBt("personel"); kbYenile(); };
+  altPencere("rsd-perde", "SİMGEYİ DÜZELT", ad, () => `<div class="rsd-on"><span class="kb2-av rs-buyuk rs-${rutbeSimge(kis, {})[2]}"><svg viewBox="0 0 24 24">${rsOzelCiz(T)}</svg></span><b>${esc(ad)}</b></div>
+    <div class="st-baslik">Biçim</div><div class="dl-seg rsd-seg">${RS_BICIM.map(([k, t]) => `<button type="button" data-rsd-b="${k}" aria-pressed="${T.b === k}">${t}</button>`).join("")}</div>
+    ${T.b !== "bos" ? `<div class="st-baslik">Sayı</div><div class="st-izg st-m rsd-n">${[1, 2, 3, 4, 5, 6, 7].map(x => `<button type="button" data-rsd-n="${x}" aria-pressed="${+T.n === x}">${x}</button>`).join("")}</div>` : ""}
+    <div class="st-baslik">Ekler</div><div class="dl-seg rsd-seg"><button type="button" data-rsd-ay="1" aria-pressed="${!!T.ay}">Ay-yıldız ${T.ay ? "var" : "yok"}</button><button type="button" data-rsd-df="1" aria-pressed="${!!T.df}">Defne ${T.df ? "var" : "yok"}</button></div>
+    <div class="st-alt"><button type="button" class="st-yok" data-rsd-sil="1">Varsayılana dön</button><button type="button" class="st-tamam" data-rsd-ok="1">Kaydet</button></div>`,
+    (b, kapat, yenile) => { if(b.dataset.rsdB){ T.b = b.dataset.rsdB; return yenile(); } if(b.dataset.rsdN){ T.n = +b.dataset.rsdN; return yenile(); } if(b.dataset.rsdAy){ T.ay = T.ay ? 0 : 1; return yenile(); } if(b.dataset.rsdDf){ T.df = T.df ? 0 : 1; return yenile(); }
+      if(b.dataset.rsdSil){ delete O()[ad]; kaydetBt("personel"); kbYenile(); kapat(); return rsGaleri(); } if(b.dataset.rsdOk){ yaz(); kapat(); bildir(ad + " simgesi kaydedildi"); return rsGaleri(); } }, { z: "E6EEF7", r: "2D557E" }); }
 function sqPencere(k){ const c = SQ[k]; if(!c) return;
   const durum = () => { const T = c.tut(), A = c.dizi(), V = T.srVar || [], ids = A.map(x => x.id); return { T, A, V, kilit: !!T.srKilit, ayniVar: V.length && V.join() === ids.filter(id => V.includes(id)).join(), rutbede: ids.join() === [...A].sort(sqKars).map(x => x.id).join() }; };
   altPencere("sq-perde", "SIRALAMA", () => { const D = durum(); return D.kilit ? "Sıra kilitli" : D.rutbede ? "Liste rütbe sırasında" : "Listenin sırası"; }, () => { const D = durum();
     return `<div class="ap-liste">${apSatir('data-sq="rutbe"', '<span class="sq-ik">⇅</span>', "Rütbe ve kıdeme göre sırala", "", { alt: D.kilit ? "önce kilidi aç" : D.rutbede ? "liste zaten bu sırada" : "rütbe → sicil (eski önce) → ad", kapali: D.kilit || D.rutbede })}
       ${apSatir('data-sq="don"', '<span class="sq-ik">↺</span>', "Varsayılan sıraya dön", "", { alt: !D.V.length ? "henüz varsayılan sıra kaydedilmedi" : D.ayniVar ? "liste zaten varsayılan sırada" : "kaydettiğin sıraya geri döner", kapali: !D.V.length || D.kilit || D.ayniVar })}
+      ${apSatir('data-sq="simge"', '<span class="sq-ik">★</span>', "Rütbe simgeleri", "", { alt: "bütün rütbelerin simgelerini gör, yanlış olanı düzelt" })}
       ${apSatir('data-sq="kilit"', `<span class="sq-ik">${D.kilit ? "🔓" : "🔒"}</span>`, D.kilit ? "Sıra kilidini aç" : "Bu sırayı varsayılan yap ve kilitle", "", { alt: D.kilit ? "varsayılan sıra saklı kalır" : "yeni kişiler eklense de bu sıra hatırlanır" })}</div>
       <div class="tz-not2">Satırları elle taşıyıp istediğin sırayı da varsayılan yapabilirsin; "Varsayılan sıraya dön" her zaman o sıraya getirir.</div>`; }, (b, kapat, yenile) => {
+    if(b.dataset.sq === "simge"){ kapat(); return rsGaleri(); }
     const D = durum(), A = D.A, T = D.T, geri = anlik(A), ilk = A.map(x => x.id).join();
     if(b.dataset.sq === "kilit"){ if(T.srKilit) delete T.srKilit; else { T.srKilit = 1; T.srVar = A.map(x => x.id); } c.kaydet(); c.ciz(); kapat(); return bildir(T.srKilit ? "Bu sıra varsayılan olarak kaydedildi ve kilitlendi" : "Sıra kilidi açıldı · varsayılan sıra saklı"); }
     if(D.kilit) return;
