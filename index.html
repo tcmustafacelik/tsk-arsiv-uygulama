@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "474";
+  const SURUM = "475";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3225,7 +3225,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kb-tum svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
 @media (hover:hover){ .kb-sec:hover .kb-tum{background:#E5ECF3} .kb-ok:not(:disabled):hover{background:#F1F5F9} }
 /* alt pencerelerde kaydırma çubuğu görünmez, kutular kenara taşmaz; işlem düğmeleri altta hep görünür */
-.ap-ic{scrollbar-width:none;padding:2px 2px 4px;margin:0 -2px} .ap-ic::-webkit-scrollbar{display:none}
+.ap-ic{scrollbar-width:none;padding:2px 2px 4px;margin:0 -2px} .ap-ic>*{flex-shrink:0}   /* liste kısalıp kesilmesin, pencere kaysın */ .ap-ic::-webkit-scrollbar{display:none}
 .ap-ic :is(input,textarea){max-width:100%;box-sizing:border-box}
 .ap-ic .es-pis{position:sticky;bottom:-4px;z-index:2;margin:6px -2px -4px;padding:10px 2px calc(6px + env(safe-area-inset-bottom,0px));background:var(--panel);border-top:1px solid var(--line2)}
 .ap-ic .es-birim{grid-template-columns:repeat(8,1fr);gap:4px} .ap-ic .es-birim button{padding:6px 0;font-size:11.5px}
@@ -3527,7 +3527,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 474</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 475</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
