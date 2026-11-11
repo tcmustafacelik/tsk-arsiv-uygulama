@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "451";
+  const SURUM = "452";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3159,6 +3159,9 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .km-fres img{width:100%;height:100%;object-fit:contain;background:#fff;display:block} .km-fres img.soluk{opacity:.35}
 .km-fres i{position:absolute;inset:0;display:grid;place-items:center;font:600 20px var(--f-ui);font-style:normal;color:#3D5A73}
 .km-fad{display:flex;align-items:center;gap:4px;font:600 11.5px var(--f-ui);color:var(--fg);white-space:nowrap}
+.km-kl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px;padding:6px 8px;border:1px solid var(--line2);border-radius:8px;background:#F7F8FA}
+.km-kl.fark span{flex-basis:100%} .km-kl.fark button:first-of-type{margin-left:auto} .km-kl.on{background:#EEF4EC;border-color:#CFE0CA} .km-kl span{flex:1 1 150px;font:600 11.5px/1.35 var(--f-ui);color:var(--muted)} .km-kl.on span{color:#3E6B3A}
+.km-kl button{flex:none;padding:5px 9px;border:1px solid var(--line2);border-radius:7px;background:#fff;color:#2F4A60;font:700 11.5px var(--f-ui);cursor:pointer;white-space:nowrap}
 .km-fsil{width:20px;height:20px;padding:0;border:0;border-radius:6px;background:#FBEDEA;color:#A3412F;font:700 10px var(--f-ui);cursor:pointer;display:grid;place-items:center}
 .km-foto{display:flex;gap:12px;align-items:center;padding:10px 2px 12px;border-bottom:1px solid var(--line2)} .km-foto>img,.km-foto>span{flex:none;width:56px;height:72px;border-radius:6px;object-fit:cover;border:1px solid var(--line2);background:#F4F6F8}
 .km-foto>span{display:grid;place-items:center;text-align:center;font:600 10px/1.3 var(--f-ui);color:var(--muted)} .km-foto>div{display:flex;flex-direction:column;gap:2px;min-width:0} .km-foto b{font:700 13px var(--f-ui)} .km-foto small{font:500 11px/1.4 var(--f-ui);color:var(--muted)} .km-fis{display:flex;gap:6px;margin-top:5px}
@@ -3512,7 +3515,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 451</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 452</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10437,8 +10440,8 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
       <div class="km-fotolar"><div class="km-fust"><b class="km-fb">Fotoğraflar</b><div class="cs-seg mini">${KM_FOTO_K.map(([k, ad]) => `<button type="button" data-km-fkat="${k}" aria-pressed="${k === kmFotoKat}">${ad}</button>`).join("")}</div></div>
         <div class="km-fg">${(KM_FOTO_K.find(x => x[0] === kmFotoKat) || KM_FOTO_K[0])[2].map(([a, ad]) => { const f = p[a], yerine = !f && a !== "foto" && p.foto; return `<div class="km-fk">
           <button type="button" class="km-fres" data-km-foto="ekle:${a}" title="${f ? "Değiştir" : "Ekle"}">${f || yerine ? `<img src="/_blob/${esc(f || p.foto)}" alt=""${yerine ? ' class="soluk"' : ""}>` : ""}${f ? "" : `<i>＋</i>`}</button>
-          <span class="km-fad">${ad}${f ? `<button type="button" class="km-fsil" data-km-foto="sil:${a}" data-sil-ad="Fotoğraf" aria-label="Sil">✕</button>` : ""}</span></div>`; }).join("")}</div>
-        <input type="file" id="km-foto-dosya" accept="image/*" hidden></div>
+          <span class="km-fad">${ad}${f && !(p.fotoKilit && p.fotoKilit.on) ? `<button type="button" class="km-fsil" data-km-foto="sil:${a}" data-sil-ad="Fotoğraf" aria-label="Sil">✕</button>` : ""}</span></div>`; }).join("")}</div>
+        ${kmKilitH(p)}<input type="file" id="km-foto-dosya" accept="image/*" hidden></div>
       ${KM_GRUP.map((g, gi) => `<details class="km-g" data-km-g="${gi}"${kmAcikG.has(gi) ? " open" : ""}><summary><span>${g[0]}</span><span data-km-gs="${gi}">${kmCip(kmGEksik(p, g))}</span></summary>
         <div class="dl-alanlar">${g[1].map(a => { const [, t, o] = KM_ALAN.find(x => x[0] === a); return kmAlanH(p, a, t, o); }).join("")}</div></details>`).join("")}
       <div class="km-notS">${notHtml(d, p.id) || '<span class="deg-not">Bu kişiye not yok</span>'}${notDug(d, p.id, p.ad)}</div>
@@ -11575,9 +11578,25 @@ async function vesikalik(f){ const url = URL.createObjectURL(f); try { const im 
     const W = im.naturalWidth, H = im.naturalHeight, k = Math.min(1, 900 / Math.max(W, H));
     const cv = document.createElement("canvas"); cv.width = Math.round(W * k); cv.height = Math.round(H * k); const c = cv.getContext("2d"); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(im, 0, 0, cv.width, cv.height);
     return await new Promise(ok => cv.toBlob(ok, "image/jpeg", 0.88)); } finally { URL.revokeObjectURL(url); } }
+/* fotoğraf kilidi: p.fotoKilit = { on, t, f: { alan: dosya } } — kilitlenince o anki fotoğraflar “asıl” olarak saklanır;
+   kilitliyken değiştirilemez/silinemez; kilit açılıp değiştirilse bile “Asıllara dön” ile geri yüklenir. Asıl dosyalar hiç silinmez. */
+const KM_FOTO_ALAN = KM_FOTO_K.flatMap(k => k[2].map(x => x[0]));
+function kmKilitFark(p){ const k = p.fotoKilit; return !!k && KM_FOTO_ALAN.some(a => (p[a] || "") !== (k.f[a] || "")); }
+function kmKilitH(p){ const k = p.fotoKilit, t = k ? new Date(k.t).toLocaleDateString("tr-TR") : "";
+  if(k && k.on) return `<div class="km-kl on"><span>🔒 Fotoğraflar kilitli · asıllar ${t}</span><button type="button" data-km-kilit="ac">Kilidi aç</button></div>`;
+  const fark = kmKilitFark(p);
+  return `<div class="km-kl${fark ? " fark" : ""}"><span>${k ? (fark ? "Asıl fotoğraflardan farklı (" + t + ")" : "Kilit açık · asıllar " + t) : "Fotoğraflar kilitli değil"}</span>${fark ? `<button type="button" data-km-kilit="don">↺ Asıllara dön</button>` : ""}<button type="button" data-km-kilit="kilitle">🔒 Kilitle</button></div>`; }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-km-kilit]"); if(!b) return; const p = (S.personel.rows || []).find(x => x.id === kmSecili); if(!p) return;
+  const is = b.dataset.kmKilit, eski = p.fotoKilit ? kopya(p.fotoKilit) : undefined, eskiF = Object.fromEntries(KM_FOTO_ALAN.map(a => [a, p[a]]));
+  if(is === "ac"){ p.fotoKilit.on = false; bildir("Kilit açıldı · asıllar saklanmaya devam ediyor"); }
+  else if(is === "kilitle"){ p.fotoKilit = { on: true, t: Date.now(), f: Object.fromEntries(KM_FOTO_ALAN.filter(a => p[a]).map(a => [a, p[a]])) }; bildir("Fotoğraflar kilitlendi · şimdiki hâlleri asıl olarak saklandı"); }
+  else if(is === "don"){ KM_FOTO_ALAN.forEach(a => { if(p.fotoKilit.f[a]) p[a] = p.fotoKilit.f[a]; else delete p[a]; }); p.fotoKilit.on = true; bildir("Asıl fotoğraflar geri yüklendi ve kilitlendi"); }
+  kaydetBt("personel"); kimlikCiz();
+  geriAlinabilir("Fotoğraf kilidi değişti", () => { if(eski) p.fotoKilit = eski; else delete p.fotoKilit; KM_FOTO_ALAN.forEach(a => { if(eskiF[a]) p[a] = eskiF[a]; else delete p[a]; }); kaydetBt("personel"); kimlikCiz(); }); });
 document.addEventListener("click", e => { const k = e.target.closest && e.target.closest("[data-km-fkat]"); if(k){ kmFotoKat = k.dataset.kmFkat; kimlikCiz(); } });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-km-foto]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kimlik") return; const p = (S.personel.rows || []).find(x => x.id === kmSecili); if(!p) return;
   const [is, a = "foto"] = b.dataset.kmFoto.split(":");
+  if(p.fotoKilit && p.fotoKilit.on) return uyar("Fotoğraflar kilitli. Değiştirmek için önce alttaki “Kilidi aç”a dokunun.", true);
   if(is === "ekle"){ kmFotoAlan = a; return $("#km-foto-dosya").click(); }
   if(is === "sil"){ const eski = p[a]; delete p[a]; kaydetBt("personel"); kimlikCiz(); geriAlinabilir("Fotoğraf silindi", () => { p[a] = eski; kaydetBt("personel"); kimlikCiz(); }); } });
 document.addEventListener("change", async e => { if(e.target.id !== "km-foto-dosya") return; const f = e.target.files[0]; e.target.value = ""; if(!f) return; const p = (S.personel.rows || []).find(x => x.id === kmSecili); if(!p) return;
