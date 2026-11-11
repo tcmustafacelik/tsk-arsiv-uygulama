@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "487";
+  const SURUM = "488";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1924,7 +1924,7 @@ table.liste td{border-color:var(--line2)}
 .gd-ozg .gd-donem{border:0;background:transparent;padding:6px 0 0}
 /* sade grup liste (FYDT bölüm satırlarıyla aynı kalıp) */
 .gd-duzen .gd-ozk{border-radius:0!important;margin:0!important;border-top-width:0!important;box-shadow:none!important}
-.gd-duzen .gd-ozk:not(.gd-ozk+.gd-ozk){border-top-width:1px!important;border-radius:12px 12px 0 0!important;margin-top:8px!important}
+.gd-duzen .gd-ozk+.gd-ozk{margin-top:-12px!important} .gd-duzen .gd-ozk:not(.gd-ozk+.gd-ozk){border-top-width:1px!important;border-radius:12px 12px 0 0!important;margin-top:8px!important}
 .gd-duzen .gd-ozk:not(:has(+.gd-ozk)){border-radius:0 0 12px 12px!important;margin-bottom:8px!important}
 .gd-duzen .gd-ozk:not(.gd-ozk+.gd-ozk):not(:has(+.gd-ozk)){border-radius:12px!important}
 .gd-duzen .gd-ozb{background:transparent!important;padding:8px 11px;gap:10px} .gd-duzen .gd-ozi{width:28px;height:28px;border-radius:8px} .gd-duzen .gd-ozi svg{width:16px;height:16px}
@@ -3211,7 +3211,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kb2-c{position:relative;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:38px;padding:5px 9px;border:1px solid #E3E8EE;border-radius:9px;background:#FAFBFC;font:600 11px/1.18 var(--f-ui);color:#3D4D5E;cursor:pointer;text-align:center;white-space:normal;transition:background .15s,border-color .15s,box-shadow .15s,transform .15s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .kb2-y{display:block;min-width:0;text-align:left;overflow-wrap:anywhere}
 .kb2-av{flex:none;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;background:#E9EFF5;color:#4A6584;font:800 9.5px var(--f-ui);letter-spacing:.02em}
-.kb2-c.on{background:#EEF3F9;border-color:#7F9AB8;color:#22364D;font-weight:700;box-shadow:inset 0 0 0 1px #7F9AB8} .kb2-c.on .kb2-av{background:#2F4A66;color:#fff}
+.kb2-c.on{background:#DCE8F5;border-color:#3D6A99;color:#17324F;font-weight:700;box-shadow:inset 0 0 0 1px #3D6A99,0 1px 5px rgba(45,85,126,.18)} .kb2-c.on .kb2-av{background:#2F4A66;color:#fff} .kb2-c.on::after{content:"✓";position:absolute;right:8px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:#2F4A66;color:#fff;font:800 9.5px/16px var(--f-ui);text-align:center}
 .kb2-n{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:#E0A040}
 @media (hover:hover){.kb2-c:not(.on):hover{background:#F1F5F9;border-color:#C9D6E4}}
 .kb2-tasiniyor .kb2-c{transition:transform .12s} .kb2-c.kb2-tut{transform:scale(1.06);box-shadow:0 6px 16px rgba(30,50,75,.22);border-color:#2F4A66;z-index:2;background:#fff}
@@ -3554,7 +3554,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 487</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 488</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
