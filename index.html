@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "497";
+  const SURUM = "498";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3221,6 +3221,9 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .rs-buyuk{width:34px!important;height:34px!important;border-radius:9px!important} .rs-buyuk svg{width:26px!important;height:26px!important} .rs-grup{font:700 11px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 2px 6px}
 .rs-oz{font:700 10px var(--f-ui);font-style:normal;color:#7A5A1C;background:#F7F1E3;border-radius:6px;padding:2px 6px} .rsd-on{display:flex;align-items:center;gap:12px;padding:4px 2px 8px} .rsd-on .rs-buyuk{width:56px!important;height:56px!important} .rsd-on .rs-buyuk svg{width:44px!important;height:44px!important} .rsd-on b{font:700 15px var(--f-ui)}
 .rsd-seg{grid-template-columns:repeat(auto-fit,minmax(58px,1fr))!important;display:grid!important} .rsd-n{grid-template-columns:repeat(7,1fr)!important}
+.yk-mf{border:1px solid var(--line2);border-radius:12px;background:var(--panel);margin-top:14px} .yk-mf>summary{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;list-style:none} .yk-mf>summary::-webkit-details-marker{display:none} .yk-mf>summary b{font:700 14px var(--f-ui)} .yk-mf>summary small{flex:1;color:var(--muted);font:500 11.5px var(--f-ui)} .yk-mf>summary i{font-style:normal;color:var(--muted);transition:transform .15s} .yk-mf[open]>summary i{transform:rotate(90deg)}
+.yk-mf-ic{display:flex;flex-direction:column;gap:14px;padding:4px 12px 14px} .mf-on{margin:0;white-space:pre-wrap;word-break:break-word;background:#F7F9FB;border:1px solid var(--line2);border-left:3px solid #9DB3CC;border-radius:8px;padding:10px 12px;font:500 12.5px/1.5 var(--f-ui);color:#22303D}
+.mf-mk{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:-6px} .mf-mk button{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:6px 10px;font:600 12px var(--f-ui);color:#3D4D5E;cursor:pointer} .mf-mk button[aria-pressed="true"]{background:#EEF3F9;border-color:#7F9AB8;color:#22364D} .mf-is{display:grid;grid-template-columns:1fr 1fr;gap:8px} .mf-yuk{display:flex;flex-direction:column;gap:6px} .mf-ys{display:grid;grid-template-columns:52px auto 1fr 34px;align-items:center;gap:6px} .mf-ys span{font:600 12px var(--f-ui);color:var(--muted)} .mf-ys input{min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-ys input:focus{outline:2px solid #BFD0E3;border-color:#7F9AB8} .kb2-c.on{padding-right:28px!important} .yk-mf .dl-seg{display:grid;grid-template-columns:1fr 1fr}
 :root{--sec-z:#FBEFD8;--sec-k:#C98A2E;--sec-y:#5E3B0C;--sec-i:#B0711F}
 .kb2-c.on{background:var(--sec-z);border-color:var(--sec-k);color:var(--sec-y);font-weight:700;box-shadow:inset 0 0 0 1px var(--sec-k),0 1px 5px rgba(176,113,31,.20)} .kb2-c.on .kb2-av{background:var(--sec-i);color:#fff} .kb2-c.on::after{content:"✓";position:absolute;right:8px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:var(--sec-i);color:#fff;font:800 9.5px/16px var(--f-ui);text-align:center}
 .dl-sat.on,.dl-sat[aria-current="true"]{border-color:var(--sec-k)!important;border-left-color:var(--sec-k)!important;background:var(--sec-z)!important;box-shadow:inset 0 0 0 1px var(--sec-k)!important} .dl-sat.on b,.dl-sat[aria-current="true"] b{color:var(--sec-y)}
@@ -3569,7 +3572,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 497</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 498</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5891,8 +5894,51 @@ function ykKartCiz(){ const el = $("#yk-kart"); if(!el) return; const Y = YS(), 
           <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-yk-kaydet="${r.id}">✓ Tamam</button><button type="button" class="mini" data-yki="${r.id}:yukari"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-yki="${r.id}:asagi"${i < L.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini sil" data-yki="${r.id}:sil">Sil</button></div></div>` : ""}</div>`; }).join("") : `<div class="yk-bos">${v === "GÜNDÜZ" ? "Gündüz" : "Gece"} personeli yok</div>`;
     h += `</div>`; }
   h += `<div class="yk-ekle-l"><button type="button" class="tt-ekle" data-yk-liste="1">${ykListe ? "▴" : "＋"} İsim listesinden ekle${P.length ? ` (${P.length})` : ""}</button>${ykListe ? (P.length ? `<div class="kc-cips">${P.map(p => `<button type="button" data-yk-p="${esc(p.id)}">${esc(p.ad)}<small> ${esc(p.rutbe || "")}</small></button>`).join("")}</div>` : `<div class="yk-bos">İsim listesindeki herkes yoklamada.</div>`) : ""}</div>`;
+  h += mfHtml(Y);
   el.innerHTML = h; }
 const ykBul = id => YS().rows.find(r => r.id === id);
+/* ===== MANİFESTO: personelin birliğe giriş / çıkış bildirimi (mesaj metni). Kimlik + yoklama + izin satırından dolar; her alan değiştirilebilir.
+   Ortak: birlik, gidilen yer, maksat. Kişiye özel: silah cinsi/seri no, tarihler, yük listesi. Veri: YS().mf */
+let mfAcik = false, mfSec = null, mfTur = "cikis";
+const mfV = Y => { const M = (Y.mf ||= {}); M.birlik ??= "19 Üs Bölgesi"; M.dis ??= "MYÜB"; M.k ||= {}; return M; };
+const mfDonem = r => { const D = ykDonemler(r).filter(x => /İZİN/i.test(x.tur || "") && (x.ayr || x.kat)), t = bugun(); if(!D.length) return {};
+  return D.find(x => (x.ayr || "") <= t && t <= (x.kat || "9999")) || D.filter(x => (x.ayr || "") > t).sort((a, b) => a.ayr < b.ayr ? -1 : 1)[0] || D[D.length - 1]; };
+function mfMetin(Y, r){ const M = mfV(Y), K = M.k[r.id] || {}, p = (S.personel.rows || []).find(y => y.id === r.pid || pAd(y.ad) === pAd(r.ad)) || {}, D = mfDonem(r);
+  const W = String(r.ad || p.ad || "").trim().split(/\s+/), i = W.findIndex(w => w.length > 1 && w === w.toLocaleUpperCase("tr") && /[A-ZÇĞİÖŞÜ]/.test(w)), ad = (i > 0 ? W.slice(0, i) : W.slice(0, -1)).join(" "), soy = (i > 0 ? W.slice(i) : W.slice(-1)).join(" ");
+  const kan = String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)").trim(), g = mfTur === "giris", ayr = K.ayr || D.ayr || bugun(), kat = K.kat || D.kat || (g ? bugun() : "");
+  const L = [`Adı: ${ad}`, `Soyadı: ${soy}`, `Rütbe: ${r.rutbe || p.rutbe || ""}`, `Sicil: ${r.sicil || p.sicil || ""}`, `Kan Grubu: ${kan}`, `TC: ${p.tc || ""}`, `Cep No: ${r.tel || p.tel || ""}`, `Silah Cinsi: ${K.silah || ""}`, `Silah Seri No: ${K.seri || ""}`, `Görevi: ${r.gorev || ""}`];
+  const mk = g ? (M.maksatG ?? "İzin Dönüşü") : (M.maksatC ?? "İzin");
+  if(g) L.push(`Giriş Maksadı: ${mk}`, `${M.dis} ➡️ ${M.birlik}`, `Giriş Tarihi: ${ykTr(kat)}`);
+  else { L.push(`Çıkış Maksadı: ${mk}`, `${M.birlik} ➡️ ${M.dis}`, `Çıkış Tarihi: ${ykTr(ayr)}`); if(/izin/i.test(mk) && kat) L.push(`İzin Başlangıç Tarihi: ${ykTr(ayr)}`, `İzin Bitiş Tarihi: ${ykTr(kat)}`); }
+  const Yk = (K.yuk || []).filter(x => String(x.ad || "").trim()); if(Yk.length) L.push("", "🔃 Yük Bilgisi 🔃", "", ...Yk.map(x => `- ${x.n || 1} Adet ${x.ad.trim()}`));
+  return L.join("\n"); }
+function mfHtml(Y){ const R = Y.rows.filter(r => r.ad); if(!R.length) return ""; if(!R.some(r => r.id === mfSec)) mfSec = R[0].id;
+  const M = mfV(Y), r = R.find(x => x.id === mfSec), K = M.k[r.id] || {}, D = mfDonem(r), g = mfTur === "giris";
+  const al = (et, f, v, ph, tam) => `<label class="dl-al${tam ? " tam" : ""}"><span>${et}</span><input data-mf-f="${f}" value="${esc(v || "")}" placeholder="${esc(ph || "")}"></label>`;
+  return `<details class="yk-mf"${mfAcik ? " open" : ""}><summary><span class="es-ik" style="--iz:#E6EEF7;--ir:#2D557E"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h4"/></svg></span><b>Manifesto</b><small>giriş / çıkış bildirimi</small><i>›</i></summary><div class="yk-mf-ic">
+    ${kayitBas({ ad: "Personel", n: R.length, liste: R.map(x => ({ id: x.id, ad: x.ad, pid: x.pid, rutbe: x.rutbe })), secId: mfSec, attr: "data-mf-k" })}
+    <div class="dl-seg"><button type="button" data-mf-t="cikis" aria-pressed="${!g}">Çıkış · izin</button><button type="button" data-mf-t="giris" aria-pressed="${g}">Giriş · izin dönüşü</button></div>
+    <div class="mf-mk">${(g ? ["İzin Dönüşü", "Yeni Görevlendirme", "Görev Dönüşü", "Kurs Dönüşü"] : ["İzin", "Görev", "Kurs", "Tayin"]).map(x => `<button type="button" data-mf-mk="${x}" aria-pressed="${(g ? (M.maksatG ?? "İzin Dönüşü") : (M.maksatC ?? "İzin")) === x}">${x}</button>`).join("")}</div>
+    <div class="dl-alanlar">${al("Maksat", g ? "maksatG" : "maksatC", g ? (M.maksatG ?? "İzin Dönüşü") : (M.maksatC ?? "İzin"), "", 1)}${al("Birlik", "birlik", M.birlik)}${al("Gidilen / gelinen yer", "dis", M.dis)}
+      ${al("Silah cinsi", "silah", K.silah, "ör. G3")}${al("Silah seri no", "seri", K.seri, "")}
+      ${g ? `<label class="dl-al tam"><span>Giriş tarihi</span><input type="date" data-mf-f="kat" value="${esc(K.kat || D.kat || bugun())}"></label>` : `<label class="dl-al"><span>Çıkış tarihi</span><input type="date" data-mf-f="ayr" value="${esc(K.ayr || D.ayr || bugun())}"></label><label class="dl-al"><span>İzin bitiş <em class="dl-ist">izinse</em></span><input type="date" data-mf-f="kat" value="${esc(K.kat || D.kat || "")}"></label>`}</div>
+    <div class="mf-yuk"><div class="st-baslik">🔃 Yük bilgisi</div>${(K.yuk || []).map((x, i) => `<div class="mf-ys"><input data-mf-yn="${i}" inputmode="numeric" value="${esc(x.n ?? 1)}" aria-label="Adet"><span>Adet</span><input data-mf-ya="${i}" value="${esc(x.ad || "")}" placeholder="ör. Power Bank"><button type="button" class="mini sil" data-mf-ysil="${i}" aria-label="Kaldır">✕</button></div>`).join("")}<button type="button" class="tt-ekle" data-mf-yekle="1">＋ Yük ekle</button></div>
+    <pre class="mf-on">${esc(mfMetin(Y, r))}</pre>
+    <div class="mf-is"><button type="button" class="btn ana kucuk" data-mf-kop="1">Kopyala</button><button type="button" class="btn kucuk" data-mf-pay="1">Paylaş</button></div>
+    <small class="dl-not">Tarihler yoklamadaki izin satırından kendiliğinden gelir; yazdığınız her alan bu kişi için saklanır. Ad, rütbe, sicil, kan grubu, T.C. ve telefon kimlikten / yoklamadan alınır.</small></div></details>`; }
+document.addEventListener("toggle", e => { if(e.target.classList && e.target.classList.contains("yk-mf")) mfAcik = e.target.open; }, true);
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".yk-mf :is([data-mf-k],[data-mf-t],[data-mf-mk],[data-mf-kop],[data-mf-pay],[data-mf-yekle],[data-mf-ysil])"); if(!b) return; const Y = YS(), M = mfV(Y), K = (M.k[mfSec] ||= {});
+  if(b.dataset.mfK){ mfSec = b.dataset.mfK; return ykKartCiz(); } if(b.dataset.mfT){ mfTur = b.dataset.mfT; return ykKartCiz(); } if(b.dataset.mfMk){ M[mfTur === "giris" ? "maksatG" : "maksatC"] = b.dataset.mfMk; ykKaydet(); return ykKartCiz(); }
+  if(b.dataset.mfYekle){ (K.yuk ||= []).push({ n: 1, ad: "" }); ykKaydet(); ykKartCiz(); const i = $$(".yk-mf [data-mf-ya]").pop(); if(i) i.focus(); return; }
+  if(b.dataset.mfYsil){ (K.yuk || []).splice(+b.dataset.mfYsil, 1); ykKaydet(); return ykKartCiz(); }
+  const r = Y.rows.find(x => x.id === mfSec), t = r ? mfMetin(Y, r) : "";
+  if(b.dataset.mfKop){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => bildir("Manifesto kopyalandı"), () => uyar("Kopyalanamadı; metni basılı tutup seçin", true)); }
+  if(b.dataset.mfPay){ if(navigator.share) navigator.share({ text: t }).catch(() => {}); else navigator.clipboard && navigator.clipboard.writeText(t).then(() => bildir("Paylaşım yok · metin kopyalandı")); } });
+document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest(".yk-mf")) return; const Y = YS(), M = mfV(Y), K = (M.k[mfSec] ||= {});
+  if(el.dataset.mfF){ const f = el.dataset.mfF; if(["birlik", "dis", "maksatC", "maksatG"].includes(f)) M[f] = el.value; else K[f] = el.value; }
+  else if(el.dataset.mfYn != null){ (K.yuk ||= [])[+el.dataset.mfYn].n = el.value.replace(/\D/g, ""); }
+  else if(el.dataset.mfYa != null){ (K.yuk ||= [])[+el.dataset.mfYa].ad = el.value; } else return;
+  ykKaydet(); const r = Y.rows.find(x => x.id === mfSec), pr = $(".yk-mf .mf-on"); if(r && pr) pr.textContent = mfMetin(Y, r); });
 const ykKaydet = () => kaydetBt(YK);
 /* çıktı başlığı (yoklama, personel listesi, izin çizelgesi): elle yazıldıysa o, yoksa birlik adı + belgenin sabit eki */
 const BAS_T = { yoklama: { v: () => YS(), kay: () => kaydetBt(YK), vars: () => `${YS().baslik || BIRLIK} GÜNLÜK PERSONEL YOKLAMA ÇİZELGESİ` },
