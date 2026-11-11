@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "504";
+  const SURUM = "505";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3223,6 +3223,24 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .rsd-seg{grid-template-columns:repeat(auto-fit,minmax(58px,1fr))!important;display:grid!important} .rsd-n{grid-template-columns:repeat(7,1fr)!important}
 .yk-mf{border:1px solid #CFE2D2;border-radius:12px;background:var(--panel);margin-top:14px} .yk-mf>summary{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;list-style:none} .yk-mf>summary::-webkit-details-marker{display:none} .yk-mf>summary b{font:700 14px var(--f-ui)} .yk-mf>summary small{flex:1;min-width:0;color:var(--muted);font:500 11.5px var(--f-ui)} .yk-mf>summary i{font-style:normal;color:var(--muted);transition:transform .15s} .yk-mf[open]>summary i{transform:rotate(90deg)}
 .mf-sad-s{display:flex;flex-direction:column;gap:4px} .mf-sad-s small{color:var(--muted);font:500 11.5px var(--f-ui)} .mf-sad-s span{display:flex;gap:8px;align-items:center} .mf-sad-s input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-sad-s input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} #mfd-govde .mf-sad{margin-top:16px}
+.yk-mf-ic{gap:16px!important}
+.mf-yon button{display:flex;align-items:center;justify-content:center;gap:6px} .mf-yon svg,.mf-mk svg,.mf-ok svg,.mf-bi svg{fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.mf-yon svg{width:16px;height:16px}
+.mf-blok{display:flex;flex-direction:column;gap:8px;padding-top:14px;border-top:1px solid #EDF0F3}
+.mf-bt{display:flex;align-items:center;gap:8px;font:700 11px var(--f-ui);letter-spacing:.05em;text-transform:uppercase;color:#4E5E6E} .mf-bt em{font-style:normal;background:#E3EEF0;color:#2F6670;border-radius:6px;padding:1px 6px;letter-spacing:0}
+.mf-bi{display:inline-grid;place-items:center;width:24px;height:24px;border-radius:7px;background:var(--iz);color:var(--ir)} .mf-bi svg{width:15px;height:15px}
+.mf-mk{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px!important}
+.mf-mk button{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-height:56px;padding:7px 4px!important;text-align:center;line-height:1.15;white-space:normal}
+.mf-mk button svg{width:18px;height:18px;color:#6B7B8B} .mf-mk button[aria-pressed="true"] svg{color:#2F6B3E}
+.mf-al{display:flex;flex-direction:column;gap:3px;min-width:0} .mf-al small{font:600 10.5px var(--f-ui);color:var(--muted)}
+.mf-al input{width:100%;box-sizing:border-box;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:9px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36);min-height:40px}
+.mf-al input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} .mf-al .mf-mk-in{flex:none!important;border-style:solid!important} .mf-mk-in.on{background:#F3FAF3!important;border-color:#8DB894!important}
+.mf-rota{display:grid!important;grid-template-columns:minmax(0,1fr) 28px minmax(0,1fr)!important;align-items:end!important;gap:6px!important}
+@media (max-width:520px){ .mf-mk{grid-template-columns:repeat(2,minmax(0,1fr))!important} .mf-mk button{flex-direction:row!important;justify-content:flex-start!important;gap:8px!important;min-height:44px;padding:7px 10px!important;text-align:left} }
+.mf-ok{display:grid;place-items:center;width:28px;height:40px;color:#5E4A86} .mf-ok svg{width:20px;height:20px}
+.mf-iki{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:8px} .mf-tam{grid-column:1/-1}
+.mf-ys{grid-template-columns:52px auto minmax(0,1fr) 34px!important}
+.mf-ys input{min-height:38px;box-sizing:border-box}
 .mf-git{display:flex;align-items:center;gap:10px;width:100%;margin-top:16px;padding:10px 12px;border:1px solid #CFE2D2;border-radius:12px;background:var(--panel);font:inherit;color:var(--ink);text-align:left;cursor:pointer} .mf-git b{font:700 14px var(--f-ui)} .mf-git small{flex:1;min-width:0;color:var(--muted);font:500 11.5px var(--f-ui)} .mf-git i{font-style:normal;color:var(--muted)} .mf-git:disabled{opacity:.55} #mfd-govde .yk-mf{margin-top:0}
 .yk-mf-ic{display:flex;flex-direction:column;gap:12px;padding:2px 12px 14px} .yk-mf .dl-seg{display:grid;grid-template-columns:1fr 1fr}
 .mf-mk{display:flex;flex-wrap:wrap;gap:6px} .mf-mk button{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:6px 10px;font:600 12px var(--f-ui);color:#3D4D5E;cursor:pointer} .mf-mk button[aria-pressed="true"]{background:#E3F1E4;border-color:#8DB894;color:#24502E} .mf-mk-in{flex:1 1 120px;min-width:0;border:1px dashed var(--line2);border-radius:8px;padding:6px 10px;font:500 12.5px var(--f-ui)}
@@ -3583,7 +3601,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 504</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 505</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5935,7 +5953,7 @@ function mfMetin(c){ const M = mfV(), p = (S.personel.rows || []).find(y => y.id
   const kan = String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)").trim(), g = mfTur === "giris", S0 = String(c.silah || "").trim().split(/\s+/);
   const W0 = mfSilah(c.pid) || {}, silah = K.silah ?? (S0.length > 1 ? S0[0] : W0.silah || ""), seri = K.seri ?? (S0.length > 1 ? S0.slice(1).join(" ") : S0[0] || W0.seri || ""), ayr = K.ayr || c.ayr || bugun(), kat = K.kat || c.kat || (g ? bugun() : "");
   const L = [`Adı: ${ad}`, `Soyadı: ${soy}`, `Rütbe: ${p.rutbe || ""}`, `Sicil: ${p.sicil || ""}`, `Kan Grubu: ${kan}`, `TC: ${p.tc || ""}`, `Cep No: ${p.tel || y.tel || ""}`, `Silah Cinsi: ${silah}`, `Silah Seri No: ${seri}`, `Görevi: ${(String(y.gorev || "").trim() || ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim()).replace(/Bt\.\s*Sb\.\s*-\s*Ks\.\s*K\./g, "Bt.Sb.") /* istisna: manifestoda Bt.Sb.-Ks.K. → Bt.Sb. */}`];
-  const mk = g ? (M.maksatG ?? "İzin Dönüşü") : (M.maksatC ?? "İzin");
+  const mk = g ? (String(M.maksatG || "").trim() || "İzin Dönüşü") : (String(M.maksatC || "").trim() || "İzin");
   if(g) L.push(`Giriş Maksadı: ${mk}`, `${M.dis} ➡️ ${M.birlik}`, `Giriş Tarihi: ${ykTr(kat)}`);
   else { L.push(`Çıkış Maksadı: ${mk}`, `${M.birlik} ➡️ ${M.dis}`, `Çıkış Tarihi: ${ykTr(ayr)}`); if(/[iİ]zin/i.test(mk) && kat) L.push(`İzin Başlangıç Tarihi: ${ykTr(ayr)}`, `İzin Bitiş Tarihi: ${ykTr(kat)}`); }
   const Yk = (K.yuk || []).filter(x => String(x.ad || "").trim()); if(Yk.length) L.push("", "🔃 Yük Bilgisi 🔃", "", ...Yk.map(x => `- ${x.n || 1} Adet ${x.ad.trim()}`));
@@ -5943,15 +5961,26 @@ function mfMetin(c){ const M = mfV(), p = (S.personel.rows || []).find(y => y.id
 function mfKart(c){ mfCtx = c; if(!c || !c.pid) return `<details class="yk-mf"><summary>${mfBas()}</summary><div class="yk-mf-ic"><div class="yk-bos">Önce izin belgesinde kişiyi seçin.</div></div></details>`;
   const M = mfV(), K = M.k[c.pid] || {}, g = mfTur === "giris", T = mfMetin(c), p = (S.personel.rows || []).find(y => y.id === c.pid) || {};
   const ik = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+  const bt = (ad, d, z, r, ek = "") => `<div class="mf-bt"><span class="mf-bi" style="--iz:${z};--ir:${r}">${ik(d)}</span>${ad}${ek}</div>`;
+  const MK = g ? [["İzin Dönüşü", '<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>'], ["Yeni Görevlendirme", '<path d="M12 5v14M5 12h14"/>'], ["Görev Dönüşü", '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5"/>'], ["Kurs Dönüşü", '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>']]
+    : [["İzin", '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>'], ["Görev", '<rect x="3" y="7" width="18" height="13" rx="2"/><path d="M9 7V5h6v2"/>'], ["Kurs", '<path d="M2 9l10-5 10 5-10 5z"/><path d="M6 11v5c3 2 9 2 12 0v-5"/>'], ["Tayin", '<path d="M12 21s-7-6-7-11a7 7 0 0 1 14 0c0 5-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/>']];
+  const ozel = !MK.some(([x]) => x === T.mk);
   return `<details class="yk-mf"${mfAcik ? " open" : ""}><summary>${mfBas(p.ad)}</summary><div class="yk-mf-ic">
-    <div class="dl-seg"><button type="button" data-mf-t="cikis" aria-pressed="${!g}">Çıkış</button><button type="button" data-mf-t="giris" aria-pressed="${g}">Giriş</button></div>
-    <div class="mf-mk">${(g ? ["İzin Dönüşü", "Yeni Görevlendirme", "Görev Dönüşü", "Kurs Dönüşü"] : ["İzin", "Görev", "Kurs", "Tayin"]).map(x => `<button type="button" data-mf-mk="${x}" aria-pressed="${T.mk === x}">${x}</button>`).join("")}<input class="mf-mk-in" data-mf-f="${g ? "maksatG" : "maksatC"}" value="${esc(T.mk)}" aria-label="Maksat (elle)"></div>
-    <div class="mf-rota"><input data-mf-f="${g ? "dis" : "birlik"}" value="${esc(g ? M.dis : M.birlik)}" aria-label="Nereden"><span>➡️</span><input data-mf-f="${g ? "birlik" : "dis"}" value="${esc(g ? M.birlik : M.dis)}" aria-label="Nereye"></div>
-    <div class="mf-sat">${ik('<path d="M3 10h13l3-2v4l-3-2M6 10v4h3v-4"/>')}<input data-mf-f="silah" value="${esc(T.silah)}" placeholder="Silah cinsi"><input data-mf-f="seri" value="${esc(T.seri)}" placeholder="Seri no" inputmode="numeric"></div>
-    <div class="mf-sat">${ik('<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>')}${g ? `<label><small>Giriş</small><input type="date" data-mf-f="kat" value="${esc(T.kat)}"></label>` : `<label><small>Çıkış</small><input type="date" data-mf-f="ayr" value="${esc(T.ayr)}"></label><label><small>İzin bitiş</small><input type="date" data-mf-f="kat" value="${esc(T.kat)}"></label>`}</div>
-    <div class="mf-yuk">${(K.yuk || []).map((x, i) => `<div class="mf-ys"><span class="mf-yi">🔃</span><input data-mf-yn="${i}" inputmode="numeric" value="${esc(x.n ?? 1)}" aria-label="Adet"><span>Adet</span><input data-mf-ya="${i}" value="${esc(x.ad || "")}" placeholder="ör. Power Bank"><button type="button" class="mf-ysil" data-mf-ysil="${i}" aria-label="Kaldır">✕</button></div>`).join("")}<button type="button" class="mf-yekle" data-mf-yekle="1">＋ Yük ekle</button></div>
-    <div class="mf-sohbet"><div class="mf-balon"><div class="mf-yazi">${esc(T.metin)}</div><div class="mf-saat">${mfSaat()} <span>✓✓</span></div></div></div>
-    <div class="mf-is"><button type="button" class="mf-b kop" data-mf-kop="1">${ik('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>')}Kopyala</button><button type="button" class="mf-b gon" data-mf-pay="1">${ik('<path d="M4 12 20 4l-4 16-4-7z"/><path d="m12 13 8-9"/>')}Gönder</button></div>
+    <div class="dl-seg mf-yon"><button type="button" data-mf-t="cikis" aria-pressed="${!g}">${ik('<path d="M14 4h5v16h-5"/><path d="M10 12H3M6 8l-4 4 4 4"/>')}Çıkış</button><button type="button" data-mf-t="giris" aria-pressed="${g}">${ik('<path d="M10 4H5v16h5"/><path d="M14 12h7M18 8l4 4-4 4"/>')}Giriş</button></div>
+    <section class="mf-blok">${bt(g ? "Giriş maksadı" : "Çıkış maksadı", '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>', "#E4EDF7", "#3F6487")}
+      <div class="mf-mk">${MK.map(([x, d]) => `<button type="button" data-mf-mk="${x}" aria-pressed="${T.mk === x}">${ik(d)}<span>${x}</span></button>`).join("")}</div>
+      <label class="mf-al"><small>Başka bir maksat</small><input class="mf-mk-in${ozel ? " on" : ""}" data-mf-f="${g ? "maksatG" : "maksatC"}" value="${ozel ? esc(T.mk) : ""}" placeholder="Listede yoksa buraya yazın" aria-label="Maksat (elle)"></label></section>
+    <section class="mf-blok">${bt("Güzergâh", '<circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/>', "#EAE6F3", "#5E4A86")}
+      <div class="mf-rota"><label class="mf-al"><small>Nereden</small><input data-mf-f="${g ? "dis" : "birlik"}" value="${esc(g ? M.dis : M.birlik)}"></label><span class="mf-ok">${ik('<path d="M5 12h14M13 6l6 6-6 6"/>')}</span><label class="mf-al"><small>Nereye</small><input data-mf-f="${g ? "birlik" : "dis"}" value="${esc(g ? M.birlik : M.dis)}"></label></div></section>
+    <section class="mf-blok">${bt("Silah", '<path d="M3 10h13l3-2v4l-3-2M6 10v4h3v-4"/>', "#ECEFE3", "#59663A")}
+      <div class="mf-iki"><label class="mf-al"><small>Cinsi</small><input data-mf-f="silah" value="${esc(T.silah)}" placeholder="ör. G3"></label><label class="mf-al"><small>Seri no</small><input data-mf-f="seri" value="${esc(T.seri)}" placeholder="Seri no" inputmode="numeric"></label></div></section>
+    <section class="mf-blok">${bt("Tarih", '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', "#F3ECDD", "#7A5A25")}
+      <div class="mf-iki">${g ? `<label class="mf-al mf-tam"><small>Giriş tarihi</small><input type="date" data-mf-f="kat" value="${esc(T.kat)}"></label>` : `<label class="mf-al"><small>Çıkış tarihi</small><input type="date" data-mf-f="ayr" value="${esc(T.ayr)}"></label><label class="mf-al"><small>İzin bitiş</small><input type="date" data-mf-f="kat" value="${esc(T.kat)}"></label>`}</div></section>
+    <section class="mf-blok">${bt("Yük bilgisi", '<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>', "#E3EEF0", "#2F6670", (K.yuk || []).length ? ` <em>${(K.yuk || []).length}</em>` : "")}
+      <div class="mf-yuk">${(K.yuk || []).map((x, i) => `<div class="mf-ys"><input data-mf-yn="${i}" inputmode="numeric" value="${esc(x.n ?? 1)}" aria-label="Adet"><span>Adet</span><input data-mf-ya="${i}" value="${esc(x.ad || "")}" placeholder="ör. Power Bank"><button type="button" class="mf-ysil" data-mf-ysil="${i}" aria-label="Kaldır">✕</button></div>`).join("")}<button type="button" class="mf-yekle" data-mf-yekle="1">＋ Yük ekle</button></div></section>
+    <section class="mf-blok">${bt("Mesaj", '<path d="M5 5h14v10H9l-4 4z"/>', "#E3F1E4", "#2F6B3E")}
+      <div class="mf-sohbet"><div class="mf-balon"><div class="mf-yazi">${esc(T.metin)}</div><div class="mf-saat">${mfSaat()} <span>✓✓</span></div></div></div>
+      <div class="mf-is"><button type="button" class="mf-b kop" data-mf-kop="1">${ik('<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>')}Kopyala</button><button type="button" class="mf-b gon" data-mf-pay="1">${ik('<path d="M4 12 20 4l-4 16-4-7z"/><path d="m12 13 8-9"/>')}Gönder</button></div></section>
   </div></details>`; }
 const mfBas = ad => `<span class="es-ik" style="--iz:#E3F1E4;--ir:#2F6B3E"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 5h14v10H9l-4 4z"/><path d="M8.5 9h7M8.5 12h4"/></svg></span><b>Manifesto</b><small>${ad ? esc(ad) + " · " : ""}giriş / çıkış mesajı</small><i>›</i>`;
 const mfYenile = () => { const el = $(".yk-mf"); if(el && mfCtx) el.outerHTML = mfKart(mfCtx); };
@@ -5984,7 +6013,8 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
   if(el.dataset.mfF){ const f = el.dataset.mfF; if(["birlik", "dis", "maksatC", "maksatG"].includes(f)) M[f] = el.value; else K[f] = el.value; }
   else if(el.dataset.mfYn != null){ (K.yuk ||= [])[+el.dataset.mfYn].n = el.value.replace(/\D/g, ""); }
   else if(el.dataset.mfYa != null){ (K.yuk ||= [])[+el.dataset.mfYa].ad = el.value; } else return;
-  kaydetBt("izinb"); const pr = $(".yk-mf .mf-yazi"); if(pr) pr.textContent = mfMetin(mfCtx).metin; }, true);
+  kaydetBt("izinb"); const T = mfMetin(mfCtx), pr = $(".yk-mf .mf-yazi"); if(pr) pr.textContent = T.metin;
+  if(/^maksat/.test(el.dataset.mfF || "")){ let v = false; document.querySelectorAll(".yk-mf [data-mf-mk]").forEach(b => { const on = b.dataset.mfMk === T.mk; v ||= on; b.setAttribute("aria-pressed", on); }); el.classList.toggle("on", !v && !!el.value.trim()); } }, true);
 const ykKaydet = () => kaydetBt(YK);
 /* çıktı başlığı (yoklama, personel listesi, izin çizelgesi): elle yazıldıysa o, yoksa birlik adı + belgenin sabit eki */
 const BAS_T = { yoklama: { v: () => YS(), kay: () => kaydetBt(YK), vars: () => `${YS().baslik || BIRLIK} GÜNLÜK PERSONEL YOKLAMA ÇİZELGESİ` },
