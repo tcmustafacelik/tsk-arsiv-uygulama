@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "444";
+  const SURUM = "445";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3505,7 +3505,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 444</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 445</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -7045,11 +7045,11 @@ function izbBelgeCiz(){
         ${al("Şimdiye kadar aldığı izinler toplamı", izbInp("onceki", k.onceki, { ph: "boş bırakılabilir" }), 1)}
       </div></details>
     ${kmKisi(k) ? `<button type="button" class="izb-aktar" data-izb-is="kimlikten">⤓ Personel kimliğinden al <small>boş kutular dolar</small></button>` : ""}
-    <details class="dl-kart dl-bilgi"><summary><span>Kimlik</span><em class="dl-not">${esc([k.sicil, k.foto ? "fotoğraflı" : "fotoğraf yok"].filter(Boolean).join(" · "))}</em></summary>
+    <details class="dl-kart dl-bilgi"><summary><span>Kimlik</span><em class="dl-not">${esc([k.sicil, k.foto ? "fotoğraflı" : izbKimFoto(k) ? "fotoğraf kimlikten" : "fotoğraf yok"].filter(Boolean).join(" · "))}</em></summary>
       <div class="dl-alanlar">
         ${al("Adı, Soyadı", izbInp("ad", k.ad), 1)}${al("Sınıf ve rütbesi", izbInp("rutbe", k.rutbe))}${al("Sicil no", izbInp("sicil", k.sicil))}
         ${al("Kıtası", `<textarea class="oto-boy" data-izb="kita" rows="1" aria-label="Kıtası">${esc(k.kita)}</textarea>`, 1)}
-        <div class="izb-foto tam">${k.foto ? `<img src="/_blob/${esc(k.foto)}" alt="Fotoğraf">` : `<span>Fotoğraf yok</span>`}<div><button class="mini" type="button" data-izb-is="foto">${k.foto ? "Fotoğrafı değiştir" : "＋ Fotoğraf ekle"}</button>${k.foto ? `<button class="mini sil" type="button" data-izb-is="foto-sil">Kaldır</button>` : ""}<input type="file" id="izb-foto-dosya" accept="image/*" hidden></div></div>
+        <div class="izb-foto tam">${k.foto || izbKimFoto(k) ? `<img src="/_blob/${esc(k.foto || izbKimFoto(k))}" alt="Fotoğraf">` : `<span>Fotoğraf yok</span>`}<div>${!k.foto && izbKimFoto(k) ? `<small class="dl-not" style="display:block;margin-bottom:4px">Personel kimliğindeki fotoğraf kullanılıyor</small>` : ""}<button class="mini" type="button" data-izb-is="foto">${k.foto ? "Fotoğrafı değiştir" : izbKimFoto(k) ? "Başka fotoğraf seç" : "＋ Fotoğraf ekle"}</button>${k.foto ? `<button class="mini sil" type="button" data-izb-is="foto-sil">Kaldır</button>` : ""}<input type="file" id="izb-foto-dosya" accept="image/*" hidden></div></div>
       </div></details>
     <details class="dl-kart dl-bilgi"><summary><span>İletişim ve diğer</span><em class="dl-not">${esc(k.tel || "")}</em></summary>
       <div class="dl-alanlar">
@@ -11544,6 +11544,7 @@ function renkPenceresi(bas, cb){ const h0 = /^[0-9A-F]{6}$/i.test(bas || "") ? b
 document.addEventListener("input", e => { const el = e.target; if(!el.matches || !el.matches("#rk-perde [data-rk-c]") || !rkDurum) return; rkDurum[el.dataset.rkC] = +el.value; rkDurum.hex = hslHex(rkDurum.H, rkDurum.S, rkDurum.L);
   const o = $("#rk-onz"), t = $("#rk-hex"), l = $("#rk-l"); if(o) o.style.background = "#" + rkDurum.hex; if(t) t.textContent = "#" + rkDurum.hex; if(l) l.style.setProperty("--tr", `linear-gradient(90deg,#${hslHex(rkDurum.H, rkDurum.S, 55)},#${hslHex(rkDurum.H, rkDurum.S, 95)})`);
   document.querySelectorAll("#rk-perde .rk-k.on").forEach(x => x.classList.remove("on")); });
+const izbKimFoto = k => { const p = typeof kmKisi === "function" ? kmKisi(k) : null; return p ? (p.fotoIzin || p.foto || "") : ""; };
 /* vesikalık: fotoğraf olduğu gibi saklanır (kırpılmaz, renk/ton değişmez); yalnız en uzun kenar 900 px'e indirilir */
 async function vesikalik(f){ const url = URL.createObjectURL(f); try { const im = await new Promise((ok, red) => { const i = new Image(); i.onload = () => ok(i); i.onerror = red; i.src = url; });
     const W = im.naturalWidth, H = im.naturalHeight, k = Math.min(1, 900 / Math.max(W, H));
