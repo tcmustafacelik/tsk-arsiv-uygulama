@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "501";
+  const SURUM = "502";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3222,6 +3222,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .rs-oz{font:700 10px var(--f-ui);font-style:normal;color:#7A5A1C;background:#F7F1E3;border-radius:6px;padding:2px 6px} .rsd-on{display:flex;align-items:center;gap:12px;padding:4px 2px 8px} .rsd-on .rs-buyuk{width:56px!important;height:56px!important} .rsd-on .rs-buyuk svg{width:44px!important;height:44px!important} .rsd-on b{font:700 15px var(--f-ui)}
 .rsd-seg{grid-template-columns:repeat(auto-fit,minmax(58px,1fr))!important;display:grid!important} .rsd-n{grid-template-columns:repeat(7,1fr)!important}
 .yk-mf{border:1px solid #CFE2D2;border-radius:12px;background:var(--panel);margin-top:14px} .yk-mf>summary{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;list-style:none} .yk-mf>summary::-webkit-details-marker{display:none} .yk-mf>summary b{font:700 14px var(--f-ui)} .yk-mf>summary small{flex:1;min-width:0;color:var(--muted);font:500 11.5px var(--f-ui)} .yk-mf>summary i{font-style:normal;color:var(--muted);transition:transform .15s} .yk-mf[open]>summary i{transform:rotate(90deg)}
+.mf-sad-s{display:flex;flex-direction:column;gap:4px} .mf-sad-s small{color:var(--muted);font:500 11.5px var(--f-ui)} .mf-sad-s span{display:flex;gap:8px;align-items:center} .mf-sad-s input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-sad-s input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} #mfd-govde .mf-sad{margin-top:16px}
 .mf-git{display:flex;align-items:center;gap:10px;width:100%;margin-top:16px;padding:10px 12px;border:1px solid #CFE2D2;border-radius:12px;background:var(--panel);font:inherit;color:var(--ink);text-align:left;cursor:pointer} .mf-git b{font:700 14px var(--f-ui)} .mf-git small{flex:1;min-width:0;color:var(--muted);font:500 11.5px var(--f-ui)} .mf-git i{font-style:normal;color:var(--muted)} .mf-git:disabled{opacity:.55} #mfd-govde .yk-mf{margin-top:0}
 .yk-mf-ic{display:flex;flex-direction:column;gap:12px;padding:2px 12px 14px} .yk-mf .dl-seg{display:grid;grid-template-columns:1fr 1fr}
 .mf-mk{display:flex;flex-wrap:wrap;gap:6px} .mf-mk button{border:1px solid var(--line2);background:#fff;border-radius:8px;padding:6px 10px;font:600 12px var(--f-ui);color:#3D4D5E;cursor:pointer} .mf-mk button[aria-pressed="true"]{background:#E3F1E4;border-color:#8DB894;color:#24502E} .mf-mk-in{flex:1 1 120px;min-width:0;border:1px dashed var(--line2);border-radius:8px;padding:6px 10px;font:500 12.5px var(--f-ui)}
@@ -3582,7 +3583,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 501</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 502</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5916,8 +5917,19 @@ const mfV = () => { const G = S.izinb || (S.izinb = {}), M = (G.mf ||= {}); M.bi
 const mfSaat = () => new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
 /* kişinin zimmetli piyade tüfeği “Silah Seri Numaraları” belgesinden: G3 seyyar dipçikli → “G3”, sabit dipçikli → “G3-P” (örnek mesajlardaki gibi) */
 function mfSilah(pid){ const d = belgeTur("silah"), L = ((d && d.sl && d.sl.liste) || []).filter(x => x.pid === pid && x.seri); if(!L.length) return null;
-  const w = L.find(x => /G3/.test(x.model || "") && !/MG/.test(x.model || "")) || L[0], m = String(w.model || "");
-  return { silah: /G3/.test(m) && !/MG/.test(m) ? (/Sabit/i.test(m) ? "G3-P" : "G3") : m.replace(/^[\d,]+\s*mm\s*/i, "").trim(), seri: String(w.seri) }; }
+  const w = L.find(x => /G3/.test(x.model || "") && !/MG/.test(x.model || "")) || L[0];
+  return { silah: mfKisaAd(w.model), seri: String(w.seri) }; }
+/* silah kısa adları yalnız manifestoda kullanılır; “Silah adları” bölümünden değiştirilebilir (S.izinb.mf.sad[model]) */
+const mfKisaVars = m => { m = String(m || ""); return /G3/.test(m) && !/MG/.test(m) ? (/Sabit/i.test(m) ? "G3-P" : "G3") : m.replace(/^[\d,]+\s*mm\s*/i, "").trim(); };
+const mfKisaAd = m => { const A = (mfV().sad || {})[String(m || "")]; return A != null && String(A).trim() ? String(A).trim() : mfKisaVars(m); };
+const mfModeller = () => { const d = belgeTur("silah"), L = ((d && d.sl && d.sl.liste) || []).filter(x => x.pid && x.model && x.seri), P = [...new Set(L.map(x => x.pid))];
+  return [...new Set(P.map(pid => { const K = L.filter(x => x.pid === pid); return (K.find(x => /G3/.test(x.model) && !/MG/.test(x.model)) || K[0]).model; }))]; };
+const mfSadHtml = () => { const L = mfModeller(), A = mfV().sad || {}; if(!L.length) return "";
+  return `<details class="yk-mf mf-sad"><summary><span class="es-ik" style="--iz:#ECEFE3;--ir:#59663A"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10h13l3-2v4l-3-2M6 10v4h3v-4"/></svg></span><b>Silah adları</b><small>Yalnız manifestoda kullanılır</small><i>›</i></summary><div class="yk-mf-ic">
+    ${L.map(m => `<div class="mf-sad-s"><small>${esc(m)}</small><span><input data-mf-sad="${esc(m)}" value="${esc(A[m] ?? "")}" placeholder="${esc(mfKisaVars(m))}"><button type="button" class="mini" data-mf-sadv="${esc(m)}"${A[m] != null && String(A[m]).trim() ? "" : " hidden"}>↺</button></span></div>`).join("")}</div></details>`; };
+document.addEventListener("input", e => { const el = e.target; if(!el.dataset || el.dataset.mfSad == null) return; const M = mfV(); (M.sad ||= {})[el.dataset.mfSad] = el.value; if(!el.value.trim()) delete M.sad[el.dataset.mfSad]; kaydetBt("izinb");
+  const b = el.parentElement.querySelector("[data-mf-sadv]"); if(b) b.hidden = !el.value.trim(); if(mfCtx){ const pr = $(".yk-mf .mf-yazi"); if(pr) pr.textContent = mfMetin(mfCtx).metin; const i = $('.yk-mf [data-mf-f="silah"]'); const K = mfV().k[mfCtx.pid] || {}; if(i && K.silah == null) i.value = mfMetin(mfCtx).silah; } });
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-mf-sadv]"); if(!b) return; const M = mfV(); if(M.sad) delete M.sad[b.dataset.mfSadv]; kaydetBt("izinb"); manifestoCiz(); });
 function mfMetin(c){ const M = mfV(), p = (S.personel.rows || []).find(y => y.id === c.pid) || {}, K = M.k[c.pid] || {}, y = ((S.yoklama || {}).rows || []).find(r => r.pid === c.pid) || {};
   const W = String(p.ad || "").trim().split(/\s+/), i = W.findIndex(w => w.length > 1 && w === w.toLocaleUpperCase("tr") && /[A-ZÇĞİÖŞÜ]/.test(w)), ad = (i > 0 ? W.slice(0, i) : W.slice(0, -1)).join(" "), soy = (i > 0 ? W.slice(i) : W.slice(-1)).join(" ");
   const kan = String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)").trim(), g = mfTur === "giris", S0 = String(c.silah || "").trim().split(/\s+/);
@@ -5955,7 +5967,7 @@ function manifestoCiz(){ const d = acikBelge(); if(!d || d.tur !== "manifesto") 
   const c = mfdSec ? (mfdOzel && mfdOzel.pid === mfdSec ? mfdOzel : { pid: mfdSec, ...mfdIzin(mfdSec) }) : null; mfAcik = true;
   $("#mfd-govde").innerHTML = `${iztSecHtml("manifesto")}
     ${kayitBas({ sq: "personel", ad: "Manifesto · personel", n: P.length, secId: mfdSec, ozet: `<em class="kb-oz ${nh < P.length ? "dl-eksik" : "dl-tam"}">${nh} / ${P.length} silah bilgisi girili</em>`, liste: P.map(x => ({ id: x.id, ad: x.ad, nokta: !hazir(x) })) })}
-    ${mfKart(c)}`; }
+    ${mfKart(c)}${mfSadHtml()}`; }
 const mfGit = c => { mfdGitC = c; const p = c && (S.personel.rows || []).find(y => y.id === c.pid);
   return `<button type="button" class="mf-git" data-mf-git="1"${p ? "" : " disabled"}>${mfBas(p ? p.ad : "")}</button>`; };
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-mf-git]"); if(!b || !mfdGitC) return; const h = S.belgeler.find(x => x.tur === "manifesto"); if(!h) return bildir("Manifesto belgesi yok");
@@ -5968,7 +5980,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   const t = mfMetin(mfCtx).metin;
   if(b.dataset.mfKop){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => bildir("Manifesto kopyalandı"), () => uyar("Kopyalanamadı; metni basılı tutup seçin", true)); }
   if(b.dataset.mfPay){ if(navigator.share) navigator.share({ text: t }).catch(() => {}); else navigator.clipboard && navigator.clipboard.writeText(t).then(() => bildir("Paylaşım yok · metin kopyalandı")); } });
-document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest(".yk-mf") || !mfCtx) return; e.stopPropagation(); const M = mfV(), K = (M.k[mfCtx.pid] ||= {});
+document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest(".yk-mf") || el.closest(".mf-sad") || !mfCtx) return; e.stopPropagation(); const M = mfV(), K = (M.k[mfCtx.pid] ||= {});
   if(el.dataset.mfF){ const f = el.dataset.mfF; if(["birlik", "dis", "maksatC", "maksatG"].includes(f)) M[f] = el.value; else K[f] = el.value; }
   else if(el.dataset.mfYn != null){ (K.yuk ||= [])[+el.dataset.mfYn].n = el.value.replace(/\D/g, ""); }
   else if(el.dataset.mfYa != null){ (K.yuk ||= [])[+el.dataset.mfYa].ad = el.value; } else return;
