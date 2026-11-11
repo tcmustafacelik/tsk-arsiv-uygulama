@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "488";
+  const SURUM = "489";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3211,7 +3211,13 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kb2-c{position:relative;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:38px;padding:5px 9px;border:1px solid #E3E8EE;border-radius:9px;background:#FAFBFC;font:600 11px/1.18 var(--f-ui);color:#3D4D5E;cursor:pointer;text-align:center;white-space:normal;transition:background .15s,border-color .15s,box-shadow .15s,transform .15s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .kb2-y{display:block;min-width:0;text-align:left;overflow-wrap:anywhere}
 .kb2-av{flex:none;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;background:#E9EFF5;color:#4A6584;font:800 9.5px var(--f-ui);letter-spacing:.02em}
-.kb2-c.on{background:#DCE8F5;border-color:#3D6A99;color:#17324F;font-weight:700;box-shadow:inset 0 0 0 1px #3D6A99,0 1px 5px rgba(45,85,126,.18)} .kb2-c.on .kb2-av{background:#2F4A66;color:#fff} .kb2-c.on::after{content:"✓";position:absolute;right:8px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:#2F4A66;color:#fff;font:800 9.5px/16px var(--f-ui);text-align:center}
+/* SEÇİLİ KAYIT — bütün sistemde tek standart: sıcak amber zemin, koyu amber çerçeve, ✓ (mavi düğmelerden ayrışsın diye) */
+:root{--sec-z:#FBEFD8;--sec-k:#C98A2E;--sec-y:#5E3B0C;--sec-i:#B0711F}
+.kb2-c.on{background:var(--sec-z);border-color:var(--sec-k);color:var(--sec-y);font-weight:700;box-shadow:inset 0 0 0 1px var(--sec-k),0 1px 5px rgba(176,113,31,.20)} .kb2-c.on .kb2-av{background:var(--sec-i);color:#fff} .kb2-c.on::after{content:"✓";position:absolute;right:8px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:var(--sec-i);color:#fff;font:800 9.5px/16px var(--f-ui);text-align:center}
+.dl-sat.on,.dl-sat[aria-current="true"]{border-color:var(--sec-k)!important;border-left-color:var(--sec-k)!important;background:var(--sec-z)!important;box-shadow:inset 0 0 0 1px var(--sec-k)!important} .dl-sat.on b,.dl-sat[aria-current="true"] b{color:var(--sec-y)}
+.isa-z.on{border-color:var(--sec-k)!important;background:var(--sec-z)!important;box-shadow:inset 0 0 0 1px var(--sec-k)!important} .isa-z.on em{background:var(--sec-i)!important;color:#fff} .isa-z.on .ks-av{background:var(--sec-i);color:#fff}
+.gd-kisi[aria-current="true"]{border-color:var(--sec-k)!important;background:var(--sec-z)!important;box-shadow:inset 3px 0 0 var(--sec-i)!important}
+.ky-sat.on{background:var(--sec-z)!important} .ky-sat.on .ky-tik{background:var(--sec-i)!important;border-color:var(--sec-i)!important}
 .kb2-n{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:#E0A040}
 @media (hover:hover){.kb2-c:not(.on):hover{background:#F1F5F9;border-color:#C9D6E4}}
 .kb2-tasiniyor .kb2-c{transition:transform .12s} .kb2-c.kb2-tut{transform:scale(1.06);box-shadow:0 6px 16px rgba(30,50,75,.22);border-color:#2F4A66;z-index:2;background:#fff}
@@ -3554,7 +3560,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 488</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 489</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
