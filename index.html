@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "522";
+  const SURUM = "523";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3657,7 +3657,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 522</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 523</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4222,6 +4222,10 @@ function tekSatSigdir(){ const G = new Map(); document.querySelectorAll(".tek-sa
     const g = el.closest(".ts-grup"); if(g){ const k = el.className; if(!G.has(g)) G.set(g, {}); const o = G.get(g); (o[k] ||= []).push([el, f]); } });
   /* aynı listedeki aynı tür yazılar aynı boyda: en küçüğe eşitlenir (standart görünüm) */
   G.forEach(o => Object.values(o).forEach(L => { const m = Math.min(...L.map(x => x[1])); L.forEach(([el]) => el.style.fontSize = m + "px"); })); }
+/* YARIM GENİŞLİK STANDARDI: iki sütunlu formda yazısı tek satıra sığmayan alan (ör. uzun ad soyad) tam satıra geçer; kısa alanlar (telefon, tarih) yarımda kalır */
+function alanGenislet(){ document.querySelectorAll(".dl-alanlar>.dl-al:not(.tam) textarea, .dl-alanlar>.dl-al:not(.tam) input[type=text], .dl-alanlar>.dl-al:not(.tam) input:not([type])").forEach(el => { if(!el.offsetParent || !el.value) return;
+  const tasti = el.tagName === "TEXTAREA" ? el.scrollHeight > parseFloat(getComputedStyle(el).lineHeight || 18) * 1.7 + 14 : el.scrollWidth > el.clientWidth + 2; if(tasti){ el.closest(".dl-al").classList.add("tam", "tam-oto"); if(el.tagName === "TEXTAREA" && typeof otoBoy === "function") requestAnimationFrame(() => otoBoy(el)); } }); }
+(() => { let z = 0; const t = () => { clearTimeout(z); z = setTimeout(alanGenislet, 120); }; new MutationObserver(t).observe(document.documentElement, { childList: true, subtree: true }); document.addEventListener("input", t); })();
 (() => { let z = 0; const t = () => { cancelAnimationFrame(z); z = requestAnimationFrame(() => tekSatSigdir()); }; new MutationObserver(t).observe(document.documentElement, { childList: true, subtree: true }); addEventListener("resize", t); })();
 function segIkonla(kok){ (kok || document).querySelectorAll(`:is(${SG_KAP})>button`).forEach(b => { if(b.querySelector("svg")) return;
   const t = b.textContent.trim().toLocaleLowerCase("tr"), m = SG_E.find(([r]) => r.test(t)); if(!m) return; b.classList.add("sg-ikli"); b.insertAdjacentHTML("afterbegin", `<svg class="sg-ik" viewBox="0 0 24 24" aria-hidden="true">${SG_P[m[1]]}</svg>`); }); }
@@ -10861,7 +10865,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 
 /* ================= PERSONEL KİMLİĞİ (tur: "kimlik") =================
    Herkesin kimlik bilgileri tek yerde; veri personel kaydında durur (S.personel.rows), dilekçe ve izin belgeleri buradan alır. */
-const KM_ALAN = [["kita", "Kıt'ası", "tam"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi", "t"], ["duhul", "Duhulü", "t"], ["nasip", "Nasbı", "t"], ["sicil", "Sicili", "n"], ["ems", "EMS no.", "n"], ["tc", "T.C. kimlik no.", "n"], ["kan", "Kan grubu"], ["tel", "Telefon", "n tam"], ["adres", "Adres", "tam"], ["yakinAd", "Yakını adı soyadı"], ["yakinTel", "Yakını telefonu", "n"]];
+const KM_ALAN = [["kita", "Kıt'ası", "tam"], ["baba", "Baba adı"], ["memleket", "Memleketi"], ["dogum", "Doğum tarihi", "t"], ["duhul", "Duhulü", "t"], ["nasip", "Nasbı", "t"], ["sicil", "Sicili", "n"], ["ems", "EMS no.", "n"], ["tc", "T.C. kimlik no.", "n"], ["kan", "Kan grubu"], ["tel", "Telefon", "n tam"], ["adres", "Adres", "tam"], ["yakinAd", "Yakını adı soyadı", "tam"], ["yakinTel", "Yakını telefonu", "n tam"]];
 const KM_ZORUNLU = ["kita", "baba", "memleket", "dogum", "duhul", "nasip", "sicil", "ems", "tc", "kan", "tel", "adres"];
 let kmSecili = null, kmFiltre = "hepsi";
 const KM_KAN = ["0 RH ( + )", "0 RH ( - )", "A RH ( + )", "A RH ( - )", "B RH ( + )", "B RH ( - )", "AB RH ( + )", "AB RH ( - )"];   // izin belgesindeki yazılışla aynı
