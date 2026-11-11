@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "443";
+  const SURUM = "444";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3505,7 +3505,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 443</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 444</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11642,10 +11642,10 @@ function fyGrid(d, P){ const v = fyVeri(d), NC = FY_BP.length - 1, g = { w: FY_B
 const fyKapsamListe = (d) => { const v = fyVeri(d); return v.kapsam === "hepsi" ? fyKisiler() : [fyAktif(v)].filter(Boolean); };
 /* ---- FYDT kartı PDF: orijinal karttan ölçülerek (mm) birebir çizim; ön ve arka yüz ayrı tablolar, ayrı fotoğraflar ---- */
 /* ölçüler orijinal karttan (mm). Ön yüzde her test bloğu iki ayrı tablodur: solda Test Tarihi/Yaş Grubu/Katılmama satırları, sağda Test/Ölçüm sütunları; satırları hizalı değildir */
-const FYP = { X: [5.4, 10.5, 52.1, 87.4, 112.5, 162.9, 194.5],
+const FYP = { X: [5.4, 11.1, 52.1, 87.4, 112.5, 162.9, 194.5], EX: [5.4, 10.6],   /* etiket sütunu ayrı kutu: sağ çizgisi ile tablo arasında ~0,5 mm boşluk (orijinaldeki gibi) */
   /* telefonla çekilmiş kartların eğikliği giderilerek ölçüldü: her blokta sol ve sağ satırlar aynı çizgide; bloklar birbirine bitişik, etiket sütunu da tablo ile aynı boyda */
   BL: [{ t: 59.7, lh: 69.3, ls: 6.0, rt: 59.7, rh: 69.3, rs: 6.0, b: 120.2 }, { t: 120.2, lh: 130.8, ls: 6.04, rt: 120.2, rh: 130.8, rs: 6.04, b: 182.4 }, { t: 182.4, lh: 193.0, ls: 5.95, rt: 182.4, rh: 193.0, rs: 5.95, b: 244.5 }],
-  KX: [34.7, 58.6, 82.2, 106.6, 130.9, 155.3], KY: [7.8, 13.2, 18.6, 23.95], HX: [5.4, 169.2], HY: [29.5, 35.5, 41.6, 47.7, 59.1], FOTO_ON: [169.7, 29.5, 193.6, 59.7], ET: [59.7, 120.2, 182.4, 244.5],
+  KX: [34.7, 58.6, 82.2, 106.6, 130.9, 155.3], KY: [7.8, 13.2, 18.6, 23.95], HX: [5.4, 169.2], HY: [29.5, 35.5, 41.6, 47.7, 59.1], FOTO_ON: [169.7, 29.5, 193.6, 59.7], ET: [59.5, 120.2, 182.4, 244.8],
   AX: [5.2, 30.0, 35.0, 88.6, 118.8, 125.2, 175.2], AY: [22.6, 28.5, 34.5, 40.5, 46.3, 52.5], FOTO_AR: [175.9, 22.6, 202.2, 52.6],
   SX: [5.2, 33.9, 47.5, 64.0, 97.4], SY: [52.5, 58.1, 64.1], SR: [74.8, 85.6, 96.4, 107.1, 117.9, 128.6, 134.7, 145.8, 156.7, 171.1, 182.1, 193.4, 204.3, 215.5, 228.0, 239.6, 248.0],
   GX: [97.4, 127.0, 140.7, 157.6, 202.2], GY: [53.4, 59.1, 64.8], GR: [75.7, 87.1, 101.5, 112.4, 123.4, 134.4, 146.0, 157.2, 168.2, 178.8, 189.8, 201.2] };
@@ -11686,9 +11686,9 @@ async function fyPdfYap(d, P, sol){ const v = fyVeri(d), doc = await yeniPdf({ y
         else if(k === "kosu" && son){ const [dk, sn] = String(deg).split(":"); yaz(birim, X[4], y1, X[5], y2, { s: Z }); yaz(`${dk || ""}  dk.`, X[4] + 14, y1, X[4] + 34, y2, { al: "r", s: Z }); yaz(`${sn || ""}  sn.`, X[4] + 30, y1, X[4] + 50, y2, { al: "r", s: Z }); }
         else yaz(`${birim}${deg ? " " + deg : ""}`, X[4], y1, X[5], y2, { s: Z }); });
       if(son){ cz(X[1], rb, X[6], rb); yaz("Heyet Başkanı (Rütbe, Adı,Soyadı, İmza) :", X[1], rb, X[6], B.b, { s: Z }); }
-      const e1 = FYP.ET[bi], e2 = FYP.ET[bi + 1]; kutu(X[0], e1, X[1], e2);
+      const e1 = FYP.ET[bi], e2 = FYP.ET[bi + 1], [ex1, ex2] = FYP.EX; kutu(ex1, e1, ex2, e2);
       doc.setFont("LS", "normal"); let fs = Z; doc.setFontSize(fs); while(doc.getTextWidth(et) > e2 - e1 - 3 && fs > 7){ fs -= .25; doc.setFontSize(fs); }
-      doc.text(et, (X[0] + X[1]) / 2 + fs * .3528 * .35, (e1 + e2) / 2 + doc.getTextWidth(et) / 2, { angle: 90 }); y = B.b; });
+      doc.text(et, (ex1 + ex2) / 2 + fs * .3528 * .35, (e1 + e2) / 2 + doc.getTextWidth(et) / 2, { angle: 90 }); y = B.b; });
     yaz("AÇIKLAMALAR :", X[0], y + .6, X[6], y + 4.6, { b: 1, u: 1, s: 9.5, pad: .3, va: "t" });
     pdfZengin(doc, { va: "t", k: "000000", vr: ["a. Katılmadı :", "b. Testi Tamamlamadı :", "c. Sağlık Nedeni ile Sadece Bir Branştan Muaf :", "d. Muaf :"].map(t2 => ({ t: t2, b: 1 })) }, FY_ACIK.replace(/^AÇIKLAMALAR :\n/, ""), X[0] - .3, y + 4.2, X[6] - X[0] + .6, 32, .3, 9, "left");
     /* ---------- arka yüz ---------- */
