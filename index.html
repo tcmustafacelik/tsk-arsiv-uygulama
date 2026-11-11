@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "465";
+  const SURUM = "466";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3527,7 +3527,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 465</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 466</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10948,7 +10948,7 @@ function dlSablon(k){ const n = +k.gun, gun = n ? `${n} (${dlSayiYazi(n)})` : "�
   const seb = String(k.sebep || "").trim() || "…", ug = `${bas} tarihinden itibaren uygun görüldüğü takdirde ${gun} gün`;
   const Bh = t => t.replace(/^(\s*)([a-zçğıöşü])/, (_, b, c) => b + c.toLocaleUpperCase("tr"));   // cümle büyük harfle başlasın
   switch(k.tur){
-    case "izin":    return `${ug} yıllık izin kullanmak istiyorum.${son}`;
+    case "izin":    { const y = dlYol(k); return `${ug} yıllık izin${y ? ` ve ${y} (${dlSayiYazi(y)}) gün yol izni` : ""} kullanmak istiyorum.${son}`; }
     case "mazeret": return Bh(`${seb} olduğundan dolayı ${ug} yıllık mazeret izni kullanmak istiyorum.${son}`);
     case "dogum":   return `Eşimin doğum yapması nedeniyle ${ug} doğum izni kullanmak istiyorum.${son}`;
     case "evlilik": return `Evlenmem nedeniyle ${ug} evlilik izni kullanmak istiyorum.${son}`;
@@ -10959,12 +10959,15 @@ function dlSablon(k){ const n = +k.gun, gun = n ? `${n} (${dlSayiYazi(n)})` : "�
   return ""; }
 /* izin: başlangıç + bitiş girilince gün sayısı (iki gün dahil), gün girilince bitiş kendiliğinden bulunur */
 const dlGunFark = (a, b) => Math.round((Date.UTC(...b.split("-").map((x, i) => i === 1 ? x - 1 : +x)) - Date.UTC(...a.split("-").map((x, i) => i === 1 ? x - 1 : +x))) / 864e5);
-function dlGunEsle(k, f){ const iso = /^\d{4}-\d{2}-\d{2}$/, bV = iso.test(k.bas || ""), tV = iso.test(k.bit || "");
-  /* kural: katılış (bitiş) günü izinden sayılmaz → gün = katılış − başlangıç (01–04 → 3 gün). Hangi alan değişirse diğeri ona göre yeniden hesaplanır. */
-  const bitYaz = () => { const [y, m, g] = k.bas.split("-").map(Number); k.bit = new Date(Date.UTC(y, m - 1, g + +k.gun)).toISOString().slice(0, 10); };
-  if(f === "bit" && bV && tV){ const n = dlGunFark(k.bas, k.bit); k.gun = n > 0 ? String(n) : ""; }
-  else if(f === "gun" && bV && +k.gun > 0) bitYaz();
-  else if(f === "bas" && bV){ if(tV && dlGunFark(k.bas, k.bit) > 0) k.gun = String(dlGunFark(k.bas, k.bit)); else if(+k.gun > 0) bitYaz(); else if(tV) k.gun = ""; } }
+/* yol izni: yalnız yıllık izinde; varsayılan 2 gün, değiştirilebilir (0 = yok). Katılış = başlangıç + yıllık gün + yol günü */
+const dlYol = k => k.tur !== "izin" ? 0 : (k.yol == null || String(k.yol).trim() === "" ? 2 : Math.max(0, parseInt(k.yol, 10) || 0));
+function dlGunEsle(k, f){ const iso = /^\d{4}-\d{2}-\d{2}$/, bV = iso.test(k.bas || ""), tV = iso.test(k.bit || ""), yol = dlYol(k);
+  /* kural: katılış (bitiş) günü izinden sayılmaz → gün = katılış − başlangıç (01–04 → 3 gün); yıllıkta yol günü ayrıca düşülür. Hangi alan değişirse diğeri ona göre yeniden hesaplanır. */
+  const bitYaz = () => { const [y, m, g] = k.bas.split("-").map(Number); k.bit = new Date(Date.UTC(y, m - 1, g + +k.gun + yol)).toISOString().slice(0, 10); }, fark = () => dlGunFark(k.bas, k.bit) - yol;
+  if(f === "bit" && bV && tV){ const n = fark(); k.gun = n > 0 ? String(n) : ""; }
+  else if((f === "gun" || f === "yol" || f === "tur") && bV && +k.gun > 0) bitYaz();
+  else if(f === "yol" && bV && tV){ const n = fark(); k.gun = n > 0 ? String(n) : ""; }
+  else if(f === "bas" && bV){ if(tV && fark() > 0) k.gun = String(fark()); else if(+k.gun > 0) bitYaz(); else if(tV) k.gun = ""; } }
 const dlMetin = k => k.elle || !DL_SABLONLU(k.tur) ? (k.metin || "") : dlSablon(k);
 const dlOzu = k => !DL_SABLONLU(k.tur) ? (k.ozu || "") : DL_TUR[k.tur].ozu;
 /* kâğıda gidecek içerik (önizleme, PDF, Word ve Excel aynı veriden çizer) */
@@ -11028,7 +11031,8 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
         <label class="dl-al"><span>Dilekçe tarihi</span><input type="date" data-dl-f="tarih" value="${esc(k.tarih)}"></label>
         ${DL_SABLONLU(k.tur) ? `<label class="dl-al"><span>İzin başlangıcı</span><input type="date" data-dl-f="bas" value="${esc(k.bas)}"></label>
         <label class="dl-al"><span>Katılış tarihi</span><input type="date" data-dl-f="bit" value="${esc(k.bit || "")}"></label>
-        <label class="dl-al"><span>Gün sayısı</span><input data-dl-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="ör. 3"><small class="dl-gy">${+k.gun ? esc(`${+k.gun} (${dlSayiYazi(k.gun)}) gün`) : ""}</small></label>` : `<div class="dl-al tam"><span>Özü (konu)</span><div class="dl-ozu"><textarea class="oto-boy" data-tek rows="1" data-dl-f="ozu" placeholder="Yazın ya da hazır konudan seçin">${esc(k.ozu)}</textarea><button type="button" class="dl-hazir" data-dl="konu" aria-label="Hazır konular"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Hazır</button></div></div>`}
+        <label class="dl-al"><span>${k.tur === "izin" ? "Yıllık izin (gün)" : "Gün sayısı"}</span><input data-dl-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="ör. 3"><small class="dl-gy">${+k.gun ? esc(`${+k.gun} (${dlSayiYazi(k.gun)}) gün`) : ""}</small></label>
+        ${k.tur === "izin" ? `<label class="dl-al"><span>Yol izni (gün)</span><input data-dl-f="yol" inputmode="numeric" value="${esc(k.yol == null ? "2" : k.yol)}" placeholder="2"><small class="dl-gy dl-yy">${dlYol(k) ? esc(`${dlYol(k)} (${dlSayiYazi(dlYol(k))}) gün · katılışa eklenir`) : "yol izni yok"}</small></label>` : ""}` : `<div class="dl-al tam"><span>Özü (konu)</span><div class="dl-ozu"><textarea class="oto-boy" data-tek rows="1" data-dl-f="ozu" placeholder="Yazın ya da hazır konudan seçin">${esc(k.ozu)}</textarea><button type="button" class="dl-hazir" data-dl="konu" aria-label="Hazır konular"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Hazır</button></div></div>`}
         ${DL_TUR[k.tur].sebep ? `<label class="dl-al tam"><span>${esc(DL_TUR[k.tur].sebep[0])}</span><textarea class="oto-boy" rows="1" data-dl-f="sebep" placeholder="${esc(DL_TUR[k.tur].sebep[1])}">${esc(k.sebep)}</textarea></label>` : ""}
         <label class="dl-al tam"><span>Metin${DL_SABLONLU(k.tur) ? (k.elle ? ' <button type="button" class="dl-sifir" data-dl="sablon">↺ Şablondan yeniden yaz</button>' : " <i>bilgilerden kendiliğinden yazılır, değiştirebilirsiniz</i>") : ""}</span><textarea class="oto-boy dl-metin" rows="4" data-dl-f="metin" placeholder="Dilekçe metni… Komutanlık emir ve tensiplerine maruzdur. Arz ederim.">${esc(dlMetin(k))}</textarea></label>
         <label class="kp-tik tam"><input type="checkbox" data-dl-f="imza"${k.imza ? " checked" : ""}> Altına imza bloğu koy (ad soyad, rütbe)</label></div>
@@ -11050,14 +11054,14 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
   else if(el.dataset.dlF){ const f = el.dataset.dlF; if(f === "imza") return;
     if(f === "metin"){ k.metin = el.value; if(DL_SABLONLU(k.tur)) k.elle = true; }
     else { k[f] = el.value; dlGunEsle(k, f);
-      if(DL_SABLONLU(k.tur)){ const g = $("#dl-govde [data-dl-f=gun]"), b = $("#dl-govde [data-dl-f=bit]"), y = $("#dl-govde .dl-gy"); if(g && f !== "gun") g.value = k.gun || ""; if(b && f !== "bit") b.value = k.bit || ""; if(y) y.textContent = +k.gun ? `${+k.gun} (${dlSayiYazi(k.gun)}) gün` : ""; }
+      if(DL_SABLONLU(k.tur)){ const g = $("#dl-govde [data-dl-f=gun]"), b = $("#dl-govde [data-dl-f=bit]"), y = $("#dl-govde .dl-gy"); if(g && f !== "gun") g.value = k.gun || ""; if(b && f !== "bit") b.value = k.bit || ""; if(y) y.textContent = +k.gun ? `${+k.gun} (${dlSayiYazi(k.gun)}) gün` : ""; const yy = $("#dl-govde .dl-yy"); if(yy) yy.textContent = dlYol(k) ? `${dlYol(k)} (${dlSayiYazi(dlYol(k))}) gün · katılışa eklenir` : "yol izni yok"; }
       if(!k.elle && DL_SABLONLU(k.tur)){ const m = $("#dl-govde .dl-metin"); if(m && document.activeElement !== m){ m.value = dlSablon(k); otoBoy(m); } } } }
   else return; kaydetBelge(d); dlOnizleTazele(d); });
 document.addEventListener("change", e => { const el = e.target; if(!el.closest || !el.closest("#dl-govde") || el.dataset.dlF !== "imza") return; const d = acikBelge(); if(!d || d.tur !== "dilekce") return; dlAktif(dlVeri(d)).imza = el.checked; kaydetBelge(d); dlOnizleTazele(d); });
 document.addEventListener("toggle", e => { if(e.target.matches && e.target.matches("#dl-govde .dl-bilgi")) dlKisiAcik = e.target.open; }, true);
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#dl-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "dilekce") return; const v = dlVeri(d), k = dlAktif(v), yaz = () => { kaydetBelge(d); dilekceCiz(); };
   if(b.dataset.dlSec){ v.aktif = b.dataset.dlSec; return yaz(); }
-  if(b.dataset.dlTur){ if(k.tur !== b.dataset.dlTur){ k.tur = b.dataset.dlTur; k.elle = false; if(!DL_SABLONLU(k.tur)) k.metin = ""; } return yaz(); }
+  if(b.dataset.dlTur){ if(k.tur !== b.dataset.dlTur){ k.tur = b.dataset.dlTur; k.elle = false; if(!DL_SABLONLU(k.tur)) k.metin = ""; else dlGunEsle(k, "tur"); } return yaz(); }
   const is = b.dataset.dl;
   if(is === "konu") return altPencere("ks-perde", "HAZIR KONU", "Dilekçenin özü", () => `<div class="ap-liste">${DL_OZU.map((o, i) => apSatir(`data-ks="${i}"`, `<span class="ks-av dl-ko">${esc(o.replace(/ Hk\.$/, "")[0])}</span>`, esc(o), o === k.ozu ? '<em class="ks-tik">✓</em>' : "")).join("")}</div>`, (b2, kapat) => { if(b2.dataset.ks){ kapat(); k.ozu = DL_OZU[+b2.dataset.ks]; kaydetBelge(d); dilekceCiz(); } }, { z: "ECE8F4", r: "54477F" });
   if(is === "kisi") return kisiSecAc("Dilekçe kimin adına", (S.personel.rows || []).filter(x => x.ad), k.pid, id => { k.pid = id; kaydetBelge(d); dilekceCiz(); });
