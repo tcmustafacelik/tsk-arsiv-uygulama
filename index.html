@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "459";
+  const SURUM = "460";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3516,7 +3516,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 459</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 460</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11715,9 +11715,9 @@ const FYP = { X: [5.4, 11.1, 52.1, 87.4, 112.5, 162.9, 194.5], EX: [5.4, 10.6], 
   KX: [34.7, 58.6, 82.2, 106.6, 130.9, 155.3], KY: [7.8, 13.2, 18.6, 23.95], HX: [5.4, 169.2], HY: [29.5, 35.5, 41.6, 47.7, 59.1], FOTO_ON: [169.7, 29.5, 193.6, 59.7], ET: [59.5, 120.2, 182.4, 244.8],
   AX: [5.2, 30.0, 35.0, 88.6, 118.8, 125.2, 175.2], AY: [22.6, 28.5, 34.5, 40.5, 46.3, 52.5], FOTO_AR: [175.9, 22.6, 202.2, 52.6],
   /* arka yüz (fotoğraftan piksel ölçümü): SORGULAMA üst çizgisi kimlik tablosunun alt çizgisinin ~0,35 mm altında (çift ince çizgi), sol kenarlar aynı hizada;
-     GÖZLE MUAYENE üstte kimlik tablosuna değer, SORGULAMA ile arasında ~0,9 mm dikey boşluk */
+     GÖZLE MUAYENE üstte kimlik tablosundan çok az (~0,45 mm) ayrık, SORGULAMA ile arasında ~0,9 mm dikey boşluk */
   SX: [5.2, 33.9, 47.5, 64.0, 96.95], SY: [52.85, 58.1, 64.1], SR: [74.8, 85.6, 96.4, 107.1, 117.9, 128.6, 134.7, 145.8, 156.7, 171.1, 182.1, 193.4, 204.3, 215.5, 228.0, 239.6, 248.0],
-  GX: [97.85, 127.0, 140.7, 157.6, 202.2], GY: [52.6, 59.1, 64.8], GR: [75.7, 87.1, 101.5, 112.4, 123.4, 134.4, 146.0, 157.2, 168.2, 178.8, 189.8, 201.2] };
+  GX: [97.85, 127.0, 140.7, 157.6, 202.2], GY: [52.95, 59.1, 64.8], GR: [75.7, 87.1, 101.5, 112.4, 123.4, 134.4, 146.0, 157.2, 168.2, 178.8, 189.8, 201.2] };
 const fyPx = mm => mm;
 async function fyGriVeri(id){ if(!id) return null; if(fyGriOnbellek[id]) return fyGriOnbellek[id]; const f = await izbFoto(id); if(!f) return null; return fyGriOnbellek[id] = await fyGri(f); }
 async function fyPdfYap(d, P, sol){ const v = fyVeri(d), doc = await yeniPdf({ yon: "dikey", kagit: "A4" }); doc.setDrawColor(0, 0, 0); doc.setTextColor(0, 0, 0);
