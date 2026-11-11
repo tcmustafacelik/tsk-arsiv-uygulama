@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "482";
+  const SURUM = "483";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3542,7 +3542,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 482</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 483</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11219,6 +11219,11 @@ const isaYeni = (o = {}) => ({ id: "ik" + yeniId().slice(0, 8), pid: "", tur: "Y
 /* ayrılış/katılış saati (PYBS örneği: “01.12.2026 08:00”); varsayılan 08:00, “saat yok” seçilirse yalnız tarih */
 const isaSaat = (k, a) => { const s2 = k[a + "Saat"]; return s2 == null ? "08:00" : s2; };
 const isaTS = (k, a) => { const t = trTarih(k[a]); return t && isaSaat(k, a) ? `${t} ${isaSaat(k, a)}` : t; };
+/* sayfa altı: sol = ekran adı + GERÇEK basım günü/saati (elle tarih yazılamaz); sağ = varsayılan liste / belge sahibi / elle (FYDT ile aynı liste) */
+let isaSagMod = "";
+const isaSolAd = v => String(v.alt.sol || "").replace(/\s*\([^)]*\)\s*$/, "").trim();
+const isaSol = v => { const a = isaSolAd(v); if(!a) return ""; const z = new Date(); return `${a} (${z.toLocaleDateString("tr-TR")} ${z.toLocaleTimeString("tr-TR")})`; };
+const hzOrtak = () => ((S.belgeler.find(x => x.tur === "fydt") || {}).fy || {}).hzListe || [];
 const isaAktif = v => v.kayitlar.find(k => k.id === v.aktif) || v.kayitlar[0];
 const isaKisi = k => (S.personel.rows || []).find(p => p.id === k.pid) || null;
 const isaSubayMi = p => p && !/Uzm\.|Söz\.|\bEr\b|Onb\./.test(p.rutbe || "");
@@ -11233,11 +11238,11 @@ function isaEsle(k, f){ const iso = /^\d{4}-\d{2}-\d{2}$/, aV = iso.test(k.ayr |
   else if((f === "yol" || f === "tur") && aV && kV && !String(k.gun || "").trim()){ /* gün boşsa tarihten hesaplanır; katılış yerinde kalır */ } }
 const isaTel = p => { if(!p) return ""; if(p.tel) return p.tel; for(const Y of [S.yoklama, S.yoklama30]){ const r = ((Y || {}).rows || []).find(x => x.pid === p.id || pAd(x.ad) === pAd(p.ad)); if(r && r.tel) return r.tel; } return ""; };
 function isaIcerik(d){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k) || {}, dv = (S.belgeler.find(x => x.tur === "dilekce") || {}).dl || {}, gar = dv.garnizon ?? "DİYARBAKIR";
-  const gun = isaGun(k), ad = String(k.adres || "").trim(), ar = k.ayr || k.kat ? ` (${trTarih(k.ayr)} - ${trTarih(k.kat)})` : "";
-  return { ust: [["Adı Soyadı", p.ad || ""], ["Sınıf ve Rütbesi", p.rutbe || ""], ["Görevi", p.kita || (p.gorev ? p.gorev + (gar ? " \\" + String(gar).toLocaleUpperCase("tr") : "") : "")], ["Sicili", p.sicil || ""]],
+  const gun = isaGun(k), ad = String(k.adres || "").trim().replace(/\s*\/\s*/g, "/").toLocaleUpperCase("tr"), ar = k.ayr || k.kat ? ` (${trTarih(k.ayr)} - ${trTarih(k.kat)})` : "";
+  return { ust: [["Adı Soyadı", p.ad || ""], ["Sınıf ve Rütbesi", p.rutbe || ""], ["Görevi", p.kita || (p.gorev ? p.gorev + (gar && !/\\[^\\]+$/.test(p.gorev) ? " \\" + String(gar).toLocaleUpperCase("tr") : "") : "")], ["Sicili", p.sicil || ""]],
     orta: [["İzin Türü", k.tur || ""], ["İzinden Ne Kadarını Kullandığı", k.kullan ?? ""], ["Verilen İzin Süresi", gun ? gun + " Gün" + (isaYol(k) ? ` + ${isaYol(k)} Gün Yol İzni` : "") : ""], ["Telefon No", k.tel || isaTel(p)], ["İzinli Gideceği Adres ve Tarih", ad + ar]],
     alt: [["Ayrılış Tarihi", isaTS(k, "ayr")], ["Katılış Tarihi", isaTS(k, "kat")], ["Tarih", trTarih(k.tarih)], ["İmza / Mühür", ""], ["Adı Soyadı", v.onay.ad || ""], ["Sınıfı, Rütbesi, Sicili", v.onay.rutbe || ""], ["Görevi", v.onay.gorev || ""]],
-    sol: v.alt.sol || "", sag: v.alt.sag || "", arka: v.arka !== false, dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
+    sol: isaSol(v), sag: fyHazCoz(v.alt.sag, p), arka: v.arka !== false, dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
 /* ölçüler (mm, sayfanın sol üstünden): kutu 10–197,6 · etiket 11,5 · iki nokta 58,7 · değer 60,8 · ikinci nüsha 137,7 mm aşağıda */
 /* Orijinalde "İmza / Mühür" satırında iki nokta yok */
 const isaIki = a => /^İmza/.test(a) ? "" : ":";
@@ -11328,8 +11333,13 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
       ${Z.some(z => String(z.ad || "").trim()) ? `<small class="isa-zb">Sicil amirleri zincirinden seç</small><div class="isa-zin">${Z.filter(z => String(z.ad || "").trim()).map(z => { const on = pAd(z.ad) === pAd(v.onay.ad); return `<button type="button" class="isa-z${on ? " on" : ""}" data-isa-z="${z.id}" aria-pressed="${on}"><span class="ks-av">${esc(ksBas(z.ad))}</span><span class="ks-ad"><b>${esc(z.ad)}</b><small>${esc(z.rutbe || "")}</small></span><em>${on ? "✓" : ""}</em></button>`; }).join("")}</div>` : ""}
       <div class="dl-alanlar"><label class="dl-al tam"><span>Adı soyadı</span><input data-isa-o="ad" value="${esc(v.onay.ad)}"></label><label class="dl-al tam"><span>Sınıfı, rütbesi, sicili</span><input data-isa-o="rutbe" value="${esc(v.onay.rutbe)}" placeholder="ör. P.Komd.Kur.Bnb. [2011-102]"></label><label class="dl-al tam"><span>Görevi</span><input data-isa-o="gorev" value="${esc(v.onay.gorev)}" placeholder="ör. Tabur Komutanı"></label></div></details>
     <details class="dl-kart dl-bilgi"><summary><span>Sayfa altı yazıları</span><em class="dl-not">isteğe bağlı · elle</em></summary>
-      <div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt</span><input data-isa-a="sol" value="${esc(v.alt.sol)}" placeholder="Örn. IzinKagidiAdres (gg.aa.yyyy ss:dd:sn)"></label><label class="dl-al tam"><span>Sağ alt</span><input data-isa-a="sag" value="${esc(v.alt.sag)}" placeholder="Örn. Topçu Asb.Üçvş. Ad SOYAD [Sicil]"></label></div>
-      <small class="dl-not">PYBS çıktısındaki ekran adı, saat ve basan personel bilgisi uygulama tarafından üretilmez. Boş bırakılırsa basılmaz.</small></details>
+      ${(() => { const L = hzOrtak(), sg = v.alt.sag || "", m = isaSagMod || (sg === "@kendi" ? "sahip" : L.includes(sg) ? "vars" : "elle"), seg = (k2, t) => `<button type="button" data-isa-hm="${k2}" aria-pressed="${m === k2}">${segIk(k2)}<span>${t}</span></button>`;
+        return `<div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt · ekran adı</span><input data-isa-a="sol" value="${esc(isaSolAd(v))}" placeholder="IzinKagidiAdres"><small class="dl-gy">yanına basım günü ve saati kendiliğinden yazılır</small></label>
+        <div class="dl-al tam fy-hz"><span>Sağ alt · basan personel</span><div class="dl-seg fy-hseg">${L.length ? seg("vars", "Varsayılan") : ""}${seg("sahip", "Belge sahibi")}${seg("elle", "Elle")}</div>
+        ${m === "vars" && L.length > 1 ? `<div class="dl-seg fy-kseg">${L.map((t, i) => `<button type="button" data-isa-hv="${i}" aria-pressed="${sg === t}">${esc(kAd(t))}</button>`).join("")}</div>` : ""}
+        ${m === "elle" ? `<textarea class="oto-boy fy-elle" data-tek rows="1" data-isa-a="sag" placeholder="Rütbe Ad SOYAD [sicil]">${esc(sg === "@kendi" ? "" : sg)}</textarea>` : ""}
+        <div class="fy-hc"><small>${segIk("sahip")}Kâğıda basılan</small><b>${esc(fyHazCoz(sg, p) || "—")}</b></div></div></div>`; })()}
+      <small class="dl-not">Boş bırakılan alt yazı basılmaz.</small></details>
     <section class="dl-kart isa-yuz"><div class="izb-ay-sat"><span>Önizleme</span><div class="dl-seg izb-kap"><button type="button" data-isa-yuz="on" aria-pressed="${isaOnzYuz === "on"}">Ön yüz</button><button type="button" data-isa-yuz="arka" aria-pressed="${isaOnzYuz === "arka"}">Arka yüz</button></div></div>
       <label class="kp-tik"><input type="checkbox" data-isa-arka${v.arka !== false ? " checked" : ""}> Çıktıya arka yüzü de ekle <small class="dl-not">İzin Belgesi Talimatı · 2. sayfa</small></label></section>
     <div class="kp-onizle dl-onz">${isaOnHtml(d)}</div>`;
@@ -11347,6 +11357,8 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#isa-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v), yaz = () => { kaydetBelge(d); izinsaCiz(); };
   if(b.dataset.isaYuz){ isaOnzYuz = b.dataset.isaYuz; document.querySelectorAll("#isa-govde [data-isa-yuz]").forEach(x => x.setAttribute("aria-pressed", x === b)); return isaTazele(d, true); }
   if(b.dataset.isaSec){ v.aktif = b.dataset.isaSec; return yaz(); }
+  if(b.dataset.isaHm){ const a = b.dataset.isaHm, L = hzOrtak(); isaSagMod = ""; if(a === "vars") v.alt.sag = L[0] || ""; else if(a === "sahip") v.alt.sag = "@kendi"; else { isaSagMod = "elle"; if(v.alt.sag === "@kendi") v.alt.sag = fyHazCoz("@kendi", isaKisi(k)); } return yaz(); }
+  if(b.dataset.isaHv){ v.alt.sag = hzOrtak()[+b.dataset.isaHv]; return yaz(); }
   if(b.dataset.isaSaat){ const a = b.dataset.isaSaat, al = a === "ayr" ? "Ayrılış" : "Katılış", koy = x => { k[a + "Saat"] = x; kaydetBelge(d); isaTazele(d); };
     return altPencere("saat-perde", "SAAT", al + " saati", () => { const [h, m] = (isaSaat(k, a) || "08:00").split(":"), yok = !isaSaat(k, a);
       return `<div class="st-baslik">Saat</div><div class="st-izg st-h">${Array.from({ length: 24 }, (_, i) => String(i).padStart(2, "0")).map(x => `<button type="button" data-st-h="${x}" aria-pressed="${!yok && x === h}">${x}</button>`).join("")}</div>
