@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "449";
+  const SURUM = "450";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3512,7 +3512,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 449</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 450</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3883,7 +3883,8 @@ async function degisenlerAc(){ const yollar = Object.keys(kirli); if(!yollar.len
     async (b, kapat) => { if(b.dataset.ks){ const x = L[+b.dataset.ks]; kapat(); if(x.git) x.git(); return; }
       if(b.dataset.kay){ kapat(); $("#k-kaydet").click(); return; }
       if(b.dataset.yok){ kapat(); if(b.dataset.yok === "hepsi") return $("#k-vazgec").click(); const x = L[+b.dataset.yok]; if(!x) return; await vazgec(true, [x.y]); bildir(`${x.ad}: değişiklik yoksayıldı`); if(Object.keys(kirli).length) $("#k-metin").click(); } }, { z: "FFF3DD", r: "7A5214" }); }
-function cubukTamam(yazi, geri){ const c = $("#kayit-cubugu"); if(Object.keys(kirli).length) return; c.classList.add("tamam"); $("#k-metin").innerHTML = `<i></i>${yazi}`; $("#k-kaydet").hidden = true; $("#k-geri").hidden = !geri; c.hidden = false; document.documentElement.classList.add("cubuk-acik"); adimDugme();
+function cubukTamam(yazi, geri){ const c = $("#kayit-cubugu"); if(Object.keys(kirli).length) return; c.classList.add("tamam"); $("#k-metin").innerHTML = `<i></i>${yazi}`; $("#k-kaydet").hidden = true; $("#k-geri").hidden = !geri;
+  { const g = $("#k-sgeri"); if(g){ g.hidden = true; clearTimeout(geriAlinabilir.z); } }   /* kaydedilince silme “geri al”ı kalkar: tek “Geri al” kaydı geri alır */ c.hidden = false; document.documentElement.classList.add("cubuk-acik"); adimDugme();
   clearTimeout(geriGoster.z); geriGoster.z = setTimeout(() => { c.classList.remove("tamam"); kayitCubugu(); }, 4500); }
 function geriGoster(){ cubukTamam("Kaydedildi", geriYigin.length > 0); }
 async function dbdenYenile(yollar){
