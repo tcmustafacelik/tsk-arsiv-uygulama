@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "483";
+  const SURUM = "484";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3060,7 +3060,7 @@ h1.marka .logo{width:42px;height:42px;filter:drop-shadow(0 3px 8px rgba(30,60,95
 .ks-av.isa-tav{background:#E1EBF6;color:#3D5F8C} .ks-av.isa-tav.ek{background:#EEF0E2;color:#5B6330}
 .isa-tekle{display:flex;gap:6px;margin-top:10px} .isa-tekle input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:10px;padding:9px 11px;font:600 13.5px var(--f-ui);background:#fff;color:#22303D} .isa-tekle button{flex:none;border:0;border-radius:10px;background:#3D5F8C;color:#fff;padding:0 14px;font:700 13px var(--f-ui);cursor:pointer}
 #isa-govde .isa-adres{min-height:36px}
-.isa-ts{display:flex;gap:5px;min-width:0} .isa-ts input{flex:1;min-width:0} .isa-ts .isa-saat{min-width:86px;justify-content:center} .isa-saat{flex:none;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line2);background:#F4F8FC;color:#2D557E;border-radius:9px;padding:0 9px;font:700 12.5px var(--f-ui);cursor:pointer;font-variant-numeric:tabular-nums} .isa-saat svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round} .isa-saat.bos{color:#8A96A3;background:#fff}
+.dl-ist{font-style:normal;font-weight:500;color:var(--muted);font-size:.92em} .isa-ts{display:flex;gap:5px;min-width:0} .isa-ts input{flex:1;min-width:0} .isa-ts .isa-saat{min-width:86px;justify-content:center} .isa-saat{flex:none;display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line2);background:#F4F8FC;color:#2D557E;border-radius:9px;padding:0 9px;font:700 12.5px var(--f-ui);cursor:pointer;font-variant-numeric:tabular-nums} .isa-saat svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round} .isa-saat.bos{color:#8A96A3;background:#fff}
 .st-baslik{font:700 11px var(--f-ui);color:var(--muted);letter-spacing:.04em;text-transform:uppercase;padding:2px 2px 0} .st-izg{display:grid;grid-template-columns:repeat(6,1fr);gap:5px} .st-m{grid-template-columns:repeat(4,1fr)}
 .st-izg button{border:1px solid #E3E8EE;background:#FAFBFC;border-radius:8px;padding:9px 0;font:700 13px var(--f-ui);color:#3D4D5E;cursor:pointer;font-variant-numeric:tabular-nums} .st-izg button[aria-pressed="true"]{background:#EEF3F9;border-color:#7F9AB8;color:#22364D;box-shadow:inset 0 0 0 1px #7F9AB8}
 .st-alt{display:flex;gap:6px;margin-top:4px} .st-alt button{flex:1;border-radius:9px;padding:10px 6px;font:700 12.5px var(--f-ui);cursor:pointer} .st-yok{border:1px solid var(--line2);background:#fff;color:#5B6B7B} .st-yok[aria-pressed="true"]{background:#F7F1E3;border-color:#E6D3A6;color:#7A5A1C} .st-tamam{border:0;background:#2F4A66;color:#fff}
@@ -3542,7 +3542,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 483</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 484</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6894,12 +6894,12 @@ function izbHesap(k){
     kalanYil: (+k.topYil || 0) - (+k.yilGun || 0), kalanMaz: (+k.topMaz || 0) - (+k.mazGun || 0), kalanYol: (+k.topYol || 0) - yol };
 }
 const izbMakam = ad => { const G = izbG(); const t = G.tasvip.find(x => x.ad === ad); const p = G.kisiler.find(x => x.ad === ad);
-  return { ad: ad || "", rutbe: (p && p.rutbe) || (t && t.rutbe) || "", gorev: (t && t.gorev) || "" }; };
+  return { ad: ad || "", rutbe: (p && p.rutbe) || (t && t.rutbe) || "", sicil: (t && t.sicil) || "", gorev: (t && t.gorev) || "" }; };
 function izbDegerler(k){
   const G = izbG(), h = izbHesap(k), ilk = izbMakam(G.ilkAmir), kom = izbMakam(G.komutan);
   return { kita: k.kita, ad: k.ad, rutbe: k.rutbe, sicil: k.sicil, tur: k.tur, tel: k.tel, sure: h.sure, ayr: izbTr(k.ayr), kat: izbTr(h.kat), onceki: k.onceki || "",
     adres: `${k.adres || ""} (${izbTr(k.ayr)}−${izbTr(h.kat)})`,
-    ilkAd: ilk.ad, ilkRutbe: ilk.rutbe, ilkGorev: ilk.gorev, komAd: kom.ad, komRutbe: kom.rutbe, komGorev: kom.gorev,
+    ilkAd: ilk.ad, ilkRutbe: rutbeSicil(ilk.rutbe, ilk.sicil), ilkGorev: ilk.gorev, komAd: kom.ad, komRutbe: rutbeSicil(kom.rutbe, kom.sicil), komGorev: kom.gorev,
     altSol: `${G.etiket || "IzinKagidi_Uzman"} (${izbSimdi()})`, altSag: ` ${k.rutbe} ${k.ad} [${k.sicil}]`, baslik: G.baslik || "İZİN BELGESİ" };
 }
 /* filigran: ön/arka için etkin metinler ("ön ve arka aynı" seçiliyse arka yüz ön yüzünkini kullanır) */
@@ -7166,7 +7166,7 @@ function izbTasvipCiz(){
     <section class="dl-kart"><div class="dl-ust"><b>Tasvip eden makamlar</b><small>${G.tasvip.length}</small><button type="button" class="dl-yeni" data-izb-is="t-ekle"><span>＋</span>Ekle</button></div>
       ${G.tasvip.map((t, i) => `<div class="izb-mk"><div class="izb-mk-b"><span class="ks-av">${esc(ksBas(t.ad) || "?")}</span><b>${esc(t.ad || "Yeni makam")}</b><button class="isa-tsil" type="button" data-izb-is="t-sil" data-i="${i}" aria-label="Sil">✕</button></div><div class="dl-alanlar">
           <label class="dl-al tam"><span>Adı soyadı</span>${izbInp("t-ad", t.ad, { i, ad: "Adı soyadı" })}</label>
-          <label class="dl-al tam"><span>Sınıfı ve rütbesi</span>${izbInp("t-rutbe", t.rutbe, { i, ad: "Rütbe", ph: izbMakam(t.ad).rutbe || "" })}</label>
+          <label class="dl-al"><span>Sınıfı ve rütbesi</span>${izbInp("t-rutbe", t.rutbe, { i, ad: "Rütbe", ph: izbMakam(t.ad).rutbe || "" })}</label><label class="dl-al"><span>Sicili <em class="dl-ist">isteğe bağlı</em></span>${izbInp("t-sicil", t.sicil || "", { i, ad: "Sicil", ph: "ör. 2012-24" })}</label>
           <label class="dl-al tam"><span>Görevi</span>${izbInp("t-gorev", t.gorev, { i, ad: "Görev" })}</label></div></div>`).join("") || '<div class="yk-bos">Makam eklenmedi</div>'}
       <small class="dl-not">Rütbe boşsa personel listesindeki rütbe kullanılır.</small></section></div>`;
 }
@@ -7260,7 +7260,7 @@ $("#e-izinb").addEventListener("click", e => {
       [["kita", p.kita], ["sicil", p.sicil], ["tel", p.tel], ["kan", p.kan], ["yakinAd", p.yakinAd], ["yakinTel", p.yakinTel]].forEach(([a, v]) => { if(v && !String(k[a] || "").trim()){ k[a] = v; n++; } });
       if(!n) return bildir("Aktarılacak yeni bilgi yok (dolu kutulara dokunulmaz)"); kaydetBt("izinb"); izbBelgeCiz(); bildir(`${n} bilgi kimlikten alındı`); }); }
   if(is === "foto-sil"){ const k = izbKisi(); if(k){ k.foto = ""; kaydetBt("izinb"); izbBelgeCiz(); } return; }
-  if(is === "t-ekle"){ G.tasvip.push({ ad: "", rutbe: "", gorev: "" }); kaydetBt("izinb"); izbTasvipCiz(); return; }
+  if(is === "t-ekle"){ G.tasvip.push({ ad: "", rutbe: "", sicil: "", gorev: "" }); kaydetBt("izinb"); izbTasvipCiz(); return; }
   if(is === "t-sil"){ G.tasvip.splice(+b.dataset.i, 1); kaydetBt("izinb"); izbTasvipCiz(); return; }
   if(is === "f-sablon"){ ["on", "arka"].forEach(y => Object.assign(G.filigran[y], { kod: IZB_SABLON_KOD, alt: IZB_SABLON_ALT, ek: IZB_SABLON_EK })); kaydetBt("izinb"); izbFiligranPanelCiz(); bildir("Örnek kondu · rakamları ve tarihi belgedeki gerçek değerlerle değiştir"); setTimeout(() => { const i = document.querySelector(`[data-izb="f-on-kod"]`); if(i){ i.focus(); i.select(); } }, 50); return; }
   if(is === "f-temizle"){ ["on", "arka"].forEach(y => Object.assign(G.filigran[y], { kod: "", alt: "", ek: "" })); kaydetBt("izinb"); izbFiligranPanelCiz(); bildir("Filigranlar temizlendi"); return; }
@@ -11221,6 +11221,8 @@ const isaSaat = (k, a) => { const s2 = k[a + "Saat"]; return s2 == null ? "08:00
 const isaTS = (k, a) => { const t = trTarih(k[a]); return t && isaSaat(k, a) ? `${t} ${isaSaat(k, a)}` : t; };
 /* sayfa altı: sol = ekran adı + GERÇEK basım günü/saati (elle tarih yazılamaz); sağ = varsayılan liste / belge sahibi / elle (FYDT ile aynı liste) */
 let isaSagMod = "";
+/* imzalayan/onaylayan: rütbe + [sicil] (PYBS: “Tnk.Kur.Bnb.[2012-24]”); sicil boşsa yalnız rütbe */
+const rutbeSicil = (r, s2) => { r = String(r || "").trim(); s2 = String(s2 || "").trim().replace(/^\[|\]$/g, ""); return s2 ? `${r}[${s2}]` : r; };
 const isaSolAd = v => String(v.alt.sol || "").replace(/\s*\([^)]*\)\s*$/, "").trim();
 const isaSol = v => { const a = isaSolAd(v); if(!a) return ""; const z = new Date(); return `${a} (${z.toLocaleDateString("tr-TR")} ${z.toLocaleTimeString("tr-TR")})`; };
 const hzOrtak = () => ((S.belgeler.find(x => x.tur === "fydt") || {}).fy || {}).hzListe || [];
@@ -11241,7 +11243,7 @@ function isaIcerik(d){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k) || 
   const gun = isaGun(k), ad = String(k.adres || "").trim().replace(/\s*\/\s*/g, "/").toLocaleUpperCase("tr"), ar = k.ayr || k.kat ? ` (${trTarih(k.ayr)} - ${trTarih(k.kat)})` : "";
   return { ust: [["Adı Soyadı", p.ad || ""], ["Sınıf ve Rütbesi", p.rutbe || ""], ["Görevi", p.kita || (p.gorev ? p.gorev + (gar && !/\\[^\\]+$/.test(p.gorev) ? " \\" + String(gar).toLocaleUpperCase("tr") : "") : "")], ["Sicili", p.sicil || ""]],
     orta: [["İzin Türü", k.tur || ""], ["İzinden Ne Kadarını Kullandığı", k.kullan ?? ""], ["Verilen İzin Süresi", gun ? gun + " Gün" + (isaYol(k) ? ` + ${isaYol(k)} Gün Yol İzni` : "") : ""], ["Telefon No", k.tel || isaTel(p)], ["İzinli Gideceği Adres ve Tarih", ad + ar]],
-    alt: [["Ayrılış Tarihi", isaTS(k, "ayr")], ["Katılış Tarihi", isaTS(k, "kat")], ["Tarih", trTarih(k.tarih)], ["İmza / Mühür", ""], ["Adı Soyadı", v.onay.ad || ""], ["Sınıfı, Rütbesi, Sicili", v.onay.rutbe || ""], ["Görevi", v.onay.gorev || ""]],
+    alt: [["Ayrılış Tarihi", isaTS(k, "ayr")], ["Katılış Tarihi", isaTS(k, "kat")], ["Tarih", trTarih(k.tarih)], ["İmza / Mühür", ""], ["Adı Soyadı", v.onay.ad || ""], ["Sınıfı, Rütbesi, Sicili", rutbeSicil(v.onay.rutbe, v.onay.sicil)], ["Görevi", v.onay.gorev || ""]],
     sol: isaSol(v), sag: fyHazCoz(v.alt.sag, p), arka: v.arka !== false, dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
 /* ölçüler (mm, sayfanın sol üstünden): kutu 10–197,6 · etiket 11,5 · iki nokta 58,7 · değer 60,8 · ikinci nüsha 137,7 mm aşağıda */
 /* Orijinalde "İmza / Mühür" satırında iki nokta yok */
@@ -11331,7 +11333,7 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
       <div class="dl-is"><button type="button" class="mini" data-isa="kopya">⧉ Kopyasını oluştur</button>${v.kayitlar.length > 1 ? '<button type="button" class="mini sil" data-isa="sil">Sil</button>' : ""}</div></section>
     <details class="dl-kart dl-bilgi"><summary><span>Onaylayan amir</span>${v.onay.ad ? `<em class="dl-tam">${esc(v.onay.ad)}</em>` : '<em class="dl-eksik">seçilmedi</em>'}</summary>
       ${Z.some(z => String(z.ad || "").trim()) ? `<small class="isa-zb">Sicil amirleri zincirinden seç</small><div class="isa-zin">${Z.filter(z => String(z.ad || "").trim()).map(z => { const on = pAd(z.ad) === pAd(v.onay.ad); return `<button type="button" class="isa-z${on ? " on" : ""}" data-isa-z="${z.id}" aria-pressed="${on}"><span class="ks-av">${esc(ksBas(z.ad))}</span><span class="ks-ad"><b>${esc(z.ad)}</b><small>${esc(z.rutbe || "")}</small></span><em>${on ? "✓" : ""}</em></button>`; }).join("")}</div>` : ""}
-      <div class="dl-alanlar"><label class="dl-al tam"><span>Adı soyadı</span><input data-isa-o="ad" value="${esc(v.onay.ad)}"></label><label class="dl-al tam"><span>Sınıfı, rütbesi, sicili</span><input data-isa-o="rutbe" value="${esc(v.onay.rutbe)}" placeholder="ör. P.Komd.Kur.Bnb. [2011-102]"></label><label class="dl-al tam"><span>Görevi</span><input data-isa-o="gorev" value="${esc(v.onay.gorev)}" placeholder="ör. Tabur Komutanı"></label></div></details>
+      <div class="dl-alanlar"><label class="dl-al tam"><span>Adı soyadı</span><input data-isa-o="ad" value="${esc(v.onay.ad)}"></label><label class="dl-al"><span>Sınıfı ve rütbesi</span><input data-isa-o="rutbe" value="${esc(v.onay.rutbe)}" placeholder="ör. Tnk.Kur.Bnb."></label><label class="dl-al"><span>Sicili <em class="dl-ist">isteğe bağlı</em></span><input data-isa-o="sicil" value="${esc(v.onay.sicil || "")}" placeholder="ör. 2012-24"></label><label class="dl-al tam"><span>Görevi</span><input data-isa-o="gorev" value="${esc(v.onay.gorev)}" placeholder="ör. Tabur Komutanı"></label></div></details>
     <details class="dl-kart dl-bilgi"><summary><span>Sayfa altı yazıları</span><em class="dl-not">isteğe bağlı · elle</em></summary>
       ${(() => { const L = hzOrtak(), sg = v.alt.sag || "", m = isaSagMod || (sg === "@kendi" ? "sahip" : L.includes(sg) ? "vars" : "elle"), seg = (k2, t) => `<button type="button" data-isa-hm="${k2}" aria-pressed="${m === k2}">${segIk(k2)}<span>${t}</span></button>`;
         return `<div class="dl-alanlar"><label class="dl-al tam"><span>Sol alt · ekran adı</span><input data-isa-a="sol" value="${esc(isaSolAd(v))}" placeholder="IzinKagidiAdres"><small class="dl-gy">yanına basım günü ve saati kendiliğinden yazılır</small></label>
@@ -11377,7 +11379,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
       (b2, kapat, yenile) => { if(b2.dataset.ks){ kapat(); const g0 = isaGun(k); k.tur = L()[+b2.dataset.ks]; if(!String(k.gun || "").trim() && +g0 > 0) k.gun = g0; isaEsle(k, "tur"); return yaz(); }
         if(b2.dataset.tsil){ v.turler.splice(+b2.dataset.tsil, 1); kaydetBelge(d); return yenile(); }
         if(b2.dataset.tekle){ const g = $("#isa-tyeni"), t = (g.value || "").trim().replace(/\s+/g, " "); if(!t) return g.focus(); const T = t.replace(/(^|\s)\S/g, x => x.toLocaleUpperCase("tr")); if(![...L()].some(x => x.toLocaleLowerCase("tr") === T.toLocaleLowerCase("tr"))) v.turler.push(T); k.tur = T; kapat(); return yaz(); } }, { z: "E6EEF7", r: "3D5F8C" }); }
-  if(b.dataset.isaZ){ const Z = ((S.belgeler.find(x => x.tur === "sicil") || {}).sa || {}).zincir || [], z = Z.find(x => x.id === b.dataset.isaZ); if(z){ v.onay.ad = z.ad || ""; if(!v.onay.rutbe || !/\[/.test(v.onay.rutbe)) v.onay.rutbe = z.rutbe || ""; } return yaz(); }
+  if(b.dataset.isaZ){ const Z = ((S.belgeler.find(x => x.tur === "sicil") || {}).sa || {}).zincir || [], z = Z.find(x => x.id === b.dataset.isaZ); if(z){ if(pAd(v.onay.ad) !== pAd(z.ad)){ v.onay.ad = z.ad || ""; v.onay.rutbe = z.rutbe || ""; v.onay.sicil = z.sicil || ""; }   /* aynı kişi yeniden seçilirse elle yazılan rütbe/sicil korunur */ } return yaz(); }
   const is = b.dataset.isa;
   if(is === "kisi") return kisiSecAc("İzin belgesi kimin adına", P0(), k.pid, id => { k.pid = id; kaydetBelge(d); izinsaCiz(); });
   if(is === "yeni"){ const y = isaYeni({ pid: k.pid }); v.kayitlar.push(y); v.aktif = y.id; return yaz(); }
