@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "520";
+  const SURUM = "521";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3653,7 +3653,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 520</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 521</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6244,7 +6244,7 @@ function hedefOzet(){
     const G = S.hedef.rows.filter(r => (!hFiltre || (hFiltre === "__yok" ? !grupBul(r) : grupBul(r) === hFiltre)) && hIstV(r) != null); if(!G.length) return "";
     const by = f => G.slice().sort((a, b) => f(a) - f(b))[0], so = by(hIstV), sa = by(r => -hIstV(r)), o = by(r => Math.abs(hIstV(r) - 3200)), n15 = Math.min(15, G.length);
     const k = (y, ad, v, no, d) => `<button type="button" class="hd-uc" data-hd-yak="${y}" aria-pressed="${(hYak || "") === y}"><small class="tek-sat u1"><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>${ad}</small><b class="tek-sat u2">${esc(v)}</b><span class="tek-sat u3">${esc(no || "")}</span><em class="tek-sat u4">${(hYak || "") === y ? "✓ " : ""}${y ? n15 + " hedef" : "sıra hâli"}</em></button>`;
-    return k("", "Hepsi", G.length, hFiltre ? "gruptaki hedef" : "hedef", '<path d="M4 6h16M4 12h16M4 18h16"/>') + k("sol", "En sol", so.ist, so.no, '<path d="M10 6l-6 6 6 6M4 12h16"/>') + k("orta", "3200", o.ist ?? "", o.no, '<path d="M12 4v16M8 8l4-4 4 4"/>') + k("sag", "En sağ", sa.ist, sa.no, '<path d="M14 6l6 6-6 6M20 12H4"/>'); })() : "";
+    return k("", "Hepsi", G.length, "hedef", '<path d="M4 6h16M4 12h16M4 18h16"/>') + k("sol", "En sol", so.ist, so.no, '<path d="M10 6l-6 6 6 6M4 12h16"/>') + k("orta", "3200", o.ist ?? "", o.no, '<path d="M12 4v16M8 8l4-4 4 4"/>') + k("sag", "En sağ", sa.ist, sa.no, '<path d="M14 6l6 6-6 6M20 12H4"/>'); })() : "";
 }
 /* hedef listesi: her hedef bir satır kartı (numara grup renginde); dokununca bütün alanlar düzenlenir. Değerler olduğu gibi saklanır, hesap yapılmaz. */
 let hAcik = null, hOnAcik = (() => { try { return localStorage.getItem("hOnAcik") === "1"; } catch(e){ return false; } })();
