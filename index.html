@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "463";
+  const SURUM = "464";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -524,7 +524,13 @@
   const TOKEN_URL = "https://github.com/settings/personal-access-tokens/new?name=TSK%20ARSIV&description=TSK%20ARSIV%20bulut%20esitleme&target_name=tcmustafacelik&expires_in=none&contents=write";
   document.addEventListener("DOMContentLoaded", () => {
     document.body.classList.add("yerel");
-    try { if("serviceWorker" in navigator && location.protocol === "https:") navigator.serviceWorker.register("sw.js").catch(() => {}); } catch(e){}   // internetsiz açılış
+    try { if("serviceWorker" in navigator && location.protocol === "https:"){ navigator.serviceWorker.register("sw.js").catch(() => {});   // internetsiz ve hızlı açılış
+      /* sayfa telefondaki kopyadan açılır; yeni sürüm arka planda inince küçük bir uyarı çıkar */
+      navigator.serviceWorker.addEventListener("message", ev => { if(!ev.data || ev.data.tip !== "yeni-surum" || document.getElementById("yeni-surum")) return;
+        const d = document.createElement("div"); d.id = "yeni-surum"; d.setAttribute("role", "status");
+        d.innerHTML = '<span>Yeni sürüm hazır</span><button type="button" data-ys="yenile">Yenile</button><button type="button" data-ys="kapat" aria-label="Kapat">✕</button>';
+        d.addEventListener("click", e => { const b = e.target.closest("[data-ys]"); if(!b) return; if(b.dataset.ys === "yenile") location.reload(); else d.remove(); });
+        document.body.appendChild(d); }); } } catch(e){}
     const st = document.createElement("style");
     st.textContent = `body.yerel .yok-yerel{display:none}
       #bulut-ikon{display:inline-flex;align-items:center;gap:6px;font:600 12px var(--f-ui);padding:4px 10px;border-radius:999px;border:1px solid var(--line);background:var(--panel);color:var(--muted);cursor:pointer}
@@ -3160,6 +3166,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .km-fres img{width:100%;height:100%;object-fit:contain;background:#fff;display:block} .km-fres img.soluk{opacity:.35}
 .km-fres i{position:absolute;inset:0;display:grid;place-items:center;font:600 20px var(--f-ui);font-style:normal;color:#3D5A73}
 .km-fad{display:flex;align-items:center;gap:4px;font:600 11.5px var(--f-ui);color:var(--fg);white-space:nowrap}
+#yeni-surum{position:fixed;left:50%;top:calc(env(safe-area-inset-top) + 10px);transform:translateX(-50%);z-index:9000;display:flex;align-items:center;gap:8px;padding:6px 6px 6px 12px;border:1px solid #CFE0CA;border-radius:10px;background:#EEF4EC;box-shadow:0 4px 14px rgba(30,40,50,.12);font:600 12.5px var(--f-ui);color:#3E6B3A;white-space:nowrap}
+#yeni-surum button{border:1px solid #CFE0CA;border-radius:7px;background:#fff;color:#2F4A60;font:700 12px var(--f-ui);padding:5px 10px;cursor:pointer} #yeni-surum [data-ys="kapat"]{border:0;background:none;color:var(--muted);padding:5px 6px}
 .km-kl{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-top:10px;padding:6px 8px;border:1px solid var(--line2);border-radius:8px;background:#F7F8FA}
 .km-kl.fark span{flex-basis:100%} .km-kl.fark button:first-of-type{margin-left:auto} .km-kl.on{background:#EEF4EC;border-color:#CFE0CA} .km-kl span{flex:1 1 150px;font:600 11.5px/1.35 var(--f-ui);color:var(--muted)} .km-kl.on span{color:#3E6B3A}
 .km-kl button{flex:none;padding:5px 9px;border:1px solid var(--line2);border-radius:7px;background:#fff;color:#2F4A60;font:700 11.5px var(--f-ui);cursor:pointer;white-space:nowrap}
@@ -3516,7 +3524,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 463</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 464</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
