@@ -1,7 +1,7 @@
 /* TSK ARŞİV · çevrimdışı açılış: uygulamanın kendisi ve kütüphaneler telefonda saklanır.
    Veriler (GitHub API) asla önbelleğe alınmaz; onlar zaten uygulamanın kendi cihaz deposunda durur. */
-const AD = "tsk-arsiv-v6";
-self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(AD).then(c => c.addAll(["./", "./manifest.webmanifest", "./icon-v5-192.png", "./fonts/LiberationSerif-Regular.ttf", "./fonts/LiberationSerif-Bold.ttf", "./fonts/LiberationSans-Regular.ttf", "./fonts/LiberationSans-Bold.ttf"])).catch(() => {})); });
+const AD = "tsk-arsiv-v7";
+self.addEventListener("install", e => { self.skipWaiting(); e.waitUntil(caches.open(AD).then(c => c.addAll(["./", "./manifest.webmanifest", "./icon-v6-192.png", "./fonts/LiberationSerif-Regular.ttf", "./fonts/LiberationSerif-Bold.ttf", "./fonts/LiberationSans-Regular.ttf", "./fonts/LiberationSans-Bold.ttf"])).catch(() => {})); });
 self.addEventListener("activate", e => e.waitUntil((async () => { for(const k of await caches.keys()) if(k !== AD) await caches.delete(k); await self.clients.claim(); })()));
 self.addEventListener("fetch", e => {
   const r = e.request; if(r.method !== "GET") return; const u = new URL(r.url);
