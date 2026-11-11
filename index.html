@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "505";
+  const SURUM = "506";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3218,6 +3218,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .sg-ikli{display:inline-flex!important;align-items:center;justify-content:center;gap:5px} .sg-ik{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
 .sg-ikli[aria-pressed="true"],.sg-ikli.on,.sg-ikli[aria-selected="true"]{color:#2D557E!important} .sg-ikli[aria-pressed="true"] .sg-ik,.sg-ikli.on .sg-ik,.sg-ikli[aria-selected="true"] .sg-ik{opacity:1;color:#3D6A99}
 .dl-seg-tur .sg-ikli,.gd-cs-sec .sg-ikli{flex-direction:column;gap:2px} .gd-cs-sec .sg-ikli{white-space:nowrap}
+.kb2-av:is(.rs-gen,.rs-ust,.rs-subay,.rs-asb,.rs-uzm,.rs-soz){background:#F1F1EC!important} .kb2-av:is(.rs-gen,.rs-ust,.rs-subay,.rs-asb,.rs-uzm,.rs-soz) svg{width:22px;height:22px}
 .rs-buyuk{width:34px!important;height:34px!important;border-radius:9px!important} .rs-buyuk svg{width:26px!important;height:26px!important} .rs-grup{font:700 11px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:10px 2px 6px}
 .rs-oz{font:700 10px var(--f-ui);font-style:normal;color:#7A5A1C;background:#F7F1E3;border-radius:6px;padding:2px 6px} .rsd-on{display:flex;align-items:center;gap:12px;padding:4px 2px 8px} .rsd-on .rs-buyuk{width:56px!important;height:56px!important} .rsd-on .rs-buyuk svg{width:44px!important;height:44px!important} .rsd-on b{font:700 15px var(--f-ui)}
 .rsd-seg{grid-template-columns:repeat(auto-fit,minmax(58px,1fr))!important;display:grid!important} .rsd-n{grid-template-columns:repeat(7,1fr)!important}
@@ -3601,7 +3602,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 505</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 506</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4062,20 +4063,37 @@ const rsOzelCiz = o => { const n = Math.max(0, Math.min(7, +o.n || 0)), ay = o.a
   return '<path d="M8 20V6.5a4 4 0 0 1 8 0V20z"/><circle cx="12" cy="7" r="1" class="dolu"/>'; };
 function rutbeSimge(r0, p = {}){ const R = rutbeSimgeHam(r0, p), oz = ((S.personel || {}).rsOzel || {})[R[0].split(" · ")[0]]; if(!oz) return R;
   const kd = /^Uzman Çavuş/.test(R[0]) ? RT_KIDEM(Math.min(4, Math.floor(yilFark(nasipZ(p)) / 3)), 16.4) : ""; return [R[0], rsOzelCiz(oz) + kd, R[2]]; }
+/* GERÇEK TSK RÜTBE İŞARETLERİ (kullanıcının gönderdiği tabloya göre, renkli küçük çizim):
+   subay/general: koyu yeşil apolet + altın yıldız (üst subay: mavi zeminli defne amblem, general: kırmızı zeminli amblem, Asteğmen: altın dikdörtgen);
+   astsubay: siyah zemin üzerine altın kanat şeritleri + ay yıldız (Başçavuş düz şeritli); uzman erbaş: siyah zemin, kırmızı kanat + ay yıldız, kıdem = altında düz kırmızı çizgi;
+   erbaş: kırmızı V (Çavuş 2, Onbaşı 1); er: işaret yok. */
+const RG = { y: "#D6AE45", yk: "#9C7A22", ap: "#3A4230", z: "#1D2023", k: "#D63A2E" };
+const rgYildiz = (x, y, r) => { const k = []; for(let i = 0; i < 10; i++){ const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .42 : r; k.push((x + rr * Math.cos(a)).toFixed(2) + " " + (y + rr * Math.sin(a)).toFixed(2)); } return `<path d="M${k.join("L")}z" style="fill:${RG.y};stroke:${RG.yk};stroke-width:.35"/>`; };
+const rgApolet = ic => `<path d="M.8 7H19.5a5 5 0 0 1 0 10H.8z" style="fill:${RG.ap};stroke:#262B1F;stroke-width:.5"/><circle cx="20.3" cy="12" r="1.7" style="fill:${RG.y};stroke:${RG.yk};stroke-width:.4"/>${ic}`;
+const rgAmblem = zemin => `<circle cx="4.4" cy="12" r="2.9" style="fill:${zemin};stroke:${RG.y};stroke-width:.9"/><path d="M2.4 14.4c1.2 1.1 2.8 1.1 4 0" style="fill:none;stroke:${RG.y};stroke-width:.7"/>`;
+const rgAyY = (c, x = 12, y = 12.6, s = 1) => `<path d="M${(x - .6 * s).toFixed(2)} ${(y - 2.6 * s).toFixed(2)}a${2.6 * s} ${2.6 * s} 0 1 0 0 ${(5.2 * s).toFixed(2)}a${3.1 * s} ${3.1 * s} 0 0 1 0-${(5.2 * s).toFixed(2)}z" style="fill:${c};stroke:none"/><path d="M${(x + 1.3 * s).toFixed(2)} ${(y - .9 * s).toFixed(2)}l.35.8.85.05-.65.55.2.85-.75-.45-.75.45.2-.85-.65-.55.85-.05z" style="fill:${c};stroke:none"/>`;
+const rgKanat = (n, c, y0, h = 2.3) => Array.from({ length: n }, (_, i) => { const y = y0 + i * h; return `<path d="M2.4 ${y.toFixed(1)}Q6.2 ${(y + .6).toFixed(1)} 8.6 ${(y + 2.6).toFixed(1)}M21.6 ${y.toFixed(1)}Q17.8 ${(y + .6).toFixed(1)} 15.4 ${(y + 2.6).toFixed(1)}" style="fill:none;stroke:${c};stroke-width:1.35;stroke-linecap:round"/>`; }).join("");
+const rgYama = (y = 5, h = 14) => `<rect x="1" y="${y}" width="22" height="${h}" rx="1.6" style="fill:${RG.z};stroke:#55524A;stroke-width:.5"/>`;
+const rgDuz = (ys, c, x1 = 2.6, x2 = 21.4, w = 1.3) => ys.map(y => `<path d="M${x1} ${y}H${x2}" style="fill:none;stroke:${c};stroke-width:${w};stroke-linecap:round"/>`).join("");
 function rutbeSimgeHam(r0, p = {}){ const r = String(r0 || ""), t = r.replace(/\s+/g, "");
-  const G = [["Org", 4], ["Korg", 3], ["Tümg", 2], ["Tuğg", 1]].find(([k]) => new RegExp("(^|[.\\s])" + k + "\\b", "i").test(r)); if(G) return [G[0] + "eneral", RT_YILDIZ(G[1], 9) + RT_DEFNE + '<path d="M5 16c3 1.4 11 1.4 14 0"/>', "gen"];
-  const U = [["Alb", 3, "Albay"], ["Yb", 2, "Yarbay"], ["Bnb", 1, "Binbaşı"]].find(([k]) => new RegExp("(^|[.\\s])" + k + "\\b", "i").test(r)); if(U) return [U[2], RT_YILDIZ(U[1], 9.5) + RT_DEFNE, "ust"];
-  if(/Yzb/i.test(r)) return ["Yüzbaşı", RT_YILDIZ(3, 12), "subay"]; if(/Ütğm|Ütgm|Üteğ/i.test(r)) return ["Üsteğmen", RT_YILDIZ(2, 12), "subay"];
-  if(/Asteğm|Astğm/i.test(r)) return ["Asteğmen", '<path d="M5 12h14" style="stroke-width:3"/>', "subay"]; if(/(^|[.\s])Tğm/i.test(r)) return ["Teğmen", RT_YILDIZ(1, 12), "subay"];
-  if(/Asb\./i.test(t)){ const L = [[/Kd\.?Bçvş/i, 3, 1, "Astsubay Kıdemli Başçavuş"], [/Bçvş/i, 3, 0, "Astsubay Başçavuş"], [/Kd\.?Üçvş/i, 2, 1, "Astsubay Kıdemli Üstçavuş"], [/Üçvş/i, 2, 0, "Astsubay Üstçavuş"], [/Kd\.?Çvş/i, 1, 1, "Astsubay Kıdemli Çavuş"], [/Çvş/i, 1, 0, "Astsubay Çavuş"]].find(([x]) => x.test(t)) || [0, 1, 0, "Astsubay"];
-    return [L[3], RT_L(L[1], L[2]), "asb"]; }
-  if(/Uzm\./i.test(t)){ if(/Onb/i.test(t)) return ["Uzman Onbaşı", RT_V(1), "uzm"];
-    const k = Math.min(4, Math.floor(yilFark(nasipZ(p)) / 3)), Rm = ["", "I", "II", "III", "IV"][k];
-    return ["Uzman Çavuş" + (k ? ` · ${Rm}. kademe (kıdem ${k})` : ""), RT_V(2).replace(/M6 (\d+(\.\d+)?)/g, (m, y) => "M6 " + (+y - 2)) + RT_KIDEM(k, 15.2), "uzm"]; }
+  const G = [["Org", 4], ["Korg", 3], ["Tümg", 2], ["Tuğg", 1]].find(([k]) => new RegExp("(^|[.\\s])" + k + "\\b", "i").test(r));
+  if(G){ const Y = { 1: [[11, 12, 2.4]], 2: [[10, 12, 2.2], [15, 12, 2.2]], 3: [[10, 9.6, 1.9], [10, 14.4, 1.9], [14.6, 12, 2]], 4: [[9.6, 9.6, 1.9], [9.6, 14.4, 1.9], [13.6, 12, 1.9], [17.2, 12, 1.7]] }[G[1]];
+    return [G[0] + "eneral", rgApolet(rgAmblem("#B8392C") + Y.map(a => rgYildiz(...a)).join("")), "gen"]; }
+  const U = [["Alb", 3, "Albay"], ["Yb", 2, "Yarbay"], ["Bnb", 1, "Binbaşı"]].find(([k]) => new RegExp("(^|[.\\s])" + k + "\\b", "i").test(r));
+  if(U){ const X = { 1: [10.5], 2: [10, 14.6], 3: [9.3, 12.9, 16.5] }[U[1]]; return [U[2], rgApolet(rgAmblem("#2F7186") + X.map(x => rgYildiz(x, 12, U[1] === 3 ? 1.75 : 2.1)).join("")), "ust"]; }
+  const SB = /Yzb/i.test(r) ? ["Yüzbaşı", [4.6, 9.4, 14.2]] : /Ütğm|Ütgm|Üteğ/i.test(r) ? ["Üsteğmen", [6.5, 12]] : /Asteğm|Astğm/i.test(r) ? ["Asteğmen", null] : /(^|[.\s])Tğm/i.test(r) ? ["Teğmen", [8]] : null;
+  if(SB) return [SB[0], rgApolet(SB[1] ? SB[1].map(x => rgYildiz(x, 12, SB[1].length === 3 ? 2.2 : 2.4)).join("") : `<rect x="3.2" y="9.8" width="2.6" height="4.4" style="fill:${RG.y};stroke:${RG.yk};stroke-width:.35"/>`), "subay"];
+  if(/Asb\./i.test(t)){ const L = [[/Kd\.?Bçvş/i, "Astsubay Kıdemli Başçavuş", "b", 4], [/Bçvş/i, "Astsubay Başçavuş", "b", 3], [/Kd\.?Üçvş/i, "Astsubay Kıdemli Üstçavuş", "k", 4], [/Üçvş/i, "Astsubay Üstçavuş", "k", 3], [/Kd\.?Çvş/i, "Astsubay Kıdemli Çavuş", "k", 2], [/Çvş/i, "Astsubay Çavuş", "k", 1]].find(([x]) => x.test(t)) || [0, "Astsubay", "k", 1];
+    const ic = L[2] === "b" ? rgDuz(L[3] === 4 ? [6.8, 8.6, 15.8, 17.6] : [6.8, 8.6, 16.6], RG.y) + rgKanat(1, RG.y, 10.6) + rgAyY(RG.y, 12, 12.4, .85) : rgKanat(L[3], RG.y, 12.4 - (L[3] - 1) * 1.15 - 1.3, 2.3) + rgAyY(RG.y, 12, 12.6, .95);
+    return [L[1], rgYama(5, 14) + ic, "asb"]; }
+  if(/Uzm\./i.test(t)){ if(/Onb/i.test(t)) return ["Uzman Onbaşı", rgYama(6, 12) + rgKanat(1, RG.k, 10.8) + rgAyY(RG.k, 12, 12.4, .9), "uzm"];
+    const k = Math.min(3, Math.floor(yilFark(nasipZ(p)) / 3)), Rm = ["", "I", "II", "III"][k], y0 = k ? 2.4 : 5, h = 12;
+    return ["Uzman Çavuş" + (k ? ` · ${Rm}. kademe (kıdem ${k})` : ""), rgYama(y0, h) + rgKanat(2, RG.k, y0 + 3.6) + rgAyY(RG.k, 12, y0 + 7.3, .9) + rgDuz(Array.from({ length: k }, (_, i) => (y0 + h + 1.9 + i * 2.2).toFixed(1)), RG.k, 4, 20, 1.4), "uzm"]; }
   if(/(Dr\.|Tbp|Tabip|Doktor|Hekim)/i.test(r)) return ["Doktor / Tabip", '<path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/>', "dr"];
   if(/(Memur|D\.?M\.|Sivil|Mühendis|Öğretmen)/i.test(r)) return ["Devlet memuru", '<rect x="4" y="8" width="16" height="11" rx="2"/><path d="M9 8V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v2M4 13h16"/>', "sivil"];
   if(/(İşçi|Isci)/i.test(r)) return ["İşçi", '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-2.5-.5-.5-2.5z"/>', "sivil"];
-  if(/Çvş/i.test(t)) return ["Çavuş", RT_V(2), "soz"]; if(/Onb/i.test(t)) return ["Onbaşı", RT_V(1), "soz"];
+  { const V = (n, c) => Array.from({ length: n }, (_, i) => { const y = 6 + i * 4.6 + (2 - n) * 2.3; return `<path d="M3.5 ${y}L12 ${y + 6.5}L20.5 ${y}" style="fill:none;stroke:#3A1D1A;stroke-width:4;stroke-linejoin:miter"/><path d="M3.5 ${y}L12 ${y + 6.5}L20.5 ${y}" style="fill:none;stroke:${c};stroke-width:2.4;stroke-linejoin:miter"/>`; }).join("");
+    if(/Çvş/i.test(t)) return ["Çavuş", V(2, "#B83A33"), "soz"]; if(/Onb/i.test(t)) return ["Onbaşı", V(1, "#D07878"), "soz"]; }
   if(/(^|[.\s])Er\b|Söz/i.test(r)) return ["Er · rütbe işareti yok", '<path d="M8 20V6.5a4 4 0 0 1 8 0V20z"/><circle cx="12" cy="7" r="1" class="dolu"/>', "soz"];
   return ["Personel", '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>', "kisi"]; }
 const kbRutbeIk = x => { const p = (S.personel.rows || []).find(y => y.id === x.id || (x.pid && y.id === x.pid) || (x.ad && pAd(y.ad) === pAd(x.ad))) || {}, rt = x.rutbe || p.rutbe || "", [ad, d, k] = rutbeSimge(rt, { ...p, nasip: x.nasip || p.nasip });
