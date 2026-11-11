@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "514";
+  const SURUM = "515";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3128,6 +3128,23 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .gc-temiz .gt-sec button[aria-pressed="true"]{background:#8A3424;border-color:#8A3424;color:#fff}
 .gc-temiz .gt-onay{display:flex;gap:8px} .gc-temiz .gt-onay input{flex:1;min-width:0;border:1px solid #E5CFC9;border-radius:9px;padding:8px 10px;font:600 13px var(--f-ui)} .gc-temiz .gt-onay .btn{background:#A3412F;border-color:#A3412F;color:#fff;border-radius:9px}
 .gc-temiz .gt-onay .btn:disabled{opacity:.4}
+.gc-ik{display:inline-grid;place-items:center;flex:none;width:28px;height:28px;border-radius:8px;background:var(--iz);color:var(--ir)} .gc-ik svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.gc-sekme button{display:flex!important;align-items:center;justify-content:center;gap:7px} .gc-sekme .gc-ik{width:22px;height:22px;border-radius:6px} .gc-sekme .gc-ik svg{width:14px;height:14px}
+.gc-not{margin:0;font:500 11.5px/1.45 var(--f-ui);color:var(--muted)}
+.gc-gun{font:700 10.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:#6B7B8B;padding:8px 2px 0}
+.gc-liste{gap:6px!important} .gc-oge{flex-direction:row!important;align-items:flex-start;gap:10px!important;background:#fff!important;border-color:#E6EAEE!important;border-radius:10px!important} .gc-oge.simdi{border-color:#BFD3E6!important;background:#F6F9FC!important}
+.gc-y{display:flex;flex-direction:column;gap:2px;flex:1;min-width:0} .gc-y b{display:flex;align-items:center;gap:6px;font:700 14px var(--f-ui)} .gc-y b em{font:700 10px var(--f-ui);font-style:normal;color:#2F6B3E;background:#E3F1E4;border-radius:6px;padding:2px 6px}
+.gc-y small{font:500 12px/1.4 var(--f-ui);color:var(--muted);overflow-wrap:anywhere}
+.gc-temiz{margin:0 0 4px!important;padding:0!important;overflow:hidden} .gc-temiz>summary{display:flex;align-items:center;gap:10px;padding:10px 12px;cursor:pointer;list-style:none} .gc-temiz>summary::-webkit-details-marker{display:none}
+.gc-temiz>summary>span:not(.gc-ik){flex:1;display:flex;flex-direction:column;gap:1px} .gc-govde>*{flex-shrink:0} .gc-temiz>summary small{font:500 11.5px var(--f-ui);color:#8A6A62} .gc-temiz>summary i{font-style:normal;color:#A3412F;transition:transform .15s} .gc-temiz[open]>summary i{transform:rotate(90deg)}
+.gc-temiz>p,.gc-temiz>div{margin-left:12px!important;margin-right:12px!important} .gc-temiz>.gt-onay{margin-bottom:12px!important}
+.gc-temiz .gt-sec button{display:inline-flex;align-items:center;gap:6px} .gc-temiz .gt-sec button i{width:14px;height:14px;border-radius:4px;border:1.5px solid #C9A49A;background:#fff;flex:none}
+.gc-temiz .gt-sec button[aria-pressed="true"]{background:#FBEDEA!important;border-color:#D9A79C!important;color:#7A3024!important} .gc-temiz .gt-sec button[aria-pressed="true"] i{background:#A3412F;border-color:#A3412F;box-shadow:inset 0 0 0 2px #fff}
+.gc-ust{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:8px 10px;border:1px solid #EADFC6;background:#FCF8EE;border-radius:10px} .gc-ust>span{display:flex;align-items:center;gap:8px} .gc-ust small{font:500 11.5px var(--f-ui);color:var(--muted)}
+.gc-bosalt,.gc-geri{display:inline-flex;align-items:center;gap:6px;border:1px solid #E5CFC9;background:#fff;border-radius:9px;padding:4px 10px 4px 4px;font:700 12px var(--f-ui);color:#8A3424;cursor:pointer;flex:none} .gc-geri{border-color:#CFE2D2;color:#2F6B3E}
+.gc-bosalt .gc-ik,.gc-geri .gc-ik{width:22px;height:22px;border-radius:6px} .gc-bosalt .gc-ik svg,.gc-geri .gc-ik svg{width:13px;height:13px}
+.cp-sat{display:flex;align-items:center;gap:10px}
+
 .ks-av.deg-av{background:#FBEFD8;color:#7A5214;font-weight:800} .deg-not{margin:10px 2px 0;font:500 11.5px var(--f-ui);color:var(--muted)}
 
 .dl-ust .km-s{background:#E4F0F1;color:#2F6670} .km-ozet{margin-left:auto}
@@ -3621,7 +3638,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 514</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 515</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6594,6 +6611,8 @@ function gecmisOzet(d, veri){
     const b = v("belgeler/" + d.id); return b ? `${b.grid ? b.grid.c.length + " satır" : "belge"} · ${b.ad}` : "Bu sürümde belge yok";
   } catch(e){ return "özet çıkarılamadı"; }
 }
+const GC_IK = { saat: '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>', cop: '<path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12M10.5 10.5v5.5M13.5 10.5v5.5"/>', tel: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>', pc: '<rect x="3" y="5" width="18" height="11" rx="1.5"/><path d="M9 20h6M12 16v4"/>', bulut: '<path d="M7 18h10a4 4 0 0 0 .4-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/>', supur: '<path d="M14 3l-4 9M6 12h10l-1 9H7z"/><path d="M9 15v3M12 15v3"/>', geri: '<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>', kutu: '<rect x="4" y="5" width="16" height="4" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>' };
+const gcIk = (k, z, c) => `<span class="gc-ik" style="--iz:${z};--ir:${c}"><svg viewBox="0 0 24 24" aria-hidden="true">${GC_IK[k]}</svg></span>`;
 async function gecmisAc(){
   const d = acikBelge(); if(!d) return; const G = window.TSK_GECMIS;
   let p = document.getElementById("gc-perde");
@@ -6602,22 +6621,25 @@ async function gecmisAc(){
     p.addEventListener("click", e => { if(e.target === p || e.target.closest(".sc-x")) p.hidden = true; }); }
   const cop = await copOku(), sin = Date.now() - COP_GUN * 864e5; cop.L = cop.L.filter(x => x.t > sin);
   p.innerHTML = `<div class="sc-kart gc-kart" role="dialog" aria-modal="true"><div class="sc-tut"></div><div class="sc-bas"><h4>Geçmiş · ${esc(d.ad)}</h4><button class="sc-x" type="button" aria-label="Kapat">✕</button></div>
-    <div class="gc-sekme"><button type="button" data-gcs="k" aria-pressed="${gcSekme !== "c"}">Kayıt geçmişi</button><button type="button" data-gcs="c" aria-pressed="${gcSekme === "c"}">Silinenler<b>${cop.L.length}</b></button></div>
+    <div class="gc-sekme"><button type="button" data-gcs="k" aria-pressed="${gcSekme !== "c"}">${gcIk("saat", "#E4EDF7", "#3F6487")}Kayıt geçmişi</button><button type="button" data-gcs="c" aria-pressed="${gcSekme === "c"}">${gcIk("cop", "#F7E6E2", "#A3412F")}Silinenler<b>${cop.L.length}</b></button></div>
     <div class="gc-govde" id="gc-govde"><div class="uclar">Yükleniyor…</div></div></div>`;
   p.hidden = false;
   const gv = p.querySelector("#gc-govde");
   if(gcSekme === "c"){ const L = cop.L.slice().reverse(); gcCop = L;
-    gv.innerHTML = `<p class="uclar">Kaydedilirken silinen satırlar ve belgeler ${COP_GUN} gün burada durur. “Geri getir” eski yerine koyar; sonra Kaydet’e basın.</p>${L.length ? `<div class="cp-liste">${L.map((x, i) => `<div class="cp-sat"><span class="cp-ad">${esc(x.ad)}<small>${esc(x.belge || "")} · ${esc(new Date(x.t).toLocaleString("tr-TR", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" }))}</small></span><button type="button" class="mini" data-cpg="${i}">Geri getir</button></div>`).join("")}</div>
-      <div style="margin-top:12px;text-align:right"><button type="button" class="mini sil" data-cpb="1">Silinenleri boşalt</button></div>` : `<div class="mesaj">Silinen bir şey yok.</div>`}`; return; }
+    gv.innerHTML = `${L.length ? `<div class="gc-ust"><span>${gcIk("kutu", "#F3ECDD", "#7A5A25")}<b>${L.length} silinen</b><small>${COP_GUN} gün saklanır</small></span><button type="button" class="gc-bosalt" data-cpb="1">${gcIk("supur", "#F7E6E2", "#A3412F")}Boşalt</button></div>` : ""}
+      <p class="gc-not">“Geri getir” eski yerine koyar; sonra Kaydet’e basın.</p>${L.length ? `<div class="cp-liste">${L.map((x, i) => `<div class="cp-sat">${gcIk("cop", "#F7E6E2", "#A3412F")}<span class="cp-ad">${esc(x.ad)}<small>${esc(x.belge || "")} · ${esc(new Date(x.t).toLocaleString("tr-TR", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" }))}</small></span><button type="button" class="gc-geri" data-cpg="${i}">${gcIk("geri", "#E3F1E4", "#2F6B3E")}Geri getir</button></div>`).join("")}</div>` : `<div class="mesaj">Silinen bir şey yok.</div>`}`; return; }
   if(!G || !G.var()){ gv.innerHTML = `<div class="mesaj">Geçmiş, bulut eşitlemesi (GitHub) bağlıyken kullanılabilir. Her kayıt bulutta bir sürüm olarak saklanır.</div>`; return; }
   try {
     const L = await G.liste(60); const bugun = new Date().toDateString();
-    gv.innerHTML = `<p class="uclar">Bir zamana dokun; o andaki hâli gösterilir, istersen geri yüklersin. Geri yükleme de geri alınabilir.</p><div class="gc-liste">${L.map((c, i) => { const t = new Date(c.tarih);
-      const z = t.toDateString() === bugun ? "Bugün " + t.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }) : t.toLocaleString("tr-TR", { day: "2-digit", month: "long", hour: "2-digit", minute: "2-digit" });
-      return `<button type="button" class="gc-oge" data-sha="${esc(c.sha)}"><b>${esc(z)}</b><small>${i === 0 ? "şu anki bulut hâli · " : ""}${esc(/telefon/.test(c.mesaj) ? "telefondan" : /bilgisayar/.test(c.mesaj) ? "bilgisayardan" : c.mesaj.replace(/^TSK ARŞİV\s*/, ""))}</small><span class="gc-ozet"></span></button>`; }).join("")}</div>
-      <div class="gc-temiz"><b>Geçmişi temizle</b><p>Düzen oturduysa buluttaki eski kayıt sürümlerini silebilirsiniz. Yalnız şu anki hâl kalır; eski sürümlere bir daha dönülemez. Arşivdeki belgeler silinmez.</p>
-        <div class="gt-sec"><button type="button" data-gt="pay" aria-pressed="true">Paylaşım deposu da</button><button type="button" data-gt="cop" aria-pressed="true">Silinenler kutusu da</button></div>
-        <div class="gt-onay"><input id="gt-yaz" placeholder="Onay için SİL yazın" autocomplete="off"><button type="button" class="btn" id="gt-btn" disabled>Temizle</button></div></div>`;
+    const gun = t => { const d = new Date(t), b = new Date(), dun = new Date(Date.now() - 864e5); return d.toDateString() === b.toDateString() ? "Bugün" : d.toDateString() === dun.toDateString() ? "Dün" : d.toLocaleDateString("tr-TR", { day: "numeric", month: "long", weekday: "long" }); };
+    let son = "";
+    gv.innerHTML = `<details class="gc-temiz"><summary>${gcIk("supur", "#F7E6E2", "#A3412F")}<span><b>Geçmişi temizle</b><small>Buluttaki eski kayıt sürümlerini sil</small></span><i>›</i></summary>
+        <p>Yalnız şu anki hâl kalır; eski sürümlere bir daha dönülemez. Arşivdeki belgeler silinmez.</p>
+        <div class="gt-sec"><button type="button" data-gt="pay" aria-pressed="true"><i></i>Paylaşım deposu da</button><button type="button" data-gt="cop" aria-pressed="true"><i></i>Silinenler kutusu da</button></div>
+        <div class="gt-onay"><input id="gt-yaz" placeholder="Onay için SİL yazın" autocomplete="off"><button type="button" class="btn" id="gt-btn" disabled>Temizle</button></div></details>
+      <p class="gc-not">Bir zamana dokun; o andaki hâli ve farkları gösterilir, istersen geri yüklersin. Geri yükleme de geri alınabilir.</p><div class="gc-liste">${L.map((c, i) => { const t = new Date(c.tarih), g = gun(c.tarih), bas = g !== son ? `<div class="gc-gun">${esc(g)}</div>` : ""; son = g;
+      const kay = /telefon/.test(c.mesaj) ? ["tel", "telefondan", "#E3EEF0", "#2F6670"] : /bilgisayar/.test(c.mesaj) ? ["pc", "bilgisayardan", "#EAE6F3", "#5E4A86"] : ["bulut", c.mesaj.replace(/^TSK ARŞİV\s*/, ""), "#E4EDF7", "#3F6487"];
+      return `${bas}<button type="button" class="gc-oge${i === 0 ? " simdi" : ""}" data-sha="${esc(c.sha)}">${gcIk(kay[0], kay[2], kay[3])}<span class="gc-y"><b>${esc(t.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }))}${i === 0 ? '<em>şu an</em>' : ""}</b><small>${esc(kay[1])}</small><span class="gc-ozet"></span></span></button>`; }).join("")}</div>`;
   } catch(e){ gv.innerHTML = `<div class="mesaj hata">${esc(e.message || e)}</div>`; }
 }
 let gcSekme = "k", gcCop = [];
@@ -6637,7 +6659,7 @@ document.addEventListener("click", async e => {
     catch(err){ b.disabled = false; b.textContent = "Temizle"; uyar("Geçmiş temizlenemedi: " + (err.message || err), true); } return; }
   const o = e.target.closest(".gc-oge"); if(o && !o.dataset.yuklu){ const d = acikBelge(); if(!d) return; o.dataset.yuklu = "1"; const oz = o.querySelector(".gc-ozet"); oz.textContent = "okunuyor…";
     try { const veri = await window.TSK_GECMIS.oku(o.dataset.sha); let fark = "";
-      const on = o.nextElementSibling && o.nextElementSibling.classList.contains("gc-oge") ? o.nextElementSibling : null;
+      const Lo = [...document.querySelectorAll("#gc-govde .gc-oge")], on = Lo[Lo.indexOf(o) + 1] || null;
       if(on){ try { const eski = on._veri || await window.TSK_GECMIS.oku(on.dataset.sha); on._veri = eski; const F = []; belgeYollari(d).forEach(y => { if(JSON.stringify(eski[y]) !== JSON.stringify(veri[y])) degFark(eski[y] ?? null, veri[y] ?? null, "", F); });
           fark = F.length ? `<span class="gc-fark"><b>Bu kayıtta değişenler:</b> ${esc(degOzet(F.slice(0, 6)))}${F.length > 6 ? " …" : ""}</span>` : `<span class="gc-fark">Bu belgede değişiklik yok (başka belgeler kaydedilmiş)</span>`; } catch(e){} }
       oz.innerHTML = `${esc(gecmisOzet(d, veri))}${fark}<span class="gc-dugme">Bu hâline geri yükle</span>`; o._veri = veri; o.classList.add("acik"); }
