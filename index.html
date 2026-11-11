@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "511";
+  const SURUM = "512";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3255,7 +3255,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .mf-ri .mf-mk button svg{width:14px;height:14px}
 .mf-ri .mf-mk-in{flex:none!important;border-style:dashed!important} .mf-ri .mf-mk-in.on{border-style:solid!important;background:#F3FAF3!important;border-color:#8DB894!important}
 .mf-ri .mf-rota{grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr)!important;align-items:center!important;gap:4px!important} .mf-ri .mf-ok{width:18px;height:32px} .mf-ri .mf-ok svg{width:15px;height:15px}
-.mf-ri .mf-iki{gap:6px} .mf-ri .mf-al{gap:1px} .mf-ri .mf-al small{font:500 10px var(--f-ui);padding-left:2px} .mf-ri input[type=date]{text-align:left;padding:0 8px!important;min-width:0!important;max-width:100%!important;width:100%!important} .mf-ri .mf-al{overflow:hidden}
+.mf-ri .mf-iki{gap:6px} .mf-ayni{border:0;background:none;padding:0;font:600 10px var(--f-ui);color:#3F6487;cursor:pointer;text-decoration:underline} .mf-ri .mf-al{gap:1px} .mf-ri .mf-al small{font:500 10px var(--f-ui);padding-left:2px} .mf-ri input[type=date]{text-align:left;padding:0 8px!important;min-width:0!important;max-width:100%!important;width:100%!important} .mf-ri .mf-al{overflow:hidden}
 .mf-ri .mf-ys{display:grid;grid-template-columns:44px minmax(0,1fr) 30px!important;gap:6px;align-items:center} .mf-ri .mf-ysil{height:30px}
 .mf-ri .mf-yekle{height:30px;padding:0 10px;font-size:11.5px}
 .mf-yon button{min-height:34px}
@@ -3619,7 +3619,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 511</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 512</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6009,13 +6009,13 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 function mfMetin(c){ const M = mfV(), p = (S.personel.rows || []).find(y => y.id === c.pid) || {}, K = M.k[c.pid] || {}, y = ((S.yoklama || {}).rows || []).find(r => r.pid === c.pid) || {};
   const W = String(p.ad || "").trim().split(/\s+/), i = W.findIndex(w => w.length > 1 && w === w.toLocaleUpperCase("tr") && /[A-ZÇĞİÖŞÜ]/.test(w)), ad = (i > 0 ? W.slice(0, i) : W.slice(0, -1)).join(" "), soy = (i > 0 ? W.slice(i) : W.slice(-1)).join(" ");
   const kan = String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)").trim(), g = mfTur === "giris", S0 = String(c.silah || "").trim().split(/\s+/);
-  const W0 = mfSilah(c.pid) || {}, silah = K.silah ?? (S0.length > 1 ? S0[0] : W0.silah || ""), seri = K.seri ?? (S0.length > 1 ? S0.slice(1).join(" ") : S0[0] || W0.seri || ""), ayr = K.ayr || c.ayr || bugun(), kat = K.kat || c.kat || (g ? bugun() : "");
+  const W0 = mfSilah(c.pid) || {}, silah = K.silah ?? (S0.length > 1 ? S0[0] : W0.silah || ""), seri = K.seri ?? (S0.length > 1 ? S0.slice(1).join(" ") : S0[0] || W0.seri || ""), ayr = K.ayr || c.ayr || bugun(), kat = K.kat || c.kat || (g ? bugun() : ""), bas = K.bas || ayr;
   const L = [`Adı: ${ad}`, `Soyadı: ${soy}`, `Rütbe: ${p.rutbe || ""}`, `Sicil: ${p.sicil || ""}`, `Kan Grubu: ${kan}`, `TC: ${p.tc || ""}`, `Cep No: ${p.tel || y.tel || ""}`, `Silah Cinsi: ${silah}`, `Silah Seri No: ${seri}`, `Görevi: ${(String(y.gorev || "").trim() || ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim()).replace(/Bt\.\s*Sb\.\s*-\s*Ks\.\s*K\./g, "Bt.Sb.") /* istisna: manifestoda Bt.Sb.-Ks.K. → Bt.Sb. */}`];
   const mk = g ? (String(M.maksatG || "").trim() || "İzin Dönüşü") : (String(M.maksatC || "").trim() || "İzin");
   if(g) L.push(`Giriş Maksadı: ${mk}`, `${M.dis} ➡️ ${M.birlik}`, `Giriş Tarihi: ${ykTr(kat)}`);
-  else { L.push(`Çıkış Maksadı: ${mk}`, `${M.birlik} ➡️ ${M.dis}`, `Çıkış Tarihi: ${ykTr(ayr)}`); if(/[iİ]zin/i.test(mk) && kat) L.push(`İzin Başlangıç Tarihi: ${ykTr(ayr)}`, `İzin Bitiş Tarihi: ${ykTr(kat)}`); }
+  else { L.push(`Çıkış Maksadı: ${mk}`, `${M.birlik} ➡️ ${M.dis}`, `Çıkış Tarihi: ${ykTr(ayr)}`); if(/[iİ]zin/i.test(mk) && kat) L.push(`İzin Başlangıç Tarihi: ${ykTr(bas)}`, `İzin Bitiş Tarihi: ${ykTr(kat)}`); }
   const Yk = (K.yuk || []).filter(x => String(x.ad || "").trim()); if(Yk.length) L.push("", "🔃 Yük Bilgisi 🔃", "", ...Yk.map(x => `- ${x.n || 1} Adet ${x.ad.trim()}`));
-  return { metin: L.join("\n"), silah, seri, ayr, kat, mk }; }
+  return { metin: L.join("\n"), silah, seri, ayr, kat, bas, mk }; }
 function mfKart(c){ mfCtx = c; if(!c || !c.pid) return `<details class="yk-mf"><summary>${mfBas()}</summary><div class="yk-mf-ic"><div class="yk-bos">Önce izin belgesinde kişiyi seçin.</div></div></details>`;
   const M = mfV(), K = M.k[c.pid] || {}, g = mfTur === "giris", T = mfMetin(c), p = (S.personel.rows || []).find(y => y.id === c.pid) || {};
   const ik = (d) => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
@@ -6030,7 +6030,7 @@ function mfKart(c){ mfCtx = c; if(!c || !c.pid) return `<details class="yk-mf"><
     ${sat("Maksat", '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="3"/>', "#E4EDF7", "#3F6487", `<div class="mf-mk">${MK.map(([x, d]) => `<button type="button" data-mf-mk="${x}" aria-pressed="${T.mk === x}">${ik(d)}<span>${x}</span></button>`).join("")}</div><input class="mf-mk-in${ozel ? " on" : ""}" data-mf-f="${g ? "maksatG" : "maksatC"}" value="${ozel ? esc(T.mk) : ""}" placeholder="Başka maksat yazın…" aria-label="Başka maksat">`)}
     ${sat("Güzergâh", '<circle cx="6" cy="18" r="2.5"/><circle cx="18" cy="6" r="2.5"/><path d="M8.5 18H15a3 3 0 0 0 0-6H9a3 3 0 0 1 0-6h6.5"/>', "#EAE6F3", "#5E4A86", `<div class="mf-rota"><input data-mf-f="${g ? "dis" : "birlik"}" value="${esc(g ? M.dis : M.birlik)}" aria-label="Nereden"><span class="mf-ok">${ik('<path d="M5 12h14M13 6l6 6-6 6"/>')}</span><input data-mf-f="${g ? "birlik" : "dis"}" value="${esc(g ? M.birlik : M.dis)}" aria-label="Nereye"></div>`)}
     ${sat("Silah", '<path d="M3 10h13l3-2v4l-3-2M6 10v4h3v-4"/>', "#ECEFE3", "#59663A", `<div class="mf-iki"><input data-mf-f="silah" value="${esc(T.silah)}" placeholder="Cinsi" aria-label="Silah cinsi"><input data-mf-f="seri" value="${esc(T.seri)}" placeholder="Seri no" inputmode="numeric" aria-label="Seri no"></div>`)}
-    ${sat(g ? "Giriş" : "Tarih", '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', "#F3ECDD", "#7A5A25", g ? `<input type="date" data-mf-f="kat" value="${esc(T.kat)}" aria-label="Giriş tarihi">` : `<div class="mf-iki"><label class="mf-al"><input type="date" data-mf-f="ayr" value="${esc(T.ayr)}" aria-label="Çıkış tarihi"><small>çıkış</small></label><label class="mf-al"><input type="date" data-mf-f="kat" value="${esc(T.kat)}" aria-label="İzin bitiş"><small>izin bitiş</small></label></div>`)}
+    ${sat(g ? "Giriş" : "Tarih", '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', "#F3ECDD", "#7A5A25", g ? `<input type="date" data-mf-f="kat" value="${esc(T.kat)}" aria-label="Giriş tarihi">` : `<label class="mf-al"><input type="date" data-mf-f="ayr" value="${esc(T.ayr)}" aria-label="Çıkış tarihi"><small>çıkış tarihi</small></label>${/[iİ]zin/i.test(T.mk) ? `<div class="mf-iki"><label class="mf-al"><input type="date" data-mf-f="bas" value="${esc(T.bas)}" aria-label="İzin başlangıç"><small class="mf-bas-n">izin başlangıç${K.bas ? ` · <button type="button" class="mf-ayni" data-mf-ayni="1">↺ çıkışla aynı</button>` : " · çıkışla aynı"}</small></label><label class="mf-al"><input type="date" data-mf-f="kat" value="${esc(T.kat)}" aria-label="İzin bitiş"><small>izin bitiş</small></label></div>` : ""}`)}
     ${sat("Yük", '<path d="M3 8l9-5 9 5v8l-9 5-9-5z"/><path d="M3 8l9 5 9-5M12 13v8"/>', "#E3EEF0", "#2F6670", `<div class="mf-yuk">${(K.yuk || []).map((x, i) => `<div class="mf-ys"><input data-mf-yn="${i}" inputmode="numeric" value="${esc(x.n ?? 1)}" aria-label="Adet"><input data-mf-ya="${i}" value="${esc(x.ad || "")}" placeholder="ör. Power Bank" aria-label="Yük"><button type="button" class="mf-ysil" data-mf-ysil="${i}" aria-label="Kaldır">✕</button></div>`).join("")}<button type="button" class="mf-yekle" data-mf-yekle="1">＋ Yük ekle</button></div>`)}
     </div>
     <div class="mf-sohbet"><div class="mf-balon"><div class="mf-yazi">${esc(T.metin)}</div><div class="mf-saat">${mfSaat()} <span>✓✓</span></div></div></div>
@@ -6056,15 +6056,18 @@ const mfGit = c => { mfdGitC = c; const p = c && (S.personel.rows || []).find(y 
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-mf-git]"); if(!b || !mfdGitC) return; const h = S.belgeler.find(x => x.tur === "manifesto"); if(!h) return bildir("Manifesto belgesi yok");
   mfdOzel = mfdGitC; mfdSec = mfdGitC.pid; belgeAc(h.id); });
 document.addEventListener("toggle", e => { if(e.target.classList && e.target.classList.contains("yk-mf")) mfAcik = e.target.open; }, true);
-document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".yk-mf :is([data-mf-t],[data-mf-mk],[data-mf-kop],[data-mf-pay],[data-mf-yekle],[data-mf-ysil])"); if(!b || !mfCtx) return; const M = mfV(), K = (M.k[mfCtx.pid] ||= {}), kay = () => kaydetBt("izinb");
-  if(b.dataset.mfT){ mfTur = b.dataset.mfT; return mfYenile(); } if(b.dataset.mfMk){ M[mfTur === "giris" ? "maksatG" : "maksatC"] = b.dataset.mfMk; kay(); return mfYenile(); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest(".yk-mf :is([data-mf-ayni],[data-mf-t],[data-mf-mk],[data-mf-kop],[data-mf-pay],[data-mf-yekle],[data-mf-ysil])"); if(!b || !mfCtx) return; const M = mfV(), K = (M.k[mfCtx.pid] ||= {}), kay = () => kaydetBt("izinb");
+  if(b.dataset.mfAyni){ delete K.bas; kay(); return mfYenile(); } if(b.dataset.mfT){ mfTur = b.dataset.mfT; return mfYenile(); } if(b.dataset.mfMk){ M[mfTur === "giris" ? "maksatG" : "maksatC"] = b.dataset.mfMk; kay(); return mfYenile(); }
   if(b.dataset.mfYekle){ (K.yuk ||= []).push({ n: 1, ad: "" }); kay(); mfYenile(); const i = [...document.querySelectorAll(".yk-mf [data-mf-ya]")].pop(); if(i) i.focus(); return; }
   if(b.dataset.mfYsil){ (K.yuk || []).splice(+b.dataset.mfYsil, 1); kay(); return mfYenile(); }
   const t = mfMetin(mfCtx).metin;
   if(b.dataset.mfKop){ (navigator.clipboard ? navigator.clipboard.writeText(t) : Promise.reject()).then(() => bildir("Manifesto kopyalandı"), () => uyar("Kopyalanamadı; metni basılı tutup seçin", true)); }
   if(b.dataset.mfPay){ if(navigator.share) navigator.share({ text: t }).catch(() => {}); else navigator.clipboard && navigator.clipboard.writeText(t).then(() => bildir("Paylaşım yok · metin kopyalandı")); } });
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest(".yk-mf") || el.closest(".mf-sad") || !mfCtx) return; e.stopPropagation(); const M = mfV(), K = (M.k[mfCtx.pid] ||= {});
-  if(el.dataset.mfF){ const f = el.dataset.mfF; if(["birlik", "dis", "maksatC", "maksatG"].includes(f)) M[f] = el.value; else K[f] = el.value; }
+  if(el.dataset.mfF){ const f = el.dataset.mfF; if(["birlik", "dis", "maksatC", "maksatG"].includes(f)) M[f] = el.value; else K[f] = el.value;
+    if(f === "bas"){ const ayr = mfMetin({ ...mfCtx }).ayr; if(!el.value || el.value === ayr) delete K.bas; }
+    if(f === "ayr" && !K.bas){ const b = $('.yk-mf [data-mf-f="bas"]'); if(b) b.value = el.value; }
+    if(f === "bas"){ const n = $(".yk-mf .mf-bas-n"); if(n) n.innerHTML = "izin başlangıç" + (K.bas ? ' · <button type="button" class="mf-ayni" data-mf-ayni="1">↺ çıkışla aynı</button>' : " · çıkışla aynı"); } }
   else if(el.dataset.mfYn != null){ (K.yuk ||= [])[+el.dataset.mfYn].n = el.value.replace(/\D/g, ""); }
   else if(el.dataset.mfYa != null){ (K.yuk ||= [])[+el.dataset.mfYa].ad = el.value; } else return;
   kaydetBt("izinb"); const T = mfMetin(mfCtx), pr = $(".yk-mf .mf-yazi"); if(pr) pr.textContent = T.metin;
