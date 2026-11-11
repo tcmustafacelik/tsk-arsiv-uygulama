@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "468";
+  const SURUM = "469";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3527,7 +3527,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 468</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 469</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11087,6 +11087,8 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
     return geriAlinabilir("Dilekçe silindi", () => { v.kayitlar.splice(i, 0, x); v.aktif = x.id; yaz(); }); } });
 /* ---- çıktılar: örnek dilekçeyle aynı ölçüler (A4, Times New Roman 12, kenar üst 17,5 · sol 25 · sağ 22,5 mm) ---- */
 async function dilekceCikti(d, a, tur){ const I = dlIcerik(d); return tur === "pdf" ? dlPdf(I) : tur === "xlsx" ? dlExcel(I) : dlWord(I); }
+/* “Arz ederim.” bölünmez: satıra sığmazsa ikisi birden alt satıra iner */
+const dlKelime = t => String(t || "").split(/\s+/).filter(Boolean).reduce((a, w) => { if(/^ederim\b/i.test(w) && a.length && /^arz$/i.test(a[a.length - 1])) a[a.length - 1] += " " + w; else a.push(w); return a; }, []);
 async function dlPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), M = DLM, son = I.sat.length - 1;
   doc.setTextColor(0, 0, 0); doc.setFontSize(12); doc.setFont("LS", "normal");
   const ks = doc.splitTextToSize(String(I.sat[0][1] || ""), M.KS - M.V), kay = Math.max(0, ks.length - 3) * M.KL, Y = i => M.Y[i] + (i ? kay : 0);
@@ -11096,7 +11098,7 @@ async function dlPdf(I){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }
   doc.setFont("LS", "bold"); doc.text("KOMUTANLIK ÖNÜNE", M.BM, M.BAS + kay, { align: "center" }); doc.setFont("LS", "normal");
   let y = M.MET + kay; const W = M.R - M.L;
   if(I.ilgi.length){ y = M.BAS + kay + M.IL; doc.text("İlgi:", M.L + M.GIR, y); dlIlgiSatir(I, t => doc.getTextWidth(t)).forEach((s2, n) => { if(n) y += M.ML; doc.text(s2.t, M.IA, y); }); y += M.IM; }
-  String(I.metin || "").split("\n").forEach(par => { const kel = par.split(/\s+/).filter(Boolean); let sat = [], gen = W - M.GIR; const S2 = [];
+  String(I.metin || "").split("\n").forEach(par => { const kel = dlKelime(par); let sat = [], gen = W - M.GIR; const S2 = [];
     kel.forEach(w => { const t = [...sat, w].join(" "); if(sat.length && doc.getTextWidth(t) > gen){ S2.push({ k: sat, gen }); sat = [w]; gen = W; } else sat.push(w); }); if(sat.length) S2.push({ k: sat, gen, son: 1 });
     S2.forEach((s2, n) => { const x0 = M.L + (n ? 0 : M.GIR); if(s2.son || s2.k.length < 2) doc.text(s2.k.join(" "), x0, y); else { const top = s2.k.reduce((t, w) => t + doc.getTextWidth(w), 0), ara = (s2.gen - top) / (s2.k.length - 1); let x = x0; s2.k.forEach(w => { doc.text(w, x, y); x += doc.getTextWidth(w) + ara; }); } y += M.ML; }); });
   if(I.imza){ y += 14; const cx = M.L + W * 0.78; doc.setFont("LS", "bold"); doc.text(I.imza[0], cx, y, { align: "center" }); doc.setFont("LS", "normal"); doc.text(I.imza[1], cx, y + M.ML, { align: "center" }); }
@@ -11119,7 +11121,7 @@ function dlWord(I){ const M = DLM, tw = x => Math.round(x * 56.7), R = (t, o = {
   if(I.ilgi.length){ const genis = t => t.length * 2.05; dlIlgiSatir(I, genis).forEach((s2, n) => { const ilk = n === 0;
       g += `<w:p><w:pPr><w:tabs><w:tab w:val="left" w:pos="${tw(M.IA - M.L)}"/></w:tabs><w:ind w:left="${tw(M.IA - M.L)}"${ilk ? ` w:hanging="${tw(M.IA - M.L - M.GIR)}"` : ""}/><w:spacing w:before="${ilk ? tw(M.IL - M.ML) : 0}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${ilk ? R("İlgi:") + "<w:r><w:tab/></w:r>" : ""}${R(s2.t)}</w:p>`; });
     onc = tw(M.IM - M.ML); }
-  String(I.metin || "").split("\n").forEach((par, n) => { g += `<w:p><w:pPr><w:jc w:val="both"/><w:ind w:firstLine="${tw(M.GIR)}"/><w:spacing w:before="${n ? 0 : onc}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${R(par)}</w:p>`; });
+  String(I.metin || "").split("\n").forEach((par, n) => { g += `<w:p><w:pPr><w:jc w:val="both"/><w:ind w:firstLine="${tw(M.GIR)}"/><w:spacing w:before="${n ? 0 : onc}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${R(par.replace(/\b(Arz)\s+(ederim)/gi, "$1\u00A0$2"))}</w:p>`; });
   if(I.imza) g += `<w:p><w:pPr><w:spacing w:before="720" w:after="0"/><w:ind w:left="5664"/><w:jc w:val="center"/></w:pPr>${R(I.imza[0], { b: true })}</w:p><w:p><w:pPr><w:spacing w:after="0"/><w:ind w:left="5664"/><w:jc w:val="center"/></w:pPr>${R(I.imza[1])}</w:p>`;
   if(I.ek.length) [ "Ek :", ...I.ek ].forEach((m, i) => { g += `<w:p><w:pPr><w:ind w:left="${tw(M.EKX - M.L)}"/><w:spacing w:before="${i ? tw(M.EKA - M.ML) : tw(M.EKB - M.ML) - (I.imza ? 0 : 0)}" w:after="0" w:line="${tw(M.ML)}" w:lineRule="exact"/></w:pPr>${R(m)}</w:p>`; });
   const altVar = I.alt[0] || I.alt[1], alt = altVar ? `<w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="${tw(M.AR - M.L)}"/></w:tabs><w:ind w:left="${tw(M.AL - M.L)}" w:right="${tw(M.R - M.AR)}"/><w:spacing w:before="0" w:after="0"/></w:pPr>${R(I.alt[0], { sz: 20 })}<w:r><w:tab/></w:r>${R(I.alt[1], { sz: 20 })}</w:p>` : "";
@@ -11135,7 +11137,7 @@ function dlYerlesim(I, olc){ const M = DLM, L = [], son = I.sat.length - 1, W = 
   L.push({ t: "KOMUTANLIK ÖNÜNE", x1: M.L, x2: 2 * M.BM - M.L, y: M.BAS + kay, b: 1, al: "c" });
   let y = M.MET + kay;
   if(I.ilgi.length){ y = M.BAS + kay + M.IL; L.push({ t: "İlgi:", x1: M.L + M.GIR, x2: M.IA, y }); dlIlgiSatir(I, t => w12(t)).forEach((s2, n) => { if(n) y += M.ML; L.push({ t: s2.t, x1: M.IA, x2: M.R, y }); }); y += M.IM; }
-  String(I.metin || "").split("\n").forEach(par => { const kel = par.split(/\s+/).filter(Boolean); let sat = [], gen = W - M.GIR; const S2 = [];
+  String(I.metin || "").split("\n").forEach(par => { const kel = dlKelime(par); let sat = [], gen = W - M.GIR; const S2 = [];
     kel.forEach(w => { const t = [...sat, w].join(" "); if(sat.length && w12(t) > gen){ S2.push({ k: sat }); sat = [w]; gen = W; } else sat.push(w); }); if(sat.length) S2.push({ k: sat, son: 1 });
     if(!S2.length) S2.push({ k: [], son: 1 });
     S2.forEach((s2, n) => { const x1 = M.L + (n ? 0 : M.GIR), t = s2.k.join(" "), bos = (M.R - x1) - w12(t);   // bos: satırın sağında kalan boşluk
