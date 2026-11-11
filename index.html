@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "479";
+  const SURUM = "480";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3191,13 +3191,15 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .sp-std input{padding:0 2px!important;text-align:center;font-size:12.5px!important;min-width:0}
 .kb2-ust{display:flex;align-items:center;gap:6px;flex-wrap:wrap;min-height:30px;padding:0 2px}
 /* kayıt seçimi: kaymayan ızgara; eşit kutular, ortalı yazı, baş harf simgesi (telefonda 3, bilgisayarda sığdığı kadar sütun) */
-.kb2-serit{display:grid;grid-template-columns:repeat(auto-fill,minmax(94px,1fr));grid-auto-rows:1fr;gap:6px;padding:1px 0 2px}
-.kb2-c{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;min-width:0;min-height:62px;padding:7px 5px;border:1px solid var(--line2);border-radius:10px;background:var(--panel);font:600 11.5px/1.2 var(--f-ui);color:#3D4D5E;cursor:pointer;text-align:center;white-space:normal;transition:background .15s,border-color .15s,box-shadow .15s}
-.kb2-y{display:block;max-width:100%;overflow-wrap:anywhere;hyphens:auto}
-.kb2-av{flex:none;width:26px;height:26px;border-radius:50%;display:grid;place-items:center;background:#E6EEF7;color:#2D557E;font:800 10.5px var(--f-ui);letter-spacing:.02em}
-.kb2-c.on{background:#2F4A66;border-color:#2F4A66;color:#fff;font-weight:700;box-shadow:0 2px 8px rgba(47,74,102,.25)} .kb2-c.on .kb2-av{background:rgba(255,255,255,.18);color:#fff}
-.kb2-n{position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:#E0A040} .kb2-c.on .kb2-n{background:#F6C46A}
+.kb2-serit{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));grid-auto-rows:1fr;gap:5px;padding:1px 0 2px}
+.kb2-c{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;min-height:50px;padding:6px 4px;border:1px solid #E3E8EE;border-radius:9px;background:#FAFBFC;font:600 11px/1.18 var(--f-ui);color:#3D4D5E;cursor:pointer;text-align:center;white-space:normal;transition:background .15s,border-color .15s,box-shadow .15s,transform .15s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
+.kb2-y{display:block;max-width:100%;overflow-wrap:anywhere}
+.kb2-av{flex:none;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;background:#E9EFF5;color:#4A6584;font:800 9.5px var(--f-ui);letter-spacing:.02em}
+.kb2-c.on{background:#EEF3F9;border-color:#7F9AB8;color:#22364D;font-weight:700;box-shadow:inset 0 0 0 1px #7F9AB8} .kb2-c.on .kb2-av{background:#2F4A66;color:#fff}
+.kb2-n{position:absolute;top:5px;right:5px;width:6px;height:6px;border-radius:50%;background:#E0A040}
 .kb2-c:not(.on):hover{background:#F1F5F9;border-color:#C9D6E4}
+.kb2-tasiniyor .kb2-c{transition:transform .12s} .kb2-c.kb2-tut{transform:scale(1.06);box-shadow:0 6px 16px rgba(30,50,75,.22);border-color:#2F4A66;z-index:2;background:#fff}
+.kb-sq{display:inline-flex;align-items:center;gap:4px;border:1px solid var(--line2);background:#fff;color:#4A5868;border-radius:8px;padding:3px 8px;font:700 11px var(--f-ui);cursor:pointer} .kb-sq svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round} .kb-sq.kilitli{background:#F7F1E3;border-color:#E6D3A6;color:#7A5A1C}
 .kb-ust{display:flex;align-items:center;gap:2px;min-height:40px;padding:4px 6px;background:#F4F6F9;border-bottom:1px solid var(--line2)}
 .kb-orta{display:inline-flex;align-items:center;gap:7px;min-width:0;height:32px;padding:0 8px;border:0;background:none;border-radius:7px;cursor:pointer;color:#3D4D5E}
 .kb-orta svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;opacity:.7}
@@ -3536,7 +3538,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 479</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 480</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3966,10 +3968,33 @@ async function vazgec(sessiz, yalniz){
 }
 /* ===== kayıt başlığı standardı (kimlik, zimmet, el senedi): üstte ince satır (ad · sıra · ‹ › · Yeni), altında seçili kaydın adı.
    Kutu içinde kutu yok; ada dokununca bütün kayıtların listesi açılır. Telefonda ve bilgisayarda aynı. ===== */
-function kayitBas(o){ const L = o.liste || [], at = o.attr || "data-kb-sec";
-  return `<div class="kb2"><div class="kb2-ust"><span class="kb-ad">${esc(o.ad)}</span>${o.n ? `<span class="kb-say">${o.n}</span>` : ""}<span class="kb-bos"></span>${o.ozet || ""}${o.yeni ? `<button type="button" class="kb-yeni" ${o.yeni}>＋ Yeni</button>` : ""}</div>
-    ${L.length ? `<div class="kb2-serit kb2-izgara" role="tablist">${L.map(x => `<button type="button" role="tab" class="kb2-c${x.id === o.secId ? " on" : ""}" ${at}="${esc(x.id)}" aria-selected="${x.id === o.secId}"><span class="kb2-av">${esc(ksBas(x.ad) || "•")}</span><span class="kb2-y">${esc(x.ad)}</span>${x.nokta ? '<i class="kb2-n" title="eksik var"></i>' : ""}</button>`).join("")}</div>` : ""}</div>`; }
+const KB_IK = { sira: '<path d="M7 4v16M4 7l3-3 3 3M17 20V4M14 17l3 3 3-3"/>', kilit: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>' };
+const kbIk = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${KB_IK[k]}</svg>`;
+function kayitBas(o){ const L = o.liste || [], at = o.attr || "data-kb-sec", sq = o.sq && SQ[o.sq], kil = sq && !!(sq.tut() || {}).srKilit;
+  return `<div class="kb2"><div class="kb2-ust"><span class="kb-ad">${esc(o.ad)}</span>${o.n ? `<span class="kb-say">${o.n}</span>` : ""}<span class="kb-bos"></span>${o.ozet || ""}${sq && L.length > 1 ? `<button type="button" class="kb-sq${kil ? " kilitli" : ""}" data-sq-ac="${o.sq}" title="${kil ? "Sıra kilitli" : "Sırala · basılı tutup sürükle"}">${kbIk(kil ? "kilit" : "sira")}<span>${kil ? "Kilitli" : "Sırala"}</span></button>` : ""}${o.yeni ? `<button type="button" class="kb-yeni" ${o.yeni}>＋ Yeni</button>` : ""}</div>
+    ${L.length ? `<div class="kb2-serit kb2-izgara" role="tablist"${sq ? ` data-kb-sq="${o.sq}"` : ""}>${L.map(x => `<button type="button" role="tab" class="kb2-c${x.id === o.secId ? " on" : ""}" ${at}="${esc(x.id)}" aria-selected="${x.id === o.secId}"><span class="kb2-av">${esc(ksBas(x.ad) || "•")}</span><span class="kb2-y">${esc(x.ad)}</span>${x.nokta ? '<i class="kb2-n" title="eksik var"></i>' : ""}</button>`).join("")}</div>` : ""}</div>`; }
 /* seçili çip görünür yere kaydırılır (yalnız yatayda; sayfa kaymaz) */
+const kbYenile = () => { const d = acikBelge(); if(!d) return; ({ kimlik: () => kimlikCiz(), fydt: () => fydtCiz(), zimmet: () => zimmetCiz(), elsenet: () => elsenetCiz(), gdhg: () => gdBelgeCiz() }[d.tur] || (() => {}))(); };
+/* basılı tut → sürükle: kutu yerinden alınır, bırakılınca sıra kaydedilir (kilitliyse uyarır). Telefonda ve faredeki uzun basışta aynı. */
+(() => { let bek = null, tasi = null, tikEngel = 0, px = 0, py = 0;
+  const bitir = () => { clearTimeout(bek); bek = null; };
+  document.addEventListener("pointerdown", e => { const b = e.target.closest && e.target.closest("[data-kb-sq] .kb2-c"); if(!b || (e.pointerType === "mouse" && e.button)) return; const g = b.parentElement; px = e.clientX; py = e.clientY;
+    bitir(); bek = setTimeout(() => { bek = null; const c = SQ[g.dataset.kbSq]; if(!c) return; if((c.tut() || {}).srKilit){ navigator.vibrate && navigator.vibrate(30); tikEngel = Date.now(); return bildir("Sıra kilitli · önce “Kilitli”ye dokunup kilidi açın"); }
+      navigator.vibrate && navigator.vibrate(18); tasi = { b, g, c, ilk: [...g.children].map(x => x.getAttribute(x.getAttributeNames().find(a => a.startsWith("data-") && a !== "data-kb-sq") || "")) }; b.classList.add("kb2-tut"); g.classList.add("kb2-tasiniyor"); }, 420);
+  }, true);
+  document.addEventListener("pointermove", e => { if(bek){ if(Math.hypot(e.clientX - px, e.clientY - py) > 8) bitir(); return; }
+    if(!tasi) return; e.preventDefault(); const el = document.elementFromPoint(e.clientX, e.clientY), h = el && el.closest(".kb2-c"); if(!h || h === tasi.b || h.parentElement !== tasi.g) return;
+    const K = [...tasi.g.children]; tasi.g.insertBefore(tasi.b, K.indexOf(h) > K.indexOf(tasi.b) ? h.nextSibling : h); }, { passive: false });
+  document.addEventListener("touchmove", e => { if(tasi) e.preventDefault(); }, { passive: false });
+  const birak = () => { bitir(); if(!tasi) return; const { b, g, c } = tasi; tasi = null; b.classList.remove("kb2-tut"); g.classList.remove("kb2-tasiniyor"); tikEngel = Date.now();
+    const at = b.getAttributeNames().find(a => a.startsWith("data-") && a !== "data-kb-sq"), yeni = [...g.children].map(x => x.getAttribute(at)), A = c.dizi(), yer = A.map((x, i) => yeni.includes(x.id) ? i : -1).filter(i => i > -1);
+    const once = A.map(x => x.id).join(), geri = anlik(A), sirali = yeni.map(id => A.find(x => x.id === id)).filter(Boolean); if(sirali.length !== yer.length) return kbYenile();
+    yer.forEach((i, n) => { A[i] = sirali[n]; }); if(A.map(x => x.id).join() === once) return;
+    c.kaydet(); kbYenile(); geriAlinabilir("Sıra değişti", () => { geri(); c.kaydet(); kbYenile(); }); };
+  document.addEventListener("pointerup", birak); document.addEventListener("pointercancel", birak);
+  document.addEventListener("click", e => { if(Date.now() - tikEngel < 400 && e.target.closest && e.target.closest(".kb2-c")){ e.preventDefault(); e.stopPropagation(); } }, true);
+  document.addEventListener("contextmenu", e => { if(e.target.closest && e.target.closest("[data-kb-sq] .kb2-c")) e.preventDefault(); });
+})();
 false && new MutationObserver(() => { document.querySelectorAll(".kb2-serit:not([data-k])").forEach(sr => { sr.dataset.k = "1"; const on = sr.querySelector(".kb2-c.on"); if(on) requestAnimationFrame(() => { sr.scrollLeft = Math.max(0, on.offsetLeft - sr.clientWidth / 2 + on.offsetWidth / 2); }); }); }).observe(document.body, { childList: true, subtree: true });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-kb-sec]"); if(!b) return; const d = acikBelge(); if(!d) return; const id = b.dataset.kbSec;
   if(d.tur === "kimlik"){ if(kmSecili !== id){ kmSecili = id; kmAcikG.clear(); kimlikCiz(); } }
@@ -5298,11 +5323,15 @@ const SQ = {
   izinb: { dizi: () => S.izinb.kisiler || [], tut: () => S.izinb, kaydet: () => kaydetBt("izinb"), ciz: () => izbhCiz(), dugme: ["#izb-kisiler .dl-ust .dl-yeni", "beforebegin"] },
   gdhg: { dizi: () => S.gdhg.kisiler || [], tut: () => S.gdhg, kaydet: () => kaydetBt("gdhg"), ciz: () => gdBelgeCiz(), dugme: ['#gd-kisiler [data-gd="kisi-ekle"]', "beforebegin"] },
   spor: { dizi: () => spVeri(sqTur("spor")).kisiler, tut: () => spVeri(sqTur("spor")), kaydet: () => kaydetBelge(sqTur("spor")), ciz: () => sporCiz(), dugme: ['#sp-govde [data-sp="ekle"]', "beforebegin"], var: () => !!sqTur("spor") },
+  personel: { dizi: () => S.personel.rows || [], tut: () => { const P = S.personel; return new Proxy({}, { get: (t, k) => k === "srKilit" ? (P.kilit ? 1 : undefined) : k === "srVar" ? P.varsayilan : undefined, set: (t, k, v) => { if(k === "srKilit"){ if(v) P.kilit = true; else delete P.kilit; } else if(k === "srVar") P.varsayilan = v; return true; }, deleteProperty: (t, k) => { if(k === "srKilit") delete P.kilit; return true; } }); },
+    kaydet: () => kaydetBt("personel"), ciz: () => kbYenile(), var: () => false },   // kimlik ve FYDT kartları personel listesinin sırasını kullanır (kilit/varsayılan personel listesiyle ortak)
+  zimmet: { dizi: () => zmVeri(sqTur("zimmet")).kayitlar, tut: () => zmVeri(sqTur("zimmet")), kaydet: () => kaydetBelge(sqTur("zimmet")), ciz: () => zimmetCiz(), var: () => false },
+  elsenet: { dizi: () => esVeri(sqTur("elsenet")).kayitlar, tut: () => esVeri(sqTur("elsenet")), kaydet: () => kaydetBelge(sqTur("elsenet")), ciz: () => elsenetCiz(), var: () => false },
   sicil: { dizi: () => saVeri(sqTur("sicil")).kisiler, tut: () => saVeri(sqTur("sicil")), kaydet: () => kaydetBelge(sqTur("sicil")), ciz: () => sicilCiz(), dugme: ['#sa-govde [data-sa="ekle"], [data-sa="ekle"]', "beforebegin"], var: () => !!sqTur("sicil") } };
 /* sıralama için kişinin rütbe ve sicili: satırda yoksa personel listesinden */
-const sqKisi = x => { const p = (S.personel.rows || []).find(y => (x.pid && y.id === x.pid) || (x.ad && y.ad && pAd(y.ad) === pAd(x.ad))) || {}; return { ...x, rutbe: x.rutbe || p.rutbe || "", sicil: x.sicil || p.sicil || "", ad: x.ad || p.ad || "" }; };
+const sqKisi = x0 => { const x = x0.alan ? { ...x0, ad: x0.ad || x0.alan.ad, rutbe: x0.rutbe || x0.alan.rutbe } : x0, p = (S.personel.rows || []).find(y => (x.pid && y.id === x.pid) || (x.ad && y.ad && pAd(y.ad) === pAd(x.ad))) || {}; return { ...x, rutbe: x.rutbe || p.rutbe || "", sicil: x.sicil || p.sicil || "", ad: x.ad || p.ad || "" }; };
 const sqKars = (a, b) => cdKidem(sqKisi(a), sqKisi(b));
-function sqUygula(){ for(const [k, c] of Object.entries(SQ)){ if(c.var && !c.var()) continue; const yer = document.querySelector(c.dugme[0]); if(!yer) continue;
+function sqUygula(){ for(const [k, c] of Object.entries(SQ)){ if(c.var && !c.var() || !c.dugme) continue; const yer = document.querySelector(c.dugme[0]); if(!yer) continue;
     let b = document.querySelector(`[data-sq-ac="${k}"]`); const T = c.tut() || {}, t = T.srKilit ? "🔒 Sıra" : "⇅ Sırala";
     if(!b || !b.isConnected){ yer.insertAdjacentHTML(c.dugme[1], `<button type="button" class="btn kucuk sq-ac" data-sq-ac="${k}"></button>`); b = document.querySelector(`[data-sq-ac="${k}"]`); }
     if(b && b.textContent !== t) b.textContent = t; } }
@@ -6365,7 +6394,7 @@ const gdBas = ad => String(ad || "?").split(/\s+/).filter(Boolean).slice(0, 2).m
 const gdKisiGun = (x, soz) => { const hs = soz ? gdSozHesap(x) : null; return { gun: soz ? (hs.kalis === "" ? "—" : hs.kalis) : gdToplam(x), u: soz ? hs.uyari.length : gdUyarilar(x).length }; };
 function gdSecici(k, soz){ const L = gdGrupListe(), i = L.indexOf(k); if(!k) return ""; const { gun, u } = gdKisiGun(k, soz), o = L[i - 1], s = L[i + 1];
   const nok = L.length <= 12 ? L.map((x, j) => `<i${j === i ? ' class="su"' : ""}></i>`).join("") : `<span>${i + 1} / ${L.length}</span>`;
-  return `<div class="gd-secici">${kayitBas({ ad: soz ? "Sözleşmeli personel" : "Personel", n: L.length, secId: k.id, attr: "data-kisi", ozet: `<em class="kb-oz dl-tam">${esc(gun)} gün</em>${u ? `<em class="kb-oz dl-eksik">${u} uyarı</em>` : ""}`, liste: L.map(x => ({ id: x.id, ad: x.ad || "(adsız)", nokta: gdKisiGun(x, soz).u > 0 })) })}</div>`; }
+  return `<div class="gd-secici">${kayitBas({ sq: "gdhg", ad: soz ? "Sözleşmeli personel" : "Personel", n: L.length, secId: k.id, attr: "data-kisi", ozet: `<em class="kb-oz dl-tam">${esc(gun)} gün</em>${u ? `<em class="kb-oz dl-eksik">${u} uyarı</em>` : ""}`, liste: L.map(x => ({ id: x.id, ad: x.ad || "(adsız)", nokta: gdKisiGun(x, soz).u > 0 })) })}</div>`; }
 document.addEventListener("click", e => { if(!e.target.closest || !e.target.closest("[data-gd-liste]")) return; const soz = gdSekme === "soz", k = gdKisi(), L = gdGrupListe();
   altPencere("gk-perde", "PERSONEL", `${L.length} kişi`, () => `<div class="ap-liste">${L.map((x, j) => { const { gun, u } = gdKisiGun(x, soz); return apSatir(`data-gk="${esc(x.id)}"`, `<span class="gd-av${x === k ? " sec" : ""}">${esc(gdBas(x.ad))}</span>`, esc(x.ad || "(adsız)") + (u ? ` <i class="gd-uy">!</i>` : ""), `<span class="ap-say">${esc(gun)} gün</span>`, { alt: esc(x.rutbe || "") + (x === k ? " · seçili" : "") }); }).join("")}</div>
       <button type="button" class="ag-yeni-kat" data-gk-ekle>＋ Personel ekle</button><button type="button" class="ag-yeni-kat" data-gk-sira>${S.gdhg.srKilit ? "🔒 Sıra kilitli" : "⇅ Sırala"}</button>`,
@@ -10475,7 +10504,7 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
   if(p && !kmAcikG.size){ const g = KM_GRUP.findIndex(g => kmGEksik(p, g)); kmAcikG.add(g < 0 ? 0 : g); }
   const W = p && belgeTur("silah") ? kmSilahlar(p) : null;
   $("#km-govde").innerHTML = `
-    ${kayitBas({ ad: "Personel kimliği", n: P.length, ozet: `<em class="kb-oz ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em>`, secId: p && p.id,
+    ${kayitBas({ sq: "personel", ad: "Personel kimliği", n: P.length, ozet: `<em class="kb-oz ${eksikK ? "dl-eksik" : "dl-tam"}">${eksikK ? eksikK + " kişide eksik" : "hepsi tamam"}</em>`, secId: p && p.id,
       liste: P.map(x => ({ id: x.id, ad: x.ad, nokta: kmEksik(x).length > 0 })) })}
     ${p ? `
     <section class="dl-kart km-kart">
@@ -10644,7 +10673,7 @@ function elsenetCiz(){ const d = acikBelge(); if(!d || d.tur !== "elsenet") retu
   const kisiIc = an => `<div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-es-k="${an}:ad" value="${esc(k[an].ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-es-k="${an}:rutbe" value="${esc(k[an].rutbe)}"></label><label class="dl-al tam"><span>Görevi</span><input data-es-k="${an}:gorev" value="${esc(k[an].gorev)}" placeholder="ör. Ks.K."></label></div><button type="button" class="es-sec" data-es="sec-${an}">Personel listesinden seç</button>`;
   const bilgi = [esTr(k.tarih), B.kod && k.kod && "Kod " + k.kod, B.kod && k.no && "No " + k.no, k.kisim || k.birlik].filter(Boolean).join(" · ");
   $("#es-govde").innerHTML = `
-    ${kayitBas({ ad: "El senetleri", n: L.length, yeni: 'data-es="yeni"', secId: k.id, liste: L.map(x => ({ id: x.id, ad: ad(x) })) })}
+    ${kayitBas({ sq: "elsenet", ad: "El senetleri", n: L.length, yeni: 'data-es="yeni"', secId: k.id, liste: L.map(x => ({ id: x.id, ad: ad(x) })) })}
     <section class="dl-kart es-kart">
       <button type="button" class="es-bicim" data-es="bicim"><span class="es-bt">Biçim</span><span class="es-bo"><b>${esc(B.ad)}</b> · ${esc(B.alt)}</span><em>Değiştir</em></button>
       ${k.bicim === 5 ? bol("bas", "Başlık", k.baslik || "girilmedi", `<label class="dl-al tam"><span>Başlık</span><textarea class="oto-boy" rows="1" data-es-f="baslik" placeholder="ör. 4'ÜNCÜ TİM (142209) SİLAH, MÜHİMMAT, TEÇHİZAT DURUMU">${esc(k.baslik)}</textarea></label>`, !k.baslik) : `
@@ -10753,7 +10782,7 @@ function zimmetCiz(){ const d = acikBelge(); if(!d || d.tur !== "zimmet") return
   const n = normMetin(zmAra), nt = lsNotlu && Sx.some(x => notAl(d, x.id)), F = Sx.map((x, j) => [x, j]).filter(([x]) => (!n || normMetin([x.stok, x.cins, x.seri, x.kafile].join(" ")).includes(n)) && (!nt || notAl(d, x.id))), G = F.slice(0, zmGoster);
   const eden = [k.eden.ad, k.eden.rutbe, k.eden.gorev].filter(Boolean).join(" · "), bilgi = zmTarih(k.tarih);
   $("#zm-govde").innerHTML = `
-    ${kayitBas({ ad: "Zimmet belgeleri", n: L.length, yeni: 'data-zm="yeni"', secId: k.id, liste: L.map(x => ({ id: x.id, ad: (zmKisi(x) || {}).ad || "Kişi seçilmedi" })) })}
+    ${kayitBas({ sq: "zimmet", ad: "Zimmet belgeleri", n: L.length, yeni: 'data-zm="yeni"', secId: k.id, liste: L.map(x => ({ id: x.id, ad: (zmKisi(x) || {}).ad || "Kişi seçilmedi" })) })}
     <section class="dl-kart es-kart">
       ${bol("alan", "Teslim alan", p ? [p.ad, p.rutbe, k.alan.gorev].filter(Boolean).join(" · ") : "seçilmedi", `${ksSatir(p, 'data-zm="kisi"')}<label class="dl-al tam" style="margin-top:8px"><span>Görevi <i>boş kalabilir</i></span><input data-zm-a="gorev" value="${esc(k.alan.gorev || "")}"></label>`, !p)}
       ${bol("eden", "Teslim eden", eden || "girilmedi", `<div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-zm-e="ad" value="${esc(k.eden.ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-zm-e="rutbe" value="${esc(k.eden.rutbe)}"></label><label class="dl-al tam"><span>Görevi</span><input data-zm-e="gorev" value="${esc(k.eden.gorev)}"></label></div><button type="button" class="es-sec" data-zm="eden-sec">Personel listesinden seç</button>`, !eden)}
@@ -11891,7 +11920,7 @@ function fydtCiz(){ const d = acikBelge(); if(!d || d.tur !== "fydt") return; co
   const bol = (an, et, ozet, ic) => `<details class="es-b"${fyAcikB.has(an) ? " open" : ""} data-fy-bol="${an}"><summary>${esIk(et)}<span class="es-bt">${et}</span><span class="es-bo">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
   const eks = ["tc", "dogum", "sicil", "kan"].filter(k => !p[k]).map(k => ({ tc: "T.C. no", dogum: "doğum tarihi", sicil: "sicil", kan: "kan grubu" })[k]);
   const tOz = t => [t.tarih && fyTarihTr(t.tarih), t.neden ? "katılmadı" : "", t.mekik && "mekik " + t.mekik, t.sinav && "şınav " + t.sinav, t.kosu && "koşu " + t.kosu].filter(Boolean).join(" · ") || "boş (elle doldurulacak)";
-  kap.innerHTML = `${kayitBas({ ad: "FYDT kartları", n: P.length, secId: p.id, ozet: `<em class="kb-oz dl-tam">${grp ? grp + " yaş" : "yaş yok"}</em>`, liste: P.map(y => ({ id: y.id, ad: y.ad, nokta: ["tc", "dogum", "sicil"].some(k => !y[k]) })) })}
+  kap.innerHTML = `${kayitBas({ sq: "personel", ad: "FYDT kartları", n: P.length, secId: p.id, ozet: `<em class="kb-oz dl-tam">${grp ? grp + " yaş" : "yaş yok"}</em>`, liste: P.map(y => ({ id: y.id, ad: y.ad, nokta: ["tc", "dogum", "sicil"].some(k => !y[k]) })) })}
     <section class="dl-kart es-kart">
       ${bol("kisi", "Kimlik", [p.rutbe, p.ad, p.sicil && `[${p.sicil}]`].filter(Boolean).join(" "), `<div class="fy-kim">${[["T.C. kimlik no", p.tc], ["Doğum", p.dogum], ["Kan grubu", fyKan(p.kan)], ["Görevi", p.kita || p.gorev]].map(([a2, b2]) => `<div><small>${a2}</small><b>${esc(b2 || "—")}</b></div>`).join("")}</div>
         <div class="fy-fotolar"><div><small>Ön yüz fotoğrafı</small>${p.fotoFydtOn || p.foto ? `<img src="/_blob/${esc(p.fotoFydtOn || p.foto)}" alt="">` : `<span>yok</span>`}<button type="button" class="mini" data-fy-foto="on">${p.fotoFydtOn ? "Değiştir" : "＋ Ekle"}</button></div><div><small>Arka yüz</small>${p.fotoFydtArka || p.foto ? `<img src="/_blob/${esc(p.fotoFydtArka || p.foto)}" alt="">` : `<span>yok</span>`}<button type="button" class="mini" data-fy-foto="arka">${p.fotoFydtArka ? "Değiştir" : "＋ Ekle"}</button></div><input type="file" id="fy-foto-dosya" accept="image/*" hidden></div>
