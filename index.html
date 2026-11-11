@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "491";
+  const SURUM = "492";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2545,10 +2545,10 @@ html:not(.salt) .ys-g,html.salt .ys-d{display:none!important}
 html.salt #b-dosyalar .bkk-is [data-is="sil"],html.salt #b-dosyalar .bkk-is [data-is="ad"],html.salt [data-is="parcala"]{display:none!important}
 /* GDHG sekmeleri: yüzen alt çubuk yerine kayıt satırının hemen altında sabit, ince bir sekme şeridi (hiçbir şeyin üstüne binmez) */
 #e-gdhg>#gd-sekme.gd-sekmeler{position:static!important;left:auto!important;bottom:auto!important;transform:none!important;animation:none!important;box-shadow:none!important;order:0;z-index:auto;display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:3px;padding:3px!important;border-radius:10px!important;background:var(--panel2)!important;border:1px solid var(--line2)!important;width:100%;margin:0}
-#e-gdhg>#gd-sekme.gd-sekmeler .btn{flex-direction:row!important;gap:6px!important;height:36px!important;padding:0 4px!important;border-radius:8px!important;font:600 12.5px var(--f-ui)!important}
+#e-gdhg>#gd-sekme.gd-sekmeler .btn{flex-direction:column!important;gap:2px!important;height:auto!important;min-height:40px;padding:5px 2px!important;border-radius:8px!important;font:600 12.5px var(--f-ui)!important}
 #e-gdhg>#gd-sekme.gd-sekmeler .btn svg{width:16px!important;height:16px!important}
-@media (max-width:480px){ #e-gdhg>#gd-sekme.gd-sekmeler .btn svg{display:none} }   /* telefonda yazılar kesilmesin */
-@media (max-width:380px){ #e-gdhg>#gd-sekme.gd-sekmeler .btn{font-size:11.5px!important;padding:0 1px!important} #e-gdhg>#gd-sekme.gd-sekmeler{gap:2px} }   /* klavye açıkken alttaki çubuklar yazı kutularının üstüne binmesin */
+@media (max-width:480px){ #e-gdhg>#gd-sekme.gd-sekmeler .btn{display:inline-flex!important;flex-direction:column;align-items:center;justify-content:center;gap:2px;text-overflow:clip!important;overflow:visible!important;white-space:nowrap} #e-gdhg>#gd-sekme.gd-sekmeler .btn svg{display:block;width:14px!important;height:14px!important;stroke-width:2;opacity:.55} #e-gdhg>#gd-sekme.gd-sekmeler .btn[aria-pressed="true"]{color:#2D557E} #e-gdhg>#gd-sekme.gd-sekmeler .btn[aria-pressed="true"] svg{opacity:1;color:#3D6A99} }   /* telefonda yazılar kesilmesin */
+@media (max-width:380px){ #e-gdhg>#gd-sekme.gd-sekmeler .btn{font-size:11.5px!important} #gd-sekme.gd-sekmeler .btn span{overflow:visible!important;text-overflow:clip!important} #e-gdhg>#gd-sekme.gd-sekmeler{gap:2px} }   /* klavye açıkken alttaki çubuklar yazı kutularının üstüne binmesin */
 .ao{display:flex;flex-direction:column;gap:2px;margin:-2px 0 4px 14px;padding:4px 0 4px 8px;border-left:2px solid var(--line2)}
 .ao-s{display:flex;align-items:center;gap:9px;width:100%;min-height:38px;padding:5px 8px;border:0;border-radius:8px;background:transparent;color:var(--fg);font:500 13px/1.25 var(--f-ui);text-align:left;cursor:pointer}
 .ao-s:active,.ao-s:hover{background:var(--panel2)} .ao-s svg{flex:none;width:17px;height:17px;color:#5C7088} .ao-s>span{flex:1;min-width:0;overflow-wrap:anywhere} .ao-s>small{flex:none;font:600 10px var(--f-ui);letter-spacing:.05em;color:var(--muted)}
@@ -3214,6 +3214,9 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 /* SEÇİLİ KAYIT — bütün sistemde tek standart: sıcak amber zemin, koyu amber çerçeve, ✓ (mavi düğmelerden ayrışsın diye) */
 /* FERAHLIK — bütün belge düzenleme ekranlarında bloklar arası tek ölçü (önceden 0–12 px karışıktı) */
 #v-belge [id$="-govde"]{gap:16px!important} #v-belge [id$="-govde"]>:is(.akk,.kp-onizle){margin-bottom:0!important} #v-belge [id$="-govde"]>.tr-et,#v-belge [id$="-govde"]>.kb2{margin-top:2px}
+.sg-ikli{display:inline-flex!important;align-items:center;justify-content:center;gap:5px} .sg-ik{flex:none;width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;opacity:.55}
+.sg-ikli[aria-pressed="true"],.sg-ikli.on,.sg-ikli[aria-selected="true"]{color:#2D557E!important} .sg-ikli[aria-pressed="true"] .sg-ik,.sg-ikli.on .sg-ik,.sg-ikli[aria-selected="true"] .sg-ik{opacity:1;color:#3D6A99}
+.dl-seg-tur .sg-ikli,.gd-cs-sec .sg-ikli{flex-direction:column;gap:2px} .gd-cs-sec .sg-ikli{white-space:nowrap}
 :root{--sec-z:#FBEFD8;--sec-k:#C98A2E;--sec-y:#5E3B0C;--sec-i:#B0711F}
 .kb2-c.on{background:var(--sec-z);border-color:var(--sec-k);color:var(--sec-y);font-weight:700;box-shadow:inset 0 0 0 1px var(--sec-k),0 1px 5px rgba(176,113,31,.20)} .kb2-c.on .kb2-av{background:var(--sec-i);color:#fff} .kb2-c.on::after{content:"✓";position:absolute;right:8px;top:50%;transform:translateY(-50%);width:16px;height:16px;border-radius:50%;background:var(--sec-i);color:#fff;font:800 9.5px/16px var(--f-ui);text-align:center}
 .dl-sat.on,.dl-sat[aria-current="true"]{border-color:var(--sec-k)!important;border-left-color:var(--sec-k)!important;background:var(--sec-z)!important;box-shadow:inset 0 0 0 1px var(--sec-k)!important} .dl-sat.on b,.dl-sat[aria-current="true"] b{color:var(--sec-y)}
@@ -3562,7 +3565,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 491</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 492</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3998,6 +4001,23 @@ function kayitBas(o){ const L = o.liste || [], at = o.attr || "data-kb-sec", sq 
   return `<div class="kb2"><div class="kb2-ust"><span class="kb-ad">${esc(o.ad)}</span>${o.n ? `<span class="kb-say">${o.n}</span>` : ""}<span class="kb-bos"></span>${o.ozet || ""}${sq && L.length > 1 ? `<button type="button" class="kb-sq${kil ? " kilitli" : ""}" data-sq-ac="${o.sq}" title="${kil ? "Sıra kilitli" : "Sırala · basılı tutup sürükle"}">${kbIk(kil ? "kilit" : "sira")}<span>${kil ? "Kilitli" : "Sırala"}</span></button>` : ""}${o.yeni ? `<button type="button" class="kb-yeni" ${o.yeni}>＋ Yeni</button>` : ""}</div>
     ${L.length ? `<div class="kb2-serit kb2-izgara" role="tablist"${sq ? ` data-kb-sq="${o.sq}"` : ""}>${L.map(x => `<button type="button" role="tab" class="kb2-c${x.id === o.secId ? " on" : ""}" ${at}="${esc(x.id)}" aria-selected="${x.id === o.secId}"><span class="kb2-av">${esc(ksBas(x.ad) || "•")}</span><span class="kb2-y">${esc(x.ad)}</span>${x.nokta ? '<i class="kb2-n" title="eksik var"></i>' : ""}</button>`).join("")}</div>` : ""}</div>`; }
 /* seçili çip görünür yere kaydırılır (yalnız yatayda; sayfa kaymaz) */
+/* SEKME / SEÇENEK DÜĞMELERİ: anlamına göre küçük simge (bütün sistemde aynı kalıp). Simgesi olmayan düğmeye dokunulmaz. */
+const SG_P = { kisi: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>', kisiler: '<circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M15.5 14.6c2.3.2 4 1.6 4.6 4.4"/>',
+  rutbe: '<path d="M6 13l6-4 6 4M6 18l6-4 6 4"/><path d="M6 8l6-4 6 4"/>', sozlesme: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 17c1.5-2 2.5-2 3 0s1.5 1 3-1"/>', liste: '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  imza: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13 7 4 4"/>', belge: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>', durum: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tasvip: '<circle cx="12" cy="12" r="8.5"/><path d="m8 12 3 3 5-6"/>',
+  filigran: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', on: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 8h8M8 12h8"/>', arka: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 16h8"/>',
+  takvim: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', saat: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', kalp: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
+  yuzuk: '<circle cx="9" cy="14" r="5"/><circle cx="15" cy="14" r="5"/><path d="M10 5l2-2 2 2"/>', serit: '<path d="M12 3a4 4 0 0 1 4 4c0 2.5-4 6-4 6s-4-3.5-4-6a4 4 0 0 1 4-4z"/><path d="m9.5 12-3 9 5.5-3 5.5 3-3-9"/>', el: '<path d="M4 13h4l3 3h5a2 2 0 0 0 0-4h-3M4 19h11l5-4"/>',
+  saglik: '<path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/>', izgara: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
+  var: '<path d="m5 12 4.5 4.5L19 7"/>', yok: '<path d="M6 6l12 12M18 6 6 18"/>', ayar: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M5.5 18.5l1.8-1.8M16.7 7.3l1.8-1.8"/>',
+  cikti: '<path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/>', etiket: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>', not: '<path d="M5 4h14v12l-4 4H5z"/><path d="M15 20v-4h4M8 9h8M8 13h5"/>', kron: '<circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4"/>' };
+const SG_E = [[/^(seçili (kişi|personel)|yalnız bu kişi|personel bazlı)/, "kisi"], [/^(tüm personel|tümü|herkes|hepsi|çıktı: herkes)/, "kisiler"], [/^rütbeli|^subay|^uzman/, "rutbe"], [/^(sözleşmeli|erbaş)/, "sozlesme"], [/^liste$/, "liste"], [/^imza/, "imza"],
+  [/^belge$|^dolu$/, "belge"], [/^izin durumu/, "durum"], [/^tasvip/, "tasvip"], [/^filigran/, "filigran"], [/^ön yüz/, "on"], [/^arka yüz|^boş müsvedde/, "arka"], [/^yıllık|^izin$/, "takvim"], [/^mazeret/, "saat"], [/^doğum/, "kalp"], [/^evlilik/, "yuzuk"],
+  [/^ölüm/, "serit"], [/^refakat/, "el"], [/^sıhhi/, "saglik"], [/^genel$/, "izgara"], [/^var\b/, "var"], [/^yok$/, "yok"], [/^ayarlar/, "ayar"], [/^çıktı/, "cikti"], [/^konu bazlı/, "etiket"], [/^notlu|^notsuz/, "not"], [/^fydt$/, "kron"], [/^personel$/, "kisi"]];
+const SG_KAP = ".dl-seg:not(.fy-hseg):not(.fy-kseg),.gd-sekmeler,.gd-cs-sec,.cs-seg,.tz-sek,.an-seg,.i-seg";
+function segIkonla(kok){ (kok || document).querySelectorAll(`:is(${SG_KAP})>button`).forEach(b => { if(b.querySelector("svg")) return;
+  const t = b.textContent.trim().toLocaleLowerCase("tr"), m = SG_E.find(([r]) => r.test(t)); if(!m) return; b.classList.add("sg-ikli"); b.insertAdjacentHTML("afterbegin", `<svg class="sg-ik" viewBox="0 0 24 24" aria-hidden="true">${SG_P[m[1]]}</svg>`); }); }
+(() => { let z = 0; new MutationObserver(() => { cancelAnimationFrame(z); z = requestAnimationFrame(() => segIkonla()); }).observe(document.documentElement, { childList: true, subtree: true }); })();
 const kbYenile = () => { const d = acikBelge(); if(!d) return; ({ kimlik: () => kimlikCiz(), fydt: () => fydtCiz(), zimmet: () => zimmetCiz(), elsenet: () => elsenetCiz(), gdhg: () => gdBelgeCiz() }[d.tur] || (() => {}))(); };
 /* basılı tut → sürükle: kutu yerinden alınır, bırakılınca sıra kaydedilir (kilitliyse uyarır). Telefonda ve faredeki uzun basışta aynı. */
 (() => { let bek = null, tasi = null, tikEngel = 0, px = 0, py = 0;
