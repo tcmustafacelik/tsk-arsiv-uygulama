@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "506";
+  const SURUM = "507";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2169,7 +2169,8 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .dl-gy{font:600 10.5px var(--f-ui);color:#2F6B47;min-height:13px} .dl-is{display:flex;gap:8px;justify-content:flex-end}   
 .dl-onz{padding:10px;background:#E9EDF1;border-radius:14px;display:block!important} .dl-onz .dl-kagit{width:100%} .onz-tuval{display:block;width:100%;height:auto;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12)} .dl-kagit{container-type:inline-size;aspect-ratio:210/297;background:#fff;box-shadow:0 2px 10px rgba(0,0,0,.12);box-sizing:border-box;font-family:"Times New Roman",Tinos,"Liberation Serif",serif;color:#111;font-size:2.02cqw;line-height:1.72;overflow:hidden}
 .dl-mut{position:relative} .dl-mut>*{position:absolute;white-space:nowrap;line-height:1.2} .dl-mut .dl-m{white-space:normal;text-align:justify} .dl-mut .dl-e{overflow:visible}          .dl-m{text-align:justify;line-height:1.3} .dl-bos{color:#aaa} .dl-im{display:flex;flex-direction:column;align-items:center;margin:7cqw 0 0 56%;line-height:1.35} .dl-im b{font-weight:700}
-.izt-sec{margin-bottom:2px;grid-template-columns:repeat(3,1fr)!important} .izt-sec button{white-space:normal;line-height:1.25;text-align:center;min-height:40px}   .isa-not{font:600 10px var(--f-ui);color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px}
+.sg-ik:has([style]){width:20px!important;height:20px!important;opacity:1!important}
+.izt-sec{margin-bottom:2px;grid-template-columns:repeat(3,1fr)!important} .izt-sec button{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:5px;white-space:normal;line-height:1.2;text-align:center;min-height:62px;padding:8px 4px!important} .izt-sec .izt-ik{width:30px!important;height:19px!important;flex:none;border-radius:3px;opacity:.55;transition:opacity .15s} .izt-sec .izt-ik.mf{width:22px!important;height:22px!important} .izt-sec button[aria-pressed="true"] .izt-ik{opacity:1}   .isa-not{font:600 10px var(--f-ui);color:var(--muted);text-transform:none;letter-spacing:0;margin-left:6px}
 .isa-kagit{position:relative} .isa-kagit>span{position:absolute;font-size:1.344cqw;line-height:1;white-space:nowrap;color:#000} .isa-k{position:absolute;border:max(.13cqw,1px) solid #000;box-sizing:border-box} .isa-c{position:absolute;border-top:max(.12cqw,1px) solid #000} .isa-kes{position:absolute;border-top:max(.22cqw,1px) dashed #000}
 .lt-grp{display:flex;align-items:baseline;gap:8px;margin:10px 0 2px;padding:7px 10px;border-radius:9px;background:#F3F1EA} .lt-grp:first-of-type{margin-top:4px} .lt-grp b{font:800 13.5px var(--f-ui);color:#2C3E50;min-width:0;overflow-wrap:anywhere} .lt-grp span{font:500 11px var(--f-ui);color:#8A8574;flex:none} .lt-grp em{margin-left:auto;font-style:normal;font:800 15px var(--f-ui);color:#2C3E50;font-variant-numeric:tabular-nums;flex:none}
 .kc-sat.lt-kf{margin-left:12px;border-left:2px solid #E6E1D3} .kc-sat.lt-kf.lt-tek{margin:8px 0 0;border-left:0;background:#FBFAF6;border-radius:9px} .lt-tek-ad{display:block;font:800 13.5px var(--f-ui)!important;color:#2C3E50!important;margin-bottom:3px} .kc-sat.lt-kf .kc-sb{padding-left:8px}
@@ -3602,7 +3603,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 506</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 507</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4106,7 +4107,7 @@ function kayitBas(o){ const L = o.liste || [], at = o.attr || "data-kb-sec", sq 
 /* seçili çip görünür yere kaydırılır (yalnız yatayda; sayfa kaymaz) */
 /* SEKME / SEÇENEK DÜĞMELERİ: anlamına göre küçük simge (bütün sistemde aynı kalıp). Simgesi olmayan düğmeye dokunulmaz. */
 const SG_P = { mesaj: '<path d="M5 5h14v10H9l-4 4z"/><path d="M8.5 9h7M8.5 12h4"/>', kisi: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>', kisiler: '<circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M15.5 14.6c2.3.2 4 1.6 4.6 4.4"/>',
-  rutbe: '<path d="M6 13l6-4 6 4M6 18l6-4 6 4"/><path d="M6 8l6-4 6 4"/>', sozlesme: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 17c1.5-2 2.5-2 3 0s1.5 1 3-1"/>', liste: '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
+  rutbe: rgApolet(rgYildiz(7, 12, 2.9) + rgYildiz(13.6, 12, 2.9)), uzman: rgYama(5, 14) + rgKanat(2, RG.k, 8.6) + rgAyY(RG.k, 12, 12.3, .95), sozlesme: '<path d="M3.5 8.5L12 15l8.5-6.5" style="fill:none;stroke:#3A1D1A;stroke-width:4.4"/><path d="M3.5 8.5L12 15l8.5-6.5" style="fill:none;stroke:#C0463E;stroke-width:2.6"/>', liste: '<path d="M9 6h11M9 12h11M9 18h11"/><circle cx="4.5" cy="6" r="1"/><circle cx="4.5" cy="12" r="1"/><circle cx="4.5" cy="18" r="1"/>',
   imza: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13 7 4 4"/>', belge: '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>', durum: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tasvip: '<circle cx="12" cy="12" r="8.5"/><path d="m8 12 3 3 5-6"/>',
   filigran: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', on: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 8h8M8 12h8"/>', arka: '<rect x="5" y="3" width="14" height="18" rx="1.5"/><path d="M8 16h8"/>',
   takvim: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', saat: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', kalp: '<path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/>',
@@ -4114,7 +4115,7 @@ const SG_P = { mesaj: '<path d="M5 5h14v10H9l-4 4z"/><path d="M8.5 9h7M8.5 12h4"
   saglik: '<path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/>', izgara: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>',
   var: '<path d="m5 12 4.5 4.5L19 7"/>', yok: '<path d="M6 6l12 12M18 6 6 18"/>', ayar: '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M5.5 18.5l1.8-1.8M16.7 7.3l1.8-1.8"/>',
   cikti: '<path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/>', etiket: '<path d="M3 12V4h8l10 10-8 8z"/><circle cx="7.5" cy="8.5" r="1.3"/>', not: '<path d="M5 4h14v12l-4 4H5z"/><path d="M15 20v-4h4M8 9h8M8 13h5"/>', kron: '<circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4"/>' };
-const SG_E = [[/^(seçili (kişi|personel)|yalnız bu kişi|personel bazlı)/, "kisi"], [/^(tüm personel|tümü|herkes|hepsi|çıktı: herkes)/, "kisiler"], [/^rütbeli|^subay|^uzman/, "rutbe"], [/^(sözleşmeli|erbaş)/, "sozlesme"], [/^liste$/, "liste"], [/^imza/, "imza"],
+const SG_E = [[/^(seçili (kişi|personel)|yalnız bu kişi|personel bazlı)/, "kisi"], [/^(tüm personel|tümü|herkes|hepsi|çıktı: herkes)/, "kisiler"], [/^uzman/, "uzman"], [/^rütbeli|^subay/, "rutbe"], [/^(sözleşmeli|erbaş)/, "sozlesme"], [/^liste$/, "liste"], [/^imza/, "imza"],
   [/^belge$|^dolu$/, "belge"], [/^izin durumu/, "durum"], [/^tasvip/, "tasvip"], [/^filigran/, "filigran"], [/^ön yüz/, "on"], [/^arka yüz|^boş müsvedde/, "arka"], [/^yıllık|^izin$/, "takvim"], [/^mazeret/, "saat"], [/^doğum/, "kalp"], [/^evlilik/, "yuzuk"],
   [/^ölüm/, "serit"], [/^refakat/, "el"], [/^sıhhi/, "saglik"], [/^genel$/, "izgara"], [/^var\b/, "var"], [/^yok$/, "yok"], [/^ayarlar/, "ayar"], [/^çıktı/, "cikti"], [/^konu bazlı/, "etiket"], [/^notlu|^notsuz/, "not"], [/^fydt$/, "kron"], [/^personel$/, "kisi"], [/^manifesto$/, "mesaj"]];
 const SG_KAP = ".dl-seg:not(.fy-hseg):not(.fy-kseg),.gd-sekmeler,.gd-cs-sec,.cs-seg,.tz-sek,.an-seg,.i-seg";
@@ -11638,7 +11639,12 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   if(is === "kopya"){ const y = { ...kopya(k), id: "ik" + yeniId().slice(0, 8), tarih: bugun() }; v.kayitlar.push(y); v.aktif = y.id; yaz(); return bildir("Kopyası oluşturuldu"); }
   if(is === "sil"){ const i = v.kayitlar.indexOf(k); if(i < 0 || v.kayitlar.length < 2) return; const [x] = v.kayitlar.splice(i, 1); v.aktif = v.kayitlar[Math.max(0, i - 1)].id; yaz(); return geriAlinabilir("Belge silindi", () => { v.kayitlar.splice(i, 0, x); v.aktif = x.id; yaz(); }); } });
 /* izin belgeleri arasında ayrım: uzman/sözleşmeli ↔ subay/astsubay */
-const iztSecHtml = su => `<div class="dl-seg izt-sec">${[["izinb", "Uzman · Sözleşmeli"], ["izinsa", "Subay · Astsubay"], ["manifesto", "Manifesto"]].map(([t, a]) => `<button type="button" data-izt="${t}" aria-pressed="${t === su}">${a}</button>`).join("")}</div>`;
+/* izin belgesi seçici simgeleri: gerçek rütbe işaretinden küçük örnek (uzman: kırmızı kanat yaması, subay: yıldızlı apolet, manifesto: mesaj balonu) */
+const iztIk = t => t === "izinb" ? `<svg class="izt-ik" viewBox="0 4.5 24 15" aria-hidden="true">${rgYama(5, 14) + rgKanat(2, RG.k, 8.6) + rgAyY(RG.k, 12, 12.3, .95)}</svg>`
+  : t === "izinsa" ? `<svg class="izt-ik" viewBox="0 4.5 24 15" aria-hidden="true">${rgApolet(rgYildiz(7, 12, 2.9) + rgYildiz(13.6, 12, 2.9))}</svg>`
+  : `<svg class="izt-ik mf" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v11H9l-5 4z" style="fill:#E3F1E4;stroke:#2F6B3E;stroke-width:1.7;stroke-linejoin:round"/><path d="M8 9.5h8M8 12.5h5" style="fill:none;stroke:#2F6B3E;stroke-width:1.7;stroke-linecap:round"/></svg>`;
+const iztSecHtml = su => `<div class="dl-seg izt-sec">${[["izinb", "Uzman · Sözleşmeli"], ["izinsa", "Subay · Astsubay"], ["manifesto", "Manifesto"]].map(([t, a]) => `<button type="button" data-izt="${t}" aria-pressed="${t === su}">${iztIk(t)}<span>${a}</span></button>`).join("")}</div>`;
+{ const f = () => document.querySelectorAll(".izt-sec:not(:has(.izt-ik))").forEach(e => { const su = (e.querySelector('[aria-pressed="true"]') || {}).dataset?.izt || "izinb"; e.outerHTML = iztSecHtml(su); }); if(document.readyState === "loading") document.addEventListener("DOMContentLoaded", f); else f(); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-izt]"); if(!b) return; const t = b.dataset.izt, d = acikBelge(); if(d && d.tur === t) return; const h = S.belgeler.find(x => x.tur === t); if(h) belgeAc(h.id); else bildir("Bu belge henüz yok"); });
 /* ---- çıktılar ---- */
 async function izinsaCikti(d, a, tur){ const I = isaIcerik(d); return tur === "pdf" ? isaPdf(I) : tur === "xlsx" ? isaExcel(I) : isaWord(I); }
