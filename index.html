@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "524";
+  const SURUM = "525";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3266,6 +3266,22 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .uz-tas-bas{font:700 10.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:#6B7B8B;margin:14px 2px 6px} .uz-tas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:14px}
 .uz-tas button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border:1px solid #E1E8EE;background:#fff;border-radius:10px;font:inherit;color:var(--fg);cursor:pointer} .uz-tas button b{font:700 12px var(--f-ui)} .uz-tas .uz-ik{margin:0!important}
 #ks-perde .ap-liste+.uz-tas-bas{margin-top:14px} #ks-perde .uz-tas+.ap-liste{margin-top:0}
+/* BELGE KARTLARI: bütün kart dokunulabilir; büyük "Aç ve düzenle" düğmesi kalktı (Çoğalt / Sil ⋮ menüsünde) */
+.kart.belge.bkk .bkk-is{display:none!important} .kart.belge.bkk{padding:10px 10px 10px 12px!important} .kart.belge.bkk .bkk-ust{padding-right:44px!important} .kart.belge.bkk .bkk-ust::after{content:"›";position:absolute;right:16px;bottom:10px;font:400 20px var(--f-ui);color:#A9B3BE}
+.kart.belge.bkk .bkk-ik{width:40px;height:40px} @media (max-width:700px){ #b-belgeler,#b-dosyalar{grid-template-columns:minmax(0,1fr)!important} #b-belgeler>.kart,#b-dosyalar>.kart{min-width:0} } .kart.belge.bkk:active{background:var(--panel2)}
+/* BELGE ÜST ÇUBUĞU (telefon): ✕ · başlık · ara · geçmiş; altında eşit çıktı düğmeleri */
+@media (max-width:700px){
+ #v-belge>.arac:first-child{display:grid!important;grid-template-columns:38px minmax(0,1fr) 38px 38px;gap:8px!important;align-items:center;padding:8px 12px 10px!important}
+ #v-belge>.arac:first-child>#d-geri{grid-column:1;width:38px;height:38px;padding:0!important;font-size:0!important;display:grid;place-items:center;border-radius:10px} #v-belge>.arac:first-child>#d-geri::before{content:"✕";font-size:17px}
+ #v-belge>.arac:first-child>#d-ad{grid-column:2;width:100%!important;max-width:none!important;flex:none!important;border:1px solid transparent!important;background:transparent!important;box-shadow:none!important;padding:3px 4px!important;font:700 15px/1.25 var(--f-ui)!important;resize:none}
+ #v-belge>.arac:first-child>#d-ad:focus{border-color:var(--line)!important;background:var(--panel)!important}
+ #v-belge>.arac:first-child>#d-bul{grid-column:3} #v-belge>.arac:first-child>#d-gecmis{grid-column:4}
+ #v-belge>.arac:first-child>#d-bul,#v-belge>.arac:first-child>#d-gecmis{width:38px;height:38px;padding:0!important;display:grid;place-items:center;border-radius:10px;overflow:hidden;white-space:nowrap}
+ #v-belge>.arac:first-child>.grup{grid-column:1/-1;order:0!important;display:flex!important;gap:6px!important;border:0!important;background:none!important;overflow:visible!important}
+ #v-belge>.arac:first-child>.grup>.btn{flex:1 1 0!important;min-width:0;height:36px;border:1px solid var(--line2)!important;border-radius:9px!important;justify-content:center;gap:6px;font-size:12.5px!important;box-shadow:none!important}
+ #v-belge>.arac:first-child>.grup>.btn[hidden]{display:none!important} #v-belge>.arac:first-child>.grup>.btn::before{flex:none!important}
+ #v-belge>.arac:first-child>.bul-bar{grid-column:1/-1}
+}
 .tek-sat{display:block;white-space:nowrap;overflow:hidden;min-width:0;max-width:100%} .p-oy .p-alt{font-variant-numeric:tabular-nums}
 .hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 8px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#3F6487;text-decoration:underline;cursor:pointer}
 .mf-sad-s{display:flex;flex-direction:column;gap:4px} .mf-sad-sec{display:flex;flex-direction:column;gap:6px} .mf-sad-sec small{color:var(--muted);font:600 11px var(--f-ui)} .mf-sad-sec button{text-align:left;border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 10px;font:500 12.5px var(--f-ui);color:var(--fg);cursor:pointer} .mf-sad-sec .mf-sad-vaz{align-self:flex-start;color:var(--muted)} .mf-sad-sec em{font-size:12px;color:var(--muted)} .mf-sad-s .mf-ysil{width:34px;height:36px;flex:none} .mf-sad-s small{color:var(--muted);font:500 11.5px var(--f-ui)} .mf-sad-s span{display:flex;gap:8px;align-items:center} .mf-sad-s input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-sad-s input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} #mfd-govde .mf-sad{margin-top:16px}
@@ -3660,7 +3676,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 524</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 525</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4225,6 +4241,10 @@ function tekSatSigdir(){ const G = new Map(); document.querySelectorAll(".tek-sa
     const g = el.closest(".ts-grup"); if(g){ const k = el.className; if(!G.has(g)) G.set(g, {}); const o = G.get(g); (o[k] ||= []).push([el, f]); } });
   /* aynı listedeki aynı tür yazılar aynı boyda: en küçüğe eşitlenir (standart görünüm) */
   G.forEach(o => Object.values(o).forEach(L => { const m = Math.min(...L.map(x => x[1])); L.forEach(([el]) => el.style.fontSize = m + "px"); })); }
+/* belge adı üst çubukta en çok 2 satır: uzun adlarda yazı biraz küçülür */
+function belgeAdSigdir(){ const el = document.getElementById("d-ad"); if(!el || !el.offsetParent || innerWidth > 700) return; el.style.fontSize = ""; let f = 15; const sig = () => { el.style.height = "auto"; el.style.height = el.scrollHeight + "px"; return el.scrollHeight <= f * 1.25 * 2 + 8; };
+  while(!sig() && f > 12){ f -= .5; el.style.setProperty("font-size", f + "px", "important"); } }
+document.addEventListener("input", e => { if(e.target.id === "d-ad") belgeAdSigdir(); });
 /* YARIM GENİŞLİK STANDARDI: iki sütunlu formda yazısı tek satıra sığmayan alan (ör. uzun ad soyad) tam satıra geçer; kısa alanlar (telefon, tarih) yarımda kalır */
 function alanGenislet(){ document.querySelectorAll(".dl-alanlar>.dl-al:not(.tam) textarea, .dl-alanlar>.dl-al:not(.tam) input[type=text], .dl-alanlar>.dl-al:not(.tam) input:not([type])").forEach(el => { if(!el.offsetParent || !el.value) return;
   const tasti = el.tagName === "TEXTAREA" ? el.scrollHeight > parseFloat(getComputedStyle(el).lineHeight || 18) * 1.7 + 14 : el.scrollWidth > el.clientWidth + 2; if(tasti){ el.closest(".dl-al").classList.add("tam", "tam-oto"); if(el.tagName === "TEXTAREA" && typeof otoBoy === "function") requestAnimationFrame(() => otoBoy(el)); } }); }
@@ -5083,10 +5103,10 @@ const GIZLI_KART = t => `<div class="kart bkk gizli-kart" aria-label="Gizli ${t}
 function bolumCiz(){
   const k = klasorBul(SECIM.klasor), b = bolumBul(SECIM.klasor, SECIM.bolum); if(!k || !b){ goster("ana"); return; }
   const beyanBolum = b.tur === "beyan"; $("#b-beyan").hidden = !beyanBolum; if(beyanBolum){ beyanPanelCiz(); beyanDahilCiz(); }
-  const no = bolumNo(k.id, b.id); $("#b-klasor").textContent = k.ad; $("#b-ad").textContent = (no ? no + " · " : "") + b.ad;
+  const no = bolumNo(k.id, b.id); $("#b-klasor").textContent = k.ad; $("#b-klasor").hidden = String(k.ad).toLocaleUpperCase("tr").trim() === String(b.ad).toLocaleUpperCase("tr").trim(); $("#b-ad").textContent = (no ? no + " · " : "") + b.ad;
   const altS = ["", ...(b.alt || [])], bel = belgeleriBul(k.id, b.id).sort((x, y) => altS.indexOf(belgeAlt(x, k.id, b.id) || "") - altS.indexOf(belgeAlt(y, k.id, b.id) || "")), kpK = bolumKapakKart(k, b);   // kartlar baskı sırasıyla: ana ayraç, sonra her alt ayraç
   $("#b-belgeler").innerHTML = kpK + (bel.length ? bel.map(d => { if(d.gizli) return GIZLI_KART("belge"); const [z, r] = bkRenk(d.tur);
-    return `<div class="kart belge bkk${d.sablon ? " sablon" : ""}" style="--bz:#${z};--br:#${r}"><div class="bkk-ust" data-ac="${esc(d.id)}"><span class="bkk-ik">${BKK_SIMGE}</span><span class="bkk-sy"><span class="tur">${d.sablon ? "ŞABLON" : { grid:"TABLO", personel:"PERSONEL", izin:"İZİN", hedef:"HEDEF", yoklama:"YOKLAMA", gdhg:"GDHG", izinb:"İZİN BELGESİ", sema:"ŞEMA", teblig:"TEBLİĞ", tebtut:"TEBLİĞ LİSTESİ", mevzi:"MEVZİ", candostu:"CAN DOSTU", kopek:"KÖPEK KARTI", fydt:"FYDT KARTI", tarama:"TARAMA", karsilama:"KARŞILAMA ORANI", kadro:"KADRO CETVELİ", sicil:"SİCİL AMİRLERİ", liste:"LİSTE", spor:"SPOR TESTİ", baslik:"BAŞLIK", sportakip:"SPOR TAKİP", kapak:"KAPAK", tazminat:"TAZMİNAT", cevrim:"ŞEMA" }[d.tur] || "BELGE"}</span><span class="ad">${esc(d.ad)}</span><span class="bilgi">${esc(belgeOzet(d, k.id))}</span></span></div>
+    return `<div class="kart belge bkk${d.sablon ? " sablon" : ""}" style="--bz:#${z};--br:#${r}"><div class="bkk-ust" data-ac="${esc(d.id)}"><span class="bkk-ik">${PANO_SIMGE[d.tur] ? `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${PANO_SIMGE[d.tur]}</svg>` : BKK_SIMGE}</span><span class="bkk-sy"><span class="tur">${d.sablon ? "ŞABLON" : { grid:"TABLO", personel:"PERSONEL", izin:"İZİN", hedef:"HEDEF", yoklama:"YOKLAMA", gdhg:"GDHG", izinb:"İZİN BELGESİ", izinsa:"İZİN BELGESİ", manifesto:"MANİFESTO", sema:"ŞEMA", teblig:"TEBLİĞ", tebtut:"TEBLİĞ LİSTESİ", mevzi:"MEVZİ", candostu:"CAN DOSTU", kopek:"KÖPEK KARTI", fydt:"FYDT KARTI", tarama:"TARAMA", karsilama:"KARŞILAMA ORANI", kadro:"KADRO CETVELİ", sicil:"SİCİL AMİRLERİ", liste:"LİSTE", spor:"SPOR TESTİ", baslik:"BAŞLIK", sportakip:"SPOR TAKİP", kapak:"KAPAK", tazminat:"TAZMİNAT", cevrim:"ŞEMA" }[d.tur] || "BELGE"}</span><span class="ad">${esc(d.ad)}</span><span class="bilgi">${esc(belgeOzet(d, k.id))}</span></span></div>
       <button class="bkk-kalem uz-dug" type="button" data-uz-ac aria-label="İşlemler" title="İşlemler">⋮</button><button class="bkk-kalem bkk-tasi" type="button" data-tasi="b:${esc(d.id)}" aria-label="Başka bölüme taşı" title="Başka bölüme taşı">⇄</button><button class="bkk-kalem" type="button" data-kart-ad="${esc(d.id)}" aria-label="${esc(d.ad)} adını değiştir" title="Adını değiştir">✎</button>${(b.alt || []).length ? altAyracSec(d, k.id, b) : ""}
       <div class="alt bkk-is"><button class="btn ana" data-ac="${esc(d.id)}"><span class="ys-d">Aç ve düzenle</span><span class="ys-g">Aç</span></button>${COGALTILIR.has(d.tur) ? `<button class="btn" type="button" data-cogalt="${esc(d.id)}" aria-label="${esc(d.ad)} belgesini çoğalt" title="Çoğalt">⧉ Çoğalt</button>` : ""}<button class="btn sil" type="button" data-kart-sil="${esc(d.id)}" aria-label="${esc(d.ad)} belgesini sil">Sil</button></div></div>`; }).join("")
     : kpK ? "" : ""); $("#b-bsay").textContent = bel.length + (kpK ? 1 : 0) || ""; $("#b-bsay").parentNode.hidden = !(bel.length || kpK);
@@ -5238,7 +5258,7 @@ $("#d-ayar").addEventListener("change", e => {
 const acikBelge = () => S.belgeler.find(d => d.id === SECIM.belge);
 function belgeAc(id){ { const g = S.belgeler.find(x => x.id === id); if(g && g.gizli){ bildir("Bu belge paylaşımda gizli"); return; } }
   const d = S.belgeler.find(x => x.id === id); if(!d) return; if(SECIM.belge !== id) bulKapat(); SECIM.belge = id; if(SECIM.klasor && SECIM.bolum) sonEkle({ k: SECIM.klasor, b: SECIM.bolum, d: id }); goster("belge");
-  $("#d-ad").value = d.ad; requestAnimationFrame(() => otoBoy($("#d-ad"))); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip","dilekce","izinsa","manifesto","kimlik","silah","zimmet","elsenet","sertifika","kopek","fydt"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
+  $("#d-ad").value = d.ad; requestAnimationFrame(() => { otoBoy($("#d-ad")); belgeAdSigdir(); }); setTimeout(belgeAdSigdir, 200); setTimeout(() => otoBoy($("#d-ad")), 120); document.fonts && document.fonts.ready.then(() => otoBoy($("#d-ad"))); ["grid","personel","izin","hedef","yoklama","gdhg","izinb","sema","cevrim","tazminat","kapak","teblig","tebtut","mevzi","candostu","tarama","karsilama","kadro","sicil","liste","spor","baslik","sportakip","dilekce","izinsa","manifesto","kimlik","silah","zimmet","elsenet","sertifika","kopek","fydt"].forEach(t => $("#e-" + t).hidden = d.tur !== t);
   $("#d-ayar").hidden = d.tur === "fydt" || d.tur === "sertifika" || d.tur === "dilekce" || d.tur === "zimmet" || d.tur === "elsenet" || d.tur === "izinsa" || d.tur === "manifesto" || d.tur === "izinb" || d.tur === "tazminat" || d.tur === "kapak" || d.tur === "baslik" || d.tur === "teblig" || d.tur === "tebtut" || d.tur === "tarama"; $("#d-ayar").classList.toggle("sade", !!SABIT_YON[d.tur]); document.querySelector('[data-cikti="docx"]').hidden = d.tur === "izinb" || d.tur === "tarama"; document.querySelector('[data-cikti="xlsx"]').hidden = d.tur === "tarama"; { const mf = d.tur === "manifesto", g = document.querySelector('[data-cikti="pdf"]').parentElement; g.hidden = mf; if(g.previousElementSibling && g.previousElementSibling.classList.contains("etiket")) g.previousElementSibling.hidden = mf; }
   $("#d-sil").hidden = d.tur !== "grid";
   ayarCiz();
