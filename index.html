@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "485";
+  const SURUM = "486";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -82,7 +82,11 @@
   const fetchAsil = window.fetch.bind(window);
   const bas = (ek = {}) => ({ Authorization: "Bearer " + token, "X-GitHub-Api-Version": "2022-11-28", ...ek });
   const yol = p => `${API}/repos/${meta.depo}/contents/${p.split("/").map(encodeURIComponent).join("/")}`;
-  async function gh(url, o = {}){ const r = await fetchAsil(url, { cache: "no-store", ...o, headers: bas(o.headers || {}) }); if(r.status === 401) throw new Error("ANAHTAR"); return r; }
+  const AG_HATA = "Buluta ulaşılamadı. İnternet ya da VPN GitHub'ı engelliyor olabilir; bağlantı düzelince kendiliğinden yeniden denenir. Değişiklikler telefonda güvende.";
+  /* ağ hatasında (VPN / zayıf bağlantı) 3 kez, artan aralıkla yeniden dener; olmazsa anlaşılır bir hata verir */
+  async function gh(url, o = {}){ let r, son;
+    for(let i = 0; i < 3; i++){ try { r = await fetchAsil(url, { cache: "no-store", ...o, headers: bas(o.headers || {}) }); son = null; break; } catch(e){ son = e; await new Promise(z => setTimeout(z, [800, 2500, 0][i])); } }
+    if(son) throw new Error(AG_HATA); if(r.status === 401) throw new Error("ANAHTAR"); return r; }
   async function uzakOku(){
     const r = await gh(yol(veriYol()), { headers: { Accept: "application/vnd.github.object+json" } });
     if(r.status === 404) return { sha: null, veri: null };
@@ -175,7 +179,8 @@
       } else if(uzakDegisti && u.veri){ meta.sha = u.sha; const i = imza(u.veri); if(i !== imza(mem)){ esit(u.veri); yerelDegistir(u.veri); bildirim("Diğer cihazdaki değişiklikler alındı"); } meta.sonAl = Date.now(); }
       else meta.sonAl = Date.now();
       durumHata = ""; meta.anahtar = Object.keys(mem).length; payPlanla(300);
-    } catch(e){ durumHata = e.message === "ANAHTAR" ? "GitHub anahtarı geçersiz ya da süresi dolmuş" : e.message === "SIFRE" ? "Şifreleme şifresi yanlış ya da girilmemiş" : e.message === "CAKISMA" ? "Aynı anda başka bir kayıt yapıldı; tekrar denenecek" : (e.message || "Eşitleme hatası"); if(e.message === "CAKISMA") setTimeout(() => esitle("tekrar"), 2000); }
+    } catch(e){ durumHata = e.message === "ANAHTAR" ? "GitHub anahtarı geçersiz ya da süresi dolmuş" : e.message === "SIFRE" ? "Şifreleme şifresi yanlış ya da girilmemiş" : e.message === "CAKISMA" ? "Aynı anda başka bir kayıt yapıldı; tekrar denenecek" : /^(Buluta ulaşılamadı|Failed to fetch|Load failed|NetworkError)/i.test(e.message || "") ? AG_HATA : (e.message || "Eşitleme hatası"); if(e.message === "CAKISMA") setTimeout(() => esitle("tekrar"), 2000);
+      if(/^(Buluta ulaşılamadı|Failed to fetch|Load failed|NetworkError)/i.test(e.message || "")){ clearTimeout(esitle.agZ); esitle.agZ = setTimeout(() => esitle("tekrar"), 30000); } }
     finally { calisiyor = false; metaYaz(); durumCiz(); }
   }
   const cihaz = () => /Android|iPhone|iPad/i.test(navigator.userAgent) ? "telefon" : "bilgisayar";
@@ -3542,7 +3547,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 485</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 486</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
