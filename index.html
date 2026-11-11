@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "462";
+  const SURUM = "463";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1460,7 +1460,7 @@ input.bul-isik,textarea.bul-isik,td.bul-isik input,td.bul-isik textarea,.bul-isi
 #h-ayar .lj-satir{display:grid;grid-template-columns:34px 1fr;gap:0 10px;align-items:center;border-radius:12px;padding:6px 6px 6px 8px;background:var(--panel2);border:1px solid var(--line2)}
 #h-ayar .lj-satir .lj-renk{width:34px;height:34px;border-radius:9px;border:1px solid rgba(0,0,0,.12)}
 #h-ayar .hg-bas{display:flex;align-items:center;gap:8px;min-width:0;height:42px;padding:0 6px 0 2px;border:0;background:transparent;color:var(--fg);font:inherit;text-align:left;cursor:pointer}
-#h-ayar .hg-yazi{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2} #h-ayar .hg-yazi b{font:700 13px var(--f-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #h-ayar .hg-yazi small{font-size:11px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#h-ayar .hg-yazi{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2} #h-ayar .hg-yazi b{font:700 13px var(--f-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} #h-ayar .hg-yazi small{font-size:11px;color:var(--muted);white-space:normal;overflow-wrap:anywhere}
 #h-ayar .hg-duz{padding:4px 2px}
 #h-ayar .hg-say{flex:none;font:700 11px var(--f-mono);color:var(--muted);background:var(--panel);border:1px solid var(--line2);border-radius:8px;padding:2px 8px} #h-ayar .hg-bas i{flex:none;font-style:normal;color:var(--muted);font-size:12px;width:16px;text-align:center}
 #h-ayar .hg.acik{background:var(--panel);border-color:#C7D6E5;box-shadow:0 4px 14px -8px rgba(18,32,52,.25)}
@@ -3516,7 +3516,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 462</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 463</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3532,7 +3532,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 <div class="wrap">
   <header class="ust">
     <h1 class="marka" id="marka" role="link" tabindex="0" title="Ana sayfa" aria-label="TSK ARŞİV ana sayfa"><svg class="logo" xmlns="http://www.w3.org/2000/svg" aria-hidden="true" viewBox="0 0 512 512"><defs><linearGradient id="mkk" x1="0" y1="0" x2="0.4" y2="1"><stop offset="0" stop-color="#3D5C85"/><stop offset="1" stop-color="#1D2D44"/></linearGradient><linearGradient id="mka" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#EBDDB2"/><stop offset="1" stop-color="#BFA765"/></linearGradient><linearGradient id="mkc" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#FFFFFF"/><stop offset="1" stop-color="#E7ECF3"/></linearGradient><linearGradient id="mkz" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#F4F7FB"/><stop offset="1" stop-color="#DCE5EF"/></linearGradient></defs><rect width="512" height="512" rx="116" fill="url(#mkz)"/><g transform="translate(256 262) scale(0.84) translate(-256 -256)"><path d="M256 34 L436 92 V236 C436 352 360 434 256 478 C152 434 76 352 76 236 V92 Z" fill="url(#mkk)"/><path d="M256 66 L408 115 V236 C408 335 344 405 256 444 C168 405 104 335 104 236 V115 Z" fill="none" stroke="url(#mka)" stroke-width="7"/><path d="M256 150 L360 202 L256 254 L152 202 Z" fill="url(#mkc)"/><path d="M152 246 L256 298 L360 246" fill="none" stroke="#A9BDD6" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/><path d="M152 292 L256 344 L360 292" fill="none" stroke="url(#mka)" stroke-width="20" stroke-linecap="round" stroke-linejoin="round"/></g></svg><span class="marka-y"><span>TSK ARŞİV</span></span></h1>
-    <div class="ara-kap"><span aria-hidden="true">⌕</span><input type="search" id="ara" placeholder="Ara: personel, sicil, belge, dosya, hedef…" aria-label="Arşivde ara" autocomplete="off"></div>
+    <div class="ara-kap"><span aria-hidden="true">⌕</span><input type="search" id="ara" placeholder="Ara: personel, belge, dosya…" aria-label="Arşivde ara" autocomplete="off"></div>
     <div class="durum" id="durum" role="status"><i></i><span>Bağlanıyor…</span></div>
   </header>
   <div id="uyari" class="mesaj" hidden></div>
@@ -10926,9 +10926,12 @@ function dlSablon(k){ const n = +k.gun, gun = n ? `${n} (${dlSayiYazi(n)})` : "�
   return ""; }
 /* izin: başlangıç + bitiş girilince gün sayısı (iki gün dahil), gün girilince bitiş kendiliğinden bulunur */
 const dlGunFark = (a, b) => Math.round((Date.UTC(...b.split("-").map((x, i) => i === 1 ? x - 1 : +x)) - Date.UTC(...a.split("-").map((x, i) => i === 1 ? x - 1 : +x))) / 864e5);
-function dlGunEsle(k, f){ const iso = /^\d{4}-\d{2}-\d{2}$/;
-  if((f === "bas" || f === "bit") && iso.test(k.bas || "") && iso.test(k.bit || "")){ const n = dlGunFark(k.bas, k.bit) + 1; if(n > 0) k.gun = String(n); }
-  else if((f === "gun" || f === "bas") && iso.test(k.bas || "") && +k.gun > 0){ const [y, m, g] = k.bas.split("-").map(Number), t = new Date(Date.UTC(y, m - 1, g + +k.gun - 1)); k.bit = t.toISOString().slice(0, 10); } }
+function dlGunEsle(k, f){ const iso = /^\d{4}-\d{2}-\d{2}$/, bV = iso.test(k.bas || ""), tV = iso.test(k.bit || "");
+  /* kural: katılış (bitiş) günü izinden sayılmaz → gün = katılış − başlangıç (01–04 → 3 gün). Hangi alan değişirse diğeri ona göre yeniden hesaplanır. */
+  const bitYaz = () => { const [y, m, g] = k.bas.split("-").map(Number); k.bit = new Date(Date.UTC(y, m - 1, g + +k.gun)).toISOString().slice(0, 10); };
+  if(f === "bit" && bV && tV){ const n = dlGunFark(k.bas, k.bit); k.gun = n > 0 ? String(n) : ""; }
+  else if(f === "gun" && bV && +k.gun > 0) bitYaz();
+  else if(f === "bas" && bV){ if(tV && dlGunFark(k.bas, k.bit) > 0) k.gun = String(dlGunFark(k.bas, k.bit)); else if(+k.gun > 0) bitYaz(); else if(tV) k.gun = ""; } }
 const dlMetin = k => k.elle || !DL_SABLONLU(k.tur) ? (k.metin || "") : dlSablon(k);
 const dlOzu = k => !DL_SABLONLU(k.tur) ? (k.ozu || "") : DL_TUR[k.tur].ozu;
 /* kâğıda gidecek içerik (önizleme, PDF, Word ve Excel aynı veriden çizer) */
@@ -10990,7 +10993,7 @@ function dilekceCiz(){ const d = acikBelge(); if(!d || d.tur !== "dilekce") retu
       <div class="dl-alanlar">
         <label class="dl-al"><span>Dilekçe tarihi</span><input type="date" data-dl-f="tarih" value="${esc(k.tarih)}"></label>
         ${DL_SABLONLU(k.tur) ? `<label class="dl-al"><span>İzin başlangıcı</span><input type="date" data-dl-f="bas" value="${esc(k.bas)}"></label>
-        <label class="dl-al"><span>İzin bitişi</span><input type="date" data-dl-f="bit" value="${esc(k.bit || "")}"></label>
+        <label class="dl-al"><span>Katılış tarihi</span><input type="date" data-dl-f="bit" value="${esc(k.bit || "")}"></label>
         <label class="dl-al"><span>Gün sayısı</span><input data-dl-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="ör. 3"><small class="dl-gy">${+k.gun ? esc(`${+k.gun} (${dlSayiYazi(k.gun)}) gün`) : ""}</small></label>` : `<div class="dl-al tam"><span>Özü (konu)</span><div class="dl-ozu"><textarea class="oto-boy" data-tek rows="1" data-dl-f="ozu" placeholder="Yazın ya da hazır konudan seçin">${esc(k.ozu)}</textarea><button type="button" class="dl-hazir" data-dl="konu" aria-label="Hazır konular"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>Hazır</button></div></div>`}
         ${DL_TUR[k.tur].sebep ? `<label class="dl-al tam"><span>${esc(DL_TUR[k.tur].sebep[0])}</span><textarea class="oto-boy" rows="1" data-dl-f="sebep" placeholder="${esc(DL_TUR[k.tur].sebep[1])}">${esc(k.sebep)}</textarea></label>` : ""}
         <label class="dl-al tam"><span>Metin${DL_SABLONLU(k.tur) ? (k.elle ? ' <button type="button" class="dl-sifir" data-dl="sablon">↺ Şablondan yeniden yaz</button>' : " <i>bilgilerden kendiliğinden yazılır, değiştirebilirsiniz</i>") : ""}</span><textarea class="oto-boy dl-metin" rows="4" data-dl-f="metin" placeholder="Dilekçe metni… Komutanlık emir ve tensiplerine maruzdur. Arz ederim.">${esc(dlMetin(k))}</textarea></label>
