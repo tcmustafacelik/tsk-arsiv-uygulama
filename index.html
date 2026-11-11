@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "470";
+  const SURUM = "471";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3527,7 +3527,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 470</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 471</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11698,6 +11698,8 @@ const fyAktif = v => { const P = fyKisiler(); return P.find(p => p.id === v.akti
 const fyHazYaz = p => p ? [p.rutbe, p.ad, p.sicil && `[${p.sicil}]`].filter(Boolean).join(" ") : "";
 const fyHazCoz = (val, p) => val === "@kendi" ? fyHazYaz(p) : String(val || "");
 const fyHaz = (v, p) => fyHazCoz((v.k[p.id] || {}).hazirlayan || v.hazirlayan, p);
+/* genel alt bilgi değişince kişiye özel olanlar genele bağlanır (yoksa eski kişiye özel yazı basılmaya devam ederdi) */
+const fyHazGenel = (v, val) => { v.hazirlayan = val; let n = 0; Object.values(v.k || {}).forEach(x => { if(x && x.hazirlayan){ delete x.hazirlayan; n++; } }); return n; };
 const fyK = (v, p) => { const x = v.k[p.id] ||= {}; x.t ||= [{}, {}, {}]; while(x.t.length < 3) x.t.push({}); return x; };
 const fyDYil = p => { const m = String(p.dogum || "").match(/(19|20)\d{2}/); return m ? +m[0] : 0; };
 const fyYil = v => +(String(v.tarih || "").slice(0, 4)) || new Date().getFullYear();
@@ -11878,14 +11880,14 @@ const fyOnizle = (d, hemen) => { const P = [fyAktif(fyVeri(d))].filter(Boolean);
   pdfOnizle($("#fy-govde .fy-onz"), () => uret(1), hemen); pdfOnizle($("#fy-govde .fy-onz2"), () => uret(2), hemen); };
 document.addEventListener("toggle", e => { const g = e.target; if(!g.matches || !g.matches("#fy-govde .es-b")) return; if(g.open) fyAcikB.add(g.dataset.fyBol); else fyAcikB.delete(g.dataset.fyBol); }, true);
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#fy-govde")) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return; const x = fyK(v, p), ds = el.dataset;
-  if(ds.fyA) v[ds.fyA] = el.value; else if(ds.fyK) x[ds.fyK] = el.value; else if(ds.fyT){ const [i, k] = ds.fyT.split(":"); x.t[+i][k] = el.value; } else return;
+  if(ds.fyA === "hazirlayan") fyHazGenel(v, el.value); else if(ds.fyA) v[ds.fyA] = el.value; else if(ds.fyK) x[ds.fyK] = el.value; else if(ds.fyT){ const [i, k] = ds.fyT.split(":"); x.t[+i][k] = el.value; } else return;
   kaydetBelge(d); fyOnizle(d); });
 let fyFotoYuz = "on"; document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-fy-foto]"); if(b){ fyFotoYuz = b.dataset.fyFoto; $("#fy-foto-dosya").click(); } });
 document.addEventListener("change", async e => { if(e.target.id !== "fy-foto-dosya") return; const f = e.target.files[0]; e.target.value = ""; const d = acikBelge(); if(!f || !d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return;
   try { const bl = await vesikalik(f), r = await assets.upload(bl, { type: "image/jpeg" }); p[fyFotoYuz === "arka" ? "fotoFydtArka" : "fotoFydtOn"] = r.id; kaydetBt("personel"); fydtCiz(); bildir(fyFotoYuz === "arka" ? "Arka yüz fotoğrafı eklendi" : "Ön yüz fotoğrafı eklendi"); } catch(err){ uyar("Fotoğraf yüklenemedi: " + (err.message || err), true); } });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#fy-govde [data-fy-haz]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return;
   const an = b.dataset.fyHaz, x = fyK(v, p), simdi = an === "k" ? x.hazirlayan : v.hazirlayan, P = (S.personel.rows || []).filter(y => y.ad);
-  const koy = val => { if(an === "k") x.hazirlayan = val; else v.hazirlayan = val; kaydetBelge(d); fydtCiz(); };
+  const koy = val => { if(an === "k") x.hazirlayan = val; else { const n = fyHazGenel(v, val); if(n) bildir(`${n} kartın kişiye özel alt bilgisi genel ayara bağlandı`); } kaydetBelge(d); fydtCiz(); };
   altPencere("ks-perde", "ALT BİLGİ · SAĞ", an === "k" ? `${p.ad} kartı` : "Bütün kartlar", () => `<div class="ap-liste">${apSatir('data-fh="@kendi"', '<span class="ks-av dl-ko">K</span>', "Kartın sahibi", simdi === "@kendi" ? '<em class="ks-tik">✓</em>' : "", { alt: an === "k" ? esc(fyHazYaz(p)) : "her kartta o kişinin kendi adı" })}${P.map(y => { const t = fyHazYaz(y); return apSatir(`data-fh="${esc(y.id)}"`, `<span class="ks-av">${esc(ksBas(y.ad))}</span>`, esc(y.ad), simdi === t ? '<em class="ks-tik">✓</em>' : "", { alt: esc(t) }); }).join("")}${apSatir('data-fh="@elle"', '<span class="ks-av dl-ko">✎</span>', "Elle yaz", "", { alt: "kutuya istediğinizi yazın" })}${an === "k" ? apSatir('data-fh="@genel"', '<span class="ks-av dl-ko">G</span>', "Genel ayarı kullan", !simdi ? '<em class="ks-tik">✓</em>' : "", { alt: esc(fyHazCoz(v.hazirlayan, p) || "boş") }) : ""}</div>`,
     (b2, kapat) => { const f = b2.dataset.fh; if(!f) return; kapat(); if(f === "@kendi") return koy("@kendi"); if(f === "@genel") return koy("");
       if(f === "@elle"){ koy(simdi === "@kendi" ? fyHazYaz(p) : (simdi || "")); const i = $(`#fy-govde [data-fy-${an}="hazirlayan"]`); if(i){ i.focus(); i.select(); } return; }
