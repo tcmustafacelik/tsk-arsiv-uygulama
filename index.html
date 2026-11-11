@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "473";
+  const SURUM = "474";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2146,7 +2146,7 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .km-nl{display:flex;flex-direction:column;gap:6px;margin-top:6px} .km-nl>div{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:7px 9px;border:1px solid #DCE7E8;border-radius:8px;background:#F7FBFB}
 .km-nl b{font:700 12px var(--f-ui);color:#214A50} .km-nl small{grid-column:1/-1;font:500 11px var(--f-ui);color:var(--muted);line-height:1.35}
 .km-o{font:700 10px var(--f-ui);border-radius:6px;padding:2px 7px;background:#E6F0E4;color:#2F5A3A;align-self:start} .km-o.el{background:#EEF0F8;color:#3D4A7A} .km-o.ay{background:#F4EFE3;color:#6B5A2E}
-.dl-metin{min-height:80px;font-weight:500!important;font-size:13px!important;line-height:1.45!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .fy-hk{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;border:1px solid var(--line2);background:#F4F8FB;border-radius:8px;padding:5px 10px} .fy-hk small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-hk b{font:600 12.5px var(--f-ui);color:#2D3C4E;overflow-wrap:anywhere} .fy-av{background:#E6EEF7!important;color:#2D557E!important} .fy-elle{margin-top:6px} .fy-vars{font:700 10px var(--f-ui);font-style:normal;color:#2D557E;background:#E6EEF7;border-radius:5px;padding:1px 6px;margin-left:4px;vertical-align:1px} .dl-sab{grid-column:1/-1;display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D5CDE6;background:#F7F5FB;border-radius:10px;padding:8px 11px;cursor:pointer;text-align:left;font-family:var(--f-ui)} .dl-sab span{font:700 10.5px var(--f-ui);color:#7A6FA0;text-transform:uppercase;letter-spacing:.04em} .dl-sab b{flex:1;font:700 12.5px var(--f-ui);color:#3E3466} .dl-sab i{font:600 11px var(--f-ui);color:#7A6FA0;font-style:normal;white-space:nowrap} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
+.dl-metin{min-height:80px;font-weight:500!important;font-size:13px!important;line-height:1.45!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .fy-hk{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;border:1px solid var(--line2);background:#F4F8FB;border-radius:8px;padding:5px 10px} .fy-hk small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-hk b{font:600 12.5px var(--f-ui);color:#2D3C4E;overflow-wrap:anywhere} .fy-hseg{grid-template-columns:repeat(auto-fit,minmax(52px,1fr))!important} .fy-hseg button{padding:7px 2px!important} .fy-kseg{grid-template-columns:repeat(2,1fr)!important;margin-top:6px} .fy-kseg button{text-align:left;padding:7px 9px!important;overflow-wrap:anywhere} .fy-hz .fy-elle{margin-top:6px} .fy-kay{margin-top:6px;align-self:flex-start} .fy-hc{margin-top:6px;display:flex;flex-direction:column;gap:1px;padding:6px 10px;border-left:3px solid #C9D6E4;background:#F6F9FC;border-radius:0 8px 8px 0} .fy-hc small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-hc b{font:600 12.5px var(--f-ui);color:#2D3C4E;overflow-wrap:anywhere} .fy-av{background:#E6EEF7!important;color:#2D557E!important} .fy-elle{margin-top:6px} .fy-vars{font:700 10px var(--f-ui);font-style:normal;color:#2D557E;background:#E6EEF7;border-radius:5px;padding:1px 6px;margin-left:4px;vertical-align:1px} .dl-sab{grid-column:1/-1;display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D5CDE6;background:#F7F5FB;border-radius:10px;padding:8px 11px;cursor:pointer;text-align:left;font-family:var(--f-ui)} .dl-sab span{font:700 10.5px var(--f-ui);color:#7A6FA0;text-transform:uppercase;letter-spacing:.04em} .dl-sab b{flex:1;font:700 12.5px var(--f-ui);color:#3E3466} .dl-sab i{font:600 11px var(--f-ui);color:#7A6FA0;font-style:normal;white-space:nowrap} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
 .dl-seg-tur{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))!important}
 .dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:7px 4px;font:700 11.5px/1.2 var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .dl-gy{font:600 10.5px var(--f-ui);color:#2F6B47;min-height:13px} .dl-is{display:flex;gap:8px;justify-content:flex-end}   
@@ -3527,7 +3527,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 473</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 474</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11696,7 +11696,8 @@ const fyKisiler = () => (S.personel.rows || []).filter(p => p.ad);
 const fyAktif = v => { const P = fyKisiler(); return P.find(p => p.id === v.aktif) || P[0] || null; };
 /* alt bilgi sağ: personelden seçilir ya da elle yazılır; "@kendi" = her kartta kartın sahibi. Kişiye özel boşsa genel değer basılır. */
 const fyHazYaz = p => p ? [p.rutbe, p.ad, p.sicil && `[${p.sicil}]`].filter(Boolean).join(" ") : "";
-const kAd = t => String(t).replace(/^.*?\b([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)*\s+[A-ZÇĞİÖŞÜ]{2,})\b.*$/u, "$1");
+const kAd = t => { const m = String(t).match(/(?:^|\s)([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)*\s+[A-ZÇĞİÖŞÜ]{2,}(?:\s+[A-ZÇĞİÖŞÜ]{2,})*)(?=\s|\[|$)/u); return m ? m[1] : String(t); };
+const fyHazMod = (v, an, val, P2) => fyMod[an] || (an === "k" && !val ? "genel" : val === "@kendi" ? "sahip" : (v.hzListe || []).includes(val) ? "vars" : P2.some(y => fyHazYaz(y) === val) ? "kisi" : "elle");
 const fyHazCoz = (val, p) => val === "@kendi" ? fyHazYaz(p) : String(val || "");
 const fyHaz = (v, p) => fyHazCoz((v.k[p.id] || {}).hazirlayan || v.hazirlayan, p);
 /* genel alt bilgi değişince kişiye özel olanlar genele bağlanır (yoksa eski kişiye özel yazı basılmaya devam ederdi) */
@@ -11855,15 +11856,17 @@ async function fydtCikti(d, a, tur){ const v = fyVeri(d), P = fyKapsamListe(d); 
   await fyFotoHazirla(P); const sahte = { ...d, grid: fyGrid(d, P) };
   return tur === "pdf" ? await gridPdf(sahte, a2) : tur === "xlsx" ? await gridExcel(sahte, a2) : await gridWord(sahte, a2); }
 /* ---- ekran ---- */
-const fyAcikB = new Set(["kisi"]), fyElle = new Set();
+const fyAcikB = new Set(["kisi"]), fyElle = new Set(), fyMod = {};
 function fydtCiz(){ const d = acikBelge(); if(!d || d.tur !== "fydt") return; const v = fyVeri(d), P = fyKisiler(), p = fyAktif(v);
   const kap = $("#fy-govde"); if(!p){ kap.innerHTML = `<div class="yk-bos">Personel listesi boş</div>`; return; }
   const x = fyK(v, p), grp = fyGrup(v, p), e100 = fyEsik(grp, 100), e60 = fyEsik(grp, 60);
   const al = (et, veri, deger, o0 = "") => { const O = o0.split(/\s+/), o = { includes: z => O.includes(z) }; return `<label class="dl-al${o.includes("tam") ? " tam" : ""}"><span>${et}</span><input ${veri} value="${esc(deger || "")}"${o.includes("n") ? ' inputmode="decimal"' : ""}${o.includes("t") ? ' type="date"' : ""}${o.includes("s") ? ' placeholder="dk:sn" inputmode="numeric"' : ""}></label>`; };
-  const haz = (et, an, val) => { const P2 = (S.personel.rows || []).filter(y => y.ad), kisi = val && val !== "@kendi" && !fyElle.has(an) ? P2.find(y => fyHazYaz(y) === val) : null, liste = (v.hzListe || []).includes(val), elle = fyElle.has(an) || (!!val && val !== "@kendi" && !kisi && !liste) || (an === "a" && !val);
-    const kay = val && !fyElle.has(an) && (v.hzListe || []).indexOf(val);
-    const [av, ad, alt] = val === "@kendi" ? ["K", "Kartın sahibi", fyHazYaz(p)] : kay !== false && kay > -1 ? [ksBas(kAd(val)), kAd(val) + (kay === 0 ? " · varsayılan" : ""), val] : kisi ? [ksBas(kisi.ad), kisi.ad, val] : an === "k" && !val ? ["G", "Genel ayar", fyHazCoz(v.hazirlayan, p) || "boş"] : ["✎", "Elle yazılan", val || "boş"];
-    return `<div class="dl-al tam"><span>${et}</span><button type="button" class="ks-sec" data-fy-haz="${an}"><span class="ks-av${/^[KG✎]$/.test(av) ? " fy-av" : ""}">${esc(av)}</span><span class="ks-ad"><b>${esc(ad)}</b><small>${esc(alt)}</small></span><i>Değiştir ›</i></button>${elle && (val || an === "a" || fyElle.has(an)) ? `<textarea class="oto-boy fy-elle" data-tek rows="1" data-fy-${an}="hazirlayan" placeholder="ör. Rütbe Ad SOYAD [sicil]">${esc(val || "")}</textarea>` : ""}</div>`; };
+  const haz = (et, an, val) => { const P2 = (S.personel.rows || []).filter(y => y.ad), L = v.hzListe || [], m = fyHazMod(v, an, val, P2), seg = (k, t) => `<button type="button" data-fy-hm="${an}:${k}" aria-pressed="${m === k}">${t}</button>`;
+    const sec = (veri, on, t) => `<button type="button" ${veri} aria-pressed="${on}">${esc(t)}</button>`, cikis = fyHazCoz(an === "k" && !val ? v.hazirlayan : val, p);
+    const ic = m === "vars" ? (L.length > 1 ? `<div class="dl-seg fy-kseg">${L.map((t, i) => sec(`data-fy-hv="${an}:${i}"`, val === t, kAd(t) + (i ? "" : " · varsayılan"))).join("")}</div>` : "")
+      : m === "kisi" ? `<div class="dl-seg fy-kseg">${P2.map(y => sec(`data-fy-hp="${an}:${esc(y.id)}"`, val === fyHazYaz(y), y.ad)).join("")}</div>`
+      : m === "elle" ? `<textarea class="oto-boy fy-elle" data-tek rows="1" data-fy-${an}="hazirlayan" placeholder="Rütbe Ad SOYAD [sicil]">${esc(val === "@kendi" ? "" : val || "")}</textarea>${val && !L.includes(val) ? `<button type="button" class="dl-sifir fy-kay" data-fy-hk="${an}">＋ Listeye kaydet</button>` : ""}` : "";
+    return `<div class="dl-al tam fy-hz"><span>${et}</span><div class="dl-seg fy-hseg">${an === "k" ? seg("genel", "Genel") : ""}${L.length ? seg("vars", "Varsayılan") : ""}${seg("sahip", "Kartın sahibi")}${seg("kisi", "Personel")}${seg("elle", "Elle")}</div>${ic}<div class="fy-hc"><small>Kâğıda basılan</small><b>${esc(cikis || "—")}</b></div></div>`; };
   const bol = (an, et, ozet, ic) => `<details class="es-b"${fyAcikB.has(an) ? " open" : ""} data-fy-bol="${an}"><summary><span class="es-bt">${et}</span><span class="es-bo">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
   const eks = ["tc", "dogum", "sicil", "kan"].filter(k => !p[k]).map(k => ({ tc: "T.C. no", dogum: "doğum tarihi", sicil: "sicil", kan: "kan grubu" })[k]);
   const tOz = t => [t.tarih && fyTarihTr(t.tarih), t.neden ? "katılmadı" : "", t.mekik && "mekik " + t.mekik, t.sinav && "şınav " + t.sinav, t.kosu && "koşu " + t.kosu].filter(Boolean).join(" · ") || "boş (elle doldurulacak)";
@@ -11889,13 +11892,18 @@ document.addEventListener("input", e => { const el = e.target; if(!el.closest ||
 let fyFotoYuz = "on"; document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-fy-foto]"); if(b){ fyFotoYuz = b.dataset.fyFoto; $("#fy-foto-dosya").click(); } });
 document.addEventListener("change", async e => { if(e.target.id !== "fy-foto-dosya") return; const f = e.target.files[0]; e.target.value = ""; const d = acikBelge(); if(!f || !d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return;
   try { const bl = await vesikalik(f), r = await assets.upload(bl, { type: "image/jpeg" }); p[fyFotoYuz === "arka" ? "fotoFydtArka" : "fotoFydtOn"] = r.id; kaydetBt("personel"); fydtCiz(); bildir(fyFotoYuz === "arka" ? "Arka yüz fotoğrafı eklendi" : "Ön yüz fotoğrafı eklendi"); } catch(err){ uyar("Fotoğraf yüklenemedi: " + (err.message || err), true); } });
-document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#fy-govde [data-fy-haz]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return;
-  const an = b.dataset.fyHaz, x = fyK(v, p), simdi = an === "k" ? x.hazirlayan : v.hazirlayan, P = (S.personel.rows || []).filter(y => y.ad);
-  const koy = val => { if(an === "k") x.hazirlayan = val; else { const n = fyHazGenel(v, val); if(n) bildir(`${n} kartın kişiye özel alt bilgisi genel ayara bağlandı`); } kaydetBelge(d); fydtCiz(); };
-  altPencere("ks-perde", "ALT BİLGİ · SAĞ", an === "k" ? `${p.ad} kartı` : "Bütün kartlar", () => `<div class="ap-liste">${apSatir('data-fh="@kendi"', '<span class="ks-av dl-ko">K</span>', "Kartın sahibi", simdi === "@kendi" ? '<em class="ks-tik">✓</em>' : "", { alt: an === "k" ? esc(fyHazYaz(p)) : "her kartta o kişinin kendi adı" })}${(v.hzListe || []).map((t, i) => apSatir(`data-fh="@k${i}"`, `<span class="ks-av fy-av">${esc(ksBas(kAd(t)))}</span>`, esc(kAd(t)), simdi === t ? '<em class="ks-tik">✓</em>' : "", { alt: (i ? "kayıtlı · " : "varsayılan · ") + esc(t) })).join("")}${P.map(y => { const t = fyHazYaz(y); return apSatir(`data-fh="${esc(y.id)}"`, `<span class="ks-av">${esc(ksBas(y.ad))}</span>`, esc(y.ad), simdi === t ? '<em class="ks-tik">✓</em>' : "", { alt: esc(t) }); }).join("")}${simdi && simdi !== "@kendi" && !(v.hzListe || []).includes(simdi) && !P.some(y => fyHazYaz(y) === simdi) ? apSatir('data-fh="@kaydet"', '<span class="ks-av dl-ko">＋</span>', "Bu yazıyı listeye kaydet", "", { alt: esc(simdi) }) : ""}${apSatir('data-fh="@elle"', '<span class="ks-av dl-ko">✎</span>', "Elle yaz", "", { alt: "kutuya istediğinizi yazın" })}${an === "k" ? apSatir('data-fh="@genel"', '<span class="ks-av dl-ko">G</span>', "Genel ayarı kullan", !simdi ? '<em class="ks-tik">✓</em>' : "", { alt: esc(fyHazCoz(v.hazirlayan, p) || "boş") }) : ""}</div>`,
-    (b2, kapat) => { const f = b2.dataset.fh; if(!f) return; kapat(); if(f === "@kendi"){ fyElle.delete(an); return koy("@kendi"); } if(f === "@genel"){ fyElle.delete(an); return koy(""); }
-      fyElle.delete(an); if(f === "@elle"){ fyElle.add(an); koy(simdi === "@kendi" ? fyHazYaz(p) : (simdi || "")); const i = $(`#fy-govde [data-fy-${an}="hazirlayan"]`); if(i){ i.focus(); i.select(); } return; }
-      if(f === "@kaydet"){ v.hzListe.push(simdi); kaydetBelge(d); fydtCiz(); return bildir("Listeye kaydedildi"); } if(/^@k\d+$/.test(f)) return koy(v.hzListe[+f.slice(2)]); const y = P.find(z => z.id === f); if(y) koy(fyHazYaz(y)); }, { z: "E6EEF7", r: "2D557E" }); });
+/* alt bilgi sağ: kartın içinde seçilir (alttan açılan liste yok) */
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#fy-govde :is([data-fy-hm],[data-fy-hv],[data-fy-hp],[data-fy-hk])"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return;
+  const [an, a] = (b.dataset.fyHm || b.dataset.fyHv || b.dataset.fyHp || b.dataset.fyHk).split(":"), x = fyK(v, p), simdi = an === "k" ? x.hazirlayan : v.hazirlayan, P = (S.personel.rows || []).filter(y => y.ad), L = v.hzListe;
+  const koy = val => { if(an === "k") x.hazirlayan = val; else { const n = fyHazGenel(v, val); if(n) bildir(`${n} kartın kişiye özel alt bilgisi genel ayara bağlandı`); } };
+  if(b.dataset.fyHm){ delete fyMod[an];
+    if(a === "genel") koy(""); else if(a === "sahip") koy("@kendi"); else if(a === "vars") koy(L[0]);
+    else if(a === "kisi"){ fyMod[an] = "kisi"; if(!P.some(y => fyHazYaz(y) === simdi)) koy(fyHazYaz(an === "k" ? p : P[0])); }
+    else if(a === "elle"){ fyMod[an] = "elle"; if(simdi === "@kendi" || (an === "k" && !simdi)) koy(fyHazCoz(an === "k" && !simdi ? v.hazirlayan : simdi, p)); } }
+  else if(b.dataset.fyHv) koy(L[+a]);
+  else if(b.dataset.fyHp){ const y = P.find(z => z.id === a); if(y) koy(fyHazYaz(y)); }
+  else if(b.dataset.fyHk){ if(simdi && !L.includes(simdi)){ L.push(simdi); bildir("Listeye kaydedildi"); } delete fyMod[an]; }
+  kaydetBelge(d); fydtCiz(); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#fy-govde [data-fy-kap]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; fyVeri(d).kapsam = b.dataset.fyKap; kaydetBelge(d); fydtCiz(); });
 
 /* ================= KÖPEK TANITMA KARTI (tur: "kopek") =================
