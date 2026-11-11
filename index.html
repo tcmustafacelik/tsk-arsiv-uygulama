@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "527";
+  const SURUM = "528";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3289,6 +3289,43 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
  #v-belge>.arac:first-child>.grup>.btn[hidden]{display:none!important} #v-belge>.arac:first-child>.grup>.btn::before{flex:none!important}
  #v-belge>.arac:first-child>.bul-bar{grid-column:1/-1}
 }
+/* ===== ANA SAYFA (Mizan tarzı): kahraman kart · simgeli sekmeler · başlıklı kartlar ===== */
+.an-hero{display:flex;flex-direction:column;gap:12px;padding:14px;border-radius:16px;background:linear-gradient(140deg,#30486B 0%,#1E3150 60%,#172741 100%);color:#fff;box-shadow:0 10px 26px rgba(23,39,65,.22);margin-bottom:14px}
+.an-hero-ust{display:flex;align-items:center;gap:14px;border:0;background:none;color:inherit;font:inherit;text-align:left;padding:0;cursor:pointer;width:100%}
+.an-halka{--p:0;flex:none;width:66px;height:66px;border-radius:50%;display:grid;place-content:center;text-align:center;background:radial-gradient(closest-side,#22385A 79%,transparent 80% 100%),conic-gradient(#D9C08A calc(var(--p)*1%),rgba(255,255,255,.16) 0)}
+.an-halka b{font:800 20px/1 var(--f-ui)} .an-halka small{font:600 9.5px var(--f-ui);opacity:.75;letter-spacing:.06em}
+.an-hy{display:flex;flex-direction:column;gap:3px;min-width:0} .an-hy small{font:500 11.5px var(--f-ui);color:rgba(255,255,255,.7)} .an-hy b{font:800 18px/1.2 var(--f-ui)} .an-hy>span{font:500 12.5px var(--f-ui);color:rgba(255,255,255,.85)} .an-hy em{font-style:normal;font-weight:700;color:#E9D6A4} .an-hy em.yakin{color:#FFC98A} .an-hy em.bitti{color:#FFB4A8}
+.an-st-l{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.an-st{display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 4px;border:1px solid rgba(255,255,255,.14);background:rgba(255,255,255,.08);border-radius:11px;color:#fff;font:inherit;cursor:pointer}
+.an-st span svg{width:16px;height:16px;opacity:.85} .an-st b{font:800 18px/1.1 var(--f-ui)} .an-st small{font:600 10.5px var(--f-ui);color:rgba(255,255,255,.72)}
+.an-seg.an-seg2{display:flex!important;gap:4px;padding:5px;background:#fff;border:1px solid #E3E8EE;border-radius:16px;box-shadow:0 2px 10px rgba(23,39,65,.05);margin-bottom:14px}
+.an-seg2 button{flex:1 1 0;min-width:0;display:flex;align-items:center;justify-content:center;gap:7px;height:44px;border:0;border-radius:12px;background:none;color:#5B6B7D;font:700 13px var(--f-ui);position:relative;padding:0 6px;transition:flex .2s,background .2s}
+.an-seg2 button svg{width:22px;height:22px;flex:none} .an-seg2 button span{display:none;white-space:nowrap}
+.an-seg2 button[aria-selected="true"]{flex:2.6 1 0;background:#E6EEF7!important;color:#24456A!important;box-shadow:none!important} .an-seg2 button[aria-selected="true"] span{display:inline}
+.an-seg2 button i{position:absolute;top:5px;right:calc(50% - 20px);min-width:16px;height:16px;border-radius:8px;background:#C0573F;color:#fff;font:800 9.5px/16px var(--f-ui);font-style:normal;text-align:center;padding:0 4px}
+.an-kart{background:#fff;border:1px solid #E3E8EE;border-radius:16px;padding:12px 12px 10px;box-shadow:0 2px 10px rgba(23,39,65,.04)}
+.an-kart-bas{display:flex;align-items:center;gap:10px;padding:2px 2px 10px} .an-kart-bas span{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:#E6EEF7;color:#24456A;flex:none} .an-kart-bas span svg{width:18px;height:18px}
+.an-kart-bas b{font:800 16px var(--f-ui);color:#1C2B40} .an-kart-bas small{margin-left:auto;font:500 12px var(--f-ui);color:var(--muted)}
+#v-ana .ana-bas{display:none}
+@media (max-width:700px){
+ header.ust .ara-kap{display:none} header.ust.ara-acik .ara-kap{display:flex;flex-basis:100%;order:9}
+ .ust-ik{display:inline-grid!important}
+ header.ust .durum span{display:none} header.ust .durum{padding:0!important;width:38px;height:38px;justify-content:center;border-radius:50%}
+}
+.ust-ik{display:none;place-items:center;width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:#1C2B40;cursor:pointer;position:relative} .ust-ik svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ust-ik i{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:#C0573F} .ust-ik i[hidden]{display:none}
+.an-seg2 button{transition:flex .34s cubic-bezier(.3,.8,.3,1),background-color .34s,color .34s} .an-seg2 button span{display:inline-block!important;opacity:0;max-width:0;overflow:hidden;transition:opacity .25s .08s,max-width .34s} .an-seg2 button[aria-selected="true"] span{opacity:1;max-width:130px}
+.an-kart.gir-sag{animation:anGirSag .34s cubic-bezier(.25,.8,.3,1)} .an-kart.gir-sol{animation:anGirSol .34s cubic-bezier(.25,.8,.3,1)}
+@keyframes anGirSag{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:none}} @keyframes anGirSol{from{opacity:0;transform:translateX(-40px)}to{opacity:1;transform:none}}
+.an-st,.an-seg2 button,.an-hero-ust{-webkit-tap-highlight-color:transparent} .an-st{transition:transform .12s} .an-st:active{transform:scale(.95)}
+@media (prefers-reduced-motion:reduce){.an-kart{animation:none!important} .an-seg2 button,.an-seg2 button span{transition:none!important}}
+.an-kart-bas b{white-space:nowrap} .an-kart-bas small{text-align:right}
+@media (max-width:700px){
+ header.ust{display:grid!important;grid-template-columns:minmax(0,1fr) auto auto auto;align-items:center;gap:2px!important}
+ header.ust>.marka{min-width:0} header.ust .ara-kap{grid-column:1/-1}
+ #v-ana.panel{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
+}
+.marka-alt{display:block;font:700 12px var(--f-ui);letter-spacing:.02em;color:#7A5A25;margin-top:1px}
 .tek-sat{display:block;white-space:nowrap;overflow:hidden;min-width:0;max-width:100%} .p-oy .p-alt{font-variant-numeric:tabular-nums}
 .hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 8px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#3F6487;text-decoration:underline;cursor:pointer}
 .mf-sad-s{display:flex;flex-direction:column;gap:4px} .mf-sad-sec{display:flex;flex-direction:column;gap:6px} .mf-sad-sec small{color:var(--muted);font:600 11px var(--f-ui)} .mf-sad-sec button{text-align:left;border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 10px;font:500 12.5px var(--f-ui);color:var(--fg);cursor:pointer} .mf-sad-sec .mf-sad-vaz{align-self:flex-start;color:var(--muted)} .mf-sad-sec em{font-size:12px;color:var(--muted)} .mf-sad-s .mf-ysil{width:34px;height:36px;flex:none} .mf-sad-s small{color:var(--muted);font:500 11.5px var(--f-ui)} .mf-sad-s span{display:flex;gap:8px;align-items:center} .mf-sad-s input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-sad-s input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} #mfd-govde .mf-sad{margin-top:16px}
@@ -3683,7 +3720,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 527</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 528</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3705,7 +3742,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 <path d="M202 130 H294 L312 148 V236 H202 Z" fill="#F7F1DC" opacity=".55"/>
 <path d="M146 196 a12 12 0 0 1 12 -12 h62 a12 12 0 0 1 9 4 l16 18 h111 a12 12 0 0 1 12 12 v138 a12 12 0 0 1 -12 12 H158 a12 12 0 0 1 -12 -12 Z" fill="url(#m5t)"/>
 <path d="M146 236 a12 12 0 0 1 12 -12 h196 a12 12 0 0 1 12 12 v120 a12 12 0 0 1 -12 12 H158 a12 12 0 0 1 -12 -12 Z" fill="url(#m5f)"/>
-<rect x="222" y="268" width="68" height="16" rx="8" fill="url(#m5a)"/></g></svg><span class="marka-y"><span>TSK ARŞİV</span></span></h1>
+<rect x="222" y="268" width="68" height="16" rx="8" fill="url(#m5a)"/></g></svg><span class="marka-y"><span>TSK ARŞİV</span><small class="marka-alt">Belge arşivi</small></span></h1>
+    <button type="button" class="ust-ik" id="ust-ara" aria-label="Ara"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg></button><button type="button" class="ust-ik" id="ust-uyari" aria-label="Uyarılar"><svg viewBox="0 0 24 24"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><i hidden></i></button>
     <div class="ara-kap"><span aria-hidden="true">⌕</span><input type="search" id="ara" placeholder="Ara: personel, belge, dosya…" aria-label="Arşivde ara" autocomplete="off"></div>
     <div class="durum" id="durum" role="status"><i></i><span>Bağlanıyor…</span></div>
   </header>
@@ -4863,12 +4901,19 @@ function anaCiz(){
     const anahtar = o.d || (o.k + ":" + o.b); if(gor.has(anahtar)) return null; gor.add(anahtar);
     return { ...o, ad: d ? d.ad : bl.ad, alt: d ? `${k.kisa || k.ad} · ${bl.ad}` : (k.kisa || k.ad), tur: d ? d.tur : null }; }).filter(Boolean).slice(0, 6);
   const nP = (S.personel.rows || []).filter(x => x.ad).length, nH = (S.hedef.rows || []).length;
-  const sayi = (v, et, veri, i) => `<button type="button" class="an-sayi" ${veri} style="--z:${SIRT[i]}"><b>${v}</b><small>${et}</small></button>`;
-  let h = `<div class="an-sayilar">${sayi(nP, "Personel", 'data-pano="personel"', 0)}${sayi(izinde, "İzinde", 'data-pano="izin"', 1)}${sayi(nH, "Hedef", 'data-pano="hedef"', 2)}${sayi(dk.length, "Uyarı", 'data-an-sek="uyari"', 3)}</div>`;
-  if(bas && son){ const kal = gunF(bugun, son); h += `<button type="button" class="an-donem" data-pano="gdhg"><b>${esc(S.gdhg.setAd || "GDHG dönemi")}</b><span>${esc(trTarih(bas)).slice(0, 5)} – ${esc(trTarih(son)).slice(0, 5)}</span><em class="${kal < 0 ? "bitti" : kal <= 7 ? "yakin" : ""}">${kal >= 0 ? kal + " gün kaldı" : "dönem bitti"}</em></button>`; }
+  const svgI = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
+  const AIK = { kisi: '<circle cx="9" cy="8" r="3"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6M16 11a2.5 2.5 0 1 0 0-5M17.5 19c-.3-1.9-1.2-3.2-2.6-3.9"/>', izin: '<path d="M4 12h12M12 6l6 6-6 6"/><path d="M20 4v16"/>', hedef: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/>', uyari: '<path d="M12 4 3 19h18z"/><path d="M12 10v4M12 16.5h.01"/>',
+    kisa: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>', klasor: '<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9a1.5 1.5 0 0 0-1.5-1.5h-7L10 5H5a1.5 1.5 0 0 0-1.5 1.5z"/>', son: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', gecmis: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 8v4l3 2"/>' };
+  const sayi = (v, et, veri, ik) => `<button type="button" class="an-st" ${veri}><span>${svgI(AIK[ik])}</span><b>${v}</b><small>${et}</small></button>`;
+  const sa2 = new Date().getHours(), selam = sa2 < 6 ? "İyi geceler" : sa2 < 12 ? "Günaydın" : sa2 < 18 ? "İyi günler" : "İyi akşamlar", tarihY = new Date().toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long" });
+  let hero = "";
+  if(bas && son){ const kal = gunF(bugun, son), top = Math.max(1, gunF(bas, son)), gec = Math.min(1, Math.max(0, gunF(bas, bugun) / top));
+    hero = `<button type="button" class="an-hero-ust" data-pano="gdhg"><span class="an-halka" style="--p:${(gec * 100).toFixed(1)}"><b>${kal >= 0 ? kal : 0}</b><small>gün</small></span><span class="an-hy"><small>${esc(selam)} · ${esc(tarihY)}</small><b>${esc(S.gdhg.setAd || "GDHG dönemi")}</b><span>${esc(trTarih(bas)).slice(0, 5)} – ${esc(trTarih(son)).slice(0, 5)} · <em class="${kal < 0 ? "bitti" : kal <= 7 ? "yakin" : ""}">${kal >= 0 ? kal + " gün kaldı" : "dönem bitti"}</em></span></span></button>`; }
+  else hero = `<div class="an-hero-ust"><span class="an-hy"><small>${esc(tarihY)}</small><b>${esc(selam)}</b></span></div>`;
+  const heroH = `<div class="an-hero">${hero}<div class="an-st-l">${sayi(nP, "Personel", 'data-pano="personel"', "kisi")}${sayi(izinde, "İzinde", 'data-pano="izin"', "izin")}${sayi(nH, "Hedef", 'data-pano="hedef"', "hedef")}${sayi(dk.length, "Uyarı", 'data-an-sek="uyari"', "uyari")}</div></div>`;
   const sekmeler = [["kisa", "Kısayollar"], ["klasor", "Klasörler"], ["son", "Son"], ["gecmis", "Geçmiş"], ...(dk.length ? [["uyari", "Uyarılar"]] : [])];
   if(!sekmeler.some(([k]) => k === anaSekme)) anaSekme = "kisa";
-  h += `<div class="an-seg" role="tablist">${sekmeler.map(([k, t]) => `<button type="button" role="tab" data-an-sek="${k}" aria-selected="${anaSekme === k}">${t}${k === "uyari" ? ` <i>${dk.length}</i>` : ""}</button>`).join("")}</div>`;
+  let h = `<div class="an-seg an-seg2" role="tablist">${sekmeler.map(([k, t]) => `<button type="button" role="tab" data-an-sek="${k}" aria-selected="${anaSekme === k}" aria-label="${t}" title="${t}">${svgI(AIK[k] || AIK.uyari)}<span>${t}</span>${k === "uyari" ? `<i>${dk.length}</i>` : ""}</button>`).join("")}</div>` + (anaSekme === "kisa" ? heroH : "");
   const svg = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const sat = (veri, i, ad, sag, simge, sinif = "") => `<button type="button" class="sirt-sat${sinif}" ${veri} style="--sr:${SIRT[i % SIRT.length]}">${simge ? `<span class="ss-s">${svg(simge)}</span>` : ""}<b>${ad}</b>${sag || ""}</button>`;
   let ic = "";
@@ -4884,8 +4929,28 @@ function anaCiz(){
       <details class="gc-tum"><summary>Bütün belgeler <small>${B.length}</small></summary>${B.map(bs).join("")}</details>`; }
   else if(anaSekme === "son"){ ic = sonL.length ? sonL.map((o, i) => sat(`data-son-k="${esc(o.k)}" data-son-b="${esc(o.b)}"${o.d ? ` data-son-d="${esc(o.d)}"` : ""}`, i, esc(o.ad), `<small>${esc(o.alt)}</small>`, o.tur ? PANO_SIMGE[o.tur] || PANO_SIMGE.belge : `<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/>`, " iki")).join("") : `<div class="an-bos">Henüz açılan belge yok</div>`; }
   else { ic = dk.map((x, i) => sat(`data-dk="${esc(x.tur)}"`, 3, esc(x.t), `<small>${esc(x.a)}</small>`, "", " iki uyari")).join(""); }
-  $("#ana-pano").innerHTML = h + `<div class="an-ic">${ic}</div>`;
+  { const z = document.querySelector("#ust-uyari i"); if(z) z.hidden = !dk.length; }
+  const SB2 = { kisa: ["Kısayollar", "sık açtığın belgeler"], klasor: ["Klasörler", "bütün arşiv"], son: ["Son çalışılanlar", "en son açtıkların"], gecmis: ["Geçmiş", "eski hâllere dön"], uyari: ["Dikkat edilecekler", dk.length + " uyarı"] }[anaSekme] || ["", ""];
+  const SL = sekmeler.map(x => x[0]), yon = anaOnceki && anaOnceki !== anaSekme ? (SL.indexOf(anaSekme) > SL.indexOf(anaOnceki) ? "sag" : "sol") : "";
+  $("#ana-pano").innerHTML = h + `<div class="an-kart${yon ? " gir-" + yon : ""}"><div class="an-kart-bas"><span>${svgI(AIK[anaSekme] || AIK.uyari)}</span><b>${SB2[0]}</b><small>${esc(SB2[1])}</small></div><div class="an-ic">${ic}</div></div>`;
+  /* sekme geçişi: seçili kutu eski yerinden yenisine kayar (Mizan gibi), içerik o yöne süzülür */
+  if(yon){ const B = [...document.querySelectorAll("#ana-pano .an-seg2 button")], es = B.find(b => b.dataset.anSek === anaOnceki), ye = B.find(b => b.dataset.anSek === anaSekme);
+    if(es && ye){ es.setAttribute("aria-selected", "true"); ye.setAttribute("aria-selected", "false"); requestAnimationFrame(() => requestAnimationFrame(() => { es.setAttribute("aria-selected", "false"); ye.setAttribute("aria-selected", "true"); })); } }
+  anaOnceki = anaSekme;
 }
+
+
+/* ana sayfa kartında sağa / sola kaydırınca bir sonraki / önceki sekme */
+(() => { let x0 = 0, y0 = 0, t0 = 0; const pano = document.getElementById("ana-pano"); if(!pano) return;
+  pano.addEventListener("touchstart", e => { const t = e.touches[0]; x0 = t.clientX; y0 = t.clientY; t0 = Date.now(); }, { passive: true });
+  pano.addEventListener("touchend", e => { if(!e.target.closest(".an-kart") || e.target.closest("input,textarea")) return; const t = e.changedTouches[0], dx = t.clientX - x0, dy = t.clientY - y0; if(Math.abs(dx) < 60 || Math.abs(dy) > Math.abs(dx) * .6 || Date.now() - t0 > 700) return;
+    const L = [...pano.querySelectorAll(".an-seg2 button")].map(b => b.dataset.anSek), i = L.indexOf(anaSekme), j = i + (dx < 0 ? 1 : -1); if(j < 0 || j >= L.length) return;
+    anaSekme = L[j]; try { localStorage.setItem("anaSekme", anaSekme); } catch(_){} anaCiz(); }, { passive: true }); })();
+/* üst çubuk (telefon): arama simgesi arama kutusunu açar, zil uyarılara götürür */
+document.addEventListener("click", e => { const a = e.target.closest && e.target.closest("#ust-ara, #ust-uyari"); if(!a) return;
+  if(a.id === "ust-ara"){ const u = document.querySelector("header.ust"); u.classList.toggle("ara-acik"); if(u.classList.contains("ara-acik")) setTimeout(() => $("#ara").focus(), 50); return; }
+  anaSekme = "uyari"; try { localStorage.setItem("anaSekme", anaSekme); } catch(_){} if(typeof goster === "function") goster("ana"); anaCiz(); });
+let anaOnceki = null;
 let anaSekme = (() => { try { return localStorage.getItem("anaSekme") || "kisa"; } catch(e){ return "kisa"; } })();
 const SIRT = ["#C9D8E8", "#CFE2D3", "#E9D9B8", "#E8CFC6", "#D9D2E8", "#C9E0E2", "#D5DDBE", "#D3D9E2", "#E6DDC6", "#D8E4CF"];
 $("#ana-pano").addEventListener("click", e => { const sk = e.target.closest("[data-an-sek]"); if(sk){ anaSekme = sk.dataset.anSek; try { localStorage.setItem("anaSekme", anaSekme); } catch(_){} anaCiz(); return; }
