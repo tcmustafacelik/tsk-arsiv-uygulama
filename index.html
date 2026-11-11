@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "523";
+  const SURUM = "524";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3263,6 +3263,9 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .gc-ana2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin:0 0 14px} .gc-ana-k{display:flex;flex-direction:column;align-items:flex-start;gap:4px;padding:10px;border:1px solid #E6EAEE;background:#fff;border-radius:10px;text-align:left;font:inherit;color:var(--fg);cursor:pointer} .gc-ana-k b{font:700 13px var(--f-ui)} .gc-ana-k small{font:500 11px/1.35 var(--f-ui);color:var(--muted)}
 .an-bas{font:700 10.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:#6B7B8B;margin:2px 2px 6px}
 .gc-tum{margin-top:10px} .gc-tum>summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:6px;padding:10px 12px;border:1px dashed #CDD6DF;border-radius:10px;font:700 12.5px var(--f-ui);color:#3F5568;margin-bottom:8px} .gc-tum>summary::-webkit-details-marker{display:none} .gc-tum>summary small{font:700 10.5px var(--f-ui);background:#EEF2F6;border-radius:6px;padding:1px 6px}
+.uz-tas-bas{font:700 10.5px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:#6B7B8B;margin:14px 2px 6px} .uz-tas{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px;margin-bottom:14px}
+.uz-tas button{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px 4px;border:1px solid #E1E8EE;background:#fff;border-radius:10px;font:inherit;color:var(--fg);cursor:pointer} .uz-tas button b{font:700 12px var(--f-ui)} .uz-tas .uz-ik{margin:0!important}
+#ks-perde .ap-liste+.uz-tas-bas{margin-top:14px} #ks-perde .uz-tas+.ap-liste{margin-top:0}
 .tek-sat{display:block;white-space:nowrap;overflow:hidden;min-width:0;max-width:100%} .p-oy .p-alt{font-variant-numeric:tabular-nums}
 .hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 8px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#3F6487;text-decoration:underline;cursor:pointer}
 .mf-sad-s{display:flex;flex-direction:column;gap:4px} .mf-sad-sec{display:flex;flex-direction:column;gap:6px} .mf-sad-sec small{color:var(--muted);font:600 11px var(--f-ui)} .mf-sad-sec button{text-align:left;border:1px solid var(--line2);background:#fff;border-radius:8px;padding:8px 10px;font:500 12.5px var(--f-ui);color:var(--fg);cursor:pointer} .mf-sad-sec .mf-sad-vaz{align-self:flex-start;color:var(--muted)} .mf-sad-sec em{font-size:12px;color:var(--muted)} .mf-sad-s .mf-ysil{width:34px;height:36px;flex:none} .mf-sad-s small{color:var(--muted);font:500 11.5px var(--f-ui)} .mf-sad-s span{display:flex;gap:8px;align-items:center} .mf-sad-s input{flex:1;min-width:0;border:1px solid var(--line2);border-radius:8px;padding:8px 10px;font:500 13.5px var(--f-ui);background:#fff;color:var(--ink,#1F2A36)} .mf-sad-s input:focus{outline:2px solid #BFD9C3;border-color:#8DB894} #mfd-govde .mf-sad{margin-top:16px}
@@ -3657,7 +3660,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 523</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 524</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -13814,7 +13817,12 @@ function uzAc({ e, el }){ const id = e.id(el); if(id == null) return; const ad =
     if(e.ts) I.push({ ad: "Seç", alt: "birden çok satırı birlikte silmek ya da işlemek için", ik: "sec", f: () => { for(const x in tsSec) tsSec[x] = null; tsSec[e.ts] = new Set([id]); tsUygula(); } });
     I.push({ ad: "Sil", alt: "yanlışlıkla olursa altta “Geri al” çıkar", ik: "sil", kirmizi: true, f: () => uzSil(e, id, ad) }); }
   if(navigator.vibrate) try { navigator.vibrate(12); } catch(x){}
-  altPencere("ks-perde", "İŞLEMLER", ad, () => `<div class="ap-liste">${I.map((x, i) => apSatir(`data-uz="${i}"`, `<span class="ap-sim uz-ik${x.kirmizi ? " kz" : ""}"><svg viewBox="0 0 24 24">${UZ_IK[x.ik] || UZ_IK.dug}</svg></span>`, esc(x.ad), "", { kirmizi: x.kirmizi, alt: x.alt ? esc(x.alt) : "" })).join("")}</div>`,
+  const RK = { ac: ["#E4EDF7", "#3F6487"], yuk: ["#E3EEF0", "#2F6670"], asa: ["#E3EEF0", "#2F6670"], ust: ["#E3EEF0", "#2F6670"], alt: ["#E3EEF0", "#2F6670"], kop: ["#ECE6F4", "#5E4A86"], tas: ["#F3ECDD", "#7A5A25"], sec: ["#E3F1E4", "#2F6B3E"], sil: ["#F7E6E2", "#A3412F"], dug: ["#EEF1F4", "#55636F"] };
+  const ik = x => { const [z, c] = RK[x.ik] || RK.dug; return `<span class="ap-sim uz-ik" style="background:${z};color:${c}"><svg viewBox="0 0 24 24">${UZ_IK[x.ik] || UZ_IK.dug}</svg></span>`; };
+  const TS = ["yuk", "asa", "ust", "alt"], KIS = { yuk: "Yukarı", asa: "Aşağı", ust: "En üste", alt: "En alta" }, tas = I.map((x, i) => [x, i]).filter(([x]) => TS.includes(x.ik) && /taşı$/.test(x.ad)), dig = I.map((x, i) => [x, i]).filter(([x]) => !tas.some(([y]) => y === x));
+  altPencere("ks-perde", "İŞLEMLER", ad, () => `<div class="ap-liste">${dig.filter(([x]) => x.ik === "ac").map(([x, i]) => apSatir(`data-uz="${i}"`, ik(x), esc(x.ad), "", { alt: x.alt ? esc(x.alt) : "" })).join("")}</div>
+    ${tas.length ? `<div class="uz-tas-bas">Sırasını değiştir</div><div class="uz-tas">${tas.map(([x, i]) => `<button type="button" data-uz="${i}">${ik(x)}<b>${KIS[x.ik]}</b></button>`).join("")}</div>` : ""}
+    ${dig.some(([x]) => x.ik !== "ac") ? `<div class="ap-liste">${dig.filter(([x]) => x.ik !== "ac").map(([x, i]) => apSatir(`data-uz="${i}"`, ik(x), esc(x.ad), "", { kirmizi: x.kirmizi, alt: x.alt ? esc(x.alt) : "" })).join("")}</div>` : ""}`,
     (b, kapat) => { const x = I[+b.dataset.uz]; if(!x) return; kapat(); setTimeout(x.f, 30); }, { z: "EEF2F6", r: "3D5A73" }); }
 /* basılı tutma algılama: 480 ms kıpırdamadan basılı kalırsa menü; ardından gelen dokunuş (tıklama) yutulur */
 let uzZ = null, uzX = 0, uzY = 0, uzSon = 0, uzEl = null;
