@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "492";
+  const SURUM = "493";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3210,7 +3210,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kb2-serit{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));grid-auto-rows:1fr;gap:5px;padding:1px 0 2px}
 .kb2-c{position:relative;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:38px;padding:5px 9px;border:1px solid #E3E8EE;border-radius:9px;background:#FAFBFC;font:600 11px/1.18 var(--f-ui);color:#3D4D5E;cursor:pointer;text-align:center;white-space:normal;transition:background .15s,border-color .15s,box-shadow .15s,transform .15s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .kb2-y{display:block;min-width:0;text-align:left;overflow-wrap:anywhere}
-.kb2-av{flex:none;width:21px;height:21px;border-radius:6px;display:grid;place-items:center;background:#E9EFF5;color:#4A6584;font:800 9.5px var(--f-ui);letter-spacing:.02em}
+.kb2-av{flex:none;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:#E9EFF5;color:#4A6584;font:800 9.5px var(--f-ui);letter-spacing:.02em} .kb2-av svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
+.kb2-av.rs-subay{background:#E6EEF7;color:#2D557E} .kb2-av.rs-astsubay{background:#E5F0E7;color:#3B6B47} .kb2-av.rs-uzman{background:#E3EFF0;color:#2F6670} .kb2-av.rs-soz{background:#EEEDF4;color:#5B5680} .kb2-av.rs-kisi{background:#EEF1F4;color:#5B6B7B}
 /* SEÇİLİ KAYIT — bütün sistemde tek standart: sıcak amber zemin, koyu amber çerçeve, ✓ (mavi düğmelerden ayrışsın diye) */
 /* FERAHLIK — bütün belge düzenleme ekranlarında bloklar arası tek ölçü (önceden 0–12 px karışıktı) */
 #v-belge [id$="-govde"]{gap:16px!important} #v-belge [id$="-govde"]>:is(.akk,.kp-onizle){margin-bottom:0!important} #v-belge [id$="-govde"]>.tr-et,#v-belge [id$="-govde"]>.kb2{margin-top:2px}
@@ -3565,7 +3566,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 492</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 493</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3995,11 +3996,17 @@ async function vazgec(sessiz, yalniz){
 }
 /* ===== kayıt başlığı standardı (kimlik, zimmet, el senedi): üstte ince satır (ad · sıra · ‹ › · Yeni), altında seçili kaydın adı.
    Kutu içinde kutu yok; ada dokununca bütün kayıtların listesi açılır. Telefonda ve bilgisayarda aynı. ===== */
+/* kişi kutusundaki simge: rütbe sınıfına göre sade işaret (subay yıldız, astsubay çift şerit, uzman şerit+çizgi, sözleşmeli/er tek şerit) */
+const RS_IK = { subay: ["Subay", '<path d="m12 4 2.3 4.8 5.2.7-3.8 3.6.9 5.2L12 15.8l-4.6 2.5.9-5.2-3.8-3.6 5.2-.7z"/>'], astsubay: ["Astsubay", '<path d="M6 10l6-4 6 4M6 16l6-4 6 4"/>'],
+  uzman: ["Uzman", '<path d="M6 9l6-4 6 4M6 14l6-4 6 4M7 19h10"/>'], soz: ["Sözleşmeli · Er", '<path d="M6 13l6-5 6 5"/>'], kisi: ["Personel", '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>'] };
+const rutbeSinif = r => /Asb\./.test(r) ? "astsubay" : /Uzm\./.test(r) ? "uzman" : /Söz\.|Onb\b|\bEr\b|Çvş\.?$/.test(r) ? "soz" : /(Ütğm|Tğm|Yzb|Bnb|Yb\b|Alb|Tuğg|Tümg|Korg|\bOrg\b|Asteğm|Ütgm)/i.test(r) ? "subay" : "kisi";
+const kbRutbeIk = x => { const p = (S.personel.rows || []).find(y => y.id === x.id || (x.pid && y.id === x.pid) || (x.ad && pAd(y.ad) === pAd(x.ad))) || {}, k = rutbeSinif(x.rutbe || p.rutbe || ""), [ad, d] = RS_IK[k];
+  return `<span class="kb2-av rs-${k}" title="${ad}"><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg></span>`; };
 const KB_IK = { sira: '<path d="M7 4v16M4 7l3-3 3 3M17 20V4M14 17l3 3 3-3"/>', kilit: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>' };
 const kbIk = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${KB_IK[k]}</svg>`;
 function kayitBas(o){ const L = o.liste || [], at = o.attr || "data-kb-sec", sq = o.sq && SQ[o.sq], kil = sq && !!(sq.tut() || {}).srKilit;
   return `<div class="kb2"><div class="kb2-ust"><span class="kb-ad">${esc(o.ad)}</span>${o.n ? `<span class="kb-say">${o.n}</span>` : ""}<span class="kb-bos"></span>${o.ozet || ""}${sq && L.length > 1 ? `<button type="button" class="kb-sq${kil ? " kilitli" : ""}" data-sq-ac="${o.sq}" title="${kil ? "Sıra kilitli" : "Sırala · basılı tutup sürükle"}">${kbIk(kil ? "kilit" : "sira")}<span>${kil ? "Kilitli" : "Sırala"}</span></button>` : ""}${o.yeni ? `<button type="button" class="kb-yeni" ${o.yeni}>＋ Yeni</button>` : ""}</div>
-    ${L.length ? `<div class="kb2-serit kb2-izgara" role="tablist"${sq ? ` data-kb-sq="${o.sq}"` : ""}>${L.map(x => `<button type="button" role="tab" class="kb2-c${x.id === o.secId ? " on" : ""}" ${at}="${esc(x.id)}" aria-selected="${x.id === o.secId}"><span class="kb2-av">${esc(ksBas(x.ad) || "•")}</span><span class="kb2-y">${esc(x.ad)}</span>${x.nokta ? '<i class="kb2-n" title="eksik var"></i>' : ""}</button>`).join("")}</div>` : ""}</div>`; }
+    ${L.length ? `<div class="kb2-serit kb2-izgara" role="tablist"${sq ? ` data-kb-sq="${o.sq}"` : ""}>${L.map(x => `<button type="button" role="tab" class="kb2-c${x.id === o.secId ? " on" : ""}" ${at}="${esc(x.id)}" aria-selected="${x.id === o.secId}">${kbRutbeIk(x)}<span class="kb2-y">${esc(x.ad)}</span>${x.nokta ? '<i class="kb2-n" title="eksik var"></i>' : ""}</button>`).join("")}</div>` : ""}</div>`; }
 /* seçili çip görünür yere kaydırılır (yalnız yatayda; sayfa kaymaz) */
 /* SEKME / SEÇENEK DÜĞMELERİ: anlamına göre küçük simge (bütün sistemde aynı kalıp). Simgesi olmayan düğmeye dokunulmaz. */
 const SG_P = { kisi: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>', kisiler: '<circle cx="9" cy="8.5" r="3"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6"/><circle cx="16.5" cy="9.5" r="2.4"/><path d="M15.5 14.6c2.3.2 4 1.6 4.6 4.4"/>',
