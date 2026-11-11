@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "445";
+  const SURUM = "446";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3505,7 +3505,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 445</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 446</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6803,6 +6803,7 @@ let izbSekme = "belge", izbSecili = null, izbKapsam = "kisi", izbArka = true;
 try { izbKapsam = localStorage.getItem("izbKapsam") || "kisi"; izbArka = localStorage.getItem("izbArka") !== "0"; } catch(e){}
 const izbVarsayilan = () => ({ baslik: "İZİN BELGESİ", etiket: "IzinKagidi_Uzman", kenar: "E0E0E0", kisiler: [], tasvip: [], ilkAmir: "", komutan: "",
   filigran: { on: { kod: "", alt: "", yon: "sag", ek: "", ekYon: "sag" }, arka: { kod: "", alt: "", yon: "sag", ek: "", ekYon: "sag" }, ayniKod: true, ayniAlt: true, ayniEk: true, koyu: 3, ekKoyu: 35 } });
+const IZB_SUBAY = /Asb|Astsb|Kd\.?\s*Çvş|Bçvş|Üçvş|Ütğm|Tğm|Yzb|Bnb|Alb|Yb\b|Kur\.|Gnkur|Subay/i;
 const izbKisiBos = () => ({ id: yeniId(), ad: "", kita: "", rutbe: "", sicil: "", foto: "", adres: "", tel: "", silah: "", kan: "", yakinAd: "", yakinTel: "",
   tur: "Yıllık İzin", ayr: "", yilGun: 0, mazGun: 0, yol: false, topYil: 30, topMaz: 15, topYol: 2, onceki: "" });
 /* filigran örnek şablonu: yalnız biçim gösterir; değiştirilmeden çıktı alınamaz */
@@ -7057,7 +7058,7 @@ function izbBelgeCiz(){
         ${al("Telefon", izbInp("tel", k.tel))}${al("Kan grubu", izbInp("kan", k.kan))}${al("Silah seri no", izbInp("silah", k.silah))}
         ${al("Yakını adı soyadı", izbInp("yakinAd", k.yakinAd), 1)}${al("Yakını cep tel.", izbInp("yakinTel", k.yakinTel))}
       </div></details>
-    <div class="dl-is"><button class="mini sil" type="button" data-izb-is="kisi-sil">Bu personeli sil</button></div>`;
+    <div class="dl-is"><button class="mini" type="button" data-izb-is="kisi-kopya">⧉ Kopyala</button><span class="bosluk" style="flex:1"></span><button class="mini sil" type="button" data-izb-is="kisi-sil">Bu belgeyi sil</button></div>`;
   window.otoBoyHepsi && otoBoyHepsi($("#izb-form"));
   izbOnizle(k);
 }
@@ -7176,7 +7177,16 @@ $("#e-izinb").addEventListener("click", e => {
   const gb = e.target.closest("[data-izb-git]"); if(gb){ izbSecili = gb.dataset.izbGit; izbSekme = "belge"; izbhCiz(); const el = document.querySelector("#izb-form .dl-kart"); if(el) el.scrollIntoView({ block: "start" }); return; }
   const kb = e.target.closest("[data-izb-kisi]"); if(kb){ izbSecili = kb.dataset.izbKisi; izbBelgeCiz(); return; }
   const b = e.target.closest("[data-izb-is]"); if(!b) return; const G = izbG(), is = b.dataset.izbIs;
-  if(is === "kisi-ekle"){ const k = izbKisiBos(); G.kisiler.push(k); izbSecili = k.id; kaydetBt("izinb"); izbhCiz(); document.querySelector('#izb-form [data-izb="ad"]')?.focus(); return; }
+  if(is === "kisi-ekle"){ const koy = k => { G.kisiler.push(k); izbSecili = k.id; kaydetBt("izinb"); izbhCiz(); };
+    /* isim listesinden uzman / sözleşmeli seçilir (subay ve astsubay bu belgeye girmez); bilgileri kimlikten dolar */
+    const L = (S.personel.rows || []).filter(p => p.ad && !IZB_SUBAY.test(p.rutbe || ""));
+    return altPencere("ks-perde", "YENİ İZİN BELGESİ", "Kimin için?", () => `<div class="ap-liste">${L.map(p => apSatir(`data-ks="${esc(p.id)}"`, `<span class="ks-av">${esc(ksBas(p.ad))}</span>`, esc(p.ad), "", { alt: esc(p.rutbe || "") })).join("") || '<div class="yk-bos">İsim listesinde uzman / sözleşmeli yok</div>'}
+        ${apSatir('data-ks="_bos"', '<span class="ks-av">＋</span>', "Boş belge", "", { alt: "listede olmayan biri için, elle doldurulur" })}</div>`,
+      (bb, kapat) => { const id = bb.dataset.ks; if(!id) return; kapat(); const k = izbKisiBos();
+        if(id === "_bos"){ koy(k); return document.querySelector('#izb-form [data-izb="ad"]')?.focus(); }
+        const p = L.find(x => x.id === id); Object.assign(k, { pid: p.id, ad: p.ad, rutbe: p.rutbe || "" }); ["kita", "sicil", "tel", "kan", "yakinAd", "yakinTel"].forEach(a => { if(p[a]) k[a] = p[a]; });
+        koy(k); kmAdresSec(p, adr => { if(adr){ k.adres = adr; kaydetBt("izinb"); izbBelgeCiz(); } }); bildir(`${p.ad} için izin belgesi açıldı · bilgiler kimlikten geldi`); }, { z: "E2F1E7", r: "2F6B47" }); }
+  if(is === "kisi-kopya"){ const k = izbKisi(); if(!k) return; const y = { ...kopya(k), id: yeniId() }; G.kisiler.splice(G.kisiler.indexOf(k) + 1, 0, y); izbSecili = y.id; kaydetBt("izinb"); izbhCiz(); return bildir("Kopyası oluşturuldu · tarihleri değiştirip kullanabilirsiniz"); }
   if(is === "kisi-sil"){ const k = izbKisi(); if(!k) return; 
     G.kisiler = G.kisiler.filter(x => x !== k); izbSecili = null; kaydetBt("izinb"); izbhCiz(); bildir(`${k.ad || "Personel"} silindi`); return; }
   if(is === "foto"){ $("#izb-foto-dosya").click(); return; }
@@ -13107,7 +13117,7 @@ const UZ = [];
 const uzE = o => UZ.push(o);
 const uzAB = () => acikBelge();
 [["personel", () => PL().rows, () => kaydetBt("personel"), () => personelCiz()], ["yoklama", () => YS().rows, () => ykKaydet(), () => yoklamaCiz()],
- ["hedef", () => S.hedef.rows, () => kaydetBt("hedef"), () => hedefCiz(), { idx: true }], ["izinb", () => S.izinb.kisiler, () => kaydetBt("izinb"), () => izbhCiz()],
+ ["hedef", () => S.hedef.rows, () => kaydetBt("hedef"), () => hedefCiz(), { idx: true }], ["izinb", () => S.izinb.kisiler, () => kaydetBt("izinb"), () => izbhCiz(), { kopya: true }],
  ["dilekce", () => dlVeri(uzAB()).kayitlar, () => kaydetBelge(uzAB()), () => dilekceCiz(), { kopya: true, ters: true }], ["izinsa", () => isaVeri(uzAB()).kayitlar, () => kaydetBelge(uzAB()), () => izinsaCiz(), { kopya: true, ters: true }],
  ["tazminat"], ["sertifika"]].forEach(([k, dizi, kayd, ciz, o = {}]) => { const T = TS[k]; if(!T) return; uzE({ k, ts: k, kap: T.kap, satir: T.satir, id: T.id, dizi, kaydet: kayd, ciz: ciz || T.ciz, ...o }); });
 const uzSatirlar = (ciz, dz, ad) => ({ dizi: dz, kaydet: () => kaydetBelge(uzAB()), ciz, kopya: true, ad });
