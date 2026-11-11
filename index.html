@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "477";
+  const SURUM = "478";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -2146,7 +2146,12 @@ input[type=date].tarih-bos:not(:focus)::-webkit-datetime-edit{color:transparent}
 .km-nl{display:flex;flex-direction:column;gap:6px;margin-top:6px} .km-nl>div{display:grid;grid-template-columns:1fr auto;gap:2px 8px;padding:7px 9px;border:1px solid #DCE7E8;border-radius:8px;background:#F7FBFB}
 .km-nl b{font:700 12px var(--f-ui);color:#214A50} .km-nl small{grid-column:1/-1;font:500 11px var(--f-ui);color:var(--muted);line-height:1.35}
 .km-o{font:700 10px var(--f-ui);border-radius:6px;padding:2px 7px;background:#E6F0E4;color:#2F5A3A;align-self:start} .km-o.el{background:#EEF0F8;color:#3D4A7A} .km-o.ay{background:#F4EFE3;color:#6B5A2E}
-.dl-metin{min-height:80px;font-weight:500!important;font-size:13px!important;line-height:1.45!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .fy-hk{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;border:1px solid var(--line2);background:#F4F8FB;border-radius:8px;padding:5px 10px} .fy-hk small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-hk b{font:600 12.5px var(--f-ui);color:#2D3C4E;overflow-wrap:anywhere} .fy-hseg{grid-template-columns:repeat(auto-fit,minmax(60px,1fr))!important} .fy-hseg button{padding:7px 2px!important} .fy-kseg{grid-template-columns:repeat(2,1fr)!important;margin-top:6px} .fy-kseg button{text-align:left;padding:7px 9px!important;overflow-wrap:anywhere} .fy-hz .fy-elle{margin-top:6px} .fy-kay{margin-top:6px;align-self:flex-start} .fy-hc{margin-top:6px;display:flex;flex-direction:column;gap:1px;padding:6px 10px;border-left:3px solid #C9D6E4;background:#F6F9FC;border-radius:0 8px 8px 0} .fy-hc small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-hc b{font:600 12.5px var(--f-ui);color:#2D3C4E;overflow-wrap:anywhere} .fy-av{background:#E6EEF7!important;color:#2D557E!important} .fy-elle{margin-top:6px} .fy-vars{font:700 10px var(--f-ui);font-style:normal;color:#2D557E;background:#E6EEF7;border-radius:5px;padding:1px 6px;margin-left:4px;vertical-align:1px} .dl-sab{grid-column:1/-1;display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D5CDE6;background:#F7F5FB;border-radius:10px;padding:8px 11px;cursor:pointer;text-align:left;font-family:var(--f-ui)} .dl-sab span{font:700 10.5px var(--f-ui);color:#7A6FA0;text-transform:uppercase;letter-spacing:.04em} .dl-sab b{flex:1;font:700 12.5px var(--f-ui);color:#3E3466} .dl-sab i{font:600 11px var(--f-ui);color:#7A6FA0;font-style:normal;white-space:nowrap} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
+.dl-metin{min-height:80px;font-weight:500!important;font-size:13px!important;line-height:1.45!important} .dl-not{font:500 10.5px var(--f-ui);color:var(--muted)} .fy-hk{flex:1;min-width:0;display:flex;flex-direction:column;justify-content:center;border:1px solid var(--line2);background:#F4F8FB;border-radius:8px;padding:5px 10px} .fy-hk small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-hk b{font:600 12.5px var(--f-ui);color:#2D3C4E;overflow-wrap:anywhere} .fy-hseg{grid-template-columns:repeat(auto-fit,minmax(60px,1fr))!important} .fy-hseg button{padding:7px 2px!important} .fy-kseg{grid-template-columns:repeat(2,1fr)!important;margin-top:6px} .fy-kseg button{text-align:left;padding:7px 9px!important;overflow-wrap:anywhere} .fy-hz .fy-elle{margin-top:6px} .fy-kay{margin-top:6px;align-self:flex-start} .fy-hc{margin-top:6px;display:flex;flex-direction:column;gap:1px;padding:6px 10px;border-left:3px solid #C9D6E4;background:#F6F9FC;border-radius:0 8px 8px 0} .fy-hc small{font:600 10.5px var(--f-ui);color:var(--muted)} .fy-hc b{font:600 12.5px var(--f-ui);color:#2D3C4E;overflow-wrap:anywhere} .es-ik{flex:none;width:28px;height:28px;border-radius:8px;display:grid;place-items:center;background:var(--iz);color:var(--ir);margin-right:-2px} .es-ik svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.es-b>summary .es-bt{flex-basis:88px} .es-b[open]>summary .es-bt{color:#22303D} .es-b[open]>summary>i{color:var(--ir,#3D5F8C)}
+.dl-seg button{transition:background .15s,color .15s,box-shadow .15s} .dl-seg button[aria-pressed="true"]{color:#2D557E!important}
+.fy-hseg button{display:flex;flex-direction:column;align-items:center;gap:3px} .fy-hseg svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;opacity:.75} .fy-hseg button[aria-pressed="true"] svg{opacity:1}
+.fy-hc small{display:flex;align-items:center;gap:5px} .fy-hc small svg{width:13px;height:13px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.fy-av{background:#E6EEF7!important;color:#2D557E!important} .fy-elle{margin-top:6px} .fy-vars{font:700 10px var(--f-ui);font-style:normal;color:#2D557E;background:#E6EEF7;border-radius:5px;padding:1px 6px;margin-left:4px;vertical-align:1px} .dl-sab{grid-column:1/-1;display:flex;align-items:center;gap:8px;width:100%;border:1px solid #D5CDE6;background:#F7F5FB;border-radius:10px;padding:8px 11px;cursor:pointer;text-align:left;font-family:var(--f-ui)} .dl-sab span{font:700 10.5px var(--f-ui);color:#7A6FA0;text-transform:uppercase;letter-spacing:.04em} .dl-sab b{flex:1;font:700 12.5px var(--f-ui);color:#3E3466} .dl-sab i{font:600 11px var(--f-ui);color:#7A6FA0;font-style:normal;white-space:nowrap} .dl-sifir{border:0;background:#E6EEF7;color:#2D557E;border-radius:8px;padding:2px 8px;font:700 10.5px var(--f-ui);cursor:pointer}
 .dl-seg-tur{grid-template-columns:repeat(auto-fill,minmax(70px,1fr))!important}
 .dl-seg{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;background:var(--panel2);border-radius:10px;padding:3px} .dl-seg button{border:0;border-radius:8px;background:none;padding:7px 4px;font:700 11.5px/1.2 var(--f-ui);color:var(--muted);cursor:pointer} .dl-seg button[aria-pressed="true"]{background:#fff;color:#22303D;box-shadow:0 1px 4px rgba(0,0,0,.1)}
 .dl-gy{font:600 10.5px var(--f-ui);color:#2F6B47;min-height:13px} .dl-is{display:flex;gap:8px;justify-content:flex-end}   
@@ -3527,7 +3532,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 477</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 478</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10631,7 +10636,7 @@ const esAcikB = new Set(["mlz"]);
 const esOzet = o => [o.ad, o.rutbe, o.gorev].filter(Boolean).join(" · ");
 function elsenetCiz(){ const d = acikBelge(); if(!d || d.tur !== "elsenet") return; const v = esVeri(d), k = esAktif(v), B = ES_BICIM[k.bicim] || ES_BICIM[3], L = v.kayitlar, Sx = k.satirlar, i = L.indexOf(k);
   const ad = x => x.bicim === 5 ? (x.baslik || "Durum çizelgesi") : (x.alan.ad || x.eden.ad || "Kişi girilmedi");
-  const bol = (an, et, ozet, ic, bos) => `<details class="es-b"${esAcikB.has(an) ? " open" : ""} data-es-bol="${an}"><summary><span class="es-bt">${et}</span><span class="es-bo${bos ? " es-bos" : ""}">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
+  const bol = (an, et, ozet, ic, bos) => `<details class="es-b"${esAcikB.has(an) ? " open" : ""} data-es-bol="${an}"><summary>${esIk(et)}<span class="es-bt">${et}</span><span class="es-bo${bos ? " es-bos" : ""}">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
   const kisiIc = an => `<div class="dl-alanlar"><label class="dl-al"><span>Adı soyadı</span><input data-es-k="${an}:ad" value="${esc(k[an].ad)}"></label><label class="dl-al"><span>Rütbesi</span><input data-es-k="${an}:rutbe" value="${esc(k[an].rutbe)}"></label><label class="dl-al tam"><span>Görevi</span><input data-es-k="${an}:gorev" value="${esc(k[an].gorev)}" placeholder="ör. Ks.K."></label></div><button type="button" class="es-sec" data-es="sec-${an}">Personel listesinden seç</button>`;
   const bilgi = [esTr(k.tarih), B.kod && k.kod && "Kod " + k.kod, B.kod && k.no && "No " + k.no, k.kisim || k.birlik].filter(Boolean).join(" · ");
   $("#es-govde").innerHTML = `
@@ -10740,7 +10745,7 @@ const ZM_ALAN = [["stok", "Stok No.", "n"], ["cins", "Cins ve özellikleri", "ta
 /* ekran: üstte zimmet belgesi seçici (‹ kişi ›), katlanır özet bölümler, kalem tablosu (arama + sayfa sayfa), kaleme dokununca düzenleme penceresi */
 const zmAcikB = new Set(); let zmAra = "", zmGoster = 40;
 function zimmetCiz(){ const d = acikBelge(); if(!d || d.tur !== "zimmet") return; const v = zmVeri(d), k = zmAktif(v), p = zmKisi(k), L = v.kayitlar, Sx = k.satirlar, i = L.indexOf(k);
-  const bol = (an, et, ozet, ic, bos) => `<details class="es-b"${zmAcikB.has(an) ? " open" : ""} data-zm-bol="${an}"><summary><span class="es-bt">${et}</span><span class="es-bo${bos ? " es-bos" : ""}">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
+  const bol = (an, et, ozet, ic, bos) => `<details class="es-b"${zmAcikB.has(an) ? " open" : ""} data-zm-bol="${an}"><summary>${esIk(et)}<span class="es-bt">${et}</span><span class="es-bo${bos ? " es-bos" : ""}">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
   const n = normMetin(zmAra), nt = lsNotlu && Sx.some(x => notAl(d, x.id)), F = Sx.map((x, j) => [x, j]).filter(([x]) => (!n || normMetin([x.stok, x.cins, x.seri, x.kafile].join(" ")).includes(n)) && (!nt || notAl(d, x.id))), G = F.slice(0, zmGoster);
   const eden = [k.eden.ad, k.eden.rutbe, k.eden.gorev].filter(Boolean).join(" · "), bilgi = zmTarih(k.tarih);
   $("#zm-govde").innerHTML = `
@@ -11697,6 +11702,18 @@ const fyAktif = v => { const P = fyKisiler(); return P.find(p => p.id === v.akti
 /* alt bilgi sağ: personelden seçilir ya da elle yazılır; "@kendi" = her kartta kartın sahibi. Kişiye özel boşsa genel değer basılır. */
 const fyHazYaz = p => p ? [p.rutbe, p.ad, p.sicil && `[${p.sicil}]`].filter(Boolean).join(" ") : "";
 const kAd = t => { const m = String(t).match(/(?:^|\s)([A-ZÇĞİÖŞÜ][a-zçğıöşü]+(?:\s+[A-ZÇĞİÖŞÜ][a-zçğıöşü]+)*\s+[A-ZÇĞİÖŞÜ]{2,}(?:\s+[A-ZÇĞİÖŞÜ]{2,})*)(?=\s|\[|$)/u); return m ? m[1] : String(t); };
+/* bölüm başlığı simgeleri: başlığın anlamına göre (bütün düzenleme kartlarında aynı kalıp) */
+const ES_IK = [
+  [/kimlik|kişi/i, "mavi", '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>'],
+  [/muayene|sağlık/i, "kirmizi", '<path d="M3 12h4l2-5 4 10 2-5h6"/>'],
+  [/test|ölçüm/i, "yesil", '<circle cx="12" cy="13.5" r="7"/><path d="M12 13.5V10M10 3h4M18.5 6.5l1.5-1.5"/>'],
+  [/ayar/i, "deniz", '<circle cx="12" cy="12" r="3"/><path d="M12 2.8v2.6M12 18.6v2.6M2.8 12h2.6M18.6 12h2.6M5.5 5.5l1.8 1.8M16.7 16.7l1.8 1.8M5.5 18.5l1.8-1.8M16.7 7.3l1.8-1.8"/>'],
+  [/teslim alan/i, "amber", '<path d="M4 13h4l3 3h5a2 2 0 0 0 0-4h-3M4 19h11l5-4"/><path d="M12 3v6M9.5 6.5 12 9l2.5-2.5"/>'],
+  [/teslim eden/i, "amber", '<path d="M4 13h4l3 3h5a2 2 0 0 0 0-4h-3M4 19h11l5-4"/><path d="M12 9V3M9.5 5.5 12 3l2.5 2.5"/>'],
+  [/belge|bilgi/i, "mor", '<path d="M7 3h7l5 5v13H7z"/><path d="M14 3v5h5M10 13h6M10 17h6"/>']];
+const esIk = et => { const m = ES_IK.find(([r]) => r.test(et)) || [0, "mavi", '<circle cx="12" cy="12" r="7"/>'], [z, k] = AP_RENK[m[1]]; return `<span class="es-ik" style="--iz:#${z};--ir:#${k}"><svg viewBox="0 0 24 24" aria-hidden="true">${m[2]}</svg></span>`; };
+const SEG_IK = { genel: '<path d="M4 12h16M12 4v16"/>', vars: '<path d="m12 4 2.4 5 5.4.6-4 3.7 1.1 5.4L12 16l-4.9 2.7 1.1-5.4-4-3.7 5.4-.6z"/>', sahip: '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>', elle: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="m13 7 4 4"/>' };
+const segIk = k => SEG_IK[k] ? `<svg viewBox="0 0 24 24" aria-hidden="true">${SEG_IK[k]}</svg>` : "";
 const fyHazMod = (v, an, val, P2) => fyMod[an] || (an === "k" && !val ? "genel" : val === "@kendi" ? "sahip" : (v.hzListe || []).includes(val) ? "vars" : "elle");
 const fyHazCoz = (val, p) => val === "@kendi" ? fyHazYaz(p) : String(val || "");
 const fyHaz = (v, p) => fyHazCoz((v.k[p.id] || {}).hazirlayan || v.hazirlayan, p);
@@ -11861,13 +11878,13 @@ function fydtCiz(){ const d = acikBelge(); if(!d || d.tur !== "fydt") return; co
   const kap = $("#fy-govde"); if(!p){ kap.innerHTML = `<div class="yk-bos">Personel listesi boş</div>`; return; }
   const x = fyK(v, p), grp = fyGrup(v, p), e100 = fyEsik(grp, 100), e60 = fyEsik(grp, 60);
   const al = (et, veri, deger, o0 = "") => { const O = o0.split(/\s+/), o = { includes: z => O.includes(z) }; return `<label class="dl-al${o.includes("tam") ? " tam" : ""}"><span>${et}</span><input ${veri} value="${esc(deger || "")}"${o.includes("n") ? ' inputmode="decimal"' : ""}${o.includes("t") ? ' type="date"' : ""}${o.includes("s") ? ' placeholder="dk:sn" inputmode="numeric"' : ""}></label>`; };
-  const haz = (et, an, val) => { const P2 = (S.personel.rows || []).filter(y => y.ad), L = v.hzListe || [], m = fyHazMod(v, an, val, P2), seg = (k, t) => `<button type="button" data-fy-hm="${an}:${k}" aria-pressed="${m === k}">${t}</button>`;
+  const haz = (et, an, val) => { const P2 = (S.personel.rows || []).filter(y => y.ad), L = v.hzListe || [], m = fyHazMod(v, an, val, P2), seg = (k, t) => `<button type="button" data-fy-hm="${an}:${k}" aria-pressed="${m === k}">${segIk(k)}<span>${t}</span></button>`;
     const sec = (veri, on, t) => `<button type="button" ${veri} aria-pressed="${on}">${esc(t)}</button>`, cikis = fyHazCoz(an === "k" && !val ? v.hazirlayan : val, p);
     const ic = m === "vars" ? (L.length > 1 ? `<div class="dl-seg fy-kseg">${L.map((t, i) => sec(`data-fy-hv="${an}:${i}"`, val === t, kAd(t) + (i ? "" : " · varsayılan"))).join("")}</div>` : "")
       : m === "kisi" ? `<div class="dl-seg fy-kseg">${P2.map(y => sec(`data-fy-hp="${an}:${esc(y.id)}"`, val === fyHazYaz(y), y.ad)).join("")}</div>`
       : m === "elle" ? `<textarea class="oto-boy fy-elle" data-tek rows="1" data-fy-${an}="hazirlayan" placeholder="Rütbe Ad SOYAD [sicil]">${esc(val === "@kendi" ? "" : val || "")}</textarea>${val && !L.includes(val) ? `<button type="button" class="dl-sifir fy-kay" data-fy-hk="${an}">＋ Listeye kaydet</button>` : ""}` : "";
-    return `<div class="dl-al tam fy-hz"><span>${et}</span><div class="dl-seg fy-hseg">${an === "k" ? seg("genel", "Genel") : ""}${L.length ? seg("vars", "Varsayılan") : ""}${seg("sahip", "Kartın sahibi")}${seg("elle", "Elle")}</div>${ic}<div class="fy-hc"><small>Kâğıda basılan</small><b>${esc(cikis || "—")}</b></div></div>`; };
-  const bol = (an, et, ozet, ic) => `<details class="es-b"${fyAcikB.has(an) ? " open" : ""} data-fy-bol="${an}"><summary><span class="es-bt">${et}</span><span class="es-bo">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
+    return `<div class="dl-al tam fy-hz"><span>${et}</span><div class="dl-seg fy-hseg">${an === "k" ? seg("genel", "Genel") : ""}${L.length ? seg("vars", "Varsayılan") : ""}${seg("sahip", "Kartın sahibi")}${seg("elle", "Elle")}</div>${ic}<div class="fy-hc"><small><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 9V3h10v6M7 17H4v-7h16v7h-3"/><path d="M7 14h10v7H7z"/></svg>Kâğıda basılan</small><b>${esc(cikis || "—")}</b></div></div>`; };
+  const bol = (an, et, ozet, ic) => `<details class="es-b"${fyAcikB.has(an) ? " open" : ""} data-fy-bol="${an}"><summary>${esIk(et)}<span class="es-bt">${et}</span><span class="es-bo">${esc(ozet)}</span><i>✎</i></summary><div class="es-bi">${ic}</div></details>`;
   const eks = ["tc", "dogum", "sicil", "kan"].filter(k => !p[k]).map(k => ({ tc: "T.C. no", dogum: "doğum tarihi", sicil: "sicil", kan: "kan grubu" })[k]);
   const tOz = t => [t.tarih && fyTarihTr(t.tarih), t.neden ? "katılmadı" : "", t.mekik && "mekik " + t.mekik, t.sinav && "şınav " + t.sinav, t.kosu && "koşu " + t.kosu].filter(Boolean).join(" · ") || "boş (elle doldurulacak)";
   kap.innerHTML = `${kayitBas({ ad: "FYDT kartları", n: P.length, secId: p.id, ozet: `<em class="kb-oz dl-tam">${grp ? grp + " yaş" : "yaş yok"}</em>`, liste: P.map(y => ({ id: y.id, ad: y.ad, nokta: ["tc", "dogum", "sicil"].some(k => !y[k]) })) })}
