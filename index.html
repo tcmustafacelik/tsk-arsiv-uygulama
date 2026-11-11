@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "481";
+  const SURUM = "482";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3542,7 +3542,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 481</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 482</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11222,12 +11222,20 @@ const isaTS = (k, a) => { const t = trTarih(k[a]); return t && isaSaat(k, a) ? `
 const isaAktif = v => v.kayitlar.find(k => k.id === v.aktif) || v.kayitlar[0];
 const isaKisi = k => (S.personel.rows || []).find(p => p.id === k.pid) || null;
 const isaSubayMi = p => p && !/Uzm\.|Söz\.|\bEr\b|Onb\./.test(p.rutbe || "");
-const isaGun = k => { if(String(k.gun || "").trim()) return k.gun; if(k.ayr && k.kat){ const g = Math.round((Date.parse(k.kat) - Date.parse(k.ayr)) / 864e5); if(g > 0) return String(g); } return ""; };
+/* yol izni: yalnız yıllık izinde; varsayılan 2 gün, değiştirilebilir (dilekçedeki kural). Katılış = ayrılış + yıllık gün + yol günü */
+const isaYol = k => k.tur !== "Yıllık İzin" ? 0 : (k.yol == null ? 2 : Math.max(0, parseInt(k.yol, 10) || 0));
+const isaGun = k => { if(String(k.gun || "").trim()) return k.gun; if(k.ayr && k.kat){ const g = Math.round((Date.parse(k.kat) - Date.parse(k.ayr)) / 864e5) - isaYol(k); if(g > 0) return String(g); } return ""; };
+function isaEsle(k, f){ const iso = /^\d{4}-\d{2}-\d{2}$/, aV = iso.test(k.ayr || ""), kV = iso.test(k.kat || ""), yol = isaYol(k), n = parseInt(k.gun, 10);
+  const katYaz = () => { const [y, m, g] = k.ayr.split("-").map(Number); k.kat = new Date(Date.UTC(y, m - 1, g + n + yol)).toISOString().slice(0, 10); }, fark = () => Math.round((Date.parse(k.kat) - Date.parse(k.ayr)) / 864e5) - yol;
+  if((f === "kat" || f === "ayr") && aV && kV && String(k.gun || "").trim()){ const x = fark(); k.gun = x > 0 ? String(x) : ""; }
+  else if(f === "ayr" && aV && !kV && n > 0) katYaz();
+  else if((f === "gun" || f === "yol" || f === "tur") && aV && n > 0) katYaz();
+  else if((f === "yol" || f === "tur") && aV && kV && !String(k.gun || "").trim()){ /* gün boşsa tarihten hesaplanır; katılış yerinde kalır */ } }
 const isaTel = p => { if(!p) return ""; if(p.tel) return p.tel; for(const Y of [S.yoklama, S.yoklama30]){ const r = ((Y || {}).rows || []).find(x => x.pid === p.id || pAd(x.ad) === pAd(p.ad)); if(r && r.tel) return r.tel; } return ""; };
 function isaIcerik(d){ const v = isaVeri(d), k = isaAktif(v), p = isaKisi(k) || {}, dv = (S.belgeler.find(x => x.tur === "dilekce") || {}).dl || {}, gar = dv.garnizon ?? "DİYARBAKIR";
   const gun = isaGun(k), ad = String(k.adres || "").trim(), ar = k.ayr || k.kat ? ` (${trTarih(k.ayr)} - ${trTarih(k.kat)})` : "";
   return { ust: [["Adı Soyadı", p.ad || ""], ["Sınıf ve Rütbesi", p.rutbe || ""], ["Görevi", p.kita || (p.gorev ? p.gorev + (gar ? " \\" + String(gar).toLocaleUpperCase("tr") : "") : "")], ["Sicili", p.sicil || ""]],
-    orta: [["İzin Türü", k.tur || ""], ["İzinden Ne Kadarını Kullandığı", k.kullan ?? ""], ["Verilen İzin Süresi", gun ? gun + " Gün" : ""], ["Telefon No", k.tel || isaTel(p)], ["İzinli Gideceği Adres ve Tarih", ad + ar]],
+    orta: [["İzin Türü", k.tur || ""], ["İzinden Ne Kadarını Kullandığı", k.kullan ?? ""], ["Verilen İzin Süresi", gun ? gun + " Gün" + (isaYol(k) ? ` + ${isaYol(k)} Gün Yol İzni` : "") : ""], ["Telefon No", k.tel || isaTel(p)], ["İzinli Gideceği Adres ve Tarih", ad + ar]],
     alt: [["Ayrılış Tarihi", isaTS(k, "ayr")], ["Katılış Tarihi", isaTS(k, "kat")], ["Tarih", trTarih(k.tarih)], ["İmza / Mühür", ""], ["Adı Soyadı", v.onay.ad || ""], ["Sınıfı, Rütbesi, Sicili", v.onay.rutbe || ""], ["Görevi", v.onay.gorev || ""]],
     sol: v.alt.sol || "", sag: v.alt.sag || "", arka: v.arka !== false, dosya: `Izin_Belgesi_${dosyaAdi(p.ad || "Personel")}_${trTarih(k.ayr) || trTarih(k.tarih)}` }; }
 /* ölçüler (mm, sayfanın sol üstünden): kutu 10–197,6 · etiket 11,5 · iki nokta 58,7 · değer 60,8 · ikinci nüsha 137,7 mm aşağıda */
@@ -11311,7 +11319,7 @@ function izinsaCiz(){ const d = acikBelge(); if(!d || d.tur !== "izinsa") return
       <button type="button" class="isa-tsec" data-isa="tursec"><span class="isa-tsec-s"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h16v15H4z M4 10h16 M9 3v4 M15 3v4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"/></svg></span><span class="isa-tsec-y"><small>İzin türü</small><b>${esc(isaTurAd(k.tur))}</b></span><i>Değiştir ›</i></button>
       <div class="dl-alanlar">
         ${[["ayr", "Ayrılış"], ["kat", "Katılış"]].map(([a, t]) => `<div class="dl-al tam"><span>${t} tarihi · saati</span><div class="isa-ts"><input type="date" data-isa-f="${a}" value="${esc(k[a])}" aria-label="${t} tarihi"><button type="button" class="isa-saat${isaSaat(k, a) ? "" : " bos"}" data-isa-saat="${a}" aria-label="${t} saati"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/></svg>${esc(isaSaat(k, a) || "—")}</button></div></div>`).join("")}
-        <label class="dl-al"><span>Verilen izin süresi (gün)</span><input data-isa-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="${esc(isaGun({ ...k, gun: "" }) || "otomatik")}"></label><label class="dl-al"><span>Ne kadarını kullandığı</span><input data-isa-f="kullan" value="${esc(k.kullan ?? "")}"></label>
+        <label class="dl-al"><span>${k.tur === "Yıllık İzin" ? "Yıllık izin (gün)" : "Verilen izin süresi (gün)"}</span><input data-isa-f="gun" inputmode="numeric" value="${esc(k.gun)}" placeholder="${esc(isaGun({ ...k, gun: "" }) || "otomatik")}"></label>${k.tur === "Yıllık İzin" ? `<label class="dl-al"><span>Yol izni (gün)</span><input data-isa-f="yol" inputmode="numeric" value="${esc(k.yol == null ? "2" : k.yol)}" placeholder="0"><small class="dl-gy isa-yy">${isaYol(k) ? esc(`katılışa ${isaYol(k)} gün eklenir`) : "yol izni yok"}</small></label>` : ""}<label class="dl-al"><span>Ne kadarını kullandığı</span><input data-isa-f="kullan" value="${esc(k.kullan ?? "")}"></label>
         ${p && kmKisi(p) && (p.adres || p.tel) ? '<button type="button" class="izb-aktar tam" data-isa="kimlikten">⤓ Kimlikten al <small>adres, telefon</small></button>' : ""}
         <label class="dl-al tam"><span>İzinli gideceği adres</span><textarea class="oto-boy isa-adres" data-tek rows="1" data-isa-f="adres" placeholder="Mahalle, sokak, no, ilçe/il">${esc(k.adres)}</textarea></label>
         <label class="dl-al"><span>Telefon no</span><input data-isa-f="tel" inputmode="tel" value="${esc(k.tel)}" placeholder="${esc(isaTel(p))}"></label><label class="dl-al"><span>Belge tarihi</span><input type="date" data-isa-f="tarih" value="${esc(k.tarih)}"></label></div>
@@ -11331,8 +11339,11 @@ const P0 = () => (S.personel.rows || []).filter(x => x.ad && isaSubayMi(x));
 const isaTazele = (d, hemen) => pdfOnizle($("#isa-govde .dl-onz"), () => isaPdf(isaIcerik(d), { yuz: isaOnzYuz }), hemen);
 document.addEventListener("change", e => { const el = e.target; if(!el.matches || !el.matches("#isa-govde [data-isa-arka]")) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; isaVeri(d).arka = el.checked; kaydetBelge(d); });
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#isa-govde")) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v);
-  if(el.dataset.isaF) k[el.dataset.isaF] = el.value; else if(el.dataset.isaO) v.onay[el.dataset.isaO] = el.value; else if(el.dataset.isaA) v.alt[el.dataset.isaA] = el.value; else return;
-  kaydetBelge(d); isaTazele(d); if(el.dataset.isaF === "ayr" || el.dataset.isaF === "kat"){ const g = $('#isa-govde [data-isa-f="gun"]'); if(g) g.placeholder = isaGun({ ...k, gun: "" }) || "otomatik"; } });
+  if(el.dataset.isaF){ const g0 = isaGun(k); k[el.dataset.isaF] = el.value; if(el.dataset.isaF === "yol" && !String(k.gun || "").trim() && +g0 > 0) k.gun = g0; }   /* yol değişince yıllık gün sabit kalır, katılış kayar */
+  else if(el.dataset.isaO) v.onay[el.dataset.isaO] = el.value; else if(el.dataset.isaA) v.alt[el.dataset.isaA] = el.value; else return;
+  const f = el.dataset.isaF; if(["ayr", "kat", "gun", "yol"].includes(f)){ isaEsle(k, f); const g = $('#isa-govde [data-isa-f="gun"]'), kt = $('#isa-govde [data-isa-f="kat"]'), yy = $("#isa-govde .isa-yy");
+    if(g){ if(f !== "gun") g.value = k.gun || ""; g.placeholder = isaGun({ ...k, gun: "" }) || "otomatik"; } if(kt && f !== "kat") kt.value = k.kat || ""; if(yy) yy.textContent = isaYol(k) ? `katılışa ${isaYol(k)} gün eklenir` : "yol izni yok"; }
+  kaydetBelge(d); isaTazele(d); });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#isa-govde button"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "izinsa") return; const v = isaVeri(d), k = isaAktif(v), yaz = () => { kaydetBelge(d); izinsaCiz(); };
   if(b.dataset.isaYuz){ isaOnzYuz = b.dataset.isaYuz; document.querySelectorAll("#isa-govde [data-isa-yuz]").forEach(x => x.setAttribute("aria-pressed", x === b)); return isaTazele(d, true); }
   if(b.dataset.isaSec){ v.aktif = b.dataset.isaSec; return yaz(); }
@@ -11344,14 +11355,14 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
       (b2, kapat, yenile) => { const [h, m] = (isaSaat(k, a) || "08:00").split(":");
         if(b2.dataset.stH){ koy(`${b2.dataset.stH}:${m}`); return yenile(); } if(b2.dataset.stM){ koy(`${h}:${b2.dataset.stM}`); return yenile(); }
         if(b2.dataset.stYok){ koy(""); return yenile(); } if(b2.dataset.stOk) kapat(); }, { z: "E6EEF7", r: "3D5F8C", kapaninca: () => izinsaCiz() }); }
-  if(b.dataset.isaTur){ k.tur = b.dataset.isaTur === "Diğer" ? "" : b.dataset.isaTur; return yaz(); }
+  if(b.dataset.isaTur){ k.tur = b.dataset.isaTur === "Diğer" ? "" : b.dataset.isaTur; isaEsle(k, "tur"); return yaz(); }
   if(b.dataset.isa === "kimlikten"){ const p = isaKisi(k); if(!p) return;
     return kmAdresSec(p, adr => { let n = 0; if(adr && adr !== k.adres){ k.adres = adr; n++; } if(p.tel && !String(k.tel || "").trim()){ k.tel = p.tel; n++; }
       if(!n) return bildir("Aktarılacak yeni bilgi yok (dolu kutulara dokunulmaz)"); bildir(`${n} bilgi kimlikten alındı`); yaz(); }); }
   if(b.dataset.isa === "tursec"){ const L = () => [...ISA_TUR, ...v.turler];
     return altPencere("ks-perde", "İZİN TÜRÜ", "Hangi izin", () => `<div class="ap-liste">${L().map((t, i) => { const sabit = i < ISA_TUR.length; return `<div class="isa-tsat">${apSatir(`data-ks="${i}"`, `<span class="ks-av isa-tav${sabit ? "" : " ek"}">${esc(isaTurAd(t)[0])}</span>`, esc(isaTurAd(t)), t === k.tur ? '<em class="ks-tik">✓</em>' : "")}${sabit ? "" : `<button type="button" class="isa-tsil" data-tsil="${i - ISA_TUR.length}" aria-label="${esc(t)} türünü kaldır">✕</button>`}</div>`; }).join("")}</div>
       <div class="isa-tekle"><input id="isa-tyeni" placeholder="Yeni izin türü yaz (ör. Doğum İzni)" enterkeyhint="done"><button type="button" data-tekle="1">＋ Ekle</button></div>`,
-      (b2, kapat, yenile) => { if(b2.dataset.ks){ kapat(); k.tur = L()[+b2.dataset.ks]; return yaz(); }
+      (b2, kapat, yenile) => { if(b2.dataset.ks){ kapat(); const g0 = isaGun(k); k.tur = L()[+b2.dataset.ks]; if(!String(k.gun || "").trim() && +g0 > 0) k.gun = g0; isaEsle(k, "tur"); return yaz(); }
         if(b2.dataset.tsil){ v.turler.splice(+b2.dataset.tsil, 1); kaydetBelge(d); return yenile(); }
         if(b2.dataset.tekle){ const g = $("#isa-tyeni"), t = (g.value || "").trim().replace(/\s+/g, " "); if(!t) return g.focus(); const T = t.replace(/(^|\s)\S/g, x => x.toLocaleUpperCase("tr")); if(![...L()].some(x => x.toLocaleLowerCase("tr") === T.toLocaleLowerCase("tr"))) v.turler.push(T); k.tur = T; kapat(); return yaz(); } }, { z: "E6EEF7", r: "3D5F8C" }); }
   if(b.dataset.isaZ){ const Z = ((S.belgeler.find(x => x.tur === "sicil") || {}).sa || {}).zincir || [], z = Z.find(x => x.id === b.dataset.isaZ); if(z){ v.onay.ad = z.ad || ""; if(!v.onay.rutbe || !/\[/.test(v.onay.rutbe)) v.onay.rutbe = z.rutbe || ""; } return yaz(); }
