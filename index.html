@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "476";
+  const SURUM = "477";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3527,7 +3527,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 476</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 477</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11883,7 +11883,7 @@ function fydtCiz(){ const d = acikBelge(); if(!d || d.tur !== "fydt") return; co
     <div class="es-onbas"><span>Kâğıttaki hali</span><div class="cs-seg mini"><button type="button" data-fy-kap="kisi" aria-pressed="${v.kapsam !== "hepsi"}">Seçili kişi</button><button type="button" data-fy-kap="hepsi" aria-pressed="${v.kapsam === "hepsi"}">Tümü</button></div></div>
     <div class="kp-onizle fy-onz"></div><div class="kp-onizle fy-onz2"></div>`;
   otoBoyHepsi(kap); fyOnizle(d, true); }
-const fyOnizle = (d, hemen) => { const P = [fyAktif(fyVeri(d))].filter(Boolean); const uret = async sayfa => { const b = await fyPdfYap(d, P, `${fyVeri(d).rapor || ""} (önizleme)`); if(sayfa === 1) return b; await baskiKutuphane(false); const src = await PDFLib.PDFDocument.load(await b.arrayBuffer()), o = await PDFLib.PDFDocument.create(); const [pg] = await o.copyPages(src, [1]); o.addPage(pg); return new Blob([await o.save()], { type: "application/pdf" }); };
+const fyOnizle = (d, hemen) => { const P = [fyAktif(fyVeri(d))].filter(Boolean); const uret = async sayfa => { const z = new Date(), b = await fyPdfYap(d, P, `${fyVeri(d).rapor || "FYDT Kartı"} (${z.toLocaleDateString("tr-TR")} ${z.toLocaleTimeString("tr-TR")})`);   /* önizleme = çıktının aynısı (basım saati o anki saat) */ if(sayfa === 1) return b; await baskiKutuphane(false); const src = await PDFLib.PDFDocument.load(await b.arrayBuffer()), o = await PDFLib.PDFDocument.create(); const [pg] = await o.copyPages(src, [1]); o.addPage(pg); return new Blob([await o.save()], { type: "application/pdf" }); };
   pdfOnizle($("#fy-govde .fy-onz"), () => uret(1), hemen); pdfOnizle($("#fy-govde .fy-onz2"), () => uret(2), hemen); };
 document.addEventListener("toggle", e => { const g = e.target; if(!g.matches || !g.matches("#fy-govde .es-b")) return; if(g.open) fyAcikB.add(g.dataset.fyBol); else fyAcikB.delete(g.dataset.fyBol); }, true);
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#fy-govde")) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return; const x = fyK(v, p), ds = el.dataset;
