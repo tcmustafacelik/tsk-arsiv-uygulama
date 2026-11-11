@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "448";
+  const SURUM = "449";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3153,8 +3153,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kb.yalniz{border-bottom:1px solid var(--line2);border-radius:14px}
 .kb-gun{flex:none;display:flex;flex-direction:column;align-items:flex-end;line-height:1.1;padding-left:10px;border-left:1px solid var(--line2)} .kb-gun b{font:800 19px var(--f-ui);color:#2F6B47;font-variant-numeric:tabular-nums} .kb-gun small{font:600 10.5px var(--f-ui);color:var(--muted)}
 .kb2{display:flex;flex-direction:column;gap:8px;min-width:0}
-.km-fotolar{padding:10px 2px 12px;border-bottom:1px solid var(--line2)} .km-fb{display:block;font:700 13px var(--f-ui);margin-bottom:8px}
-.km-fg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px} .km-fk{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
+.km-fotolar{padding:10px 2px 12px;border-bottom:1px solid var(--line2)} .km-fust{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap;margin-bottom:10px} .km-fb{display:block;font:700 13px var(--f-ui)}
+.km-fg{display:flex;justify-content:center;gap:18px} .km-fk{width:96px} .km-fk{display:flex;flex-direction:column;align-items:center;gap:5px;min-width:0}
 .km-fres{position:relative;width:100%;max-width:84px;aspect-ratio:35/45;padding:0;border:1px solid var(--line2);border-radius:8px;background:#F4F6F8;overflow:hidden;cursor:pointer}
 .km-fres img{width:100%;height:100%;object-fit:cover;display:block} .km-fres img.soluk{opacity:.35}
 .km-fres i{position:absolute;inset:0;display:grid;place-items:center;font:600 20px var(--f-ui);font-style:normal;color:#3D5A73}
@@ -3512,7 +3512,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 448</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 449</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -10433,8 +10433,8 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
       liste: P.map(x => ({ id: x.id, ad: x.ad, nokta: kmEksik(x).length > 0 })) })}
     ${p ? `
     <section class="dl-kart km-kart">
-      <div class="km-fotolar"><b class="km-fb">Fotoğraflar</b>
-        <div class="km-fg">${KM_FOTO.map(([a, ad]) => { const f = p[a], yerine = !f && a !== "foto" && p.foto; return `<div class="km-fk">
+      <div class="km-fotolar"><div class="km-fust"><b class="km-fb">Fotoğraflar</b><div class="cs-seg mini">${KM_FOTO_K.map(([k, ad]) => `<button type="button" data-km-fkat="${k}" aria-pressed="${k === kmFotoKat}">${ad}</button>`).join("")}</div></div>
+        <div class="km-fg">${(KM_FOTO_K.find(x => x[0] === kmFotoKat) || KM_FOTO_K[0])[2].map(([a, ad]) => { const f = p[a], yerine = !f && a !== "foto" && p.foto; return `<div class="km-fk">
           <button type="button" class="km-fres" data-km-foto="ekle:${a}" title="${f ? "Değiştir" : "Ekle"}">${f || yerine ? `<img src="/_blob/${esc(f || p.foto)}" alt=""${yerine ? ' class="soluk"' : ""}>` : ""}${f ? "" : `<i>＋</i>`}</button>
           <span class="km-fad">${ad}${f ? `<button type="button" class="km-fsil" data-km-foto="sil:${a}" data-sil-ad="Fotoğraf" aria-label="Sil">✕</button>` : ""}</span></div>`; }).join("")}</div>
         <input type="file" id="km-foto-dosya" accept="image/*" hidden></div>
@@ -11566,13 +11566,15 @@ document.addEventListener("input", e => { const el = e.target; if(!el.matches ||
   document.querySelectorAll("#rk-perde .rk-k.on").forEach(x => x.classList.remove("on")); });
 const izbKimFoto = k => { const p = typeof kmKisi === "function" ? kmKisi(k) : null; return p ? (p.fotoIzin || p.foto || "") : ""; };
 /* kişinin fotoğrafları: [alan, ad, nerede kullanılır] */
-const KM_FOTO = [["foto", "Vesikalık", "FYDT arka yüz · izin belgesi · diğer belgeler"], ["fotoFydtOn", "FYDT ön yüz", "FYDT kartının ön yüzü"], ["fotoIzin", "İzin belgesi", "izin belgesine özel"]];
-let kmFotoAlan = "foto";
+/* kategoriler: personelin kendi fotoğrafı · FYDT kartı · izin belgesi. Boş yerde personelin kendi fotoğrafı kullanılır */
+const KM_FOTO_K = [["kisi", "Personel", [["foto", "Kendi fotoğrafı"]]], ["fydt", "FYDT", [["fotoFydtOn", "Ön yüz"], ["fotoFydtArka", "Arka yüz"]]], ["izin", "İzin", [["fotoIzin", "İzin belgesi"]]]];
+let kmFotoAlan = "foto", kmFotoKat = "kisi";
 /* vesikalık: fotoğraf olduğu gibi saklanır (kırpılmaz, renk/ton değişmez); yalnız en uzun kenar 900 px'e indirilir */
 async function vesikalik(f){ const url = URL.createObjectURL(f); try { const im = await new Promise((ok, red) => { const i = new Image(); i.onload = () => ok(i); i.onerror = red; i.src = url; });
     const W = im.naturalWidth, H = im.naturalHeight, k = Math.min(1, 900 / Math.max(W, H));
     const cv = document.createElement("canvas"); cv.width = Math.round(W * k); cv.height = Math.round(H * k); const c = cv.getContext("2d"); c.fillStyle = "#fff"; c.fillRect(0, 0, cv.width, cv.height); c.drawImage(im, 0, 0, cv.width, cv.height);
     return await new Promise(ok => cv.toBlob(ok, "image/jpeg", 0.88)); } finally { URL.revokeObjectURL(url); } }
+document.addEventListener("click", e => { const k = e.target.closest && e.target.closest("[data-km-fkat]"); if(k){ kmFotoKat = k.dataset.kmFkat; kimlikCiz(); } });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-km-foto]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "kimlik") return; const p = (S.personel.rows || []).find(x => x.id === kmSecili); if(!p) return;
   const [is, a = "foto"] = b.dataset.kmFoto.split(":");
   if(is === "ekle"){ kmFotoAlan = a; return $("#km-foto-dosya").click(); }
@@ -11723,7 +11725,7 @@ async function fyPdfYap(d, P, sol){ const v = fyVeri(d), doc = await yeniPdf({ y
     const { AX, AY } = FYP, yas = fyYas(v, p), SOL = [["Adı ve Soyadı", p.ad], ["Sicil Nu.", p.sicil], ["Rütbesi", p.rutbe], ["Yaşı", yas == null ? "" : yas], ["Cinsiyeti", "E"]],
       SAG = [["Ağırlığı", x.kilo], ["Boyu", x.boy], ["Kan Grubu", x.kan || fyKan(p.kan)], ["Kan Basıncı", x.tansiyon], ["Tarih", fyTarihTr(v.tarih) || new Date().toLocaleDateString("tr-TR")]];
     for(let i = 0; i < 5; i++){ const a = AY[i], b = AY[i + 1]; [[0, SOL[i][0], 1], [1, String(i + 1)], [2, SOL[i][1]], [3, SAG[i][0], 1], [4, String(i + 6)], [5, SAG[i][1]]].forEach(([c, t2, bb]) => { kutu(AX[c], a, AX[c + 1], b); yaz(t2 ?? "", AX[c], a, AX[c + 1], b, { b: bb, s: 11, sigdir: true, pad: .8 }); }); }
-    kutu(...[FYP.FOTO_AR[0], FYP.FOTO_AR[1], FYP.FOTO_AR[2], FYP.FOTO_AR[3]]); resim(await fyGriVeri(p.foto), FYP.FOTO_AR, .35);
+    kutu(...[FYP.FOTO_AR[0], FYP.FOTO_AR[1], FYP.FOTO_AR[2], FYP.FOTO_AR[3]]); resim(await fyGriVeri(p.fotoFydtArka || p.foto), FYP.FOTO_AR, .35);
     const tablo = (TX, TY, ust, bas, satirlar, RS) => { kutu(TX[0], TY[0], TX[4], TY[1]); yaz(ust, TX[0], TY[0], TX[4], TY[1], { al: "c", b: 1, s: 11 });
       bas.forEach((t2, c) => { kutu(TX[c], TY[1], TX[c + 1], TY[2]); yaz(t2, TX[c], TY[1], TX[c + 1], TY[2], { b: 1, s: 11, pad: .6, sigdir: true }); });
       let a = TY[2]; satirlar.forEach((t2, i) => { const b = fyPx(RS[i]); for(let c = 0; c < 4; c++) kutu(TX[c], a, TX[c + 1], b); yaz(t2, TX[0], a, TX[1], b, { s: 11, b: t2 === "ÖZ GEÇMİŞ", va: t2 === "ÖZ GEÇMİŞ" ? "m" : "t", pad: .6, sigdir: true }); a = b; }); };
@@ -11754,7 +11756,7 @@ function fydtCiz(){ const d = acikBelge(); if(!d || d.tur !== "fydt") return; co
   kap.innerHTML = `${kayitBas({ ad: "FYDT kartları", n: P.length, secId: p.id, ozet: `<em class="kb-oz dl-tam">${grp ? grp + " yaş" : "yaş yok"}</em>`, liste: P.map(y => ({ id: y.id, ad: y.ad, nokta: ["tc", "dogum", "sicil"].some(k => !y[k]) })) })}
     <section class="dl-kart es-kart">
       ${bol("kisi", "Kimlik", [p.rutbe, p.ad, p.sicil && `[${p.sicil}]`].filter(Boolean).join(" "), `<div class="fy-kim">${[["T.C. kimlik no", p.tc], ["Doğum", p.dogum], ["Kan grubu", fyKan(p.kan)], ["Görevi", p.kita || p.gorev]].map(([a2, b2]) => `<div><small>${a2}</small><b>${esc(b2 || "—")}</b></div>`).join("")}</div>
-        <div class="fy-fotolar"><div><small>Ön yüz fotoğrafı</small>${p.fotoFydtOn || p.foto ? `<img src="/_blob/${esc(p.fotoFydtOn || p.foto)}" alt="">` : `<span>yok</span>`}<button type="button" class="mini" data-fy-foto="on">${p.fotoFydtOn ? "Değiştir" : "＋ Ekle"}</button></div><div><small>Arka yüz (kimlikteki)</small>${p.foto ? `<img src="/_blob/${esc(p.foto)}" alt="">` : `<span>yok</span>`}</div><input type="file" id="fy-foto-dosya" accept="image/*" hidden></div>
+        <div class="fy-fotolar"><div><small>Ön yüz fotoğrafı</small>${p.fotoFydtOn || p.foto ? `<img src="/_blob/${esc(p.fotoFydtOn || p.foto)}" alt="">` : `<span>yok</span>`}<button type="button" class="mini" data-fy-foto="on">${p.fotoFydtOn ? "Değiştir" : "＋ Ekle"}</button></div><div><small>Arka yüz</small>${p.fotoFydtArka || p.foto ? `<img src="/_blob/${esc(p.fotoFydtArka || p.foto)}" alt="">` : `<span>yok</span>`}<button type="button" class="mini" data-fy-foto="arka">${p.fotoFydtArka ? "Değiştir" : "＋ Ekle"}</button></div><input type="file" id="fy-foto-dosya" accept="image/*" hidden></div>
         ${eks.length || !p.foto ? `<p class="dl-not">Eksik: ${esc([...eks, ...(p.foto ? [] : ["fotoğraf"])].join(", "))}. </p>` : ""}${belgeTur("kimlik") ? `<button type="button" class="es-sec" data-km-git="${esc(p.id)}">Personel kimliğinde aç ›</button>` : ""}`)}
       ${bol("muayene", "Muayene", [x.kilo && x.kilo + " kg", x.boy && x.boy + " cm", x.tansiyon].filter(Boolean).join(" · ") || "girilmedi", `<div class="dl-alanlar">${al("Ağırlık (kg)", `data-fy-k="kilo"`, x.kilo, "n")}${al("Boy (cm)", `data-fy-k="boy"`, x.boy, "n")}${al("Kan basıncı", `data-fy-k="tansiyon"`, x.tansiyon)}${al("Kan grubu (kartta)", `data-fy-k="kan"`, x.kan)}${al("Alt bilgi · sağ (bu kişiye özel)", `data-fy-k="hazirlayan"`, x.hazirlayan, "tam")}</div><p class="dl-not">Kan grubu boşsa Personel kimliğindeki (${esc(fyKan(p.kan) || "—")}) basılır. Alt bilgi sağ boşsa Kart ayarlarındaki genel yazı (${esc(v.hazirlayan || "—")}) basılır.</p>`)}
       ${[0, 1, 2].map(i => { const t = x.t[i]; return bol("t" + i, ["Test bir", "Test iki", "Test üç (Spor Okulu)"][i], tOz(t), `<div class="dl-alanlar">${al("Test tarihi", `data-fy-t="${i}:tarih"`, t.tarih, "t")}${al("Katılmama nedeni", `data-fy-t="${i}:neden"`, t.neden, "tam")}${al("Boy (cm)", `data-fy-t="${i}:boy"`, t.boy, "n")}${al("Ağırlık (kg)", `data-fy-t="${i}:kilo"`, t.kilo, "n")}${al("Bel çevresi (cm)", `data-fy-t="${i}:bel"`, t.bel, "n")}${al("Mekik", `data-fy-t="${i}:mekik"`, t.mekik, "n")}${al("Şınav", `data-fy-t="${i}:sinav"`, t.sinav, "n")}${al("Koşu süresi", `data-fy-t="${i}:kosu"`, t.kosu, "s")}${al("Alternatif test", `data-fy-t="${i}:alt"`, t.alt, "n")}</div>`); }).join("")}
@@ -11770,9 +11772,9 @@ document.addEventListener("toggle", e => { const g = e.target; if(!g.matches || 
 document.addEventListener("input", e => { const el = e.target; if(!el.closest || !el.closest("#fy-govde")) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return; const x = fyK(v, p), ds = el.dataset;
   if(ds.fyA) v[ds.fyA] = el.value; else if(ds.fyK) x[ds.fyK] = el.value; else if(ds.fyT){ const [i, k] = ds.fyT.split(":"); x.t[+i][k] = el.value; } else return;
   kaydetBelge(d); fyOnizle(d); });
-document.addEventListener("click", e => { if(e.target.closest && e.target.closest("[data-fy-foto]")) $("#fy-foto-dosya").click(); });
+let fyFotoYuz = "on"; document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-fy-foto]"); if(b){ fyFotoYuz = b.dataset.fyFoto; $("#fy-foto-dosya").click(); } });
 document.addEventListener("change", async e => { if(e.target.id !== "fy-foto-dosya") return; const f = e.target.files[0]; e.target.value = ""; const d = acikBelge(); if(!f || !d || d.tur !== "fydt") return; const v = fyVeri(d), p = fyAktif(v); if(!p) return;
-  try { const bl = await vesikalik(f), r = await assets.upload(bl, { type: "image/jpeg" }); p.fotoFydtOn = r.id; kaydetBt("personel"); fydtCiz(); bildir("Ön yüz fotoğrafı eklendi"); } catch(err){ uyar("Fotoğraf yüklenemedi: " + (err.message || err), true); } });
+  try { const bl = await vesikalik(f), r = await assets.upload(bl, { type: "image/jpeg" }); p[fyFotoYuz === "arka" ? "fotoFydtArka" : "fotoFydtOn"] = r.id; kaydetBt("personel"); fydtCiz(); bildir(fyFotoYuz === "arka" ? "Arka yüz fotoğrafı eklendi" : "Ön yüz fotoğrafı eklendi"); } catch(err){ uyar("Fotoğraf yüklenemedi: " + (err.message || err), true); } });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#fy-govde [data-fy-kap]"); if(!b) return; const d = acikBelge(); if(!d || d.tur !== "fydt") return; fyVeri(d).kapsam = b.dataset.fyKap; kaydetBelge(d); fydtCiz(); });
 
 /* ================= KÖPEK TANITMA KARTI (tur: "kopek") =================
