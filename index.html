@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "489";
+  const SURUM = "490";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3560,7 +3560,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 489</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 490</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6460,7 +6460,7 @@ function gdBelgeCiz0(){
     </div>`, !k.ad)}
     ${gdOzKart("don", "don", "Dönem", [donemAd(gdDonem(k)) + (k.donem && (k.donem.bas || k.donem.son) ? " · özel" : " · genel"), k.gelis ? "geliş " + trTarih(k.gelis) : "", k.gorevSonu ? "görev sonu " + trTarih(k.gorevSonu) : ""].filter(Boolean), `${k.gorevOto === false ? `<div class="gd-oto elle"><span>Görev satırları <b>elle</b> düzenleniyor; izin eklenince değişmez.</span><button class="btn kucuk" type="button" data-gd="oto-ac">İzinlere göre otomatik doldur</button></div>` : ""}<div class="gd-donem">
       <div class="arac"><div><h3>Dönem ve otomatik oluşturma</h3><span class="uclar">Bu belgenin dönemi: <b>${esc(donemAd(gdDonem(k)))}</b>${k.donem && (k.donem.bas || k.donem.son) ? " (bu belgeye özel)" : " (genel dönem)"}</span></div><span class="bosluk"></span>
-        <button class="btn ana kucuk" type="button" data-gd="olustur">Satırları dönem ve izinlerden oluştur</button><button class="btn kucuk" type="button" data-gd="olustur-hepsi">Tüm personel için oluştur</button></div>
+        <button class="btn ana kucuk tam" type="button" data-gd="olustur" style="width:100%;grid-column:1/-1">Satırları dönem ve izinlerden oluştur</button></div>
       <div class="gd-kimlik">
         <label>Dönem başı (özel)${gdInp("gd-kd-bas", "kd", "bas", (k.donem || {}).bas || "", { tip: "date" })}<small>Boşsa genel: ${esc(trTarih(G.donem.bas) || "—")}</small></label>
         <label>Dönem sonu (özel)${gdInp("gd-kd-son", "kd", "son", (k.donem || {}).son || "", { tip: "date" })}<small>Boşsa genel: ${esc(trTarih(G.donem.son) || (gdDonemSonu(G.donem.bas) ? trTarih(gdDonemSonu(G.donem.bas)) + " (otomatik)" : "—"))}</small></label>
