@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "528";
+  const SURUM = "529";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3325,6 +3325,11 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
  header.ust>.marka{min-width:0} header.ust .ara-kap{grid-column:1/-1}
  #v-ana.panel{background:transparent!important;border:0!important;box-shadow:none!important;padding:0!important}
 }
+/* sekme çubuğu kaydırınca üstte yapışık kalır (Mizan gibi) */
+.an-seg.an-seg2{position:-webkit-sticky;position:sticky;top:6px;z-index:8;backdrop-filter:blur(8px);background:rgba(255,255,255,.94)!important}
+.an-kart.gir-sag,.an-kart.gir-sol{will-change:transform,opacity} #v-ana{overflow-x:clip!important;overflow-y:visible!important}
+.an-hero{animation:anHero .4s cubic-bezier(.25,.8,.3,1)} @keyframes anHero{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
+.sirt-sat{transition:transform .12s,background-color .15s} .sirt-sat:active{transform:scale(.985)}
 .marka-alt{display:block;font:700 12px var(--f-ui);letter-spacing:.02em;color:#7A5A25;margin-top:1px}
 .tek-sat{display:block;white-space:nowrap;overflow:hidden;min-width:0;max-width:100%} .p-oy .p-alt{font-variant-numeric:tabular-nums}
 .hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 8px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#3F6487;text-decoration:underline;cursor:pointer}
@@ -3720,7 +3725,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 528</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 529</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4936,6 +4941,7 @@ function anaCiz(){
   /* sekme geçişi: seçili kutu eski yerinden yenisine kayar (Mizan gibi), içerik o yöne süzülür */
   if(yon){ const B = [...document.querySelectorAll("#ana-pano .an-seg2 button")], es = B.find(b => b.dataset.anSek === anaOnceki), ye = B.find(b => b.dataset.anSek === anaSekme);
     if(es && ye){ es.setAttribute("aria-selected", "true"); ye.setAttribute("aria-selected", "false"); requestAnimationFrame(() => requestAnimationFrame(() => { es.setAttribute("aria-selected", "false"); ye.setAttribute("aria-selected", "true"); })); } }
+  if(yon){ const sg = document.querySelector("#ana-pano .an-seg2"); if(sg){ const y = sg.getBoundingClientRect().top; if(y < 0) scrollBy({ top: y - 6, behavior: "smooth" }); } }
   anaOnceki = anaSekme;
 }
 
