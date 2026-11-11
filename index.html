@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "493";
+  const SURUM = "494";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3210,8 +3210,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .kb2-serit{display:grid;grid-template-columns:repeat(auto-fill,minmax(132px,1fr));grid-auto-rows:1fr;gap:5px;padding:1px 0 2px}
 .kb2-c{position:relative;display:flex;flex-direction:row;align-items:center;justify-content:center;gap:7px;min-width:0;min-height:38px;padding:5px 9px;border:1px solid #E3E8EE;border-radius:9px;background:#FAFBFC;font:600 11px/1.18 var(--f-ui);color:#3D4D5E;cursor:pointer;text-align:center;white-space:normal;transition:background .15s,border-color .15s,box-shadow .15s,transform .15s;-webkit-user-select:none;user-select:none;-webkit-touch-callout:none}
 .kb2-y{display:block;min-width:0;text-align:left;overflow-wrap:anywhere}
-.kb2-av{flex:none;width:22px;height:22px;border-radius:6px;display:grid;place-items:center;background:#E9EFF5;color:#4A6584;font:800 9.5px var(--f-ui);letter-spacing:.02em} .kb2-av svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2.1;stroke-linecap:round;stroke-linejoin:round}
-.kb2-av.rs-subay{background:#E6EEF7;color:#2D557E} .kb2-av.rs-astsubay{background:#E5F0E7;color:#3B6B47} .kb2-av.rs-uzman{background:#E3EFF0;color:#2F6670} .kb2-av.rs-soz{background:#EEEDF4;color:#5B5680} .kb2-av.rs-kisi{background:#EEF1F4;color:#5B6B7B}
+.kb2-av{flex:none;width:24px;height:24px;border-radius:6px;display:grid;place-items:center;background:#E9EFF5;color:#4A6584;font:800 9.5px var(--f-ui);letter-spacing:.02em} .kb2-av svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.kb2-av svg .dolu{fill:currentColor;stroke:none} .kb2-av.rs-gen{background:#F3EBD6;color:#7A5A1C} .kb2-av.rs-ust{background:#E6EEF7;color:#24456A} .kb2-av.rs-subay{background:#E6EEF7;color:#2D557E} .kb2-av.rs-asb{background:#E5F0E7;color:#3B6B47} .kb2-av.rs-uzm{background:#E3EFF0;color:#2F6670} .kb2-av.rs-soz{background:#EEEDF4;color:#5B5680} .kb2-av.rs-dr{background:#F6E7E2;color:#9A4A3A} .kb2-av.rs-sivil{background:#EEF1F4;color:#4F5D6B} .kb2-av.rs-kisi{background:#EEF1F4;color:#5B6B7B}
 /* SEÇİLİ KAYIT — bütün sistemde tek standart: sıcak amber zemin, koyu amber çerçeve, ✓ (mavi düğmelerden ayrışsın diye) */
 /* FERAHLIK — bütün belge düzenleme ekranlarında bloklar arası tek ölçü (önceden 0–12 px karışıktı) */
 #v-belge [id$="-govde"]{gap:16px!important} #v-belge [id$="-govde"]>:is(.akk,.kp-onizle){margin-bottom:0!important} #v-belge [id$="-govde"]>.tr-et,#v-belge [id$="-govde"]>.kb2{margin-top:2px}
@@ -3566,7 +3566,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 493</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 494</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3996,12 +3996,32 @@ async function vazgec(sessiz, yalniz){
 }
 /* ===== kayıt başlığı standardı (kimlik, zimmet, el senedi): üstte ince satır (ad · sıra · ‹ › · Yeni), altında seçili kaydın adı.
    Kutu içinde kutu yok; ada dokununca bütün kayıtların listesi açılır. Telefonda ve bilgisayarda aynı. ===== */
-/* kişi kutusundaki simge: rütbe sınıfına göre sade işaret (subay yıldız, astsubay çift şerit, uzman şerit+çizgi, sözleşmeli/er tek şerit) */
-const RS_IK = { subay: ["Subay", '<path d="m12 4 2.3 4.8 5.2.7-3.8 3.6.9 5.2L12 15.8l-4.6 2.5.9-5.2-3.8-3.6 5.2-.7z"/>'], astsubay: ["Astsubay", '<path d="M6 10l6-4 6 4M6 16l6-4 6 4"/>'],
-  uzman: ["Uzman", '<path d="M6 9l6-4 6 4M6 14l6-4 6 4M7 19h10"/>'], soz: ["Sözleşmeli · Er", '<path d="M6 13l6-5 6 5"/>'], kisi: ["Personel", '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>'] };
-const rutbeSinif = r => /Asb\./.test(r) ? "astsubay" : /Uzm\./.test(r) ? "uzman" : /Söz\.|Onb\b|\bEr\b|Çvş\.?$/.test(r) ? "soz" : /(Ütğm|Tğm|Yzb|Bnb|Yb\b|Alb|Tuğg|Tümg|Korg|\bOrg\b|Asteğm|Ütgm)/i.test(r) ? "subay" : "kisi";
-const kbRutbeIk = x => { const p = (S.personel.rows || []).find(y => y.id === x.id || (x.pid && y.id === x.pid) || (x.ad && pAd(y.ad) === pAd(x.ad))) || {}, k = rutbeSinif(x.rutbe || p.rutbe || ""), [ad, d] = RS_IK[k];
-  return `<span class="kb2-av rs-${k}" title="${ad}"><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg></span>`; };
+/* kişi kutusundaki simge: GERÇEK rütbeye göre sade apolet işareti (temsilidir; kıdem sırası sayı ile gösterilir)
+   subay: yıldız sayısı (Asteğmen içi boş 1, Teğmen 1, Üsteğmen 2, Yüzbaşı 3); üst subay: yıldız + defne (Binbaşı 1, Yarbay 2, Albay 3);
+   general: yıldız + çift defne (Tuğg 1 … Org 4); astsubay: düz şerit sayısı; uzman erbaş: V şerit sayısı (+ alt çizgi kıdemli);
+   astsubay kıdemli üst/başçavuş: şeritlerin üstünde nokta; sözleşmeli: Onbaşı 1 V, Çavuş 2 V, Er nokta; sivil: memur çanta, doktor/tabip artı, işçi anahtar. */
+const RT_YILDIZ = (n, y) => { const P = { 1: [[12, y]], 2: [[7, y], [17, y]], 3: [[4.6, y], [12, y], [19.4, y]], 4: [[7.5, y - 3.6], [16.5, y - 3.6], [7.5, y + 3.6], [16.5, y + 3.6]] }[n] || [];
+  return P.map(([x, yy]) => { const r = { 1: 5.6, 2: 4.6, 3: 3.7, 4: 3.4 }[n], k = []; for(let i = 0; i < 10; i++){ const a = -Math.PI / 2 + i * Math.PI / 5, rr = i % 2 ? r * .45 : r; k.push((x + rr * Math.cos(a)).toFixed(2) + " " + (yy + rr * Math.sin(a)).toFixed(2)); } return `<path d="M${k.join("L")}z" class="dolu"/>`; }).join(""); };
+const RT_DEFNE = '<path d="M5 19c3 1.8 11 1.8 14 0"/><path d="M7 18.6l-1-1.6M10 19.4l-.6-1.8M14 19.4l.6-1.8M17 18.6l1-1.6"/>';
+const RT_V = (n, alt) => Array.from({ length: n }, (_, i) => `<path d="M6 ${7 + i * 3.6}l6 3.4 6-3.4"/>`).join("") + (alt ? `<path d="M7 ${8.5 + n * 3.6 + 1}h10"/>` : "");
+const RT_SERIT = n => Array.from({ length: n }, (_, i) => `<path d="M6 ${12 - (n - 1) * 1.8 + i * 3.6}h12"/>`).join("");
+function rutbeSimge(r0){ const r = String(r0 || ""), t = r.replace(/\s+/g, "");
+  const G = [["Org", 4], ["Korg", 3], ["Tümg", 2], ["Tuğg", 1]].find(([k]) => new RegExp("(^|[.\\s])" + k + "\\b", "i").test(r)); if(G) return [G[0] + "eneral", RT_YILDIZ(G[1], 9) + RT_DEFNE + '<path d="M5 16c3 1.4 11 1.4 14 0"/>', "gen"];
+  const U = [["Alb", 3, "Albay"], ["Yb", 2, "Yarbay"], ["Bnb", 1, "Binbaşı"]].find(([k]) => new RegExp("(^|[.\\s])" + k + "\\b", "i").test(r)); if(U) return [U[2], RT_YILDIZ(U[1], 9.5) + RT_DEFNE, "ust"];
+  if(/Yzb/i.test(r)) return ["Yüzbaşı", RT_YILDIZ(3, 12), "subay"]; if(/Ütğm|Ütgm|Üteğ/i.test(r)) return ["Üsteğmen", RT_YILDIZ(2, 12), "subay"];
+  if(/Asteğm|Astğm/i.test(r)) return ["Asteğmen", '<path d="m12 7.5 1.4 2.9 3.2.4-2.3 2.2.6 3.1-2.9-1.5-2.9 1.5.6-3.1-2.3-2.2 3.2-.4z"/>', "subay"]; if(/(^|[.\s])Tğm/i.test(r)) return ["Teğmen", RT_YILDIZ(1, 12), "subay"];
+  if(/Asb\./i.test(t)){ const L = [[/Kd\.?Bçvş/i, 4, 1, "Astsubay Kıdemli Başçavuş"], [/Bçvş/i, 4, 0, "Astsubay Başçavuş"], [/Kd\.?Üçvş/i, 3, 1, "Astsubay Kıdemli Üstçavuş"], [/Üçvş/i, 3, 0, "Astsubay Üstçavuş"], [/Kd\.?Çvş/i, 2, 0, "Astsubay Kıdemli Çavuş"], [/Çvş/i, 1, 0, "Astsubay Çavuş"]].find(([x]) => x.test(t)) || [0, 1, 0, "Astsubay"];
+    return [L[3], RT_SERIT(L[1]) + (L[2] ? '<circle cx="12" cy="3.6" r="1.4" class="dolu"/>' : ""), "asb"]; }
+  if(/Uzm\./i.test(t)){ const L = [[/Kd\.?Bçvş/i, 4, 1, "Uzman Kıdemli Başçavuş"], [/Bçvş/i, 4, 0, "Uzman Başçavuş"], [/Kd\.?Üçvş/i, 3, 1, "Uzman Kıdemli Üstçavuş"], [/Üçvş/i, 3, 0, "Uzman Üstçavuş"], [/Kd\.?Çvş/i, 2, 1, "Uzman Kıdemli Çavuş"], [/Çvş/i, 2, 0, "Uzman Çavuş"], [/Onb/i, 1, 0, "Uzman Onbaşı"]].find(([x]) => x.test(t)) || [0, 1, 0, "Uzman erbaş"];
+    return [L[3], RT_V(L[1], L[2]), "uzm"]; }
+  if(/(Dr\.|Tbp|Tabip|Doktor|Hekim)/i.test(r)) return ["Doktor / Tabip", '<path d="M10 4h4v6h6v4h-6v6h-4v-6H4v-4h6z"/>', "dr"];
+  if(/(Memur|D\.?M\.|Sivil|Mühendis|Öğretmen)/i.test(r)) return ["Devlet memuru", '<rect x="4" y="8" width="16" height="11" rx="2"/><path d="M9 8V6a1.5 1.5 0 0 1 1.5-1.5h3A1.5 1.5 0 0 1 15 6v2M4 13h16"/>', "sivil"];
+  if(/(İşçi|Isci)/i.test(r)) return ["İşçi", '<path d="M14.5 5.5a4 4 0 0 0-5 5L4 16l4 4 5.5-5.5a4 4 0 0 0 5-5l-2.5 2.5-2.5-.5-.5-2.5z"/>', "sivil"];
+  if(/Çvş/i.test(t)) return ["Çavuş", RT_V(2), "soz"]; if(/Onb/i.test(t)) return ["Onbaşı", RT_V(1), "soz"];
+  if(/(^|[.\s])Er\b|Söz/i.test(r)) return ["Er", '<circle cx="12" cy="12" r="2.6" class="dolu"/>', "soz"];
+  return ["Personel", '<circle cx="12" cy="8" r="3.6"/><path d="M5 20c.8-3.7 3.6-5.6 7-5.6s6.2 1.9 7 5.6"/>', "kisi"]; }
+const kbRutbeIk = x => { const p = (S.personel.rows || []).find(y => y.id === x.id || (x.pid && y.id === x.pid) || (x.ad && pAd(y.ad) === pAd(x.ad))) || {}, rt = x.rutbe || p.rutbe || "", [ad, d, k] = rutbeSimge(rt);
+  return `<span class="kb2-av rs-${k}" title="${esc(ad)}"><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg></span>`; };
 const KB_IK = { sira: '<path d="M7 4v16M4 7l3-3 3 3M17 20V4M14 17l3 3 3-3"/>', kilit: '<rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/>' };
 const kbIk = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${KB_IK[k]}</svg>`;
 function kayitBas(o){ const L = o.liste || [], at = o.attr || "data-kb-sec", sq = o.sq && SQ[o.sq], kil = sq && !!(sq.tut() || {}).srKilit;
@@ -5380,7 +5400,7 @@ const SQ = {
   elsenet: { dizi: () => esVeri(sqTur("elsenet")).kayitlar, tut: () => esVeri(sqTur("elsenet")), kaydet: () => kaydetBelge(sqTur("elsenet")), ciz: () => elsenetCiz(), var: () => false },
   sicil: { dizi: () => saVeri(sqTur("sicil")).kisiler, tut: () => saVeri(sqTur("sicil")), kaydet: () => kaydetBelge(sqTur("sicil")), ciz: () => sicilCiz(), dugme: ['#sa-govde [data-sa="ekle"], [data-sa="ekle"]', "beforebegin"], var: () => !!sqTur("sicil") } };
 /* sıralama için kişinin rütbe ve sicili: satırda yoksa personel listesinden */
-const sqKisi = x0 => { const x = x0.alan ? { ...x0, ad: x0.ad || x0.alan.ad, rutbe: x0.rutbe || x0.alan.rutbe } : x0, p = (S.personel.rows || []).find(y => (x.pid && y.id === x.pid) || (x.ad && y.ad && pAd(y.ad) === pAd(x.ad))) || {}; return { ...x, rutbe: x.rutbe || p.rutbe || "", sicil: x.sicil || p.sicil || "", ad: x.ad || p.ad || "" }; };
+const sqKisi = x0 => { const x = x0.alan ? { ...x0, ad: x0.ad || x0.alan.ad, rutbe: x0.rutbe || x0.alan.rutbe } : x0, p = (S.personel.rows || []).find(y => (x.pid && y.id === x.pid) || (x.ad && y.ad && pAd(y.ad) === pAd(x.ad))) || {}; return { ...x, rutbe: x.rutbe || p.rutbe || "", sicil: x.sicil || p.sicil || "", nasip: x.nasip || p.nasip || "", ad: x.ad || p.ad || "" }; };
 const sqKars = (a, b) => cdKidem(sqKisi(a), sqKisi(b));
 function sqUygula(){ for(const [k, c] of Object.entries(SQ)){ if(c.var && !c.var() || !c.dugme) continue; const yer = document.querySelector(c.dugme[0]); if(!yer) continue;
     let b = document.querySelector(`[data-sq-ac="${k}"]`); const T = c.tut() || {}, t = T.srKilit ? "🔒 Sıra" : "⇅ Sırala";
@@ -11690,7 +11710,13 @@ function kcAktar(){ const k = S.belgeler.find(x => x.tur === "karsilama"); if(!k
 const CD_RENK = { kim: "E7EFF8", asil: "E6F3EA", yedek: "FBF0DE", bas: "F2F4F7" };
 const cdVeri = d => { d.cd ||= { baslik: "", haric: {}, elle: {} }; const v = d.cd; v.haric ||= {}; v.elle ||= {}; return v; };
 const cdSicil = p => { const t = String(p.sicil || ""), y = t.match(/\d{4}/), n = t.match(/(\d+)\D*$/); return [y ? +y[0] : 9999, n && (!y || n.index > y.index) ? +n[1] : 99999]; };
-const cdKidem = (x, y) => (tzKod(x.rutbe) - tzKod(y.rutbe)) || (cdSicil(x)[0] - cdSicil(y)[0]) || (cdSicil(x)[1] - cdSicil(y)[1]) || tzSiraKarsilastir(x, y);   // rütbe → sicil (eski yıl, küçük no) → alfabe
+/* KIDEM: rütbe (uzman erbaşın üst kademeleri dahil) → aynı rütbede nasip tarihi (erken olan kıdemli; ikisinde de varsa) → sicil yılı ve no → alfabe.
+   Tazminat hesabındaki rütbe kodlarına dokunulmaz; uzman kademeleri yalnız sıralama için burada eklenir. */
+const KD_UZM = [[17.3, "uzm.kd.bçvş."], [17.4, "uzm.bçvş."], [17.5, "uzm.kd.üçvş."], [17.6, "uzm.üçvş."], [17.7, "uzm.kd.çvş."]];
+const kidemKod = r => { const s2 = tzNorm(r), u = KD_UZM.find(([, a]) => s2.endsWith(a)); return u ? u[0] : tzKod(r); };
+const nasipZ = p => { const m = String(p.nasip || "").match(/(\d{1,2})[./-](\d{1,2})[./-](\d{4})/) || String(p.nasip || "").match(/(\d{4})-(\d{2})-(\d{2})/); if(!m) return null; return m[1].length === 4 ? Date.UTC(+m[1], +m[2] - 1, +m[3]) : Date.UTC(+m[3], +m[2] - 1, +m[1]); };
+const cdKidem = (x, y) => { const k = kidemKod(x.rutbe) - kidemKod(y.rutbe); if(k) return k; const a = nasipZ(x), b = nasipZ(y); if(a != null && b != null && a !== b) return a - b;
+  return (cdSicil(x)[0] - cdSicil(y)[0]) || (cdSicil(x)[1] - cdSicil(y)[1]) || tzSiraKarsilastir(x, y); };
 const cdKisiler = v => tbPersonel().filter(p => !v.haric[p.id]).sort(cdKidem);
 function cdBol(L){ const n = L.length; if(n <= 5) return [L]; const G = []; let i = 0, kalan = n;
   while(kalan > 0){ const k = kalan <= 5 ? kalan : 3; G.push(L.slice(i, i + k)); i += k; kalan -= k; } return G; }   // 3'erli; sonda 4-5 kalırsa tek grup
