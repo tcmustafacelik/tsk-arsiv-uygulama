@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "500";
+  const SURUM = "501";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3582,7 +3582,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 </svg>
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 500</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 501</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5914,10 +5914,14 @@ const ykBul = id => YS().rows.find(r => r.id === id);
 let mfTur = "cikis", mfCtx = null, mfAcik = true;
 const mfV = () => { const G = S.izinb || (S.izinb = {}), M = (G.mf ||= {}); M.birlik ??= "19 Üs Bölgesi"; M.dis ??= "MYÜB"; M.k ||= {}; return M; };
 const mfSaat = () => new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+/* kişinin zimmetli piyade tüfeği “Silah Seri Numaraları” belgesinden: G3 seyyar dipçikli → “G3”, sabit dipçikli → “G3-P” (örnek mesajlardaki gibi) */
+function mfSilah(pid){ const d = belgeTur("silah"), L = ((d && d.sl && d.sl.liste) || []).filter(x => x.pid === pid && x.seri); if(!L.length) return null;
+  const w = L.find(x => /G3/.test(x.model || "") && !/MG/.test(x.model || "")) || L[0], m = String(w.model || "");
+  return { silah: /G3/.test(m) && !/MG/.test(m) ? (/Sabit/i.test(m) ? "G3-P" : "G3") : m.replace(/^[\d,]+\s*mm\s*/i, "").trim(), seri: String(w.seri) }; }
 function mfMetin(c){ const M = mfV(), p = (S.personel.rows || []).find(y => y.id === c.pid) || {}, K = M.k[c.pid] || {}, y = ((S.yoklama || {}).rows || []).find(r => r.pid === c.pid) || {};
   const W = String(p.ad || "").trim().split(/\s+/), i = W.findIndex(w => w.length > 1 && w === w.toLocaleUpperCase("tr") && /[A-ZÇĞİÖŞÜ]/.test(w)), ad = (i > 0 ? W.slice(0, i) : W.slice(0, -1)).join(" "), soy = (i > 0 ? W.slice(i) : W.slice(-1)).join(" ");
   const kan = String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)").trim(), g = mfTur === "giris", S0 = String(c.silah || "").trim().split(/\s+/);
-  const silah = K.silah ?? (S0.length > 1 ? S0[0] : ""), seri = K.seri ?? (S0.length > 1 ? S0.slice(1).join(" ") : S0[0] || ""), ayr = K.ayr || c.ayr || bugun(), kat = K.kat || c.kat || (g ? bugun() : "");
+  const W0 = mfSilah(c.pid) || {}, silah = K.silah ?? (S0.length > 1 ? S0[0] : W0.silah || ""), seri = K.seri ?? (S0.length > 1 ? S0.slice(1).join(" ") : S0[0] || W0.seri || ""), ayr = K.ayr || c.ayr || bugun(), kat = K.kat || c.kat || (g ? bugun() : "");
   const L = [`Adı: ${ad}`, `Soyadı: ${soy}`, `Rütbe: ${p.rutbe || ""}`, `Sicil: ${p.sicil || ""}`, `Kan Grubu: ${kan}`, `TC: ${p.tc || ""}`, `Cep No: ${p.tel || y.tel || ""}`, `Silah Cinsi: ${silah}`, `Silah Seri No: ${seri}`, `Görevi: ${y.gorev || ""}`];
   const mk = g ? (M.maksatG ?? "İzin Dönüşü") : (M.maksatC ?? "İzin");
   if(g) L.push(`Giriş Maksadı: ${mk}`, `${M.dis} ➡️ ${M.birlik}`, `Giriş Tarihi: ${ykTr(kat)}`);
@@ -5947,7 +5951,7 @@ function mfdIzin(pid){ let b = null; const al = (o) => { if(o.ayr && (!b || o.ay
   return b || {}; }
 function manifestoCiz(){ const d = acikBelge(); if(!d || d.tur !== "manifesto") return; const P = (S.personel.rows || []).filter(x => x.ad), M = mfV();
   if(mfdOzel && mfdOzel.pid) mfdSec = mfdOzel.pid; if(!P.some(p => p.id === mfdSec)) mfdSec = (P[0] || {}).id || null;
-  const hazir = x => { const K = M.k[x.id] || {}; return !!(String(K.seri || "").trim() || mfdIzin(x.id).silah); }, nh = P.filter(hazir).length;
+  const hazir = x => { const K = M.k[x.id] || {}; return !!(String(K.seri || "").trim() || mfdIzin(x.id).silah || mfSilah(x.id)); }, nh = P.filter(hazir).length;
   const c = mfdSec ? (mfdOzel && mfdOzel.pid === mfdSec ? mfdOzel : { pid: mfdSec, ...mfdIzin(mfdSec) }) : null; mfAcik = true;
   $("#mfd-govde").innerHTML = `${iztSecHtml("manifesto")}
     ${kayitBas({ sq: "personel", ad: "Manifesto · personel", n: P.length, secId: mfdSec, ozet: `<em class="kb-oz ${nh < P.length ? "dl-eksik" : "dl-tam"}">${nh} / ${P.length} silah bilgisi girili</em>`, liste: P.map(x => ({ id: x.id, ad: x.ad, nokta: !hazir(x) })) })}
