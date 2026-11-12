@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "544";
+  const SURUM = "545";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3394,14 +3394,20 @@ html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#232
 .izs-l{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 0 12px} .izs-l span{display:flex;justify-content:space-between;gap:6px;padding:7px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--panel2);min-width:0} .izs-l b{font:600 12px var(--f-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .izs-l small{font:500 11px var(--f-ui);color:var(--muted);flex:none}
 #i-tablo .i-oz small.tek-sat{white-space:nowrap;overflow:hidden}
 /* personel kartı */
-.kd-kart{display:flex;align-items:center;gap:10px;width:100%;margin:2px 0 4px;padding:10px 12px;border:1px solid #EAD9BC;border-radius:12px;background:#FBF5EA;cursor:pointer;font:inherit;text-align:left;color:var(--fg)}
-.kd-kart>span{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#F3E3C4;color:#8A5E1E;flex:none} .kd-kart svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
-.kd-kart b{font:700 14px var(--f-ui)} .kd-kart small{margin-left:auto;font:500 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .kd-kart i{font-style:normal;color:var(--muted);font-size:18px}
+.kd-kart{display:flex;flex-direction:column;gap:10px;width:100%;margin:2px 0 4px;padding:10px 12px 12px;border:1px solid #EAD9BC;border-radius:12px;background:#FBF5EA;color:var(--fg);box-sizing:border-box}
+.kd-kart-ust{display:flex;align-items:center;gap:10px} .kd-kart .krt-tur button{background:#fff}
+.kd-kart-ust>span{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#F3E3C4;color:#8A5E1E;flex:none} .kd-kart svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.kd-kart-ust b{font:700 14px var(--f-ui)} .kd-kart-ust small{margin-left:auto;font:500 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .kd-kart i{font-style:normal;color:var(--muted);font-size:18px}
 .krt-ust{display:flex;gap:8px;margin:0 0 8px} .krt-l{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-bottom:12px} @media (min-width:700px){.krt-l{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .krt-k{display:flex;align-items:center;gap:8px;padding:7px 8px;border:1.5px solid var(--line2);border-radius:11px;background:var(--panel);cursor:pointer;font:inherit;text-align:left;min-width:0;color:var(--fg)}
 .krt-k[aria-pressed="true"]{border-color:var(--sec-k);background:var(--sec-z)} .krt-k .kb2-av{flex:none} .krt-y{display:flex;flex-direction:column;min-width:0;flex:1} .krt-y b{font:700 12.5px var(--f-ui)} .krt-y small{font:500 10.5px var(--f-ui);color:var(--muted)}
 .krt-k i{flex:none;width:18px;height:18px;border-radius:5px;border:1.5px solid var(--line);display:grid;place-items:center;font:800 11px var(--f-ui);font-style:normal;color:#fff} .krt-k[aria-pressed="true"] i{background:var(--sec-i);border-color:var(--sec-i)}
-.krt-git{width:100%;height:44px;font-size:14px!important}
+.krt-git{width:100%;height:46px;font-size:14px!important;display:flex!important;align-items:center;justify-content:center;gap:8px} .krt-git svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.krt-bas{position:sticky;top:-1px;z-index:2;display:flex;flex-direction:column;gap:10px;padding:2px 0 10px;background:var(--panel)}
+.krt-tur{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.krt-tur button{display:flex;flex-direction:column;align-items:center;gap:4px;padding:8px 2px 7px;border:1.5px solid var(--line2);border-radius:11px;background:var(--panel);cursor:pointer;font:inherit;color:var(--fg);min-width:0}
+.krt-tur button span{display:grid;place-items:center;width:30px;height:30px;border-radius:8px;background:var(--tz2);color:var(--tc)} .krt-tur svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.krt-tur b{font:700 11.5px var(--f-ui);white-space:nowrap} .krt-tur button[aria-pressed="true"]{border-color:var(--sec-k);background:var(--sec-z)}
 /* açılır-kapanır ana sayfa kartı */
 .an-kart-bas{display:flex!important;align-items:center;gap:10px;width:100%;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:12px;padding:2px 2px 10px!important;transition:padding .35s cubic-bezier(.3,.8,.3,1)}
 .an-kart.kapali .an-kart-bas{padding-bottom:2px!important} .an-kart-bas>small{margin-left:auto!important;min-width:0;white-space:nowrap;overflow:hidden}
@@ -3838,7 +3844,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 544</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 545</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6204,23 +6210,54 @@ async function krtCiz(p){ const k = KRT.k, W = Math.round(KRT.w * k), H = Math.r
   krtYaz(y, `Basım ${zs} · Birlik içi bilgi kartıdır, resmî kimlik yerine geçmez.`, 4, KRT.h - 2.4, KRT.w - 8, 4.4, 500, "#9095A0");
   cerceve(y);
   return { on, ar }; }
-async function kartPdf(P){ if(!P.length) return bildir("Kart için kişi seçin"); bildir(P.length > 1 ? `${P.length} kart hazırlanıyor…` : "Kart hazırlanıyor…");
-  try { const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), X0 = (210 - (KRT.w * 2 + 8)) / 2, Y0 = 16, ara = 10, isaret = (X, Y) => { doc.setDrawColor(170, 175, 182); doc.setLineWidth(0.15);
-      [[X, Y, -1, -1], [X + KRT.w, Y, 1, -1], [X, Y + KRT.h, -1, 1], [X + KRT.w, Y + KRT.h, 1, 1]].forEach(([a, b, sx, sy]) => { doc.line(a + sx * 1.2, b, a + sx * 4, b); doc.line(a, b + sy * 1.2, a, b + sy * 4); }); };
-    for(let i = 0; i < P.length; i++){ if(i && i % 4 === 0) doc.addPage(); const Y = Y0 + (i % 4) * (KRT.h + ara), { on, ar } = await krtCiz(P[i]);
-      doc.addImage(on.toDataURL("image/jpeg", 0.92), "JPEG", X0, Y, KRT.w, KRT.h); doc.addImage(ar.toDataURL("image/jpeg", 0.92), "JPEG", X0 + KRT.w + 8, Y, KRT.w, KRT.h); isaret(X0, Y); isaret(X0 + KRT.w + 8, Y);
-      doc.setFont("LA", "normal"); doc.setFontSize(6); doc.setTextColor(150, 155, 162); doc.text("ön yüz", X0 + 6, Y - 1.8); doc.text("arka yüz", X0 + KRT.w + 8 + 6, Y - 1.8); }
-    const ad = P.length === 1 ? `Personel_Karti_${dosyaAdi(P[0].ad || "kisi")}.pdf` : `Personel_Kartlari_${P.length}_kisi.pdf`;
-    return dosyaVer(ad, doc.output("blob")); } catch(e){ uyar("Kart oluşturulamadı: " + (e.message || e), true); } }
+const KRT_TUR = [["pdf", "PDF", "#A3412F", "#F7E6E2"], ["resim", "Resim", "#5E4A86", "#ECE6F4"], ["word", "Word", "#2D557E", "#E4ECF5"], ["excel", "Excel", "#2F6B3E", "#E3F1E4"]];
+const krtTurAl = () => { try { return localStorage.getItem("krtTur") || "pdf"; } catch(e){ return "pdf"; } };
+const krtTurIk = t => ({ pdf: '<path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4"/><path d="M9 14h6M9 17h4"/>', resim: '<rect x="3.5" y="5" width="17" height="14" rx="2"/><circle cx="9" cy="10" r="1.8"/><path d="M4 17l5-4 4 3 3-2 4 3"/>', word: '<path d="M6 3h8l4 4v14H6z"/><path d="M8.5 11l1.2 6 1.6-4.5 1.6 4.5 1.2-6"/>', excel: '<path d="M6 3h8l4 4v14H6z"/><path d="M9 11l5 6M14 11l-5 6"/>' })[t];
+const krtTurSec = (sec, veri) => `<div class="krt-tur">${KRT_TUR.map(([k, ad, c, z]) => `<button type="button" ${veri}="${k}" aria-pressed="${sec === k}" style="--tc:${c};--tz2:${z}"><span><svg viewBox="0 0 24 24">${krtTurIk(k)}</svg></span><b>${ad}</b></button>`).join("")}</div>`;
+async function kartCikti(P, tur){ if(!P.length) return bildir("Kart için kişi seçin"); tur = tur || krtTurAl(); try { localStorage.setItem("krtTur", tur); } catch(e){}
+  bildir(P.length > 1 ? `${P.length} kart hazırlanıyor…` : "Kart hazırlanıyor…");
+  try { const K = []; for(const p of P){ const { on, ar } = await krtCiz(p); K.push({ p, on, ar }); }
+    const tek = P.length === 1, kok = tek ? `Personel_Karti_${dosyaAdi(P[0].ad || "kisi")}` : `Personel_Kartlari_${P.length}_kisi`, png = c => new Promise(r => c.toBlob(r, "image/png"));
+    if(tur === "pdf"){ const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), X0 = (210 - (KRT.w * 2 + 8)) / 2, Y0 = 16, ara = 10, isaret = (X, Y) => { doc.setDrawColor(170, 175, 182); doc.setLineWidth(0.15);
+        [[X, Y, -1, -1], [X + KRT.w, Y, 1, -1], [X, Y + KRT.h, -1, 1], [X + KRT.w, Y + KRT.h, 1, 1]].forEach(([a, b, sx, sy]) => { doc.line(a + sx * 1.2, b, a + sx * 4, b); doc.line(a, b + sy * 1.2, a, b + sy * 4); }); };
+      K.forEach(({ on, ar }, i) => { if(i && i % 4 === 0) doc.addPage(); const Y = Y0 + (i % 4) * (KRT.h + ara);
+        doc.addImage(on.toDataURL("image/jpeg", 0.92), "JPEG", X0, Y, KRT.w, KRT.h); doc.addImage(ar.toDataURL("image/jpeg", 0.92), "JPEG", X0 + KRT.w + 8, Y, KRT.w, KRT.h); isaret(X0, Y); isaret(X0 + KRT.w + 8, Y);
+        doc.setFont("LA", "normal"); doc.setFontSize(6); doc.setTextColor(150, 155, 162); doc.text("ön yüz", X0 + 6, Y - 1.8); doc.text("arka yüz", X0 + KRT.w + 8 + 6, Y - 1.8); });
+      return dosyaVer(kok + ".pdf", doc.output("blob")); }
+    if(tur === "resim"){ /* her kişi: ön ve arka yan yana tek resim; birden çok kişi ZIP içinde */
+      const yan = ({ on, ar }) => { const g = Math.round(6 * KRT.k), c = document.createElement("canvas"); c.width = on.width * 2 + g * 3; c.height = on.height + g * 2; const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.drawImage(on, g, g); x.drawImage(ar, on.width + g * 2, g); return c; };
+      if(tek) return dosyaVer(kok + ".png", await png(yan(K[0])));
+      await yukle(CDN.jszip); const z = new JSZip(); for(const k of K) z.file(`Kart_${dosyaAdi(k.p.ad || "kisi")}.png`, await png(yan(k))); return dosyaVer(kok + "_resim.zip", await z.generateAsync({ type: "blob" })); }
+    if(tur === "word"){ const E = mm => Math.round(mm * 36000), medya = []; let id = 0;
+      const resim = async c => { id++; const rid = "rIdK" + id; medya.push({ id: rid, ad: `kart${id}.png`, veri: new Uint8Array(await (await png(c)).arrayBuffer()) });
+        return `<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="${E(KRT.w)}" cy="${E(KRT.h)}"/><wp:effectExtent l="0" t="0" r="0" b="0"/><wp:docPr id="${id}" name="Kart ${id}"/><wp:cNvGraphicFramePr><a:graphicFrameLocks noChangeAspect="1"/></wp:cNvGraphicFramePr><a:graphic><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic><pic:nvPicPr><pic:cNvPr id="${id}" name="kart${id}.png"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="${rid}"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="${E(KRT.w)}" cy="${E(KRT.h)}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>`; };
+      const tw = mm => Math.round(mm * 56.7); let g = `<w:tbl><w:tblPr><w:tblW w:w="${tw(KRT.w * 2 + 8)}" w:type="dxa"/><w:jc w:val="center"/><w:tblLayout w:type="fixed"/><w:tblCellMar><w:top w:w="0" w:type="dxa"/><w:left w:w="0" w:type="dxa"/><w:bottom w:w="0" w:type="dxa"/><w:right w:w="0" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid><w:gridCol w:w="${tw(KRT.w)}"/><w:gridCol w:w="${tw(8)}"/><w:gridCol w:w="${tw(KRT.w)}"/></w:tblGrid>`;
+      const hc = (w, ic) => `<w:tc><w:tcPr><w:tcW w:w="${tw(w)}" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr>${ic}</w:p></w:tc>`;
+      for(const [i, k] of K.entries()){ g += `<w:tr><w:trPr><w:trHeight w:val="${tw(KRT.h)}" w:hRule="exact"/><w:cantSplit/></w:trPr>${hc(KRT.w, await resim(k.on))}${hc(8, "")}${hc(KRT.w, await resim(k.ar))}</w:tr>`;
+        if(i < K.length - 1) g += `<w:tr><w:trPr><w:trHeight w:val="${tw(10)}" w:hRule="exact"/></w:trPr>${hc(KRT.w, "")}${hc(8, "")}${hc(KRT.w, "")}</w:tr>`; }
+      g += `</w:tbl><w:p/><w:sectPr><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="${tw(14)}" w:right="${tw(12)}" w:bottom="${tw(12)}" w:left="${tw(12)}" w:header="0" w:footer="0" w:gutter="0"/></w:sectPr>`;
+      return dosyaVer(kok + ".docx", await docxPaketle(g, medya)); }
+    if(tur === "excel"){ await yukle(CDN.exceljs); const wb = new ExcelJS.Workbook(), ws = wb.addWorksheet("Kartlar"), pw = mm => mm / 25.4 * 96;
+      ws.columns = [{ width: 2 }, { width: 46.5 }, { width: 4.5 }, { width: 46.5 }];   /* 46,5 karakter ≈ 330 px: 85,6 mm kart sütuna sığar */ ws.pageSetup = { paperSize: 9, orientation: "portrait", fitToPage: true, fitToWidth: 1, fitToHeight: 0, margins: { left: .4, right: .4, top: .5, bottom: .5, header: 0, footer: 0 } };
+      K.forEach((k, i) => { const r = i * 2 + 1; ws.getRow(r).height = KRT.h / 25.4 * 72; ws.getRow(r + 1).height = 14;
+        ws.addImage(wb.addImage({ base64: k.on.toDataURL("image/png").split(",")[1], extension: "png" }), { tl: { col: 1, row: r - 1 }, ext: { width: pw(KRT.w), height: pw(KRT.h) } });
+        ws.addImage(wb.addImage({ base64: k.ar.toDataURL("image/png").split(",")[1], extension: "png" }), { tl: { col: 3, row: r - 1 }, ext: { width: pw(KRT.w), height: pw(KRT.h) } }); });
+      const bs = wb.addWorksheet("Bilgiler"), A = [["Adı soyadı", "ad"], ["Rütbe", "rutbe"], ["Sicil", "sicil"], ["Doğum", "dogum"], ["Nasbı", "nasip"], ["Kan grubu", "kan"], ["Telefon", "tel"], ["T.C. kimlik no", "tc"], ["Baba adı", "baba"], ["Yakını", "yakinAd"], ["Yakını tel.", "yakinTel"], ["Adres", "adres"], ["Kadro görevi", "gorev"]];
+      bs.addRow(A.map(a => a[0])).font = { bold: true }; P.forEach(p => bs.addRow(A.map(([, k]) => k === "nasip" && p.nasip ? trTarih(p.nasip) || p.nasip : p[k] || ""))); [22, 18, 12, 12, 12, 10, 14, 16, 12, 22, 14, 34, 50].forEach((w, i) => bs.getColumn(i + 1).width = w);
+      return dosyaVer(kok + ".xlsx", new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), { ham: true }); }
+  } catch(e){ uyar("Kart oluşturulamadı: " + (e.message || e), true); } }
+const kartPdf = P => kartCikti(P, "pdf");
 function kartSec(){ const P = (S.personel.rows || []).filter(p => p.ad), sec = new Set(P.map(p => p.id));
-  altPencere("krt-perde", "PERSONEL KARTI", "Toplu kart oluştur", () => `<p class="an-not" style="margin:0 2px 10px">Seçilenlerin kartı tek PDF'te çıkar: her satırda ön ve arka yüz, kesim işaretleriyle, sayfada 4 kişi.</p>
+  let tur = krtTurAl();
+  altPencere("krt-perde", "PERSONEL KARTI", "Toplu kart oluştur", () => `<div class="krt-bas">${krtTurSec(tur, "data-krt-tur")}<button type="button" class="btn ana krt-git" data-krt="git"${sec.size ? "" : " disabled"}><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4.5M14 13h3"/></svg>Kart oluştur · ${sec.size} kişi · ${KRT_TUR.find(x => x[0] === tur)[1]}</button></div>
+    <p class="an-not" style="margin:2px 2px 10px">Her kişinin ön ve arka yüzü yan yana çıkar.${tur === "pdf" || tur === "word" ? " A4 sayfada 4 kişi." : tur === "resim" ? " Birden çok kişi ZIP içinde, kişi başına bir resim." : " İkinci sayfada bütün bilgiler tablo olarak."}</p>
     <div class="krt-ust"><button type="button" class="an-alt" data-krt="hepsi">Hepsini seç</button><button type="button" class="an-alt" data-krt="hic">Hiçbiri</button></div>
     <div class="krt-l">${P.map(p => { const [ra, rd, rk] = rutbeSimge(p.rutbe, p); return `<button type="button" class="krt-k" data-krt-k="${esc(p.id)}" aria-pressed="${sec.has(p.id)}"><span class="kb2-av rs-${rk}"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span><span class="krt-y"><b class="tek-sat">${esc(p.ad)}</b><small class="tek-sat">${esc(p.rutbe || "")}</small></span><i>${sec.has(p.id) ? "✓" : ""}</i></button>`; }).join("")}</div>
-    <button type="button" class="btn ana krt-git" data-krt="git"${sec.size ? "" : " disabled"}>🪪 Kart oluştur · ${sec.size} kişi</button>`,
-    (b, kapat, yenile) => { const v = b.dataset.krt, id = b.dataset.krtK; if(id){ sec.has(id) ? sec.delete(id) : sec.add(id); return yenile(); } if(v === "hepsi"){ P.forEach(p => sec.add(p.id)); return yenile(); } if(v === "hic"){ sec.clear(); return yenile(); }
-      if(v === "git"){ kapat(); kartPdf(P.filter(p => sec.has(p.id))); } }, { z: "ECEEF1", r: "3F4756" }); }
-document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-kart-bas],#p-kart"); if(!b) return; e.stopPropagation();
-  if(b.id === "p-kart") return kartSec(); const p = (S.personel.rows || []).find(x => x.id === b.dataset.kartBas); if(p) kartPdf([p]); }, true);
+`,
+    (b, kapat, yenile) => { const v = b.dataset.krt, id = b.dataset.krtK; if(b.dataset.krtTur){ tur = b.dataset.krtTur; return yenile(); } if(id){ sec.has(id) ? sec.delete(id) : sec.add(id); return yenile(); } if(v === "hepsi"){ P.forEach(p => sec.add(p.id)); return yenile(); } if(v === "hic"){ sec.clear(); return yenile(); }
+      if(v === "git"){ kapat(); kartCikti(P.filter(p => sec.has(p.id)), tur); } }, { z: "ECEEF1", r: "3F4756" }); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-kart-tur],#p-kart"); if(!b) return; e.stopPropagation();
+  if(b.id === "p-kart") return kartSec(); const p = (S.personel.rows || []).find(x => x.id === b.dataset.kartP); if(p) kartCikti([p], b.dataset.kartTur); }, true);
 function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === pid); if(!p) return;
   altPencere("kd-perde", "KİŞİ DOSYASI", () => [p.rutbe, p.ad].filter(Boolean).join(" ") || "Adsız", () => { const B = kdTopla(p);
     const [ra, rd, rk] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe), gk = ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim();
@@ -6230,7 +6267,7 @@ function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === 
         <div class="kd-cipler">${sn[0] !== "diger" ? `<span class="sn-cip">${sinifIk(p.rutbe)}<span>${esc(sn[1])}</span></span>` : ""}${kurmayMi(p.rutbe) ? '<span class="kd-cip">Kurmay</span>' : ""}${gk ? `<span class="kd-cip gorev">${esc(gk)}</span>` : ""}</div></div></div>
       ${bil.length ? `<div class="kd-bil">${bil.map(([a, v]) => `<div><small>${a}</small><b>${a === "Telefon" ? `<a href="tel:0${esc(String(v).replace(/\D/g, "").replace(/^0/, ""))}">${esc(v)}</a>` : esc(v)}</b></div>`).join("")}</div>` : ""}
       ${p.gorev ? `<div class="kd-gorev">${esc(p.gorev)}</div>` : ""}
-      <button type="button" class="kd-kart" data-kart-bas="${esc(p.id)}"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4.5M14 13h3"/></svg></span><b>Kart oluştur</b><small>ön + arka yüz · PDF</small><i>›</i></button>
+      <div class="kd-kart"><div class="kd-kart-ust"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4.5M14 13h3"/></svg></span><b>Kart oluştur</b><small>ön + arka yüz · türe dokun</small></div>${krtTurSec("", `data-kart-p="${esc(p.id)}" data-kart-tur`)}</div>
       ${B.length ? `<div class="kd-izgara">${B.map((x, i) => { const [et, z, c] = KD_BOL[x.k] || ["", "#EEF2F6", "#4A5868"]; return `<button type="button" class="kd-k ${x.renk}" data-kd="${i}" style="--kz:${z};--kc:${c}" title="${esc(x.ad + (x.alt ? " · " + x.alt : ""))}"><span class="kd-k-ust"><span class="kd-k-et">${KD_KIK[x.k] ? `<svg viewBox="0 0 24 24" aria-hidden="true">${KD_KIK[x.k]}</svg>` : ""}${esc(et)}</span><i>›</i></span><b class="kd-k-d">${esc(x.deger)}</b><small>${esc(x.kisa || "")}</small></button>`; }).join("")}</div>` : `<div class="yk-bos">Bu kişi henüz hiçbir belgede yok</div>`}`; },
     (b, kapat) => { if(b.dataset.kd == null) return; const x = kdTopla(p)[+b.dataset.kd]; if(!x || !x.d) return; kapat(); if(x.k === "gdhg" && x.gk){ gdSecili = x.gk.id; } if(x.git) x.git(); belgeGit(x.d); }, { z: "EFF4FA", r: "3F6487" }); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-p-dosya]"); if(!b) return; e.stopPropagation(); kisiDosyasi(b.dataset.pDosya); });
