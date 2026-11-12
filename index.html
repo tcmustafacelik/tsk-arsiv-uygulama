@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "549";
+  const SURUM = "550";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3483,6 +3483,17 @@ html body .dl-tur.t-refakat{background:#EAEEF3!important;color:#3B5068!important
 html body .dl-tur.t-sihhi{background:#E5F0EC!important;color:#2A6253!important;border-color:#D0E4DC!important}
 html body .dl-sat.on,html body .dl-sat[aria-current="true"]{background:#FBF6EC!important;border-color:#EBD9B8!important;border-left-color:var(--sec-k)!important;box-shadow:0 1px 3px rgba(150,105,30,.10)!important}
 html body .dl-sat.on b,html body .dl-sat[aria-current="true"] b{color:#3B2A10!important} html body .dl-sat.on .dl-tur,html body .dl-sat[aria-current="true"] .dl-tur{background:#fff!important}
+/* geçmişi temizle: çalışırken ve bitince */
+.gc-temiz.calisiyor{opacity:.75;pointer-events:none}
+.gt-don{display:inline-block;width:14px;height:14px;margin-right:7px;vertical-align:-2px;border:2px solid rgba(255,255,255,.5);border-top-color:#fff;border-radius:50%;animation:gtDon .8s linear infinite} @keyframes gtDon{to{transform:rotate(360deg)}}
+.gt-tamam{display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;margin:4px 0 14px;padding:22px 16px 16px;border:1px solid #CFE3D5;border-radius:14px;background:linear-gradient(180deg,#F1F8F3,#FAFCFA);animation:ozGel .45s cubic-bezier(.3,.8,.3,1) both}
+.gt-tik{display:grid;place-items:center;width:52px;height:52px;margin-bottom:6px;border-radius:50%;background:#2F7A4C;box-shadow:0 0 0 8px #E1F0E5;animation:gtTik .5s .1s cubic-bezier(.3,1.5,.5,1) both} .gt-tik svg{width:28px;height:28px;fill:none;stroke:#fff;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+@keyframes gtTik{from{transform:scale(.4);opacity:0}to{transform:none;opacity:1}}
+.gt-tamam>b{font:800 16px var(--f-ui);color:#1F4D30} .gt-tamam>small{font:500 11.5px var(--f-ui);color:#6B8574}
+.gt-tamam ul{list-style:none;margin:10px 0 0;padding:0;display:flex;flex-direction:column;gap:6px;text-align:left;width:100%}
+.gt-tamam li{display:flex;gap:8px;align-items:flex-start;font:500 12.5px/1.4 var(--f-ui);color:#35503F} .gt-tamam li i{font-style:normal;font-weight:800;color:#2F7A4C}
+/* arama açılınca başlık ile arama kutusu arasında nefes */
+@media (max-width:700px){ header.ust.ara-acik{row-gap:12px!important;padding-bottom:6px!important} header.ust.ara-acik .ara-kap{margin:2px 0 0!important;grid-row:2} header.ust.ara-acik .ara-kap input{height:44px!important;font-size:15px!important} }
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3890,7 +3901,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 549</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 550</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -7218,7 +7229,9 @@ function gecmisOzet(d, veri){
 }
 const GC_IK = { saat: '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>', cop: '<path d="M5 7h14M10 7V5h4v2M7 7l1 12h8l1-12M10.5 10.5v5.5M13.5 10.5v5.5"/>', tel: '<rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/>', pc: '<rect x="3" y="5" width="18" height="11" rx="1.5"/><path d="M9 20h6M12 16v4"/>', bulut: '<path d="M7 18h10a4 4 0 0 0 .4-8A6 6 0 0 0 6 11a3.5 3.5 0 0 0 1 7z"/>', supur: '<path d="M14 3l-4 9M6 12h10l-1 9H7z"/><path d="M9 15v3M12 15v3"/>', geri: '<path d="M9 14 4 9l5-5"/><path d="M4 9h11a5 5 0 0 1 0 10h-3"/>', kutu: '<rect x="4" y="5" width="16" height="4" rx="1"/><path d="M5 9v10h14V9M10 13h4"/>' };
 const gcIk = (k, z, c) => `<span class="gc-ik" style="--iz:${z};--ir:${c}"><svg viewBox="0 0 24 24" aria-hidden="true">${GC_IK[k]}</svg></span>`;
-const gcTemizHtml = acik => `<details class="gc-temiz"${acik ? " open" : ""}><summary>${gcIk("supur", "#F7E6E2", "#A3412F")}<span><b>Geçmişi temizle</b><small>Buluttaki eski kayıt sürümlerini sil</small></span><i>›</i></summary>
+let gcTemizSonuc = null;
+const gcTemizHtml = acik => gcTemizSonuc ? (() => { const r = gcTemizSonuc; gcTemizSonuc = null; return `<div class="gt-tamam"><span class="gt-tik"><svg viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg></span><b>Geçmiş temizlendi</b><small>${esc(new Date().toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" }))}</small>
+    <ul><li><i>✓</i>Eski kayıt sürümleri silindi · yalnız şu anki hâl kaldı</li>${r.pay ? "<li><i>✓</i>Paylaşım deposunun geçmişi de silindi</li>" : ""}${r.cop ? "<li><i>✓</i>Silinenler kutusu boşaltıldı</li>" : ""}<li class="ok"><i>✓</i>Arşivdeki belgelerin olduğu gibi duruyor</li></ul></div>`; })() : `<details class="gc-temiz"${acik ? " open" : ""}><summary>${gcIk("supur", "#F7E6E2", "#A3412F")}<span><b>Geçmişi temizle</b><small>Buluttaki eski kayıt sürümlerini sil</small></span><i>›</i></summary>
         <p>Yalnız şu anki hâl kalır; eski sürümlere bir daha dönülemez. Arşivdeki belgeler silinmez.</p>
         <div class="gt-sec"><button type="button" data-gt="pay" aria-pressed="true"><i></i>Paylaşım deposu da</button><button type="button" data-gt="cop" aria-pressed="true"><i></i>Silinenler kutusu da</button></div>
         <div class="gt-onay"><input id="gt-yaz" placeholder="Onay için SİL yazın" autocomplete="off"><button type="button" class="btn" id="gt-btn" disabled>Temizle</button></div></details>`;
@@ -7261,8 +7274,8 @@ document.addEventListener("click", async e => {
   if(e.target.closest("[data-cpb]")){ await copBosalt(); gecmisAc(); bildir("Silinenler kutusu boşaltıldı"); return; }
   if(e.target.closest("#gt-btn")){ const b = $("#gt-btn"), G = window.TSK_GECMIS; if(!G || !G.temizle) return; if(Object.keys(kirli).length){ bildir("Önce kaydedilmemiş değişiklikleri kaydedin"); return; }
     const pd = $('[data-gt="pay"]').getAttribute("aria-pressed") === "true", cp = $('[data-gt="cop"]').getAttribute("aria-pressed") === "true";
-    b.disabled = true; b.textContent = "Temizleniyor…";
-    try { if(cp) await copBosalt(); const r = await G.temizle(pd); gecmisAc(); uyar(`Geçmiş temizlendi. Bulutta yalnız şu anki hâl kaldı${r && r.pay ? "; paylaşım deposunun geçmişi de silindi" : ""}. GitHub silinen eski sürümleri bir süre kendi tarafında tutabilir, ama artık hiçbir listede ve uygulamada görünmez.`); }
+    b.disabled = true; b.innerHTML = '<span class="gt-don"></span>Temizleniyor…'; b.closest(".gc-temiz")?.classList.add("calisiyor");
+    try { if(cp) await copBosalt(); const r = await G.temizle(pd); gcTemizSonuc = { pay: !!(r && r.pay), cop: cp }; gcSekme = "k"; gecmisAc(); bildir("Geçmiş temizlendi"); }
     catch(err){ b.disabled = false; b.textContent = "Temizle"; uyar("Geçmiş temizlenemedi: " + (err.message || err), true); } return; }
   const o = e.target.closest(".gc-oge"); if(o && !o.dataset.yuklu){ const d = acikBelge(); if(!d) return; o.dataset.yuklu = "1"; const oz = o.querySelector(".gc-ozet"); oz.textContent = "okunuyor…";
     try { const veri = await window.TSK_GECMIS.oku(o.dataset.sha); let fark = "";
@@ -8200,7 +8213,7 @@ $("#e-izinb").addEventListener("click", e => {
   if(is === "foto"){ $("#izb-foto-dosya").click(); return; }
   if(is === "kimlikten"){ const k = izbKisi(), p = k && kmKisi(k); if(!p) return bildir("Personel kimliğinde bu kişi yok");
     return kmAdresSec(p, adr => { let n = 0; if(adr && adr !== k.adres){ k.adres = adr; n++; }   // adres: seçilen yazılır
-      [["kita", p.kita], ["sicil", p.sicil], ["tel", p.tel], ["kan", p.kan], ["yakinAd", p.yakinAd], ["yakinTel", p.yakinTel]].forEach(([a, v]) => { if(v && !String(k[a] || "").trim()){ k[a] = v; n++; } });
+      [["kita", p.kita || p.gorev], ["sicil", p.sicil], ["tel", p.tel], ["kan", p.kan], ["yakinAd", p.yakinAd], ["yakinTel", p.yakinTel]].forEach(([a, v]) => { if(v && !String(k[a] || "").trim()){ k[a] = v; n++; } });
       if(!n) return bildir("Aktarılacak yeni bilgi yok (dolu kutulara dokunulmaz)"); kaydetBt("izinb"); izbBelgeCiz(); bildir(`${n} bilgi kimlikten alındı`); }); }
   if(is === "foto-sil"){ const k = izbKisi(); if(k){ k.foto = ""; kaydetBt("izinb"); izbBelgeCiz(); } return; }
   if(is === "t-ekle"){ G.tasvip.push({ ad: "", rutbe: "", sicil: "", gorev: "" }); kaydetBt("izinb"); izbTasvipCiz(); return; }
