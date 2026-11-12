@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "553";
+  const SURUM = "554";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3501,7 +3501,7 @@ html[data-tema="lacivert"] :is(.dl-seg button[aria-pressed="true"],.i-seg button
 html[data-tema="lacivert"] :is(.btn:not(.ana):not(.sil),.mini:not(.sil)),html[data-tema="celik"] :is(.btn:not(.ana):not(.sil),.mini:not(.sil)){color:var(--tk)}
 html[data-tema="lacivert"] .ap-bas,html[data-tema="celik"] .ap-bas{--apz:var(--tz)!important;--apr:var(--tk)!important}
 /* izin belgesi: kesik çizgili bilgi kutuları düz çerçeve (sistemle aynı) */
-html body .dl-kart.dl-bilgi,html body details.dl-bilgi{border-style:solid!important;border-color:var(--line2)!important}
+html body .dl-kart.dl-bilgi{border-style:solid!important;border-color:var(--line2)!important} html body details.dl-bilgi:not(.dl-kart){border:0!important;border-top:1px solid var(--line2)!important}
 .dl-seg.mf-yon{grid-template-columns:repeat(3,minmax(0,1fr))!important} .dl-seg.mf-yon button{white-space:nowrap;min-width:0;gap:5px!important}
 /* ===== BELGE / DOSYA KARTLARI: sade satır (tüm klasörlerde) =====
    ince sol çizgi · küçük simge · ⋮ düğmesi dikeyde ortada, ok işareti yok (çakışma olmaz) · başlık iki satıra kadar */
@@ -3926,7 +3926,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 553</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 554</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
