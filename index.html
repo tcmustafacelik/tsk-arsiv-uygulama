@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "577";
+  const SURUM = "578";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -639,7 +639,8 @@
         <div class="bk-bol"><span class="bk-et">Bağlantılar</span><div class="bk-liste">
           <button class="bk-sat" type="button" id="bl-hizli"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg><span><b>Kendi cihazlarım</b><small>başka telefona / bilgisayara bağlanma linki</small></span><i>›</i></button>
           <button class="bk-sat" type="button" id="bl-pay-ac"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span><b>Başkasına göster</b><small>görüntüleme linki · bölüm gizle</small></span><i>›</i></button></div></div>
-        <details class="bk-gel"><summary>Gelişmiş<small>otomatik yedek · yedek al · sıfırla</small><i>›</i></summary>
+        <details class="bk-gel"><summary>Gelişmiş<small>geçmiş · otomatik yedek · yedek al · sıfırla</small><i>›</i></summary>
+        <div class="bk-bol"><span class="bk-et">Kayıt geçmişi</span><div class="bk-tuslar bk-gec"><button type="button" data-gc-cop="1">🗑 Silinenler</button><button type="button" data-gc-temiz="1">🧹 Temizle</button></div></div>
         <div class="bk-bol"><span class="bk-et">Otomatik yedek <small>· bu cihazda, günde bir</small></span><div class="bk-oto"><span id="bl-oto">—</span><button type="button" id="bl-oto-geri">Geri yükle</button></div></div>
         <div class="bk-bol"><span class="bk-et">Bu cihazdaki veriler</span><div class="bk-tuslar"><button type="button" id="bl-yedek">Yedek al</button><button type="button" id="bl-yukle">Yedekten yükle</button><button type="button" class="sil" id="bl-sifirla">Sıfırla</button></div><input type="file" id="bl-dosya" accept=".json,application/json" hidden></div></details>
         <div class="bl-hata" id="bl-hata2" role="alert"></div>
@@ -681,7 +682,7 @@
       .bk-sat{display:flex;align-items:center;gap:11px;width:100%;min-height:48px;padding:6px 12px;border:0;border-bottom:1px solid var(--line2);background:transparent;text-align:left;color:var(--fg);font:inherit;cursor:pointer} .bk-sat:last-child{border-bottom:0} .bk-sat[hidden]{display:none}
       .bk-sat>svg{flex:none;width:19px;height:19px;fill:none;stroke:#4A6280;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
       .bk-sat>span{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .bk-sat b{font:600 13.5px var(--f-ui)} .bk-sat small{font:500 11.5px var(--f-ui);color:var(--muted)} .bk-sat>i{flex:none;font-style:normal;color:var(--muted)}
-      .bk-tuslar{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px} .bk-tuslar button{height:36px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer;white-space:nowrap} .bk-tuslar .sil{color:#A3412F}
+      .bk-tuslar{display:grid;grid-template-columns:1fr 1.25fr 1fr;gap:6px} .bk-gec{grid-template-columns:1fr 1fr!important} .bk-tuslar button{height:36px;border:1px solid var(--line);border-radius:9px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer;white-space:nowrap} .bk-tuslar .sil{color:#A3412F}
       .bl-mod{border-radius:10px!important;padding:3px!important} .bl-mod button{padding:8px 4px!important;font-size:12.5px!important;border-radius:8px!important}
       #bl-pay .bl-kart{gap:12px}
       .bl-tip{align-self:center;padding:3px 9px;border-radius:7px;font:700 10.5px var(--f-ui);letter-spacing:.07em;background:#E9EDF2;color:#4A5868}
@@ -3975,7 +3976,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 577</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 578</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5234,7 +5235,7 @@ function anaCiz(){
     hero = `<button type="button" class="an-hero-ust" data-pano="gdhg"><span class="an-halka" style="--p:${(gec * 100).toFixed(1)}"><b>${kal >= 0 ? kal : 0}</b><small>gün</small></span><span class="an-hy"><small>${esc(selam)} · ${esc(tarihY)}</small><b>${esc(S.gdhg.setAd || "GDHG dönemi")}</b><span>${esc(trTarih(bas)).slice(0, 5)} – ${esc(trTarih(son)).slice(0, 5)} · <em class="${kal < 0 ? "bitti" : kal <= 7 ? "yakin" : ""}">${kal >= 0 ? kal + " gün kaldı" : "dönem bitti"}</em></span></span></button>`; }
   else hero = `<div class="an-hero-ust"><span class="an-hy"><small>${esc(tarihY)}</small><b>${esc(selam)}</b></span></div>`;
   const heroH = `<div class="an-hero">${hero}<div class="an-st-l">${sayi(nP, "Personel", 'data-pano="personel"', "kisi")}${sayi(izinde, "İzinde", 'data-pano="izin"', "izin")}${sayi(nH, "Hedef", 'data-pano="hedef"', "hedef")}${sayi((S.belgeler || []).length, "Belge", 'data-an-sek="klasor"', "klasor")}</div></div>`;
-  const sekmeler = [["kisa", "Kısayollar"], ["klasor", "Klasörler"], ["son", "Son"], ["gecmis", "Geçmiş"], ...(dk.length || dkGiz ? [["uyari", "Uyarılar"]] : [])];
+  const sekmeler = [["kisa", "Kısayollar"], ["klasor", "Klasörler"], ["son", "Son"], ...(dk.length || dkGiz ? [["uyari", "Uyarılar"]] : [])];
   if(!sekmeler.some(([k]) => k === anaSekme)) anaSekme = "kisa";
   let h = `<div class="an-seg an-seg2" role="tablist">${sekmeler.map(([k, t]) => `<button type="button" role="tab" data-an-sek="${k}" aria-selected="${anaSekme === k}" aria-label="${t}" title="${t}">${svgI(AIK[k] || AIK.uyari)}<span>${t}</span>${k === "uyari" && dk.length ? `<i>${dk.length}</i>` : ""}</button>`).join("")}</div>` + (anaSekme === "kisa" ? heroH : "");
   const svg = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
@@ -5381,6 +5382,9 @@ $("#ana-pano").addEventListener("click", e => { const sk = e.target.closest("[da
   if(e.target.closest("[data-gc-cop]")){ gcSekme = "c"; gecmisAc(); return; }
   if(e.target.closest("[data-gc-temiz]")){ gcSekme = "k"; gcTemizAcik = true; gecmisAc(true); return; }
   const g = e.target.closest("[data-pano]"); if(g){ const d = belgeTur(g.dataset.pano); if(d) belgeGit(d); } });
+/* Bulut panelindeki Gelişmiş › Kayıt geçmişi: Silinenler ve Temizle (ana sayfadaki Geçmiş sekmesinin yerine) */
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#bl-panel [data-gc-cop], #bl-panel [data-gc-temiz]"); if(!b) return; e.stopPropagation(); const bp = document.getElementById("bl-panel"); if(bp) bp.hidden = true;
+  if(b.hasAttribute("data-gc-cop")){ gcSekme = "c"; gecmisAc(); } else { gcSekme = "k"; gcTemizAcik = true; gecmisAc(true); } });
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("#v-ana [data-kk]"); if(!b) return; anaKapali.degis(b.dataset.kk); anaCiz(); });
 function bolumAc(k, b){ const ku = klasorBul(k); if(!acikKlasorler.has(k) || !kokAcik || (ku && ku.ust && !acikKlasorler.has("g:" + ku.ust))){ acikKlasorler.add(k); if(ku && ku.ust) acikKlasorler.add("g:" + ku.ust); kokAcik = true; menuSakla(); } SECIM.klasor = k; SECIM.bolum = b; SECIM.belge = null; try { localStorage.setItem("yer", JSON.stringify([k, b])); } catch(e){} sonEkle({ k, b }); goster("bolum"); bolumCiz(); agacCiz(); }
 /* bölüm kartındaki kısa özet: tebliğlerde oluşturma ve tebliğ tarihi, diğerlerinde sayfa ayarı */
