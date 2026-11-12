@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "532";
+  const SURUM = "533";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3346,6 +3346,8 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .an-kart-bas span{background:#EAF2FA!important;color:#3E6E9E!important}
 .an-seg2 button[aria-selected="true"] i{top:-5px!important;right:-3px!important;box-shadow:0 0 0 2px #fff}
 .an-seg2 button{overflow:visible} .an-seg2 button[aria-selected="true"]{gap:6px}
+body:has(#v-ana:not([hidden])) #ust-uyari{display:none!important}
+.an-st.t-klasor{--t:#6A5A9E;--z:#EFEBF8}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3762,7 +3764,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 532</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 533</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4952,7 +4954,7 @@ function anaCiz(){
   if(bas && son){ const kal = gunF(bugun, son), top = Math.max(1, gunF(bas, son)), gec = Math.min(1, Math.max(0, gunF(bas, bugun) / top));
     hero = `<button type="button" class="an-hero-ust" data-pano="gdhg"><span class="an-halka" style="--p:${(gec * 100).toFixed(1)}"><b>${kal >= 0 ? kal : 0}</b><small>gün</small></span><span class="an-hy"><small>${esc(selam)} · ${esc(tarihY)}</small><b>${esc(S.gdhg.setAd || "GDHG dönemi")}</b><span>${esc(trTarih(bas)).slice(0, 5)} – ${esc(trTarih(son)).slice(0, 5)} · <em class="${kal < 0 ? "bitti" : kal <= 7 ? "yakin" : ""}">${kal >= 0 ? kal + " gün kaldı" : "dönem bitti"}</em></span></span></button>`; }
   else hero = `<div class="an-hero-ust"><span class="an-hy"><small>${esc(tarihY)}</small><b>${esc(selam)}</b></span></div>`;
-  const heroH = `<div class="an-hero">${hero}<div class="an-st-l">${sayi(nP, "Personel", 'data-pano="personel"', "kisi")}${sayi(izinde, "İzinde", 'data-pano="izin"', "izin")}${sayi(nH, "Hedef", 'data-pano="hedef"', "hedef")}${sayi(dk.length, "Uyarı", 'data-an-sek="uyari"', "uyari")}</div></div>`;
+  const heroH = `<div class="an-hero">${hero}<div class="an-st-l">${sayi(nP, "Personel", 'data-pano="personel"', "kisi")}${sayi(izinde, "İzinde", 'data-pano="izin"', "izin")}${sayi(nH, "Hedef", 'data-pano="hedef"', "hedef")}${sayi((S.belgeler || []).length, "Belge", 'data-an-sek="klasor"', "klasor")}</div></div>`;
   const sekmeler = [["kisa", "Kısayollar"], ["klasor", "Klasörler"], ["son", "Son"], ["gecmis", "Geçmiş"], ...(dk.length ? [["uyari", "Uyarılar"]] : [])];
   if(!sekmeler.some(([k]) => k === anaSekme)) anaSekme = "kisa";
   let h = `<div class="an-seg an-seg2" role="tablist">${sekmeler.map(([k, t]) => `<button type="button" role="tab" data-an-sek="${k}" aria-selected="${anaSekme === k}" aria-label="${t}" title="${t}">${svgI(AIK[k] || AIK.uyari)}<span>${t}</span>${k === "uyari" ? `<i>${dk.length}</i>` : ""}</button>`).join("")}</div>` + (anaSekme === "kisa" ? heroH : "");
