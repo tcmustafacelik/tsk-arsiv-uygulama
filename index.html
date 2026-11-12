@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "569";
+  const SURUM = "570";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3958,7 +3958,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 569</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 570</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -9324,7 +9324,9 @@ async function gridPdf(d, a){
   const cw = g.w.map(w => w * 1.9), rh = g.h.map(h => h * 0.3528 * a.satir);
   const TW = cw.reduce((x, y) => x + y, 0), TH = rh.reduce((x, y) => x + y, 0);
   let s = uw / TW; if(a.sigdir === "tek") s = Math.min(s, uh / TH);
-  if((a.sigdir === "tek" || (TH * s <= uh && !(g.sb || []).length)) && a.doldur !== false){ const e = Math.min(a.doldurMax || 1.8, uh / (TH * s)); if(e > 1.03) for(let i = 0; i < rh.length; i++) rh[i] *= e * 0.985; }   // geniş tablo sayfanın yarısında kalmasın: satırları sayfa boyuna yay (yazı aynı)
+  if((a.sigdir === "tek" || (TH * s <= uh && !(g.sb || []).length)) && a.doldur !== false){ const dol = TH * s / uh, e = Math.min(a.doldurMax || (dol < .5 ? 1.25 : 1.8), uh / (TH * s));   // küçük tablo aşırı uzamasın (satırlar şişip yazı kaymış görünmesin)
+    const yayma = r => !(g.c[r] || []).some(x => x && x.ban) && (g.c[r] || []).some(x => x && x.v != null && x.v !== "");   // başlık bandı ve boş ara satır uzamaz
+    if(e > 1.03) for(let i = 0; i < rh.length; i++) if(yayma(i)) rh[i] *= e * 0.985; }   // geniş tablo sayfanın yarısında kalmasın: satırları sayfa boyuna yay (yazı aynı)
   const kap = kapsananlar(g); const hr = a.sigdir === "bol" ? Math.min(a.baslikSatir || 0, g.c.length) : 0;
   // sayfa bölme: birleşik hücre bölünmeden
   const bolunur = r => !(g.m || []).some(([r1, , r2]) => r1 < r && r <= r2);
@@ -9369,10 +9371,11 @@ async function gridPdf(d, a){
       const t = x && x.img && x.img.data ? "" : gosterDeger(x); if(t){
         doc.setFont(x.fn === "s" ? "LA" : "LS", x.b ? "bold" : "normal"); doc.setTextColor(...rgb(x.k || "222222"));
         let fs = (x.s || 11) * s * a.yazi * 1.0; const pad = Math.min(0.8, Wc * 0.08);
-        const dikey = !!x.rot; const genis = dikey ? Hc - 2 * pad : Wc - 2 * pad, yuksek = dikey ? Wc - 2 * pad : Hc - 2 * pad;
+        const dikey = !!x.rot; const genis = dikey ? Hc - 2 * pad : Wc - 2 * pad - (x.ban ? 14 : 0), yuksek = dikey ? Wc - 2 * pad : Hc - 2 * pad - (x.ban ? 1.6 : 0);   // başlık bandı: soldaki çizgiye değmesin, kenarlara yapışmasın
         /* yazı küçültülür: hem yüksekliğe sığsın hem hiçbir kelime ortadan bölünmesin (en uzun kelime hücre genişliğine sığana kadar) */
         const kelime = String(t).split(/[\s\n]+/).filter(Boolean);
         let sat; for(let deneme = 0; deneme < 40; deneme++){ doc.setFontSize(fs); sat = doc.splitTextToSize(t, Math.max(1, genis)); const kw = Math.max(0, ...kelime.map(k => doc.getTextWidth(k))); if((sat.length * fs * 0.3528 * (x.lh || 1.12) <= yuksek + 0.3 && kw <= genis + 0.05) || fs < 3.5) break; fs *= 0.94; }
+        if(x.ban){ const f0 = fs; while(sat.length > 1 && fs > f0 * .74){ fs *= 0.97; doc.setFontSize(fs); sat = doc.splitTextToSize(t, Math.max(1, genis)); } }   // başlık tek satıra sığsın (tek-sat), olmuyorsa iki satır
         const lh = fs * 0.3528 * (x.lh || 1.12), blok = sat.length * lh; const hz = { l: "left", r: "right" }[x.a] || (x.a ? "center" : (typeof x.v === "number" ? "right" : "left"));
         if(!dikey && (x.vr || x.u)){ pdfZengin(doc, x, t, X, Y, Wc, Hc, pad, (x.s || 11) * s * a.yazi, hz); }
         else if(dikey){ const bx = X + Wc / 2 - blok / 2 + lh * 0.78;   // jsPDF açılı yazıda "align" uygulamaz: ortalamayı elle yap; ilk satır solda (aşağıdan yukarı okunur)
@@ -9476,7 +9479,7 @@ async function gridWord(d, a){
       const mg = bul(r, c); let x = satir[c], span = 1, vm = "";
       if(mg){ const [r1, c1, r2, c2] = mg; if(c !== c1) continue; span = c2 - c1 + 1; if(r2 > r1) vm = r === r1 ? '<w:vMerge w:val="restart"/>' : "<w:vMerge/>"; if(r !== r1){ x = g.c[r1][c1]; } }
       const w = gw.slice(c, c + span).reduce((p, q) => p + q, 0); const devam = mg && r !== mg[0];
-      const br = (x && x.br) || {}; const bx = Object.entries({ top: "t", left: "l", bottom: "b", right: "r" }).map(([ad, k]) => `<w:${ad} w:val="${br[k] ? "single" : "nil"}" w:sz="${br[k] === 2 ? 12 : 4}" w:space="0" w:color="${d.grid.tema ? d.grid.tema.cizgi : "444444"}"/>`).join("");
+      const br = (x && x.br) || {}; const bx = Object.entries({ top: "t", left: "l", bottom: "b", right: "r" }).map(([ad, k]) => `<w:${ad} w:val="${br[k] ? "single" : "nil"}" w:sz="${br[k] === 3 ? 24 : br[k] === 2 ? 12 : 4}" w:space="0" w:color="${d.grid.tema ? (br[k] === 3 ? d.grid.tema.ana : d.grid.tema.cizgi) : "444444"}"/>`).join("");
       const tcPr = `<w:tcPr><w:tcW w:w="${w}" w:type="dxa"/>${span > 1 ? `<w:gridSpan w:val="${span}"/>` : ""}${vm}<w:tcBorders>${bx}</w:tcBorders>${x && (x.f || x.rz) ? `<w:shd w:val="clear" w:color="auto" w:fill="${x.rz || x.f}"/>` : ""}<w:vAlign w:val="${{ t: "top", b: "bottom" }[x && x.va] || "center"}"/>${x && x.rot ? '<w:textDirection w:val="btLr"/>' : ""}</w:tcPr>`;
       const t = devam ? "" : gosterDeger(x); const jc = { l: "left", r: "right", c: "center" }[x && x.a] || (x && typeof x.v === "number" ? "right" : "left");
       const ro = { sz: ((x && x.s) || 11) * 2 * olc, k: x && x.k, sans: x && x.fn === "s", u: !!(x && x.u) };
@@ -13811,6 +13814,8 @@ function kopyaKonumla(){
   const r = kopyaHedef.getBoundingClientRect(); if(r.bottom < 0 || r.top > innerHeight){ b.hidden = true; return; }
   b.hidden = false; const bw = b.offsetWidth || 86, bh = b.offsetHeight || 26;
   let top = r.top - bh - 3; if(top < 8) top = r.bottom + 3;
+  /* kutunun üstünde etiket düğmesi varsa (ör. “İl / ilçe seç”) üstünü kapatma, kutunun altına koy */
+  { const kap = kopyaHedef.parentElement, ust = kap && [...kap.querySelectorAll("button")].find(x => x !== kopyaHedef && x.getBoundingClientRect().bottom <= r.top + 2 && x.offsetParent); if(ust && top < r.top) top = r.bottom + 3; }
   const left = Math.max(8, Math.min(r.right - bw, innerWidth - bw - 8)); b.style.top = top + "px"; b.style.left = left + "px";
   /* yazı kutularında yanına “Yapıştır” */
   const y = $("#yapistir-btn"), yaz = kopyaHedef.matches("input:not([type=date]):not([disabled]):not([readonly]),textarea:not([disabled]):not([readonly])");
