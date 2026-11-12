@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "530";
+  const SURUM = "531";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -616,7 +616,7 @@
       @media (prefers-reduced-motion:reduce){.bl-kart,.pinx i,.pinx i.f::after,.pinx.err i{animation:none}}`;
     document.head.appendChild(st);
     const durumEl = document.getElementById("durum");
-    const ik = document.createElement("button"); ik.id = "bulut-ikon"; ik.type = "button"; ik.innerHTML = "<b>☁</b><span>bulut</span>"; durumEl.after(ik); durumEl.style.display = "none";
+    const ik = document.createElement("button"); ik.id = "bulut-ikon"; ik.type = "button"; ik.innerHTML = '<b><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7.5 18.5h9.5a4 4 0 0 0 .7-7.94A5.8 5.8 0 0 0 6.6 9.4 4.6 4.6 0 0 0 7.5 18.5z"/></svg></b><span>bulut</span>'; ik.setAttribute("aria-label", "Bulut durumu"); durumEl.after(ik); durumEl.style.display = "none";
     const panel = document.createElement("div"); panel.className = "bl-perde"; panel.id = "bl-panel"; panel.hidden = true;
     panel.innerHTML = `<div class="bl-kart" role="dialog" aria-modal="true" aria-labelledby="bl-baslik">
       <div class="bl-ust"><div class="bl-logo"><svg viewBox="0 0 24 24" style="width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round"><path d="M7 18h10a4 4 0 0 0 .6-7.96A6 6 0 0 0 6.1 9.2 4.4 4.4 0 0 0 7 18z"/></svg></div><div style="flex:1;min-width:0"><h3>TSK ARŞİV · sürüm ${SURUM}</h3><h2 id="bl-baslik">Giriş</h2></div><button class="bl-x" type="button" id="bl-kapat" aria-label="Kapat">✕</button></div>
@@ -3330,6 +3330,32 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .an-kart.gir-sag,.an-kart.gir-sol{will-change:transform,opacity} #v-ana{overflow-x:clip!important;overflow-y:visible!important}
 .an-hero{animation:anHero .4s cubic-bezier(.25,.8,.3,1)} @keyframes anHero{from{opacity:.4;transform:translateY(8px)}to{opacity:1;transform:none}}
 .sirt-sat{transition:transform .12s,background-color .15s} .sirt-sat:active{transform:scale(.985)}
+
+/* ===== S531: ferah açık renkler · sade üst çubuk ===== */
+.an-hero{background:linear-gradient(155deg,#F7FAFD 0%,#EEF4FA 100%)!important;color:#1C2B40!important;border:1px solid #E0E8F1;box-shadow:0 2px 10px rgba(30,60,95,.05)!important;padding:12px!important;gap:10px!important}
+.an-halka{width:58px!important;height:58px!important;background:radial-gradient(closest-side,#F7FAFD 80%,transparent 81% 100%),conic-gradient(#5B8FC4 calc(var(--p)*1%),#DCE6F0 0)!important;color:#24456A}
+.an-halka b{font-size:18px!important} .an-halka small{color:#6B7B8B;opacity:1!important}
+.an-hy small{color:#6B7B8B!important} .an-hy b{color:#1C2B40;font-size:17px!important} .an-hy>span{color:#4A5B6E!important}
+.an-hy em{color:#2F6B4A!important} .an-hy em.yakin{color:#B0711F!important} .an-hy em.bitti{color:#B4382C!important}
+.an-st{--t:#3E6E9E;--z:#EAF2FA;background:#fff!important;border:1px solid #E3EAF1!important;color:#1C2B40!important;padding:7px 4px!important}
+.an-st span{display:grid;place-items:center;width:26px;height:26px;border-radius:8px;background:var(--z);color:var(--t)} .an-st span svg{width:15px!important;height:15px!important;opacity:1!important}
+.an-st b{font-size:17px!important;color:#1C2B40} .an-st small{color:#6B7B8B!important}
+.an-st.t-izin{--t:#3C7A55;--z:#E7F3EC} .an-st.t-hedef{--t:#A2742C;--z:#FAF0DE} .an-st.t-uyari{--t:#B5574A;--z:#FBEAE6}
+.an-seg2 button[aria-selected="true"]{background:#EAF2FA!important;color:#2D5A86!important}
+.an-kart{border-color:#E6ECF2!important;box-shadow:0 1px 6px rgba(30,60,95,.04)!important}
+.an-kart-bas span{background:#EAF2FA!important;color:#3E6E9E!important}
+#bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
+@media (max-width:700px){
+ header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
+ header.ust .marka{gap:8px!important;overflow:hidden} header.ust .marka .logo{width:34px!important;height:34px!important}
+ header.ust .marka-y>span:first-child{font-size:17px!important;letter-spacing:.06em!important;overflow:hidden;text-overflow:clip}
+ header.ust .marka-alt{font-size:11px!important}
+ #bulut-ikon{width:34px!important;height:34px!important;padding:0!important;border:0!important;background:transparent!important;border-radius:50%!important;justify-content:center;position:relative}
+ #bulut-ikon>span{display:none!important}
+ #bulut-ikon::after{content:"";position:absolute;right:5px;bottom:7px;width:7px;height:7px;border-radius:50%;background:#9AA19A;border:1.5px solid var(--bg,#F5F7FA)}
+ #bulut-ikon[data-renk="yesil"]::after{background:#3C9A5F} #bulut-ikon[data-renk="turuncu"]::after{background:#D18A2A} #bulut-ikon[data-renk="kirmizi"]::after{background:#C0473A}
+ #bulut-ikon b{color:#1C2B40!important}
+}
 /* gizlilik modu */
 html.gizli .gz,html.gizli .gz-in,html.gizli .mf-yazi,html.gizli .kd-bil b,html.gizli [data-km="tc"],html.gizli [data-km="tel"],html.gizli [data-km="adres"],html.gizli [data-km="yakinTel"]{filter:blur(6px);transition:filter .2s}
 html.gizli .gz-in:focus{filter:none}
@@ -3734,7 +3760,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 530</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 531</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4918,7 +4944,7 @@ function anaCiz(){
   const svgI = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const AIK = { kisi: '<circle cx="9" cy="8" r="3"/><path d="M3.5 19c.6-3 2.8-4.6 5.5-4.6s4.9 1.6 5.5 4.6M16 11a2.5 2.5 0 1 0 0-5M17.5 19c-.3-1.9-1.2-3.2-2.6-3.9"/>', izin: '<path d="M4 12h12M12 6l6 6-6 6"/><path d="M20 4v16"/>', hedef: '<circle cx="12" cy="12" r="8"/><circle cx="12" cy="12" r="4"/><circle cx="12" cy="12" r="1" fill="currentColor"/>', uyari: '<path d="M12 4 3 19h18z"/><path d="M12 10v4M12 16.5h.01"/>',
     kisa: '<rect x="4" y="4" width="7" height="7" rx="1.5"/><rect x="13" y="4" width="7" height="7" rx="1.5"/><rect x="4" y="13" width="7" height="7" rx="1.5"/><rect x="13" y="13" width="7" height="7" rx="1.5"/>', klasor: '<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9a1.5 1.5 0 0 0-1.5-1.5h-7L10 5H5a1.5 1.5 0 0 0-1.5 1.5z"/>', son: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>', gecmis: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 8v4l3 2"/>' };
-  const sayi = (v, et, veri, ik) => `<button type="button" class="an-st" ${veri}><span>${svgI(AIK[ik])}</span><b>${v}</b><small>${et}</small></button>`;
+  const sayi = (v, et, veri, ik) => `<button type="button" class="an-st t-${ik}" ${veri}><span>${svgI(AIK[ik])}</span><b>${v}</b><small>${et}</small></button>`;
   const sa2 = new Date().getHours(), selam = sa2 < 6 ? "İyi geceler" : sa2 < 12 ? "Günaydın" : sa2 < 18 ? "İyi günler" : "İyi akşamlar", tarihY = new Date().toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long" });
   let hero = "";
   if(bas && son){ const kal = gunF(bugun, son), top = Math.max(1, gunF(bas, son)), gec = Math.min(1, Math.max(0, gunF(bas, bugun) / top));
