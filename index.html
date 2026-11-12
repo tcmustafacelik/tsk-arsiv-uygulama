@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "558";
+  const SURUM = "559";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3520,6 +3520,13 @@ html body .kart.bkk.dsy .ad{overflow-wrap:anywhere!important;word-break:break-wo
 /* arama kutusu: düz, ince çerçeve */
 header.ust .ara-kap{border:1px solid var(--line2)!important;box-shadow:none!important;border-radius:12px!important;background:var(--panel)!important}
 .g-zoom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px} .g-zoom[hidden]{display:none} .g-zoom>span{font:600 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .g-zoom .ka-b{flex:0 1 260px;min-width:0} @media (max-width:520px){.g-zoom>span{display:none} .g-zoom .ka-b{flex:1 1 100%}}
+/* S559: ne eksik ne fazla düzeltmeleri */
+html body .yk-k .sa-ok{width:26px;height:26px;border-radius:50%;background:var(--panel2);position:relative;font-size:0} html body .yk-k.acik .sa-ok::after{transform:rotate(225deg);top:11px}
+html body #e-izinb .izb-sekmeler,html body .tz-sek{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
+html body #e-izinb .izb-sekmeler button,html body .tz-sek button{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;white-space:normal!important;text-align:center;line-height:1.15;font-size:11.5px!important;padding:7px 2px!important;overflow-wrap:anywhere}
+html body #e-izinb .izb-sekmeler button .sg-ik,html body .tz-sek button .sg-ik,html body .tz-sek button>svg,html body .tz-sek button>img{margin:0!important}
+@media (max-width:460px){ html body #e-izinb .dl-ust{flex-wrap:wrap;row-gap:8px} html body #e-izinb .dl-ust::before{content:"";order:1;flex-basis:100%;height:0} html body #e-izinb .dl-ust>.ts-ac,html body #e-izinb .dl-ust>.sq-ac,html body #e-izinb .dl-ust>.dl-yeni{order:2} html body #e-izinb .dl-ust{justify-content:flex-end} html body #e-izinb .dl-ust>small{margin-right:auto} html body #e-izinb .dl-ust>.ts-ac,html body #e-izinb .dl-ust>.sq-ac,html body #e-izinb .dl-ust>.dl-yeni{margin-left:0!important} }
+@media (max-width:520px){ html body .es-bicim,html body .es-b>summary{display:grid!important;grid-template-columns:auto minmax(0,1fr) auto;column-gap:10px;row-gap:2px;align-items:center} html body .es-bicim>.es-ik,html body .es-b>summary>.es-ik{grid-row:1/3} html body .es-bicim .es-bt,html body .es-b>summary .es-bt{grid-column:2;flex:none;font-size:11px;color:var(--muted)} html body .es-bicim .es-bo,html body .es-b>summary .es-bo{grid-column:2;grid-row:2} html body .es-bicim>em,html body .es-b>summary>i{grid-column:3;grid-row:1/3} }
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3929,7 +3936,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 558</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 559</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5704,7 +5711,7 @@ function belgeAc(id){ { const g = S.belgeler.find(x => x.id === id); if(g && g.g
   $("#d-sil").hidden = d.tur !== "grid";
   ayarCiz();
   if(d.tur === "grid"){ secim = { r1: 0, c1: 0, r2: 0, c2: 0 }; gridCiz(); }
-  notPanelCiz(); if(d.tur === "personel") personelCiz(); if(d.tur === "izin"){ try { izBelgeEsitle(); } catch(e){ console.warn(e); } izinCiz(); } if(d.tur === "hedef"){ hedefCiz(); hedefAyarCiz(); } if(d.tur === "yoklama"){ YK = d.bt || "yoklama"; S[YK] ||= { tarih: "", rows: [] }; S[YK].rows ||= []; if(S[YK].tarih !== bugun()){ S[YK].tarih = bugun(); kaydetBt(YK); } ykAcik = null; yoklamaCiz(); } /* günlük yoklama: açılınca bugünün tarihi */ if(d.tur === "gdhg") gdhgCiz(); if(d.tur === "izinb") izbhCiz(); if(d.tur === "sema") semaCiz(); if(d.tur === "cevrim") cevrimCiz(); if(d.tur === "tazminat") tazminatCiz(); if(d.tur === "kapak"){ kpSayfaNo = 0; kapakCiz(); } if(d.tur === "teblig"){ tbNo = 0; tebligCiz(); } if(d.tur === "tebtut") tebtutCiz(); if(d.tur === "mevzi"){ mzAcik = null; mevziCiz(); } if(d.tur === "candostu") candostuCiz(); if(d.tur === "kopek") kopekCiz(); if(d.tur === "fydt") fydtCiz(); if(d.tur === "tarama") taramaCiz(); if(d.tur === "karsilama"){ koAcik = null; karsilamaCiz(); } if(d.tur === "kadro"){ kcAcikBlok = kcAcikSatir = null; kadroCiz(); } if(d.tur === "sicil"){ saAcik = null; sicilCiz(); } if(d.tur === "dilekce"){ dlAcik = null; dilekceCiz(); } if(d.tur === "kimlik") kimlikCiz(); if(d.tur === "silah") silahCiz(); if(d.tur === "zimmet"){ zmAcik = null; zimmetCiz(); } if(d.tur === "elsenet"){ esAcik = null; elsenetCiz(); } if(d.tur === "izinsa") izinsaCiz(); if(d.tur === "manifesto") manifestoCiz(); if(d.tur === "liste"){ ltAcik = ltBlokAcik = null; listeCiz(); } if(d.tur === "spor"){ spAcik = spBransAcik = null; sporCiz(); } if(d.tur === "baslik"){ bsAcik = null; baslikCiz(); } if(d.tur === "sportakip"){ stAcik = null; sportakipCiz(); }
+  notPanelCiz(); if(d.tur === "personel") personelCiz(); if(d.tur === "izin"){ try { izBelgeEsitle(); } catch(e){ console.warn(e); } izinCiz(); } if(d.tur === "hedef"){ hedefCiz(); hedefAyarCiz(); } if(d.tur === "yoklama"){ YK = d.bt || "yoklama"; S[YK] ||= { tarih: "", rows: [] }; S[YK].rows ||= []; if(S[YK].tarih !== bugun()) S[YK].tarih = bugun(); ykAcik = null; yoklamaCiz(); } /* günlük yoklama: açılınca bugünün tarihi */ if(d.tur === "gdhg") gdhgCiz(); if(d.tur === "izinb") izbhCiz(); if(d.tur === "sema") semaCiz(); if(d.tur === "cevrim") cevrimCiz(); if(d.tur === "tazminat") tazminatCiz(); if(d.tur === "kapak"){ kpSayfaNo = 0; kapakCiz(); } if(d.tur === "teblig"){ tbNo = 0; tebligCiz(); } if(d.tur === "tebtut") tebtutCiz(); if(d.tur === "mevzi"){ mzAcik = null; mevziCiz(); } if(d.tur === "candostu") candostuCiz(); if(d.tur === "kopek") kopekCiz(); if(d.tur === "fydt") fydtCiz(); if(d.tur === "tarama") taramaCiz(); if(d.tur === "karsilama"){ koAcik = null; karsilamaCiz(); } if(d.tur === "kadro"){ kcAcikBlok = kcAcikSatir = null; kadroCiz(); } if(d.tur === "sicil"){ saAcik = null; sicilCiz(); } if(d.tur === "dilekce"){ dlAcik = null; dilekceCiz(); } if(d.tur === "kimlik") kimlikCiz(); if(d.tur === "silah") silahCiz(); if(d.tur === "zimmet"){ zmAcik = null; zimmetCiz(); } if(d.tur === "elsenet"){ esAcik = null; elsenetCiz(); } if(d.tur === "izinsa") izinsaCiz(); if(d.tur === "manifesto") manifestoCiz(); if(d.tur === "liste"){ ltAcik = ltBlokAcik = null; listeCiz(); } if(d.tur === "spor"){ spAcik = spBransAcik = null; sporCiz(); } if(d.tur === "baslik"){ bsAcik = null; baslikCiz(); } if(d.tur === "sportakip"){ stAcik = null; sportakipCiz(); }
   if(d.tur === "sertifika"){ tsSec.sertifika = null; sertifikaCiz(); }
   $("#v-belge").scrollTop = 0;
 }
@@ -12527,7 +12534,7 @@ function sicilCiz(){ const d = acikBelge(); if(!d || d.tur !== "sicil") return; 
   $("#sa-govde").innerHTML = `
     <label class="ko-al ko-tam"><span>Başlık</span><input data-sa-g="baslik" value="${esc(v.baslik)}"></label>
     <div class="sa-blok"><div class="yk-gbas"><b>Amir zinciri</b><small>en yakın amir üstte</small></div>
-      ${v.zincir.map((z, i) => { const ac = saZAcik === z.id; return `<div class="yk-k${ac ? " acik" : ""}"><button type="button" class="yk-s" data-sa-zac="${z.id}"><span class="sa-sira">${i + 1}</span><span class="kc-sy sa-tam"><b>${esc(z.ad || "Yeni amir")}</b><small>${esc(z.rutbe || "rütbe yazılmadı")}</small></span><i class="sa-ok">${ac ? "▴" : "▾"}</i></button>
+      ${v.zincir.map((z, i) => { const ac = saZAcik === z.id; return `<div class="yk-k${ac ? " acik" : ""}"><button type="button" class="yk-s" data-sa-zac="${z.id}"><span class="sa-sira">${i + 1}</span><span class="kc-sy sa-tam"><b>${esc(z.ad || "Yeni amir")}</b><small>${esc(z.rutbe || "rütbe yazılmadı")}</small></span><i class="sa-ok"></i></button>
         ${ac ? `<div class="kc-form"><label class="ko-al ko-tam"><span>Rütbesi</span><textarea class="oto-boy" rows="1" data-sa-z="${z.id}:rutbe" placeholder="ör. Piyade Komando Kurmay Binbaşı">${esc(z.rutbe || "")}</textarea></label><label class="ko-al ko-tam"><span>Adı soyadı</span><textarea class="oto-boy" rows="1" data-sa-z="${z.id}:ad" placeholder="Adı SOYADI">${esc(z.ad || "")}</textarea></label>
           <div class="ko-is"><button type="button" class="btn ana kucuk yk-kaydet" data-sa="zkapat">✓ Tamam</button><button type="button" class="mini" data-sa-zi="${z.id}:-1"${i ? "" : " disabled"}>↑</button><button type="button" class="mini" data-sa-zi="${z.id}:1"${i < v.zincir.length - 1 ? "" : " disabled"}>↓</button><button type="button" class="mini sil" data-sa-zs="${z.id}">Sil</button></div></div>` : ""}</div>`; }).join("") || `<div class="yk-bos">Zincirde amir yok</div>`}
       <button type="button" class="tt-ekle" data-sa="zincir-ekle">＋ Amir ekle</button>
