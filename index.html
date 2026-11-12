@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "566";
+  const SURUM = "567";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3947,7 +3947,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 566</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 567</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6347,7 +6347,7 @@ async function krtCiz(p){ const k = KRT.k, W = Math.round(KRT.w * k), H = Math.r
   try { await document.fonts.load(`700 20px Archivo`); await document.fonts.load(`500 20px Archivo`); } catch(e){}
   const [ra, rd] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe), gk = ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim(), kan = String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)").replace(/\s*RH\s*/i, " Rh ");
   const RK = rutbeSimge(p.rutbe, p)[2], KR = KRT_RENK[RK] || KRT_RENK.diger;
-  const ust = (x, baslik, sag) => { x.fillStyle = KR[0]; x.fillRect(0, 0, W, 10.5 * k); x.fillStyle = KR[1]; x.fillRect(0, 10.5 * k, W, 0.7 * k);
+  const ust = (x, baslik, sag) => { x.save(); krtYuvarlak(x, 0.15 * k, 0.15 * k, W - 0.3 * k, H - 0.3 * k, 3 * k); x.clip(); x.fillStyle = KR[0]; x.fillRect(0, 0, W, 10.5 * k); x.fillStyle = KR[1]; x.fillRect(0, 10.5 * k, W, 0.7 * k); x.restore();
     x.font = `800 ${5.2 * 0.3528 * k}px Archivo, sans-serif`; const ew = x.measureText(KR[3].toLocaleUpperCase("tr")).width / k + 3.6;
     x.fillStyle = "#FFFFFF"; krtYuvarlak(x, (KRT.w - 4 - ew) * k, 2.2 * k, ew * k, 4.4 * k, 1.1 * k); x.fill(); x.fillStyle = KR[1]; x.fillText(KR[3].toLocaleUpperCase("tr"), (KRT.w - 4 - ew + 1.8) * k, 5.35 * k);
     krtYaz(x, baslik, 4, 4.6, KRT.w - 12 - ew, 7.2, 800, KR[2]); krtYaz(x, sag, 4, 8.4, KRT.w - 8, 5, 500, "#5F6672"); };
