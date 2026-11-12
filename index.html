@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "555";
+  const SURUM = "556";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3519,6 +3519,7 @@ html body .kart.bkk.dsy .ad{overflow-wrap:anywhere!important;word-break:break-wo
 #b-belgeler,#b-dosyalar{gap:8px!important}
 /* arama kutusu: düz, ince çerçeve */
 header.ust .ara-kap{border:1px solid var(--line2)!important;box-shadow:none!important;border-radius:12px!important;background:var(--panel)!important}
+.g-zoom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px} .g-zoom[hidden]{display:none} .g-zoom>span{font:600 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .g-zoom .ka-b{flex:0 1 260px;min-width:0} @media (max-width:520px){.g-zoom>span{display:none} .g-zoom .ka-b{flex:1 1 100%}}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3926,7 +3927,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 555</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 556</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5118,6 +5119,18 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   kart.classList.remove("gir-sag", "gir-sol"); kart.classList.toggle("kapali", kapa); b.setAttribute("aria-expanded", !kapa);
   const ik = b.firstElementChild; if(ik){ ik.classList.remove("cevir"); void ik.offsetWidth; ik.classList.add("cevir"); } if(navigator.vibrate) try { navigator.vibrate(8); } catch(_){} });
 document.addEventListener("input", e => { if(!e.target.classList || !e.target.classList.contains("gc2-ara")) return; const q = e.target.value.toLocaleLowerCase("tr").trim(); document.querySelectorAll(".gc2-l .gc2-s").forEach(b => b.hidden = !!q && !b.dataset.ad.includes(q)); });
+/* ızgara belgeler (TMK vb.): telefonda tablo ekrana sığdırılır; “Gerçek boyut” ile asıl ölçüye dönülür · yalnız görünüm, çıktı değişmez */
+const gMod = () => { try { return localStorage.getItem("gZoom") || (innerWidth < 700 ? "sig" : "gercek"); } catch(e){ return "sig"; } };
+function gSigdir(){ const k = document.getElementById("g-kap"), t = document.getElementById("g-tablo"); if(!k || !t || !k.offsetParent) return;
+  if(!document.getElementById("g-zoom")){ const z = document.createElement("div"); z.id = "g-zoom"; z.className = "g-zoom"; k.before(z); }
+  const m = gMod(), z = document.getElementById("g-zoom"); t.style.zoom = ""; const cs = getComputedStyle(k), w = Math.max(t.scrollWidth, t.offsetWidth) + 2, kw = k.clientWidth - parseFloat(cs.paddingLeft) - parseFloat(cs.paddingRight), sig = w > kw + 2;
+  z.hidden = !sig && m !== "gercek" ? true : w <= kw + 2; z.innerHTML = `<span>Tablo ekrandan geniş</span><div class="ka-b" style="--n:2"><button type="button" data-gz-m="sig" aria-pressed="${m === "sig"}"><svg viewBox="0 0 24 24"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg><span>Sığdır</span></button><button type="button" data-gz-m="gercek" aria-pressed="${m === "gercek"}"><svg viewBox="0 0 24 24"><path d="M9 4H4v5M15 4h5v5M9 20H4v-5M15 20h5v-5M9 9l-5-5M15 9l5-5M9 15l-5 5M15 15l5 5"/></svg><span>Gerçek boyut</span></button></div>`;
+  if(m === "sig" && sig) { let zm = Math.floor(kw / w * 1000) / 1000; t.style.zoom = zm.toFixed(3);
+    for(let i = 0; i < 3; i++){ const g = t.getBoundingClientRect().width; if(g <= kw + .5) break; zm = Math.floor(zm * kw / (g + 1) * 1000) / 1000; t.style.zoom = zm.toFixed(3); } } }
+let gSZ = 0; const gSPlan = () => { cancelAnimationFrame(gSZ); gSZ = requestAnimationFrame(gSigdir); };
+new MutationObserver(m => { if(m.some(x => x.target.id === "g-kap" || (x.target.closest && x.target.closest("#e-grid")))) gSPlan(); }).observe(document.documentElement, { childList: true, subtree: true });
+addEventListener("resize", gSPlan);
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-gz-m]"); if(!b) return; try { localStorage.setItem("gZoom", b.dataset.gzM); } catch(_){} gSigdir(); });
 function anaCiz(){
   const sa = new Date().getHours(); $("#ana-selam").textContent = sa < 6 ? "İyi geceler" : sa < 12 ? "Günaydın" : sa < 18 ? "İyi günler" : "İyi akşamlar";
   $("#ana-tarih").textContent = new Date().toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
