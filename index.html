@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "562";
+  const SURUM = "563";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3940,7 +3940,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 562</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 563</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4355,9 +4355,14 @@ async function hepsiniKaydet(){
   clearTimeout(otoZaman); await otoKaydet();   // önceki hâli saklar (Geri al için) ve yazar
   b.disabled = false; b.textContent = "Kaydet"; kayitCubugu(); taslakYaz(true);
 }
+/* tek seferlik yapı düzenlemesi (kullanıcı isteği): "Köpek Dosyası" → "YAŞAM ALANI VE TESİSLER", köpek alt bölüm olur. Kaydet'e basınca kalıcı olur. */
+let yapiGocYapildi = false;
+function yapiGoc(){ if(yapiGocYapildi) return; const k = S.yapi.klasorler.find(x => x.id === "kopek"); if(!k || k.ad !== "Köpek Dosyası") return; yapiGocYapildi = true;
+  k.ad = "YAŞAM ALANI VE TESİSLER"; k.bolumler ||= []; const b = k.bolumler.find(x => x.id === "kpk-tanitma"); if(b) b.ad = "KÖPEK"; else k.bolumler.push({ id: "kpk-tanitma", ad: "KÖPEK" });
+  setTimeout(() => { try { kaydetBt("yapi"); agacCiz(); anaCiz(); } catch(e){} }, 0); }
 function btDuzelt(k){
   if(k === "hedef"){ S.hedef.lejant = { ...VARSAYILAN_LEJANT, ...(S.hedef.lejant || {}) }; S.hedef.rows ||= []; }
-  if(k === "personel") S.personel.rows ||= []; if(k === "izin") S.izin.kayit ||= {}; if(k === "yapi") S.yapi.klasorler ||= []; if(k === "yoklama") S.yoklama.rows ||= []; if(k === "yoklama30"){ S.yoklama30 ||= {}; S.yoklama30.rows ||= []; } if(k === "gdhg") gdDuzelt(); if(k === "izinb") izbDuzelt(); if(k === "gdhgSet"){ S.gdhgSet ||= {}; S.gdhgSet.liste ||= []; }
+  if(k === "personel") S.personel.rows ||= []; if(k === "izin") S.izin.kayit ||= {}; if(k === "yapi"){ S.yapi.klasorler ||= []; yapiGoc(); } if(k === "yoklama") S.yoklama.rows ||= []; if(k === "yoklama30"){ S.yoklama30 ||= {}; S.yoklama30.rows ||= []; } if(k === "gdhg") gdDuzelt(); if(k === "izinb") izbDuzelt(); if(k === "gdhgSet"){ S.gdhgSet ||= {}; S.gdhgSet.liste ||= []; }
 }
 async function vazgec(sessiz, yalniz){
   const yollar = yalniz ? yalniz.filter(y => y in kirli) : Object.keys(kirli); if(!yollar.length) return;
