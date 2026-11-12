@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "554";
+  const SURUM = "555";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3926,7 +3926,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 554</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 555</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6365,7 +6365,7 @@ async function kartCikti(P, tur){ if(!P.length) return bildir("Kart için kişi 
         ws.addImage(wb.addImage({ base64: k.on.toDataURL("image/png").split(",")[1], extension: "png" }), { tl: { col: 1, row: r - 1 }, ext: { width: pw(KRT.w), height: pw(KRT.h) } });
         ws.addImage(wb.addImage({ base64: k.ar.toDataURL("image/png").split(",")[1], extension: "png" }), { tl: { col: 3, row: r - 1 }, ext: { width: pw(KRT.w), height: pw(KRT.h) } }); });
       const bs = wb.addWorksheet("Bilgiler"), A = [["Adı soyadı", "ad"], ["Rütbe", "rutbe"], ["Sicil", "sicil"], ["Doğum", "dogum"], ["Nasbı", "nasip"], ["Kan grubu", "kan"], ["Telefon", "tel"], ["T.C. kimlik no", "tc"], ["Baba adı", "baba"], ["Yakını", "yakinAd"], ["Yakını tel.", "yakinTel"], ["Adres", "adres"], ["Kadro görevi", "gorev"]];
-      bs.addRow(A.map(a => a[0])).font = { bold: true }; P.forEach(p => bs.addRow(A.map(([, k]) => k === "nasip" && p.nasip ? trTarih(p.nasip) || p.nasip : p[k] || ""))); [22, 18, 12, 12, 12, 10, 14, 16, 12, 22, 14, 34, 50].forEach((w, i) => bs.getColumn(i + 1).width = w);
+      bs.addRow(A.map(a => a[0])).font = { bold: true }; P.forEach(p => bs.addRow(A.map(([, k]) => k === "nasip" && p.nasip ? trTarih(p.nasip) || p.nasip : p[k] || ""))); [22, 18, 12, 12, 12, 10, 14, 16, 12, 22, 14, 34, 50].forEach((w, i) => bs.getColumn(i + 1).width = w); bs.pageSetup = { paperSize: 9, orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0, margins: { left: .3, right: .3, top: .4, bottom: .4, header: 0, footer: 0 } }; bs.views = [{ state: "frozen", ySplit: 1 }]; bs.eachRow(r => r.alignment = { vertical: "top", wrapText: true });
       return dosyaVer(kok + ".xlsx", new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), { ham: true }); }
   } catch(e){ uyar("Kart oluşturulamadı: " + (e.message || e), true); } }
 const kartPdf = P => kartCikti(P, "pdf");
