@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "541";
+  const SURUM = "542";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3809,7 +3809,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 541</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 542</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6133,24 +6133,24 @@ async function krtCiz(p){ const k = KRT.k, W = Math.round(KRT.w * k), H = Math.r
   const kita = p.kita || String(p.gorev || "").split(/\s+(?=\d+['’]n?[cıiuü]+\s)/)[0] || "";
   /* ön yüz */
   const [on, x] = tuval(); ust(x, "PERSONEL BİLGİ KARTI", kita);
-  const fx = 4, fy = 13.6, fw = 21, fh = 27; x.save(); krtYuvarlak(x, fx * k, fy * k, fw * k, fh * k, 1.6 * k); x.clip();
+  const fx = 4, fy = 13.6, fw = 21, fh = 27.2;   /* ızgara: sol sütun 4–25 mm (fotoğraf, doğum) · sağ sütun 28–81,6 mm (iki eşit alt sütun) · alt boşluk 3 mm */ x.save(); krtYuvarlak(x, fx * k, fy * k, fw * k, fh * k, 1.6 * k); x.clip();
   const foto = p.foto ? await krtResim("/_blob/" + p.foto) : null;
   if(foto){ const o = Math.max(fw * k / foto.width, fh * k / foto.height), w = foto.width * o, h = foto.height * o; x.drawImage(foto, fx * k + (fw * k - w) / 2, fy * k + (fh * k - h) / 2, w, h); }
   else { x.fillStyle = "#EEF0F3"; x.fillRect(fx * k, fy * k, fw * k, fh * k); const ri = await krtSvg(rd); if(ri) x.drawImage(ri, (fx + 3.5) * k, (fy + 6.5) * k, 14 * k, 14 * k); }
   x.restore(); x.strokeStyle = "#D5D9DF"; x.lineWidth = 0.2 * k; krtYuvarlak(x, fx * k, fy * k, fw * k, fh * k, 1.6 * k); x.stroke();
-  const sx = 28.5, sw = KRT.w - sx - 4; krtYaz(x, p.ad || "", sx, 18.2, sw, 11, 800, "#1E2229");
+  const sx = 28, sw = KRT.w - sx - 4; krtYaz(x, p.ad || "", sx, 18.2, sw, 11, 800, "#1E2229");
   const ri = await krtSvg(rd); if(ri) x.drawImage(ri, sx * k, 20.2 * k, 5.2 * k, 5.2 * k);
   krtYaz(x, ra.split(" · ")[0] || p.rutbe || "", sx + 6.4, 24.2, sw - 6.4, 7.2, 600, "#3A404B");
   { const et = [sn[0] !== "diger" ? sn[1] : "", kurmayMi(p.rutbe) ? "Kurmay" : "", gk].filter(Boolean); let cx = sx; x.font = `700 ${5.6 * 0.3528 * k}px Archivo, sans-serif`;
     et.forEach((t, i) => { const tw = x.measureText(t).width / k + 3.2; if(cx + tw > KRT.w - 4) return; x.fillStyle = i === 0 && sn[0] !== "diger" ? "#FBEFD8" : "#ECEEF1"; krtYuvarlak(x, cx * k, 26.6 * k, tw * k, 4.4 * k, 1.1 * k); x.fill(); x.fillStyle = i === 0 && sn[0] !== "diger" ? "#7A5320" : "#3F4756"; x.fillText(t, (cx + 1.6) * k, 29.8 * k); cx += tw + 1.4; }); }
-  const aw = (sw - 1.6) / 2; krtAlan(x, "Sicil", p.sicil, sx, 32.6, aw); krtAlan(x, "Kan grubu", kan, sx + aw + 1.6, 32.6, aw, { z: "#FBEDEA", e: "#A3412F", r: "#8E2F20" });
-  const bw = (KRT.w - 8 - 3.2) / 3; krtAlan(x, "Doğum", p.dogum, 4, 42.6, bw); krtAlan(x, "Nasbı", p.nasip ? trTarih(p.nasip) || p.nasip : "", 4 + bw + 1.6, 42.6, bw); krtAlan(x, "Telefon", p.tel, 4 + 2 * (bw + 1.6), 42.6, bw);
+  const aw = (sw - 1.6) / 2, y1 = fy + fh - 8.4, y2 = fy + fh + 1.6; krtAlan(x, "Sicil", p.sicil, sx, y1, aw); krtAlan(x, "Kan grubu", kan, sx + aw + 1.6, y1, aw, { z: "#FBEDEA", e: "#A3412F", r: "#8E2F20" });
+  krtAlan(x, "Doğum", p.dogum, fx, y2, fw); krtAlan(x, "Nasbı", p.nasip ? trTarih(p.nasip) || p.nasip : "", sx, y2, aw); krtAlan(x, "Telefon", p.tel, sx + aw + 1.6, y2, aw);
   cerceve(x);
   /* arka yüz */
   const [ar, y] = tuval(); ust(y, "KADRO GÖREVİ", [p.rutbe, p.ad].filter(Boolean).join(" "));
   let yy = krtSar(y, p.gorev || "Kadro görevi girilmedi", 4, 15.2, KRT.w - 8, 6.6, 600, "#2B3039", 3);
   yy = Math.max(yy + 0.6, 24); const hw = (KRT.w - 8 - 1.6) / 2;
-  krtAlan(y, "T.C. kimlik no", p.tc, 4, yy, hw); krtAlan(y, "Baba adı", p.baba, 4 + hw + 1.6, yy, hw); yy += 10;
+  { const aw2 = (KRT.w - 32) / 2 - 0.8; krtAlan(y, "T.C. kimlik no", p.tc, 4, yy, 21 + 3 + aw2); krtAlan(y, "Baba adı", p.baba, 28 + aw2 + 1.6, yy, aw2); } yy += 10;
   y.fillStyle = "#F4F5F7"; krtYuvarlak(y, 4 * k, yy * k, (KRT.w - 8) * k, 9.6 * k, 1.4 * k); y.fill(); krtYaz(y, "ACİL DURUMDA", 5.8, yy + 3.1, 40, 4.6, 700, "#A3412F");
   krtYaz(y, [p.yakinAd, p.yakinTel].filter(Boolean).join(" · ") || "—", 5.8, yy + 7.4, KRT.w - 11, 7, 700, "#22262E"); yy += 11;
   if(p.adres) krtSar(y, "Adres: " + p.adres, 4, yy + 1.6, KRT.w - 8, 5.4, 500, "#4A505B", 2);
@@ -6163,7 +6163,7 @@ async function kartPdf(P){ if(!P.length) return bildir("Kart için kişi seçin"
       [[X, Y, -1, -1], [X + KRT.w, Y, 1, -1], [X, Y + KRT.h, -1, 1], [X + KRT.w, Y + KRT.h, 1, 1]].forEach(([a, b, sx, sy]) => { doc.line(a + sx * 1.2, b, a + sx * 4, b); doc.line(a, b + sy * 1.2, a, b + sy * 4); }); };
     for(let i = 0; i < P.length; i++){ if(i && i % 4 === 0) doc.addPage(); const Y = Y0 + (i % 4) * (KRT.h + ara), { on, ar } = await krtCiz(P[i]);
       doc.addImage(on.toDataURL("image/jpeg", 0.92), "JPEG", X0, Y, KRT.w, KRT.h); doc.addImage(ar.toDataURL("image/jpeg", 0.92), "JPEG", X0 + KRT.w + 8, Y, KRT.w, KRT.h); isaret(X0, Y); isaret(X0 + KRT.w + 8, Y);
-      doc.setFont("LA", "normal"); doc.setFontSize(6); doc.setTextColor(150, 155, 162); doc.text("ön yüz", X0, Y - 1.6); doc.text("arka yüz", X0 + KRT.w + 8, Y - 1.6); }
+      doc.setFont("LA", "normal"); doc.setFontSize(6); doc.setTextColor(150, 155, 162); doc.text("ön yüz", X0 + 6, Y - 1.8); doc.text("arka yüz", X0 + KRT.w + 8 + 6, Y - 1.8); }
     const ad = P.length === 1 ? `Personel_Karti_${dosyaAdi(P[0].ad || "kisi")}.pdf` : `Personel_Kartlari_${P.length}_kisi.pdf`;
     return dosyaVer(ad, doc.output("blob")); } catch(e){ uyar("Kart oluşturulamadı: " + (e.message || e), true); } }
 function kartSec(){ const P = (S.personel.rows || []).filter(p => p.ad), sec = new Set(P.map(p => p.id));
