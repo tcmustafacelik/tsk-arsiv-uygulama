@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "579";
+  const SURUM = "580";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -639,7 +639,7 @@
         <div class="bk-bol"><span class="bk-et">Bağlantılar</span><div class="bk-liste">
           <button class="bk-sat" type="button" id="bl-hizli"><svg viewBox="0 0 24 24"><rect x="7" y="3" width="10" height="18" rx="2"/><path d="M11 18h2"/></svg><span><b>Kendi cihazlarım</b><small>başka telefona / bilgisayara bağlanma linki</small></span><i>›</i></button>
           <button class="bk-sat" type="button" id="bl-pay-ac"><svg viewBox="0 0 24 24"><path d="M2 12s3.6-6.5 10-6.5S22 12 22 12s-3.6 6.5-10 6.5S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg><span><b>Başkasına göster</b><small>görüntüleme linki · bölüm gizle</small></span><i>›</i></button></div></div>
-        <details class="bk-gel"><summary>Gelişmiş<small>geçmiş · otomatik yedek · yedek al · sıfırla</small><i>›</i></summary>
+        <details class="bk-gel"><summary><span class="bk-gy"><b>Gelişmiş</b><small>Kayıt geçmişi · otomatik yedek · sıfırla</small></span><i>›</i></summary>
         <div class="bk-bol"><span class="bk-et">Kayıt geçmişi</span><div class="bk-tuslar bk-gec"><button type="button" data-gc-cop="1">🗑 Silinenler</button><button type="button" data-gc-temiz="1">🧹 Temizle</button></div></div>
         <div class="bk-bol"><span class="bk-et">Otomatik yedek <small>· bu cihazda, günde bir</small></span><div class="bk-oto"><span id="bl-oto">—</span><button type="button" id="bl-oto-geri">Geri yükle</button></div></div>
         <div class="bk-bol"><span class="bk-et">Bu cihazdaki veriler</span><div class="bk-tuslar"><button type="button" id="bl-yedek">Yedek al</button><button type="button" id="bl-yukle">Yedekten yükle</button><button type="button" class="sil" id="bl-sifirla">Sıfırla</button></div><input type="file" id="bl-dosya" accept=".json,application/json" hidden></div></details>
@@ -758,7 +758,7 @@
       .bp-ekle{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:6px} .bp-ekle input{height:40px;min-width:0;padding:0 11px;border:1px solid var(--line);border-radius:10px;background:var(--panel);font:500 14px var(--f-ui);color:var(--fg)} .bp-ekle .btn{height:40px;padding:0 14px}
       .bp-bd>summary{list-style:none;cursor:pointer} .bp-bd>summary::-webkit-details-marker{display:none} .bp-bd[open]>summary .bp-ok{transform:rotate(-90deg)} .bp-ok.yok{visibility:hidden} .bp-bd>summary.bp-s{color:var(--fg)}
       .bk-gel{border:1px solid var(--line2);border-radius:12px;background:var(--panel)} .bk-gel>summary{list-style:none;display:flex;align-items:center;gap:8px;min-height:42px;padding:6px 12px;cursor:pointer;font:600 13px var(--f-ui);color:var(--fg)} .bk-gel>summary::-webkit-details-marker{display:none}
-      .bk-gel>summary small{flex:1;font:500 11.5px var(--f-ui);color:var(--muted)} .bk-gel>summary i{font-style:normal;color:var(--muted);transform:rotate(90deg);transition:transform .15s} .bk-gel[open]>summary i{transform:rotate(-90deg)} .bk-gel>.bk-bol{padding:0 10px 10px}
+      .bk-gel>summary .bk-gy{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .bk-gel>summary .bk-gy b{font:600 14px var(--f-ui);color:var(--fg)} .bk-gel>summary .bk-gy small{font:500 11.5px var(--f-ui);color:var(--muted);overflow-wrap:anywhere} .bk-gel>summary i{font-style:normal;color:var(--muted);transform:rotate(90deg);transition:transform .15s} .bk-gel[open]>summary i{transform:rotate(-90deg)} .bk-gel>.bk-bol{padding:0 10px 10px}
       .bk-oto{display:flex;align-items:center;gap:8px;padding:8px 10px;border:1px solid var(--line2);border-radius:10px;background:var(--panel2)} .bk-oto span{flex:1;min-width:0;display:flex;flex-direction:column} .bk-oto b{font:600 13px var(--f-ui)} .bk-oto small{font:500 11px var(--f-ui);color:var(--muted)}
       .bk-oto button{flex:none;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:8px;background:var(--panel);font:600 12px var(--f-ui);color:var(--fg);cursor:pointer} .bk-oto button:disabled{opacity:.45}
       .bp-ok{flex:none;width:14px;text-align:center;font-style:normal;font-size:15px;color:var(--muted);transform:rotate(90deg);transition:transform .15s} .bp-g[open]>summary .bp-ok{transform:rotate(-90deg)}
@@ -3978,7 +3978,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 579</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 580</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
