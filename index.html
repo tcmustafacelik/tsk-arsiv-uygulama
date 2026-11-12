@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "563";
+  const SURUM = "564";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3940,7 +3940,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 563</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 564</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6353,7 +6353,7 @@ async function krtCiz(p){ const k = KRT.k, W = Math.round(KRT.w * k), H = Math.r
   krtYaz(x, ra.split(" · ")[0] || p.rutbe || "", sx + 6.4, 24.2, sw - 6.4, 7.2, 600, "#3A404B");
   { const et = [sn[0] !== "diger" ? sn[1] : "", kurmayMi(p.rutbe) ? "Kurmay" : "", gk].filter(Boolean); let cx = sx; x.font = `700 ${5.6 * 0.3528 * k}px Archivo, sans-serif`;
     et.forEach((t, i) => { const tw = x.measureText(t).width / k + 3.2; if(cx + tw > KRT.w - 4) return; x.fillStyle = i === 0 && sn[0] !== "diger" ? "#FBEFD8" : "#ECEEF1"; krtYuvarlak(x, cx * k, 26.6 * k, tw * k, 4.4 * k, 1.1 * k); x.fill(); x.fillStyle = i === 0 && sn[0] !== "diger" ? "#7A5320" : "#3F4756"; x.fillText(t, (cx + 1.6) * k, 29.8 * k); cx += tw + 1.4; }); }
-  const aw = (sw - 1.6) / 2, y1 = fy + fh - 8.4, y2 = fy + fh + 1.6; krtAlan(x, "Sicil", p.sicil, sx, y1, aw); krtAlan(x, "Kan grubu", kan, sx + aw + 1.6, y1, aw, { z: "rgba(250,232,228,0.8)", e: "#A3412F", r: "#8E2F20" });
+  const aw = (sw - 1.6) / 2, y1 = fy + fh - 8.4, y2 = fy + fh + 1.6; krtAlan(x, "Sicili", p.sicil, sx, y1, aw); krtAlan(x, "Kan grubu", kan, sx + aw + 1.6, y1, aw, { z: "rgba(250,232,228,0.8)", e: "#A3412F", r: "#8E2F20" });
   krtAlan(x, "Doğum", p.dogum, fx, y2, fw); krtAlan(x, "Nasbı", p.nasip ? trTarih(p.nasip) || p.nasip : "", sx, y2, aw); krtAlan(x, "Telefon", p.tel, sx + aw + 1.6, y2, aw);
   cerceve(x);
   /* arka yüz */
@@ -6418,7 +6418,7 @@ async function kartCikti(P, tur){ if(!P.length) return bildir("Kart için kişi 
       K.forEach((k, i) => { const r = i * 2 + 1; ws.getRow(r).height = KRT.h / 25.4 * 72; ws.getRow(r + 1).height = 14;
         ws.addImage(wb.addImage({ base64: k.on.toDataURL("image/png").split(",")[1], extension: "png" }), { tl: { col: 1, row: r - 1 }, ext: { width: pw(KRT.w), height: pw(KRT.h) } });
         ws.addImage(wb.addImage({ base64: k.ar.toDataURL("image/png").split(",")[1], extension: "png" }), { tl: { col: 3, row: r - 1 }, ext: { width: pw(KRT.w), height: pw(KRT.h) } }); });
-      const bs = wb.addWorksheet("Bilgiler"), A = [["Adı soyadı", "ad"], ["Rütbe", "rutbe"], ["Sicil", "sicil"], ["Doğum", "dogum"], ["Nasbı", "nasip"], ["Kan grubu", "kan"], ["Telefon", "tel"], ["T.C. kimlik no", "tc"], ["Baba adı", "baba"], ["Yakını", "yakinAd"], ["Yakını tel.", "yakinTel"], ["Adres", "adres"], ["Kadro görevi", "gorev"]];
+      const bs = wb.addWorksheet("Bilgiler"), A = [["Adı soyadı", "ad"], ["Rütbe", "rutbe"], ["Sicili", "sicil"], ["Doğum", "dogum"], ["Nasbı", "nasip"], ["Kan grubu", "kan"], ["Telefon", "tel"], ["T.C. kimlik no", "tc"], ["Baba adı", "baba"], ["Yakını", "yakinAd"], ["Yakını tel.", "yakinTel"], ["Adres", "adres"], ["Kadro görevi", "gorev"]];
       bs.addRow(A.map(a => a[0])).font = { bold: true }; P.forEach(p => bs.addRow(A.map(([, k]) => k === "nasip" && p.nasip ? trTarih(p.nasip) || p.nasip : p[k] || ""))); [22, 18, 12, 12, 12, 10, 14, 16, 12, 22, 14, 34, 50].forEach((w, i) => bs.getColumn(i + 1).width = w); bs.pageSetup = { paperSize: 9, orientation: "landscape", fitToPage: true, fitToWidth: 1, fitToHeight: 0, margins: { left: .3, right: .3, top: .4, bottom: .4, header: 0, footer: 0 } }; bs.views = [{ state: "frozen", ySplit: 1 }]; bs.eachRow(r => r.alignment = { vertical: "top", wrapText: true });
       return dosyaVer(kok + ".xlsx", new Blob([await wb.xlsx.writeBuffer()], { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" }), { ham: true }); }
   } catch(e){ uyar("Kart oluşturulamadı: " + (e.message || e), true); } }
@@ -6446,7 +6446,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === pid); if(!p) return;
   altPencere("kd-perde", "KİŞİ DOSYASI", () => [p.rutbe, p.ad].filter(Boolean).join(" ") || "Adsız", () => { const B = kdTopla(p);
     const [ra, rd, rk] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe), gk = ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim();
-    const bil = [["Sicil", p.sicil], ["Doğum", p.dogum], ["Kan", String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)")], ["Telefon", p.tel], ["Nasbı", p.nasip ? trTarih(p.nasip) || p.nasip : ""]].filter(x => x[1]);
+    const bil = [["Sicili", p.sicil], ["Doğum", p.dogum], ["Kan", String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)")], ["Telefon", p.tel], ["Nasbı", p.nasip ? trTarih(p.nasip) || p.nasip : ""]].filter(x => x[1]);
     return `<div class="kd-kim">${p.foto ? `<img class="kd-foto" src="/_blob/${esc(p.foto)}" alt="">` : `<span class="kb2-av rs-${rk} kd-rs"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span>`}
       <div class="kd-kim-y"><div class="kd-rt">${p.foto ? `<span class="kb2-av rs-${rk}"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span>` : ""}<b>${esc(ra.split(" · ")[0])}</b></div>
         <div class="kd-cipler">${sn[0] !== "diger" ? `<span class="sn-cip">${sinifIk(p.rutbe)}<span>${esc(sn[1])}</span></span>` : ""}${kurmayMi(p.rutbe) ? '<span class="kd-cip">Kurmay</span>' : ""}${gk ? `<span class="kd-cip gorev">${esc(gk)}</span>` : ""}</div></div></div>
