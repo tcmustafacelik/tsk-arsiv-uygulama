@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "540";
+  const SURUM = "541";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3809,7 +3809,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 540</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 541</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6144,7 +6144,7 @@ async function krtCiz(p){ const k = KRT.k, W = Math.round(KRT.w * k), H = Math.r
   { const et = [sn[0] !== "diger" ? sn[1] : "", kurmayMi(p.rutbe) ? "Kurmay" : "", gk].filter(Boolean); let cx = sx; x.font = `700 ${5.6 * 0.3528 * k}px Archivo, sans-serif`;
     et.forEach((t, i) => { const tw = x.measureText(t).width / k + 3.2; if(cx + tw > KRT.w - 4) return; x.fillStyle = i === 0 && sn[0] !== "diger" ? "#FBEFD8" : "#ECEEF1"; krtYuvarlak(x, cx * k, 26.6 * k, tw * k, 4.4 * k, 1.1 * k); x.fill(); x.fillStyle = i === 0 && sn[0] !== "diger" ? "#7A5320" : "#3F4756"; x.fillText(t, (cx + 1.6) * k, 29.8 * k); cx += tw + 1.4; }); }
   const aw = (sw - 1.6) / 2; krtAlan(x, "Sicil", p.sicil, sx, 32.6, aw); krtAlan(x, "Kan grubu", kan, sx + aw + 1.6, 32.6, aw, { z: "#FBEDEA", e: "#A3412F", r: "#8E2F20" });
-  const bw = (KRT.w - 8 - 3.2) / 3; krtAlan(x, "Doğum", p.dogum, 4, 42.6, bw); krtAlan(x, "Nasıp", p.nasip ? trTarih(p.nasip) || p.nasip : "", 4 + bw + 1.6, 42.6, bw); krtAlan(x, "Telefon", p.tel, 4 + 2 * (bw + 1.6), 42.6, bw);
+  const bw = (KRT.w - 8 - 3.2) / 3; krtAlan(x, "Doğum", p.dogum, 4, 42.6, bw); krtAlan(x, "Nasbı", p.nasip ? trTarih(p.nasip) || p.nasip : "", 4 + bw + 1.6, 42.6, bw); krtAlan(x, "Telefon", p.tel, 4 + 2 * (bw + 1.6), 42.6, bw);
   cerceve(x);
   /* arka yüz */
   const [ar, y] = tuval(); ust(y, "KADRO GÖREVİ", [p.rutbe, p.ad].filter(Boolean).join(" "));
@@ -6178,7 +6178,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
 function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === pid); if(!p) return;
   altPencere("kd-perde", "KİŞİ DOSYASI", () => [p.rutbe, p.ad].filter(Boolean).join(" ") || "Adsız", () => { const B = kdTopla(p);
     const [ra, rd, rk] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe), gk = ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim();
-    const bil = [["Sicil", p.sicil], ["Doğum", p.dogum], ["Kan", String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)")], ["Telefon", p.tel], ["Nasıp", p.nasip ? trTarih(p.nasip) || p.nasip : ""]].filter(x => x[1]);
+    const bil = [["Sicil", p.sicil], ["Doğum", p.dogum], ["Kan", String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)")], ["Telefon", p.tel], ["Nasbı", p.nasip ? trTarih(p.nasip) || p.nasip : ""]].filter(x => x[1]);
     return `<div class="kd-kim">${p.foto ? `<img class="kd-foto" src="/_blob/${esc(p.foto)}" alt="">` : `<span class="kb2-av rs-${rk} kd-rs"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span>`}
       <div class="kd-kim-y"><div class="kd-rt">${p.foto ? `<span class="kb2-av rs-${rk}"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span>` : ""}<b>${esc(ra.split(" · ")[0])}</b></div>
         <div class="kd-cipler">${sn[0] !== "diger" ? `<span class="sn-cip">${sinifIk(p.rutbe)}<span>${esc(sn[1])}</span></span>` : ""}${kurmayMi(p.rutbe) ? '<span class="kd-cip">Kurmay</span>' : ""}${gk ? `<span class="kd-cip gorev">${esc(gk)}</span>` : ""}</div></div></div>
@@ -11335,7 +11335,7 @@ const TEMA_KIMLIK = { ana: "5F8F95", bas: "DDEDEE", basYazi: "214A50", bant: "EA
 function tanimKimlik(){ const T = TEMA_KIMLIK, bh = t => H(t, { fill: T.bas, k: T.basYazi }), P = (S.personel.rows || []).filter(x => x.ad);
   const body = P.map((p, i) => { const z = i % 2 ? T.serit : null, c = t => H(t || "", { fill: z }); return [H(i + 1, { fill: z, k: T.soluk }), c(`${p.rutbe || ""}\n${p.ad || ""}`.trim()), c(p.sicil), c(p.baba), c(p.memleket), c(p.dogum), c(p.duhul), c(p.nasip), c(p.ems), c(p.tc), c(p.kan), c(kmSilahlar(p).map(x => x.seri).join("\n")), c(p.tel || kmTel(p))]; });
   return { notRef: P.map((p, i) => [i + 1, p.id]), tema: T, dosya: "Personel_Kimlik_Bilgileri", baslik: "PERSONEL KİMLİK BİLGİLERİ", oran: [4, 16, 8, 8, 9, 8, 7, 7, 8, 10, 6, 8, 10],
-    head: [["S/N", "RÜTBE / ADI SOYADI", "SİCİL", "BABA ADI", "MEMLEKETİ", "DOĞUM T.", "DUHUL", "NASIP", "EMS NO", "T.C. KİMLİK NO", "KAN", "SİLAH", "TELEFON"].map(bh)], body, satirH: 12, xSatir: 30, xYazi: 10, xBasYazi: 9.5, xBaslikYazi: 15 }; }
+    head: [["S/N", "RÜTBE / ADI SOYADI", "SİCİL", "BABA ADI", "MEMLEKETİ", "DOĞUM T.", "DUHUL", "NASBI", "EMS NO", "T.C. KİMLİK NO", "KAN", "SİLAH", "TELEFON"].map(bh)], body, satirH: 12, xSatir: 30, xYazi: 10, xBasYazi: 9.5, xBaslikYazi: 15 }; }
 /* izin belgelerine aktarım: yalnız boş kutuları doldurur (çıktı biçimi değişmez) */
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-km-git]"); if(!b) return; const d = belgeTur("kimlik"); if(!d) return bildir("Personel kimliği belgesi yok");
   kmSecili = b.dataset.kmGit; kmFiltre = "hepsi"; belgeGit(d); setTimeout(() => { const k = $("#km-govde .km-kart"); if(k) k.scrollIntoView({ block: "start" }); }, 250); });
