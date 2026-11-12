@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "568";
+  const SURUM = "569";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3521,9 +3521,13 @@ html body .kart.bkk.dsy .ad{overflow-wrap:anywhere!important;word-break:break-wo
 header.ust .ara-kap{border:1px solid var(--line2)!important;box-shadow:none!important;border-radius:12px!important;background:var(--panel)!important}
 .g-zoom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px} .g-zoom[hidden]{display:none} .g-zoom>span{font:600 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .g-zoom .ka-b{flex:0 1 260px;min-width:0} @media (max-width:520px){.g-zoom>span{display:none} .g-zoom .ka-b{flex:1 1 100%}}
 /* S559: ne eksik ne fazla düzeltmeleri */
+@media (max-width:700px){ html body #p-tablo .islem .p-pc{display:none!important} }
+@media (min-width:701px){ html body #p-tablo td.p-rtd{display:table-cell!important;white-space:nowrap;min-width:200px;width:200px;vertical-align:middle!important} html body #p-tablo td.p-rtd>input{width:calc(100% - 40px);min-width:120px!important;vertical-align:middle} html body #p-tablo .p-rsec{height:30px;padding:0 7px;margin-left:4px;vertical-align:middle} html body #p-tablo .p-rsec span{display:none} }
+html body #p-tablo .p-kartm svg{width:15px;height:15px} html body #p-tablo .p-kartm{color:#8A6420}
+
 html body .km-yeni{display:flex;align-items:center;gap:8px;width:100%;margin:8px 0 0;padding:10px 12px;border:1px dashed #B7CDB9;border-radius:10px;background:#F3F8F3;color:#2F6B47;font:700 13px var(--f-ui);text-align:left;cursor:pointer} .km-yeni>span{font-size:16px} @media (max-width:420px){ .km-yeni small{display:none} } .km-yeni small{margin-left:auto;font:500 11px var(--f-ui);color:#6B8574;text-align:right}
 
-html body #p-tablo td.p-rtd{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;column-gap:6px;row-gap:0;align-items:stretch} html body #p-tablo td.p-rtd::before{flex-basis:100%} html body #p-tablo td.p-rtd>input{flex:1;min-width:0!important}
+@media (max-width:700px){ html body #p-tablo td.p-rtd{display:flex!important;flex-direction:row!important;flex-wrap:wrap!important;column-gap:6px;row-gap:0;align-items:stretch} html body #p-tablo td.p-rtd::before{flex-basis:100%} html body #p-tablo td.p-rtd>input{flex:1;min-width:0!important} }
 html body .p-rsec{flex:none;display:inline-flex;align-items:center;gap:5px;padding:0 11px;border:1px solid var(--sec-k);border-radius:9px;background:var(--sec-z);color:var(--sec-y);font:700 12.5px var(--f-ui);cursor:pointer} .p-rsec svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
 .rsc-sn{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px} .rsc-sn button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;padding:7px 4px;border:1px solid var(--line2);border-radius:10px;background:var(--panel);font:600 11px/1.15 var(--f-ui);color:var(--fg);text-align:center;cursor:pointer;overflow-wrap:anywhere} .rsc-sn button .sn-ik{width:22px;height:22px} .rsc-sn button[aria-pressed="true"]{background:var(--sec-z);border-color:var(--sec-k);color:var(--sec-y)}
 .rsc-l{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px} .rsc-b{display:flex;align-items:center;gap:8px;min-width:0;padding:7px 9px;border:1px solid var(--line2);border-radius:10px;background:var(--panel);text-align:left;cursor:pointer;color:var(--fg)} .rsc-b .kb2-av{flex:none} .rsc-y{flex:1;min-width:0;display:flex;flex-direction:column;gap:1px} .rsc-y b{font:700 12px/1.2 var(--f-ui);overflow-wrap:anywhere} .rsc-y small{font:500 10.5px var(--f-ui);color:var(--muted);overflow-wrap:anywhere} .rsc-b[aria-pressed="true"]{background:var(--sec-z);border-color:var(--sec-k)}
@@ -3954,7 +3958,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 568</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 569</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6280,7 +6284,7 @@ function personelCiz(){ pLstCiz(); pKisaCiz(); { const pb = $("#p-bas"); if(pb &
     <td class="orta" data-et="Doğum"><input id="p-${esc(r.id)}-dogum" data-alan="dogum" value="${esc(r.dogum || "")}" placeholder="gg.aa.yyyy" aria-label="Doğum" style="min-width:110px"></td>
     <td class="orta" data-et="Birliğe katılış"><input type="date" id="p-${esc(r.id)}-katilis" data-alan="katilis" value="${esc(r.katilis || "")}" aria-label="Birliğe katılış tarihi" title="Bu tarihten önceki tebliğlerde kişi kendiliğinden yok sayılır"></td>
     <td data-et="Görevi"><textarea class="oto-boy p-gorev" rows="1" id="p-${esc(r.id)}-gorev" data-alan="gorev" aria-label="Görev" style="min-width:220px">${esc(r.gorev)}</textarea></td>
-    <td class="islem">${notDug(acikBelge(), r.id, r.ad)}<button class="mini" data-p-dosya="${esc(r.id)}" aria-label="Kişi dosyası" title="Kişi dosyası">▤</button><button class="mini" data-is="yukari" aria-label="Yukarı taşı">↑</button><button class="mini" data-is="asagi" aria-label="Aşağı taşı">↓</button><button class="mini sil" data-is="sil" aria-label="Sil">✕</button></td></tr>`).join("");
+    <td class="islem">${notDug(acikBelge(), r.id, r.ad)}<button class="mini p-pc" data-p-dosya="${esc(r.id)}" aria-label="Kişi kimliği" title="Kişi kimliği">▤</button>${r.ad ? `<button class="mini p-pc p-kartm" data-p-kart="${esc(r.id)}" aria-label="Kart bas" title="Kart bas">${KRT_IK}</button>` : ""}<button class="mini" data-is="yukari" aria-label="Yukarı taşı">↑</button><button class="mini" data-is="asagi" aria-label="Aşağı taşı">↓</button><button class="mini sil" data-is="sil" aria-label="Sil">✕</button></td></tr>`).join("");
   otoBoyHepsi(tb);
 }
 /* telefonda kişi kartı kapalı durur (ad, rütbe, sicil); dokununca düzenleme alanları açılır */
