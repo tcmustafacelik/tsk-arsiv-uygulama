@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "536";
+  const SURUM = "537";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1088,6 +1088,7 @@
 
 </script>
 <title>TSK ARŞİV</title>
+<script>try { const t = localStorage.getItem("tskTema"); if(t && t !== "buz") document.documentElement.dataset.tema = t; } catch(e){}</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap">
 <style>
@@ -3352,6 +3353,34 @@ body:has(#v-ana:not([hidden])) #ust-uyari{display:none!important}
 .dk-x{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#F2F5F8;color:#5B6B7D;cursor:pointer}
 .dk-x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round} .dk-x:active{background:#E6ECF2}
 .dk-not{margin:10px 2px 2px;text-align:center}
+html{--tz:#EAF2FA;--tk:#3E6E9E;--th1:#F7FAFD;--th2:#EEF4FA;--tf:#1C2B40}
+html[data-tema="buz"]{--bg:#ECEFF3;--panel:#FFFFFF;--panel2:#F5F7FA;--fg:#1E2935;--muted:#6B7785;--line:#DBE1E8;--line2:#E8ECF1;--accent:#34587C;--accent-soft:#E5EDF6;--accent-ink:#284866;--sec:#DBE1E8;--tz:#EAF2FA;--tk:#3E6E9E;--th1:#F7FAFD;--th2:#EEF4FA;--tf:#1E2935}
+html[data-tema="haki"]{--bg:#EDEFE7;--panel:#FCFCF9;--panel2:#F4F5EF;--fg:#2B3125;--muted:#6C7362;--line:#D9DDCE;--line2:#E5E8DC;--accent:#55683F;--accent-soft:#E8EDDD;--accent-ink:#43532F;--sec:#D9DDCE;--tz:#EAEFDF;--tk:#5E7148;--th1:#F8F9F3;--th2:#ECF0E2;--tf:#2B3125}
+html[data-tema="kum"]{--bg:#F2EEE6;--panel:#FFFDF9;--panel2:#F8F4EC;--fg:#3A3226;--muted:#7A6F5F;--line:#E2DBCD;--line2:#ECE6DA;--accent:#86663A;--accent-soft:#F2E9DA;--accent-ink:#6B5129;--sec:#E2DBCD;--tz:#F4EBDC;--tk:#8C6A3C;--th1:#FCF8F1;--th2:#F3EADB;--tf:#3A3226}
+html[data-tema="deniz"]{--bg:#E8F2F2;--panel:#FFFFFF;--panel2:#F3F9F9;--fg:#1D3436;--muted:#5F7678;--line:#D1E2E2;--line2:#E0ECEC;--accent:#2C7070;--accent-soft:#DCEFED;--accent-ink:#215858;--sec:#D1E2E2;--tz:#E0F0EF;--tk:#2F7A7A;--th1:#F5FBFB;--th2:#E4F2F1;--tf:#1D3436}
+html[data-tema="lacivert"]{--bg:#F1F0EA;--panel:#FFFFFD;--panel2:#F7F6F1;--fg:#1E2A3E;--muted:#6A7080;--line:#DEDCD2;--line2:#E9E7DF;--accent:#23395B;--accent-soft:#E4E9F2;--accent-ink:#1C2F4D;--sec:#DEDCD2;--tz:#E6EBF3;--tk:#2A4468;--th1:#FBFAF6;--th2:#ECEFF4;--tf:#1E2A3E}
+html[data-tema="grafit"]{--bg:#EFF0F2;--panel:#FFFFFF;--panel2:#F7F8F9;--fg:#22262E;--muted:#6B717C;--line:#DCDFE4;--line2:#E8EAED;--accent:#3F4756;--accent-soft:#E8EAEE;--accent-ink:#323947;--sec:#DCDFE4;--tz:#EBEDF0;--tk:#4A5263;--th1:#FAFAFB;--th2:#EEF0F3;--tf:#22262E}
+html[data-tema="orman"]{--bg:#EAF2EC;--panel:#FFFFFF;--panel2:#F4F9F5;--fg:#1F3328;--muted:#5F7468;--line:#D3E3D8;--line2:#E1ECE5;--accent:#2A6444;--accent-soft:#DDEEE3;--accent-ink:#215237;--sec:#D3E3D8;--tz:#E1F0E6;--tk:#2E6B4A;--th1:#F6FBF7;--th2:#E4F1E8;--tf:#1F3328}
+html[data-tema="kiremit"]{--bg:#F4EEE9;--panel:#FFFDFB;--panel2:#FAF5F1;--fg:#3B2A22;--muted:#7C6A60;--line:#E6DAD0;--line2:#EFE5DD;--accent:#985237;--accent-soft:#F4E5DB;--accent-ink:#7A402A;--sec:#E6DAD0;--tz:#F6E7DD;--tk:#A0573A;--th1:#FDF8F5;--th2:#F5E8DF;--tf:#3B2A22}
+html[data-tema="celik"]{--bg:#E9EDF0;--panel:#FDFEFE;--panel2:#F3F6F8;--fg:#22303A;--muted:#66737D;--line:#D5DDE3;--line2:#E1E7EB;--accent:#44606F;--accent-soft:#E1E9EE;--accent-ink:#354D5A;--sec:#D5DDE3;--tz:#E3EBF0;--tk:#4A6577;--th1:#F7F9FB;--th2:#E7EDF1;--tf:#22303A}
+html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#23263D;--muted:#686C84;--line:#DADDEA;--line2:#E6E8F1;--accent:#4A519A;--accent-soft:#E7E8F6;--accent-ink:#3B4180;--sec:#DADDEA;--tz:#E9EAF7;--tk:#555CA6;--th1:#F8F8FD;--th2:#ECEDF8;--tf:#23263D}
+.an-hero{background:linear-gradient(155deg,var(--th1) 0%,var(--th2) 100%)!important;color:var(--tf)!important;border-color:var(--line2)!important}
+.an-halka{background:radial-gradient(closest-side,var(--th1) 80%,transparent 81% 100%),conic-gradient(var(--tk) calc(var(--p)*1%),var(--line) 0)!important;color:var(--tk)!important}
+.an-hy b,.an-st b,.an-kart-bas b{color:var(--tf)!important} .an-hy small,.an-st small,.an-halka small{color:var(--muted)!important} .an-hy>span{color:var(--muted)!important}
+.an-st{background:var(--panel)!important;border-color:var(--line2)!important} .an-st.t-kisi{--t:var(--tk);--z:var(--tz)}
+.an-seg.an-seg2{background:color-mix(in srgb,var(--panel) 94%,transparent)!important;border-color:var(--line2)!important}
+.an-seg2 button{color:var(--muted)!important} .an-seg2 button[aria-selected="true"]{background:var(--tz)!important;color:var(--tk)!important}
+.an-kart{background:var(--panel)!important;border-color:var(--line2)!important} .an-kart-bas span{background:var(--tz)!important;color:var(--tk)!important}
+.ust-ik{color:var(--tf)!important} #ust-goz[aria-pressed="true"]{background:var(--tz)!important;color:var(--tk)!important}
+.sirt-sat{background:var(--panel)!important;border-color:var(--line2)!important} .ss-s{background:color-mix(in srgb,var(--sr) 45%,var(--panel))}
+/* tema seçici */
+.tm-l{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.tm-k{display:flex;flex-direction:column;gap:8px;padding:8px;border:1.5px solid var(--line2);border-radius:14px;background:var(--panel);cursor:pointer;font:inherit;text-align:left;color:var(--fg)}
+.tm-k[aria-pressed="true"]{border-color:var(--sec-k);background:var(--sec-z);box-shadow:0 0 0 2px color-mix(in srgb,var(--sec-k) 25%,transparent)}
+.tm-on{position:relative;height:74px;border-radius:10px;overflow:hidden;border:1px solid rgba(0,0,0,.06);display:grid;grid-template-rows:auto 1fr;gap:5px;padding:7px}
+.tm-on i{display:block;height:10px;border-radius:4px} .tm-on .tm-hero{display:flex;align-items:center;gap:6px;border-radius:7px;padding:5px} .tm-on .tm-hero b{width:22px;height:22px;border-radius:50%;flex:none}
+.tm-on .tm-hero span{flex:1;display:grid;gap:4px} .tm-on .tm-hero span i:last-child{width:60%;height:6px}
+.tm-ad{display:flex;align-items:center;justify-content:space-between;gap:6px;font:700 13px var(--f-ui);padding:0 2px} .tm-ad small{font:600 10.5px var(--f-ui);color:var(--sec-i)}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3768,7 +3797,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 536</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 537</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4877,6 +4906,16 @@ function anaKatBilgi(k){
 /* ana sayfa: son açılanlar + klasör kartları (dokununca bölümleri açılır, bölüme dokununca o bölüme gider) */
 function sonEkle(o){ try { const L = JSON.parse(localStorage.getItem("sonlar") || "[]").filter(x => !(x.k === o.k && x.b === o.b)); if(!o.d){ const eski = JSON.parse(localStorage.getItem("sonlar") || "[]").find(x => x.k === o.k && x.b === o.b && x.d); if(eski) o = eski; } L.unshift(o); localStorage.setItem("sonlar", JSON.stringify(L.slice(0, 8))); } catch(e){} }
 /* ana sayfa: dikkat edilecekler (izinden dönenler, biten dönem, eksik bilgiler) */
+
+/* ===== TEMALAR: ekran renkleri (çıktılar değişmez) · seçim bulutta tutulur, her cihazda aynı ===== */
+const TEMALAR = [["Buz Mavisi", "buz", "#ECEFF3", "#FFFFFF", "#34587C", "#3E6E9E", "#F7FAFD", "#EEF4FA", "#EAF2FA"], ["Haki", "haki", "#EDEFE7", "#FCFCF9", "#55683F", "#5E7148", "#F8F9F3", "#ECF0E2", "#EAEFDF"], ["Kum", "kum", "#F2EEE6", "#FFFDF9", "#86663A", "#8C6A3C", "#FCF8F1", "#F3EADB", "#F4EBDC"], ["Deniz", "deniz", "#E8F2F2", "#FFFFFF", "#2C7070", "#2F7A7A", "#F5FBFB", "#E4F2F1", "#E0F0EF"], ["Lacivert", "lacivert", "#F1F0EA", "#FFFFFD", "#23395B", "#2A4468", "#FBFAF6", "#ECEFF4", "#E6EBF3"], ["Grafit", "grafit", "#EFF0F2", "#FFFFFF", "#3F4756", "#4A5263", "#FAFAFB", "#EEF0F3", "#EBEDF0"], ["Orman", "orman", "#EAF2EC", "#FFFFFF", "#2A6444", "#2E6B4A", "#F6FBF7", "#E4F1E8", "#E1F0E6"], ["Kiremit", "kiremit", "#F4EEE9", "#FFFDFB", "#985237", "#A0573A", "#FDF8F5", "#F5E8DF", "#F6E7DD"], ["Çelik", "celik", "#E9EDF0", "#FDFEFE", "#44606F", "#4A6577", "#F7F9FB", "#E7EDF1", "#E3EBF0"], ["İndigo", "indigo", "#EEF0F6", "#FFFFFF", "#4A519A", "#555CA6", "#F8F8FD", "#ECEDF8", "#E9EAF7"]];
+const temaAl = () => { try { return localStorage.getItem("tskTema") || "buz"; } catch(e){ return "buz"; } };
+function temaUygula(k, yazma){ if(!TEMALAR.some(t => t[1] === k)) k = "buz"; if(k === "buz") delete document.documentElement.dataset.tema; else document.documentElement.dataset.tema = k;
+  const m = document.querySelector('meta[name="theme-color"]'); if(m){ const t = TEMALAR.find(x => x[1] === k); m.setAttribute("content", t[2]); }
+  if(!yazma){ try { localStorage.setItem("tskTema", k); } catch(e){} tercihGonder(); } }
+function temaAc(){ altPencere("tm-perde", "GÖRÜNÜM", "Tema seçin", () => `<p class="an-not" style="margin:0 2px 10px">Yalnız ekran renkleri değişir; PDF ve baskı çıktıları aynı kalır. Seçtiğiniz tema her cihazda aynı olur.</p><div class="tm-l">${TEMALAR.map(([ad, k, bg, pn, ac, tk, h1, h2, tz]) => `<button type="button" class="tm-k" data-tema="${k}" aria-pressed="${temaAl() === k}"><span class="tm-on" style="background:${bg}"><span class="tm-hero" style="background:linear-gradient(155deg,${h1},${h2})"><b style="background:conic-gradient(${tk} 70%,${tz} 0)"></b><span><i style="background:${ac};opacity:.85"></i><i style="background:${tk};opacity:.35"></i></span></span><span style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:5px"><i style="background:${pn}"></i><i style="background:${tz}"></i><i style="background:${pn}"></i></span></span><span class="tm-ad">${ad}${temaAl() === k ? "<small>Seçili</small>" : ""}</span></button>`).join("")}</div>`,
+    (b, kapat, yenile) => { if(b.dataset.tema){ temaUygula(b.dataset.tema); yenile(); } }, { z: "E8ECF1", r: "3D5A73" }); }
+document.addEventListener("click", e => { if(e.target.closest && e.target.closest("[data-tema-ac]")) temaAc(); });
 /* yoksayılan uyarılar (bu cihaza özel): anahtar tarihe bağlı; tarih değişirse uyarı yeniden çıkar */
 const dkAnah = x => [x.tur, x.t, ((x.a || "").match(/\d{2}\.\d{2}\.\d{4}/) || [""])[0]].join("|");
 const dkYok = () => { try { return JSON.parse(localStorage.getItem("dkYok") || "[]"); } catch(e){ return []; } };
@@ -4942,8 +4981,8 @@ function hzYaz(L){ try { localStorage.setItem("hzSira", JSON.stringify(L)); } ca
 /* kısayollar ve yoksayılan uyarılar bulutta da tutulur (bt/tercih): her cihazda aynı görünür; Kaydet beklemez, hemen yazılır */
 let tercihZ = 0;
 function tercihGonder(){ clearTimeout(tercihZ); tercihZ = setTimeout(() => { if(!db || !yazabilir || saltMi()) return; let hz = null, dy = []; try { hz = JSON.parse(localStorage.getItem("hzSira") || "null"); dy = JSON.parse(localStorage.getItem("dkYok") || "[]"); } catch(e){}
-  db.doc("bt/tercih").set({ hzSira: hz, dkYok: dy, zaman: Date.now() }).catch(() => {}); }, 500); }
-function tercihAl(v){ try { if(Array.isArray(v.hzSira)) localStorage.setItem("hzSira", JSON.stringify(v.hzSira)); if(Array.isArray(v.dkYok)) localStorage.setItem("dkYok", JSON.stringify(v.dkYok)); } catch(e){} try { anaCiz(); } catch(e){} }
+  db.doc("bt/tercih").set({ hzSira: hz, dkYok: dy, tema: temaAl(), zaman: Date.now() }).catch(() => {}); }, 500); }
+function tercihAl(v){ try { if(Array.isArray(v.hzSira)) localStorage.setItem("hzSira", JSON.stringify(v.hzSira)); if(Array.isArray(v.dkYok)) localStorage.setItem("dkYok", JSON.stringify(v.dkYok)); if(v.tema){ localStorage.setItem("tskTema", v.tema); temaUygula(v.tema, true); } } catch(e){} try { anaCiz(); } catch(e){} }
 function hzBelgeId(k){ if(k.startsWith("t:")){ const d = S.belgeler.find(x => x.tur === k.slice(2)); return d ? d.id : null; } return k.startsWith("d:") ? k.slice(2) : null; }
 function hzVarMi(k){ const L = hzListe(); if(L.includes(k)) return k; const id = hzBelgeId(k); return id ? L.find(x => hzBelgeId(x) === id) || null : null; }
 function hzEkleCikar(k, sessiz){ const L = hzListe(), v = hzVarMi(k); hzYaz(v ? L.filter(x => x !== v) : [...L, k]); if(!sessiz) bildir(v ? "Kısayollardan çıkarıldı" : "Kısayollara eklendi"); try { anaCiz(); } catch(e){} }
@@ -5001,7 +5040,7 @@ function anaCiz(){
       const ts = (k, r, i, on) => sat(`data-hz-t="${esc(k)}" aria-pressed="${on}"`, i, esc(r.ad), `<i class="ss-tik">${on ? "✓" : ""}</i>`, r.simge, on ? "" : " gizli");
       ic = `<div class="an-not">Dokunarak ekleyin ya da çıkarın. Sırasını değiştirmek için kısayola basılı tutun.</div>` + HZK.map(([k, r], i) => ts(k, r, i, true)).join("")
         + (aday.length ? `<div class="an-bas">Eklenebilecekler</div>` + aday.map(k => [k, hzCoz(k)]).filter(([, r]) => r).map(([k, r], i) => ts(k, r, i, false)).join("") : ""); }
-    ic += `<div class="an-alt2"><button type="button" class="an-alt" data-hz-duz>${hzDuzen ? "✓ Bitti" : "＋ Kısayol ekle / çıkar"}</button></div>`; }
+    ic += `<div class="an-alt2"><button type="button" class="an-alt" data-hz-duz>${hzDuzen ? "✓ Bitti" : "＋ Kısayol ekle / çıkar"}</button>${hzDuzen ? "" : `<button type="button" class="an-alt" data-tema-ac>◐ Tema</button>`}</div>`; }
   else if(anaSekme === "klasor"){ ic = mnGruplar().map((c, i) => sat(`data-mn-kat="${esc(c.anah)}"`, i, esc(c.ad), `<small>${c.uyeler.length > 1 ? esc(c.uyeler.map(mnKisa).join(" · ")) + " · " : ""}${c.top ? c.top + " öğe" : "boş"}</small>`, "", c.top ? "" : " soluk")).join(""); }
   else if(anaSekme === "gecmis"){ const B = S.belgeler.filter(d => !d.sablon).slice().sort((a, b) => String(AD[a.tur] || a.ad).localeCompare(String(AD[b.tur] || b.ad), "tr"));
     const SB = [...new Set(sonL.map(o => o.d).filter(Boolean))].map(id => B.find(d => d.id === id)).filter(Boolean).slice(0, 6), bs = (d, i) => sat(`data-gc-belge="${esc(d.id)}"`, i, esc(d.ad), '<small>eski hâlleri ›</small>', PANO_SIMGE[d.tur] || '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>');
@@ -13418,7 +13457,7 @@ function yerGeriYukle(){ if(SECIM.klasor || !OTURUM_DEVAM) return; try { const y
   bt("izinb", () => { if(acikTur() === "izinb" && !odakIcinde("#e-izinb")) izbhCiz(); });
   bt("hedefSet", () => { if(acikTur() === "hedef" && !odakIcinde("#e-hedef")) hdSetCiz(); });
   bt("hedef", () => { if(acikTur() === "hedef" && !odakIcinde("#e-hedef")){ hedefCiz(); hedefAyarCiz(); } });
-  db.doc("bt/tercih").onSnapshot(s => { if(!s.exists){ if(localStorage.getItem("hzSira") || localStorage.getItem("dkYok")) tercihGonder(); return; } tercihAl(s.data() || {}); }, () => {});
+  db.doc("bt/tercih").onSnapshot(s => { if(!s.exists){ if(localStorage.getItem("hzSira") || localStorage.getItem("dkYok") || localStorage.getItem("tskTema")) tercihGonder(); return; } tercihAl(s.data() || {}); }, () => {});
   db.collection("belgeler").onSnapshot(s => {
     S.yuklendi.belgeler = true; const yeni = s.docs.map(d => d.data());
     const yerel = S.belgeler.filter(d => kirli["belgeler/" + d.id] && !yeni.some(y => y.id === d.id));   // henüz kaydı dönmemiş yeni belgeler
