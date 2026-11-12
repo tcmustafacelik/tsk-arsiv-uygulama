@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "572";
+  const SURUM = "573";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3518,7 +3518,7 @@ header.ust .ara-kap{border:1px solid var(--line2)!important;box-shadow:none!impo
 .g-zoom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px} .g-zoom[hidden]{display:none} .g-zoom>span{font:600 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .g-zoom .ka-b{flex:0 1 260px;min-width:0} @media (max-width:520px){.g-zoom>span{display:none} .g-zoom .ka-b{flex:1 1 100%}}
 /* S559: ne eksik ne fazla düzeltmeleri */
 .bk-l{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px;margin-top:12px} .bk-k{display:flex;flex-direction:column;align-items:center;gap:4px;padding:10px 8px 8px;border:1px solid var(--line2);border-radius:10px;background:#fff} .bk-k svg{width:100%;height:54px;fill:#000} .bk-k.qr svg{width:96px;height:96px} .bk-k small{font:600 11.5px var(--f-ui);color:#333;text-align:center;overflow-wrap:anywhere} .bk-hata{font:600 11px var(--f-ui);color:#A3412F;text-align:center;padding:16px 0}
-.bk-is{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:14px} #bk-metin{width:100%;font:500 14px var(--f-ui)}
+.bk-yazi{display:grid;grid-template-columns:auto 1fr;align-items:center;gap:10px;margin-top:10px} .bk-yazi>span{font:600 12.5px var(--f-ui);color:var(--muted)} .bk-is{display:grid;grid-template-columns:2fr 1fr;gap:8px;margin-top:14px} #bk-metin{width:100%;font:500 14px var(--f-ui)}
 
 @media (max-width:700px){ html body #p-tablo .islem .p-pc{display:none!important} }
 @media (min-width:701px){ html body #p-tablo td.p-rtd{display:table-cell!important;white-space:nowrap;min-width:200px;width:200px;vertical-align:middle!important} html body #p-tablo td.p-rtd>input{width:calc(100% - 40px);min-width:120px!important;vertical-align:middle} html body #p-tablo .p-rsec{height:30px;padding:0 7px;margin-left:4px;vertical-align:middle} html body #p-tablo .p-rsec span{display:none} }
@@ -3957,7 +3957,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 572</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 573</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6513,34 +6513,36 @@ const bkDuz = t => String(t).replace(/[ÇçĞğİıÖöŞşÜü]/g, ch => BK_TR[
 function bkSvg(t){ const bar = c128Kod(bkDuz(t)); if(!bar) return null; const top = bar.reduce((a, [w]) => a + w, 0) + 20; let x = 10, h = "";
   bar.forEach(([w, siyah]) => { if(siyah) h += `<rect x="${x}" y="0" width="${w}" height="60"/>`; x += w; });
   return `<svg viewBox="0 0 ${top} 60" preserveAspectRatio="none" aria-hidden="true">${h}</svg>`; }
-let bkMetin = "", bkTur = "barkod", bkQrHazir = false;
+let bkMetin = "", bkTur = "barkod", bkQrHazir = false, bkYazi = (() => { try { return localStorage.getItem("bkYazi") !== "0"; } catch(e){ return true; } })();
 async function bkQr(){ for(const u of ["https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js", "https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.js", "https://cdn.jsdelivr.net/npm/qrcode-generator@1.4.4/qrcode.js"]){ if(window.qrcode) return true; try { await yukle(u); } catch(e){} } return !!window.qrcode; }
 const bkQrSvg = t => { try { const q = window.qrcode(0, "M"); q.addData(unescape(encodeURIComponent(String(t)))); q.make(); const n = q.getModuleCount(); let h = ""; for(let r = 0; r < n; r++) for(let c = 0; c < n; c++) if(q.isDark(r, c)) h += `M${c} ${r}h1v1h-1z`; return { svg: `<svg viewBox="-2 -2 ${n + 4} ${n + 4}" aria-hidden="true"><path d="${h}"/></svg>`, q, n }; } catch(e){ return null; } };
 const bkSatirlar = () => bkMetin.split(/\n/).map(x => x.trim()).filter(Boolean).slice(0, 120);
 function barkodAc(){ const ciz = () => { const L = bkSatirlar();
-    const on = L.map(t => { const g = bkTur === "barkod" ? bkSvg(t) : (bkQrHazir ? (bkQrSvg(t) || {}).svg : null); return `<div class="bk-k${bkTur === "qr" ? " qr" : ""}">${g || `<span class="bk-hata">${bkTur === "barkod" ? "Bu satırda barkoda uymayan işaret var" : "Karekod hazırlanıyor…"}</span>`}<small>${esc(t)}</small></div>`; }).join("");
+    const on = L.map(t => { const g = bkTur === "barkod" ? bkSvg(t) : (bkQrHazir ? (bkQrSvg(t) || {}).svg : null); return `<div class="bk-k${bkTur === "qr" ? " qr" : ""}">${g || `<span class="bk-hata">${bkTur === "barkod" ? "Bu satırda barkoda uymayan işaret var" : "Karekod hazırlanıyor…"}</span>`}${bkYazi ? `<small>${esc(t)}</small>` : ""}</div>`; }).join("");
     return `<div class="dl-seg bk-tur" style="display:grid;grid-template-columns:1fr 1fr"><button type="button" data-bk-tur="barkod" aria-pressed="${bkTur === "barkod"}">▥ Barkod</button><button type="button" data-bk-tur="qr" aria-pressed="${bkTur === "qr"}">▦ Karekod</button></div>
+      <div class="bk-yazi"><span>Altındaki yazı</span><div class="dl-seg" style="display:grid;grid-template-columns:1fr 1fr"><button type="button" data-bk-yazi="1" aria-pressed="${bkYazi}">Göster</button><button type="button" data-bk-yazi="0" aria-pressed="${!bkYazi}">Gizle</button></div></div>
       <label class="dl-al tam" style="margin-top:12px"><span>Çevrilecek metin <i>her satır ayrı etiket${bkTur === "barkod" ? " · Ç Ğ İ Ö Ş Ü barkoda C G I O S U olarak girer" : ""}</i></span><textarea id="bk-metin" rows="4" placeholder="ör. stok no, seri no, klasör adı…">${esc(bkMetin)}</textarea></label>
       <div class="bk-l">${on || `<div class="an-bos">Yukarıya yazdığın her satır burada ${bkTur === "barkod" ? "barkod" : "karekod"} olarak görünür</div>`}</div>
       <div class="bk-is"><button type="button" class="btn ana" data-bk="pdf"${L.length ? "" : " disabled"}>PDF · A4 etiket (${L.length})</button><button type="button" class="btn" data-bk="png"${L.length ? "" : " disabled"}>Resim</button></div>`; };
   const ap = altPencere("bk-perde", "ARAÇ", "Barkod / karekod", ciz, async (b, kapat, yenile) => {
     if(b.dataset.bkTur){ bkTur = b.dataset.bkTur; if(bkTur === "qr" && !bkQrHazir){ bkQrHazir = await bkQr(); if(!bkQrHazir) bildir("Karekod aracı yüklenemedi (internet?)"); } yenile(); return; }
+    if(b.dataset.bkYazi){ bkYazi = b.dataset.bkYazi === "1"; try { localStorage.setItem("bkYazi", bkYazi ? "1" : "0"); } catch(e){} yenile(); return; }
     if(b.dataset.bk === "pdf") return bkPdf(); if(b.dataset.bk === "png") return bkPng(); }, { z: "EEF2F6", r: "3F4A5A" });
   const p = $("#bk-perde"); p.oninput = e => { if(e.target.id !== "bk-metin") return; bkMetin = e.target.value; const pos = e.target.selectionStart; clearTimeout(p._z); p._z = setTimeout(() => { const g = document.createElement("div"); g.innerHTML = ciz(); const yeniL = g.querySelector(".bk-l"), yeniI = g.querySelector(".bk-is"); $("#bk-perde .bk-l")?.replaceWith(yeniL); $("#bk-perde .bk-is")?.replaceWith(yeniI); }, 300); }; }
 document.addEventListener("click", e => { if(e.target.closest && e.target.closest("[data-barkod-ac]")) barkodAc(); });
 async function bkPdf(){ const L = bkSatirlar(); if(!L.length) return; if(bkTur === "qr" && !(bkQrHazir = await bkQr())) return bildir("Karekod aracı yüklenemedi");
   const enUzun = Math.max(...L.map(t => (c128Kod(bkDuz(t)) || []).reduce((a, [w]) => a + w, 0))), doc = await yeniPdf({ kagit: "A4", yon: "dikey" }), cols = bkTur === "qr" ? 4 : Math.max(1, Math.min(3, Math.floor(190 / (enUzun * .26 + 14)))), rows = bkTur === "qr" ? 6 : 8,   /* çizgi en az ~0,26 mm: okuyucular ince barkodu okuyamaz */ mx = 10, my = 12, cw = (210 - 2 * mx) / cols, ch = (297 - 2 * my) / rows;
   L.forEach((t, i) => { const k = i % (cols * rows); if(i && !k) doc.addPage(); const x = mx + (k % cols) * cw, y = my + Math.floor(k / cols) * ch; doc.setDrawColor(215); doc.setLineWidth(.15); doc.roundedRect(x + 1.5, y + 1.5, cw - 3, ch - 3, 2, 2, "S"); doc.setFillColor(0, 0, 0);
-    if(bkTur === "barkod"){ const bar = c128Kod(bkDuz(t)); if(bar){ const top = bar.reduce((a, [w]) => a + w, 0), bw = cw - 12, u = bw / top; let xx = x + 6; bar.forEach(([w, siyah]) => { if(siyah) doc.rect(xx, y + 6, w * u, ch - 18, "F"); xx += w * u; }); } }
-    else { const r = bkQrSvg(t); if(r){ const side = Math.min(cw, ch) - 16, u = side / r.n, x0 = x + (cw - side) / 2, y0 = y + 5; for(let rr = 0; rr < r.n; rr++) for(let c = 0; c < r.n; c++) if(r.q.isDark(rr, c)) doc.rect(x0 + c * u, y0 + rr * u, u + .02, u + .02, "F"); } }
-    doc.setFont("LS", "normal"); let fs = 8.5; doc.setFontSize(fs); while(doc.getTextWidth(t) > cw - 8 && fs > 5){ fs -= .25; doc.setFontSize(fs); } doc.setTextColor(30); doc.text(t, x + cw / 2, y + ch - 5, { align: "center", maxWidth: cw - 6 }); });
+    if(bkTur === "barkod"){ const bar = c128Kod(bkDuz(t)); if(bar){ const top = bar.reduce((a, [w]) => a + w, 0), bw = cw - 12, u = bw / top; let xx = x + 6; bar.forEach(([w, siyah]) => { if(siyah) doc.rect(xx, y + 6, w * u, ch - (bkYazi ? 18 : 12), "F"); xx += w * u; }); } }
+    else { const r = bkQrSvg(t); if(r){ const side = Math.min(cw, ch) - (bkYazi ? 16 : 10), u = side / r.n, x0 = x + (cw - side) / 2, y0 = y + (bkYazi ? 5 : (ch - side) / 2); for(let rr = 0; rr < r.n; rr++) for(let c = 0; c < r.n; c++) if(r.q.isDark(rr, c)) doc.rect(x0 + c * u, y0 + rr * u, u + .02, u + .02, "F"); } }
+    if(!bkYazi) return; doc.setFont("LS", "normal"); let fs = 8.5; doc.setFontSize(fs); while(doc.getTextWidth(t) > cw - 8 && fs > 5){ fs -= .25; doc.setFontSize(fs); } doc.setTextColor(30); doc.text(t, x + cw / 2, y + ch - 5, { align: "center", maxWidth: cw - 6 }); });
   await dosyaVer("Barkod_etiketleri.pdf", doc.output("blob")); }
 async function bkPng(){ const L = bkSatirlar(); if(!L.length) return; if(bkTur === "qr" && !(bkQrHazir = await bkQr())) return bildir("Karekod aracı yüklenemedi");
   const W = 600, H = bkTur === "qr" ? 330 : 200, c = document.createElement("canvas"); c.width = W; c.height = H * L.length; const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height); x.fillStyle = "#000";
   L.forEach((t, i) => { const y = i * H;
-    if(bkTur === "barkod"){ const bar = c128Kod(bkDuz(t)); if(bar){ const top = bar.reduce((a, [w]) => a + w, 0), u = (W - 60) / top; let xx = 30; bar.forEach(([w, s]) => { if(s) x.fillRect(Math.round(xx), y + 20, Math.max(1, Math.round(w * u)), H - 70); xx += w * u; }); } }
-    else { const r = bkQrSvg(t); if(r){ const side = H - 70, u = side / r.n, x0 = (W - side) / 2; for(let rr = 0; rr < r.n; rr++) for(let cc = 0; cc < r.n; cc++) if(r.q.isDark(rr, cc)) x.fillRect(x0 + cc * u, y + 15 + rr * u, Math.ceil(u), Math.ceil(u)); } }
-    x.font = "600 20px Archivo, sans-serif"; x.textAlign = "center"; x.fillText(t, W / 2, y + H - 18, W - 20); });
+    if(bkTur === "barkod"){ const bar = c128Kod(bkDuz(t)); if(bar){ const top = bar.reduce((a, [w]) => a + w, 0), u = (W - 60) / top; let xx = 30; bar.forEach(([w, s]) => { if(s) x.fillRect(Math.round(xx), y + 20, Math.max(1, Math.round(w * u)), H - (bkYazi ? 70 : 40)); xx += w * u; }); } }
+    else { const r = bkQrSvg(t); if(r){ const side = H - (bkYazi ? 70 : 30), u = side / r.n, x0 = (W - side) / 2; for(let rr = 0; rr < r.n; rr++) for(let cc = 0; cc < r.n; cc++) if(r.q.isDark(rr, cc)) x.fillRect(x0 + cc * u, y + 15 + rr * u, Math.ceil(u), Math.ceil(u)); } }
+    if(bkYazi){ x.font = "600 20px Archivo, sans-serif"; x.textAlign = "center"; x.fillText(t, W / 2, y + H - 18, W - 20); } });
   const blob = await new Promise(r => c.toBlob(r, "image/png")); await dosyaVer(bkTur === "qr" ? "Karekodlar.png" : "Barkodlar.png", blob); }
 let kmGeri = null;
 const kmBelge = () => S.belgeler.find(x => x.tur === "kimlik" && !x.sablon);
