@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "533";
+  const SURUM = "534";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3764,7 +3764,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 533</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 534</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4923,8 +4923,17 @@ function kkKart(id, renk, baslik, alt, ic, o = {}){ const kapali = (o.kume || an
 /* hızlı erişim: hangi kutular görünsün (bu cihaza özel) */
 let hzDuzen = false;
 const hzGizli = () => { try { return JSON.parse(localStorage.getItem("hzGizli") || "[]"); } catch(e){ return []; } };
+/* kısayollar: sıralı anahtar listesi (bu cihaza özel) · t:tür (sabit kutu) · d:belge kimliği · b:klasör|bölüm */
+const HZ_TUR = ["personel", "kimlik", "silah", "zimmet", "elsenet", "izin", "gdhg", "izinb", "dilekce", "hedef", "yoklama", "sema", "spor", "baslik", "sertifika"];
+function hzListe(){ let L = null; try { L = JSON.parse(localStorage.getItem("hzSira") || "null"); } catch(e){}
+  if(!Array.isArray(L)){ const G = hzGizli(); L = HZ_TUR.filter(t => !G.includes(t)).map(t => "t:" + t); } return L.filter(k => typeof k === "string"); }
+function hzYaz(L){ try { localStorage.setItem("hzSira", JSON.stringify(L)); } catch(e){} }
+function hzBelgeId(k){ if(k.startsWith("t:")){ const d = S.belgeler.find(x => x.tur === k.slice(2)); return d ? d.id : null; } return k.startsWith("d:") ? k.slice(2) : null; }
+function hzVarMi(k){ const L = hzListe(); if(L.includes(k)) return k; const id = hzBelgeId(k); return id ? L.find(x => hzBelgeId(x) === id) || null : null; }
+function hzEkleCikar(k, sessiz){ const L = hzListe(), v = hzVarMi(k); hzYaz(v ? L.filter(x => x !== v) : [...L, k]); if(!sessiz) bildir(v ? "Kısayollardan çıkarıldı" : "Kısayollara eklendi"); try { anaCiz(); } catch(e){} }
+const hzMenu = k => { const v = hzVarMi(k); return { ad: v ? "Kısayollardan çıkar" : "Kısayollara ekle", alt: v ? "ana sayfadaki kısayol listesinden kalkar" : "ana sayfada Kısayollar sekmesinde görünür", ik: "yildiz", f: () => hzEkleCikar(k) }; };
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-hz-duz],[data-hz-t]"); if(!b) return; e.stopPropagation();
-  if(b.dataset.hzDuz != null){ hzDuzen = !hzDuzen; return anaCiz(); } const G = hzGizli(), t = b.dataset.hzT, Y = G.includes(t) ? G.filter(x => x !== t) : [...G, t]; try { localStorage.setItem("hzGizli", JSON.stringify(Y)); } catch(_){} anaCiz(); }, true);
+  if(b.dataset.hzDuz != null){ hzDuzen = !hzDuzen; return anaCiz(); } hzEkleCikar(b.dataset.hzT, true); }, true);
 function anaCiz(){
   const sa = new Date().getHours(); $("#ana-selam").textContent = sa < 6 ? "İyi geceler" : sa < 12 ? "Günaydın" : sa < 18 ? "İyi günler" : "İyi akşamlar";
   $("#ana-tarih").textContent = new Date().toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
@@ -4937,7 +4946,12 @@ function anaCiz(){
     yoklama: () => `${(S.yoklama.rows || []).length} kişi`, gdhg: () => `${(S.gdhg?.kisiler || []).filter(k => k.ad).length} kişi · ${1 + ((S.gdhgSet?.liste || []).length)} kayıt`,
     izinb: () => `${(S.izinb?.kisiler || []).filter(k => k.ad).length} belge`, hedef: () => `${(S.hedef.rows || []).length} hedef`, sema: d => `${((d && d.sema && d.sema.kutular) || []).length} kutu`, baslik: d => `${((d && d.bs && d.bs.sayfalar) || []).length} başlık`, spor: d => { const G = spGenel(spVeri(d)); return G.bas + G.bsz ? `%${spSayiYaz(G.oran)} başarı` : `${spVeri(d).kisiler.length} kişi`; } };
   const AD = { sertifika: "Sertifikalar", kimlik: "Personel kimliği", silah: "Silahlar", zimmet: "Zimmet", elsenet: "El senetleri", dilekce: "Dilekçe", personel: "Personel", izin: "İzin çizelgesi", yoklama: "Yoklama", gdhg: "GDHG onay", izinb: "İzin belgeleri", hedef: "Hedefler", sema: "Teşkilat", baslik: "Başlık yap", spor: "Spor testi" };
-  const hzGiz = hzGizli(), turHep = ["personel", "kimlik", "silah", "zimmet", "elsenet", "izin", "gdhg", "izinb", "dilekce", "hedef", "yoklama", "sema", "spor", "baslik", "sertifika"].map(t => ({ t, d: S.belgeler.find(x => x.tur === t) })).filter(o => o.d), turler = hzDuzen ? turHep : turHep.filter(o => !hzGiz.includes(o.t));
+  const KLS_SIM = `<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/>`;
+  const hzYer = d => { const y = (d.yerler || [])[0]; if(!y) return ""; const ku = klasorBul(y.k), bl = ku && bolumBul(y.k, y.b); return ku ? (ku.kisa || ku.ad) : ""; };
+  const hzCoz = k => { const v = k.slice(2);
+    if(k.startsWith("t:")){ const d = S.belgeler.find(x => x.tur === v); return d ? { ad: AD[v] || d.ad, sag: say[v] ? say[v](d) : "", simge: PANO_SIMGE[v], veri: `data-pano-d="${esc(d.id)}"` } : null; }
+    if(k.startsWith("d:")){ const d = S.belgeler.find(x => x.id === v); if(!d || d.gizli) return null; let sg = ""; try { sg = say[d.tur] ? say[d.tur](d) : ""; } catch(e){} return { ad: d.ad, sag: sg || hzYer(d), simge: PANO_SIMGE[d.tur] || PANO_SIMGE.belge, veri: `data-pano-d="${esc(d.id)}"` }; }
+    if(k.startsWith("b:")){ const [kk, bb] = v.split("|"), ku = klasorBul(kk), bl = ku && bolumBul(kk, bb); return bl ? { ad: bl.ad, sag: ku.kisa || ku.ad, simge: KLS_SIM, veri: `data-son-k="${esc(kk)}" data-son-b="${esc(bb)}"` } : null; } return null; };
   /* A tasarımı: dört sayı · ince dönem satırı · sekmeler (Kısayollar / Klasörler / Son / Uyarılar) · sırtlı satırlar */
   const dk = dikkatListesi().filter(x => !(bas && son && x.tur === "gdhg" && /dönemi bitiyor/.test(x.t)));
   let sonL = []; try { sonL = JSON.parse(localStorage.getItem("sonlar") || "[]"); } catch(e){}
@@ -4961,9 +4975,15 @@ function anaCiz(){
   const svg = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const sat = (veri, i, ad, sag, simge, sinif = "") => `<button type="button" class="sirt-sat${sinif}" ${veri} style="--sr:${SIRT[i % SIRT.length]}">${simge ? `<span class="ss-s">${svg(simge)}</span>` : ""}<b>${ad}</b>${sag || ""}</button>`;
   let ic = "";
-  if(anaSekme === "kisa"){ ic = turler.map(({ t, d }, i) => { const gizli = hzDuzen && hzGiz.includes(t), al = (say[t] ? say[t](d) : "");
-      return sat(hzDuzen ? `data-hz-t="${t}" aria-pressed="${!hzGiz.includes(t)}"` : `data-pano-d="${esc(d.id)}"`, i, esc(AD[t] || d.ad), hzDuzen ? `<i class="ss-tik">${gizli ? "" : "✓"}</i>` : `<small>${esc(al)}</small>`, PANO_SIMGE[t], gizli ? " gizli" : ""); }).join("")
-      + `<div class="an-alt2"><button type="button" class="an-alt" data-hz-duz>${hzDuzen ? "✓ Bitti" : "⚙ Kısayolları seç"}</button><button type="button" class="an-alt" data-gz-ayar>👁 Gizlilik modu</button></div>`; }
+  if(anaSekme === "kisa"){ const HZK = hzListe().map(k => [k, hzCoz(k)]).filter(([, r]) => r);
+    if(!hzDuzen) ic = HZK.length ? HZK.map(([k, r], i) => sat(`${r.veri} data-hz-k="${esc(k)}"`, i, esc(r.ad), `<small>${esc(r.sag)}</small>`, r.simge)).join("") : `<div class="an-bos">Kısayol yok · aşağıdan ekleyin</div>`;
+    else { const ids = new Set(HZK.map(([k]) => hzBelgeId(k)).filter(Boolean)), aday = [];
+      HZ_TUR.forEach(t => { const d = S.belgeler.find(x => x.tur === t); if(d && !ids.has(d.id)){ ids.add(d.id); aday.push("t:" + t); } });
+      S.belgeler.filter(d => !d.sablon && !d.gizli && !ids.has(d.id)).sort((a, b) => String(a.ad).localeCompare(String(b.ad), "tr")).forEach(d => aday.push("d:" + d.id));
+      const ts = (k, r, i, on) => sat(`data-hz-t="${esc(k)}" aria-pressed="${on}"`, i, esc(r.ad), `<i class="ss-tik">${on ? "✓" : ""}</i>`, r.simge, on ? "" : " gizli");
+      ic = `<div class="an-not">Dokunarak ekleyin ya da çıkarın. Sırasını değiştirmek için kısayola basılı tutun.</div>` + HZK.map(([k, r], i) => ts(k, r, i, true)).join("")
+        + (aday.length ? `<div class="an-bas">Eklenebilecekler</div>` + aday.map(k => [k, hzCoz(k)]).filter(([, r]) => r).map(([k, r], i) => ts(k, r, i, false)).join("") : ""); }
+    ic += `<div class="an-alt2"><button type="button" class="an-alt" data-hz-duz>${hzDuzen ? "✓ Bitti" : "＋ Kısayol ekle / çıkar"}</button><button type="button" class="an-alt" data-gz-ayar>👁 Gizlilik modu</button></div>`; }
   else if(anaSekme === "klasor"){ ic = mnGruplar().map((c, i) => sat(`data-mn-kat="${esc(c.anah)}"`, i, esc(c.ad), `<small>${c.uyeler.length > 1 ? esc(c.uyeler.map(mnKisa).join(" · ")) + " · " : ""}${c.top ? c.top + " öğe" : "boş"}</small>`, "", c.top ? "" : " soluk")).join(""); }
   else if(anaSekme === "gecmis"){ const B = S.belgeler.filter(d => !d.sablon).slice().sort((a, b) => String(AD[a.tur] || a.ad).localeCompare(String(AD[b.tur] || b.ad), "tr"));
     const SB = [...new Set(sonL.map(o => o.d).filter(Boolean))].map(id => B.find(d => d.id === id)).filter(Boolean).slice(0, 6), bs = (d, i) => sat(`data-gc-belge="${esc(d.id)}"`, i, esc(d.ad), '<small>eski hâlleri ›</small>', PANO_SIMGE[d.tur] || '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>');
@@ -4971,7 +4991,7 @@ function anaCiz(){
       <div class="gc-ana2"><button type="button" class="gc-ana-k" data-gc-cop="1">${gcIk("cop", "#F7E6E2", "#A3412F")}<b>Silinenler</b><small>silinen satır ve belgeleri geri getir</small></button><button type="button" class="gc-ana-k" data-gc-temiz="1">${gcIk("supur", "#F3ECDD", "#7A5A25")}<b>Geçmişi temizle</b><small>eski kopyaları sil, yalnız şimdiki kalsın</small></button></div>
       ${SB.length ? `<div class="an-bas">Son çalıştığınız belgeler</div>` + SB.map(bs).join("") : ""}
       <details class="gc-tum"><summary>Bütün belgeler <small>${B.length}</small></summary>${B.map(bs).join("")}</details>`; }
-  else if(anaSekme === "son"){ ic = sonL.length ? sonL.map((o, i) => sat(`data-son-k="${esc(o.k)}" data-son-b="${esc(o.b)}"${o.d ? ` data-son-d="${esc(o.d)}"` : ""}`, i, esc(o.ad), `<small>${esc(o.alt)}</small>`, o.tur ? PANO_SIMGE[o.tur] || PANO_SIMGE.belge : `<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/>`, " iki")).join("") : `<div class="an-bos">Henüz açılan belge yok</div>`; }
+  else if(anaSekme === "son"){ ic = sonL.length ? sonL.map((o, i) => sat(`data-son-k="${esc(o.k)}" data-son-b="${esc(o.b)}"${o.d ? ` data-son-d="${esc(o.d)}"` : ""} data-hz-k="${esc(o.d ? "d:" + o.d : "b:" + o.k + "|" + o.b)}"`, i, esc(o.ad), `<small>${esc(o.alt)}</small>`, o.tur ? PANO_SIMGE[o.tur] || PANO_SIMGE.belge : `<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/>`, " iki")).join("") : `<div class="an-bos">Henüz açılan belge yok</div>`; }
   else { ic = dk.map((x, i) => sat(`data-dk="${esc(x.tur)}"`, 3, esc(x.t), `<small>${esc(x.a)}</small>`, "", " iki uyari")).join(""); }
   { const z = document.querySelector("#ust-uyari i"); if(z) z.hidden = !dk.length; }
   const SB2 = { kisa: ["Kısayollar", "sık açtığın belgeler"], klasor: ["Klasörler", "bütün arşiv"], son: ["Son çalışılanlar", "en son açtıkların"], gecmis: ["Geçmiş", "eski hâllere dön"], uyari: ["Dikkat edilecekler", dk.length + " uyarı"] }[anaSekme] || ["", ""];
@@ -13974,6 +13994,10 @@ uzE({ k: "sl", kap: "#sl-govde .sl-l", satir: ".sl-r", id: el => (el.querySelect
 [["spor", "data-sp-ac"], ["sicil", "data-sa-ac"]].forEach(([k, a]) => { const Q = SQ[k]; uzE({ k, kap: k === "spor" ? "#sp-govde .sa-blok" : "#sa-govde .sa-blok", satir: ".yk-k", id: el => (el.querySelector(`[${a}]`) || {}).getAttribute?.(a), dizi: () => Q.dizi(), kaydet: () => Q.kaydet(), ciz: () => Q.ciz() }); });
 uzE({ k: "gdhg", kap: "#gk-perde .ap-liste", satir: "[data-gk]", perde: "gk-perde", ac: id => { gdSecili = id; gdBelgeCiz(); }, id: el => el.dataset.gk, ad: el => (el.querySelector(".ap-ad") || el).childNodes[0].textContent, dizi: () => SQ.gdhg.dizi(), kaydet: () => SQ.gdhg.kaydet(), ciz: () => SQ.gdhg.ciz() });
 uzE({ k: "kart", kap: "#b-belgeler, #b-dosyalar", satir: ".kart.bkk:not(.gizli-kart)", vekil: true, id: () => "x", ad: el => (el.querySelector(".ad") || {}).textContent || "" });
+uzE({ k: "hz", kap: "#ana-pano .an-ic", satir: ".sirt-sat[data-hz-k]", id: el => el.dataset.hzK, ozel: (k, el) => { const I = [{ ad: "Aç", ik: "ac", f: () => el.click() }];
+  if(anaSekme === "kisa" && hzListe().includes(k)){ const tas = y => () => { const L = hzListe(), i = L.indexOf(k), j = y === "ust" ? 0 : y === "alt" ? L.length - 1 : i + y; if(i < 0 || j < 0 || j >= L.length || j === i) return bildir("Zaten en " + (y === "ust" || y < 0 ? "üstte" : "altta")); L.splice(i, 1); L.splice(j, 0, k); hzYaz(L); anaCiz(); bildir(`${j + 1}. sıraya taşındı`); };
+    I.push({ ad: "Yukarı taşı", ik: "yuk", f: tas(-1) }, { ad: "Aşağı taşı", ik: "asa", f: tas(1) }, { ad: "En üste taşı", ik: "ust", f: tas("ust") }, { ad: "En alta taşı", ik: "alt", f: tas("alt") }); }
+  I.push(hzMenu(k)); return I; } });
 const uzEtiket = (e, el) => { const a = e.ad ? e.ad(el) : ""; if(a) return a.trim(); const b = el.querySelector("b") || el.querySelector(".ad") || el.querySelector("td:nth-child(2)"); return ((b && b.textContent) || el.textContent || "").trim().split("\n")[0].trim() || "Satır"; };
 function uzBul(t){ if(!t || !t.closest || t.closest("input,textarea,select,[contenteditable=true]") || document.documentElement.classList.contains("salt")) return null; const perde = t.closest(".ap-perde,.imz-perde");
   for(const e of UZ){ if(perde && (!e.perde || perde.id !== e.perde)) continue; const el = t.closest(e.satir); if(el && el.closest(e.kap)) return { e, el }; } return null; }
@@ -13988,10 +14012,12 @@ function uzSil(e, id, ad){ let geri;
   else { const L = e.dizi(), i = uzIndeks(e, L, id); if(i < 0) return; const [x] = L.splice(i, 1); e.kaydet(); geri = () => { L.splice(i, 0, x); e.kaydet(); }; }
   (e.ciz || (() => {}))(); geriAlinabilir(`${ad} silindi`, () => { geri && geri(); (e.ciz || (() => {}))(); }); }
 const UZ_IK = { ac: '<path d="M4 20h4L19 9l-4-4L4 16z"/>', yuk: '<path d="M12 19V5M6 11l6-6 6 6"/>', asa: '<path d="M12 5v14M6 13l6 6 6-6"/>', ust: '<path d="M5 4h14M12 20V8M7 13l5-5 5 5"/>', alt: '<path d="M5 20h14M12 4v12M7 11l5 5 5-5"/>',
-  kop: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', tas: '<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>', sec: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/>', sil: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/>', dug: '<circle cx="12" cy="12" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>' };
+  kop: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', tas: '<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>', sec: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/>', sil: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/>', dug: '<circle cx="12" cy="12" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>', yildiz: '<path d="M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/>' };
 function uzAc({ e, el }){ const id = e.id(el); if(id == null) return; const ad = uzEtiket(e, el), I = [];
   if(e.perde){ const k = window.TSK_KATMAN && window.TSK_KATMAN[e.perde]; if(k) k(); }   /* liste penceresi kapanır, işlemler onun yerine açılır */
-  if(e.vekil){ const ac = el.querySelector("[data-ac],[data-dsy-gor]"); if(ac) I.push({ ad: "Aç", ik: "ac", f: () => ac.click() });
+  if(e.ozel) I.push(...e.ozel(id, el));
+  else if(e.vekil){ const ac = el.querySelector("[data-ac],[data-dsy-gor]"); if(ac) I.push({ ad: "Aç", ik: "ac", f: () => ac.click() });
+    { const bid = el.querySelector("[data-ac]")?.dataset.ac; if(bid && S.belgeler.some(x => x.id === bid && !x.sablon)) I.push(hzMenu("d:" + bid)); }
     const gor = new Set(); el.querySelectorAll("button").forEach(b => { if(b.disabled || b.matches(".uz-dug,[data-alt-ayrac]") || (b.offsetParent === null && !b.closest(".bkk-is") && !b.classList.contains("bkk-kalem"))) return; const t = (b.getAttribute("aria-label") || b.title || b.textContent || "").replace(/\s+/g, " ").trim(); if(!t || gor.has(t) || b.matches("[data-ac]")) return; gor.add(t);
       const sil = /sil/i.test(t) || b.classList.contains("sil"); I.push({ ad: t.replace(new RegExp("^" + ad.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "\\s*"), "").replace(/^belgesini\s*/i, "").replace(/^./, c => c.toLocaleUpperCase("tr")), ik: sil ? "sil" : /taşı/i.test(t) ? "tas" : /ad|düzenle/i.test(t) ? "ac" : /çoğalt|kopya/i.test(t) ? "kop" : /indir/i.test(t) ? "asa" : "dug", kirmizi: sil, f: () => b.click() }); }); }
   else { I.push({ ad: "Aç / düzenle", ik: "ac", f: () => { if(e.ac) return e.ac(id); const h = el.matches("button,[data-ac]") ? el : el.querySelector("button,[data-ac],td") || el; h.click(); } });
@@ -14000,7 +14026,7 @@ function uzAc({ e, el }){ const id = e.id(el); if(id == null) return; const ad =
     if(e.ts) I.push({ ad: "Seç", alt: "birden çok satırı birlikte silmek ya da işlemek için", ik: "sec", f: () => { for(const x in tsSec) tsSec[x] = null; tsSec[e.ts] = new Set([id]); tsUygula(); } });
     I.push({ ad: "Sil", alt: "yanlışlıkla olursa altta “Geri al” çıkar", ik: "sil", kirmizi: true, f: () => uzSil(e, id, ad) }); }
   if(navigator.vibrate) try { navigator.vibrate(12); } catch(x){}
-  const RK = { ac: ["#E4EDF7", "#3F6487"], yuk: ["#E3EEF0", "#2F6670"], asa: ["#E3EEF0", "#2F6670"], ust: ["#E3EEF0", "#2F6670"], alt: ["#E3EEF0", "#2F6670"], kop: ["#ECE6F4", "#5E4A86"], tas: ["#F3ECDD", "#7A5A25"], sec: ["#E3F1E4", "#2F6B3E"], sil: ["#F7E6E2", "#A3412F"], dug: ["#EEF1F4", "#55636F"] };
+  const RK = { ac: ["#E4EDF7", "#3F6487"], yuk: ["#E3EEF0", "#2F6670"], asa: ["#E3EEF0", "#2F6670"], ust: ["#E3EEF0", "#2F6670"], alt: ["#E3EEF0", "#2F6670"], kop: ["#ECE6F4", "#5E4A86"], tas: ["#F3ECDD", "#7A5A25"], sec: ["#E3F1E4", "#2F6B3E"], sil: ["#F7E6E2", "#A3412F"], dug: ["#EEF1F4", "#55636F"], yildiz: ["#FBEFD8", "#B0711F"] };
   const ik = x => { const [z, c] = RK[x.ik] || RK.dug; return `<span class="ap-sim uz-ik" style="background:${z};color:${c}"><svg viewBox="0 0 24 24">${UZ_IK[x.ik] || UZ_IK.dug}</svg></span>`; };
   const TS = ["yuk", "asa", "ust", "alt"], KIS = { yuk: "Yukarı", asa: "Aşağı", ust: "En üste", alt: "En alta" }, tas = I.map((x, i) => [x, i]).filter(([x]) => TS.includes(x.ik) && /taşı$/.test(x.ad)), dig = I.map((x, i) => [x, i]).filter(([x]) => !tas.some(([y]) => y === x));
   altPencere("ks-perde", "İŞLEMLER", ad, () => `<div class="ap-liste">${dig.filter(([x]) => x.ik === "ac").map(([x, i]) => apSatir(`data-uz="${i}"`, ik(x), esc(x.ad), "", { alt: x.alt ? esc(x.alt) : "" })).join("")}</div>
