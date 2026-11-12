@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "557";
+  const SURUM = "558";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3306,7 +3306,7 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
  .ust-ik{display:inline-grid!important}
  header.ust .durum span{display:none} header.ust .durum{padding:0!important;width:38px;height:38px;justify-content:center;border-radius:50%}
 }
-.ust-ik{display:none;place-items:center;width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:#292C33;cursor:pointer;position:relative} .ust-ik svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+#ust-goz{display:inline-grid!important} @media (min-width:701px){ header.ust #ust-goz{order:5;margin-left:auto} header.ust .durum{order:6} header.ust .ara-kap{order:4} } .ust-ik{display:none;place-items:center;width:38px;height:38px;border-radius:50%;border:0;background:transparent;color:#292C33;cursor:pointer;position:relative} .ust-ik svg{width:23px;height:23px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .ust-ik i{position:absolute;top:4px;right:4px;width:8px;height:8px;border-radius:50%;background:#C0573F} .ust-ik i[hidden]{display:none}
 .an-seg2 button{transition:flex .34s cubic-bezier(.3,.8,.3,1),background-color .34s,color .34s} .an-seg2 button span{display:inline-block!important;opacity:0;max-width:0;overflow:hidden;transition:opacity .25s .08s,max-width .34s} .an-seg2 button[aria-selected="true"] span{opacity:1;max-width:130px}
 .an-kart.gir-sag{animation:anGirSag .34s cubic-bezier(.25,.8,.3,1)} .an-kart.gir-sol{animation:anGirSol .34s cubic-bezier(.25,.8,.3,1)}
@@ -3929,7 +3929,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 557</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 558</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5262,7 +5262,7 @@ function gzDurum(){ const el = document.getElementById("gz-durum"); if(!el) retu
   let d, c; if(canli){ d = "Hareket sensörü çalışıyor"; c = "ok"; } else if(GZD.izin === "yok"){ d = "Hareket izni verilmedi"; c = "hata"; } else if(!window.DeviceMotionEvent){ d = "Bu cihaz / tarayıcı hareket sensörü vermiyor"; c = "hata"; } else { d = iosIzin ? "Sensör için izin gerekiyor" : "Sensörden veri bekleniyor"; c = "bekle"; }
   const ac = document.querySelector('#gz-perde [data-gz="ac"]'); if(ac) ac.setAttribute("aria-pressed", gzAcik());
   el.dataset.d = c; el.querySelector(".gz-d-y").textContent = d; const b = el.querySelector("button"); if(b) b.hidden = c === "ok";
-  const t = document.getElementById("gz-test"); if(t) t.textContent = GZD.mesaj || "Telefonu elinde tut, arkasına parmağınla iki kez hızlı vur"; }
+  const t = document.getElementById("gz-test"); if(t) t.textContent = GZD.mesaj || (GZ_TABLET ? "Tableti elinde tut, arkasına iki kez hızlı vur" : "Telefonu elinde tut, arkasına parmağınla iki kez hızlı vur"); }
 setInterval(() => { if(document.getElementById("gz-durum")) gzDurum(); }, 1000);
 /* göz simgesine basılı tutunca (bilgisayarda sağ tık) gizlilik ayarları açılır */
 let gzBasZ = 0, gzBasSon = 0;
@@ -5272,9 +5272,12 @@ document.addEventListener("contextmenu", e => { if(!(e.target.closest && e.targe
 document.addEventListener("click", async e => { const b = e.target.closest && e.target.closest("#ust-goz"); if(!b) return; if(Date.now() - gzBasSon < 900) return;
   if(!gzOku("tskGzIpucu", "")){ gzYaz("tskGzIpucu", "1"); setTimeout(() => bildir("Gizlilik ayarları için göz simgesine basılı tutun"), 400); } if(!gzOku("tskGzIzin", "")){ gzYaz("tskGzIzin", "1"); await gzIzin(); } gzAyarla(!gzAcik()); });
 /* sallama: kısa sürede üç güçlü sarsıntı */
+/* tablet: büyük ve ağır gövde, darbe ve sarsıntı daha zayıf ölçülür → eşikler düşer. iOS/iPadOS: izin isteyen tek platform, iPad masaüstü kimliğiyle de doğru tanınır */
+const GZ_TABLET = (() => { try { const k = Math.min(screen.width, screen.height); return navigator.maxTouchPoints > 0 && k >= 600; } catch(e){ return false; } })();
+const GZ_IOS = !!(window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") || /iPhone|iPad|iPod/.test(navigator.userAgent) || (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1);
 const GZS = { t: [], son: 0, once: null };
 window.addEventListener("devicemotion", e => { if(gzOku("tskGzSalla", "1") !== "1" || document.visibilityState !== "visible") return; const a = e.accelerationIncludingGravity || e.acceleration; if(!a || a.x == null) return;
-  const p = GZS.once; GZS.once = { x: a.x, y: a.y, z: a.z }; if(!p) return; const d = Math.abs(a.x - p.x) + Math.abs(a.y - p.y) + Math.abs(a.z - p.z), n = Date.now(); if(d < 28) return;
+  const p = GZS.once; GZS.once = { x: a.x, y: a.y, z: a.z }; if(!p) return; const d = Math.abs(a.x - p.x) + Math.abs(a.y - p.y) + Math.abs(a.z - p.z), n = Date.now(); if(d < (GZ_TABLET ? 20 : 28)) return;
   GZS.t = GZS.t.filter(x => n - x < 800); GZS.t.push(n); if(GZS.t.length < 3 || n - GZS.son < 1500) return; GZS.son = n; GZS.t = []; gzAyarla(!gzAcik()); });
 /* arkasına iki kez vurma: ekrana dik, kısa iki darbe (ekrana dokunurken, yürürken çalışmaz) */
 const GZ_T = { l: 4, m: 2.4, h: 1.5 }, GZB = { g: null, h: [], k: 0, sonK: 0, son: 0, dok: 0, oz: 0 };
@@ -5282,19 +5285,19 @@ const GZ_T = { l: 4, m: 2.4, h: 1.5 }, GZB = { g: null, h: [], k: 0, sonK: 0, so
 window.addEventListener("devicemotion", e => { if(gzOku("tskGzVur", "1") !== "1" || document.visibilityState !== "visible") return; const n = Date.now(); let ax, ay, az; const a = e.acceleration;
   if(a && a.z != null){ ax = a.x || 0; ay = a.y || 0; az = a.z; } else { const g = e.accelerationIncludingGravity; if(!g || g.z == null) return; if(!GZB.g) GZB.g = { x: g.x, y: g.y, z: g.z }; const k = .85; GZB.g = { x: k * GZB.g.x + (1 - k) * g.x, y: k * GZB.g.y + (1 - k) * g.y, z: k * GZB.g.z + (1 - k) * g.z }; ax = g.x - GZB.g.x; ay = g.y - GZB.g.y; az = g.z - GZB.g.z; }
   const dz = az - GZB.oz; GZB.oz = az; const z = Math.max(Math.abs(az), Math.abs(dz) * .75);
-  const m = Math.abs(ax) + Math.abs(ay) + Math.abs(az), T = GZ_T[gzOku("tskGzHas", "m")] || 2.4, once = GZB.h.filter(h => n - h[0] > 110 && n - h[0] < 600); GZB.h.push([n, m]); GZB.h = GZB.h.filter(h => n - h[0] < 600);
+  const m = Math.abs(ax) + Math.abs(ay) + Math.abs(az), T = (GZ_T[gzOku("tskGzHas", "m")] || 2.4) * (GZ_TABLET ? .65 : 1), once = GZB.h.filter(h => n - h[0] > 110 && n - h[0] < 600); GZB.h.push([n, m]); GZB.h = GZB.h.filter(h => n - h[0] < 600);
   if(z < T || Math.abs(az) < 1.1 * Math.max(Math.abs(ax), Math.abs(ay))) return; if(n - GZB.sonK < 90) return; GZB.sonK = n; if(n - GZB.dok < 350){ GZB.k = 0; return; }
   const ikinci = GZB.k && n - GZB.k >= 100 && n - GZB.k <= 650; if(ikinci){ GZB.k = 0; if(n - GZB.son < 1200) return; GZB.son = n; GZD.mesaj = "İki vuruş algılandı ✓ Gizlilik " + (gzAcik() ? "kapandı" : "açıldı"); gzAyarla(!gzAcik()); gzDurum(); return; }
   const gurultu = once.length > 2 && once.reduce((s, h) => s + h[1], 0) / once.length > T * .55; GZB.k = gurultu ? 0 : n; if(!gurultu && document.getElementById("gz-test")){ GZD.mesaj = "1. vuruş algılandı — hemen bir kez daha vur"; gzDurum(); } });
 /* ters çevirme: ekran aşağı bakacak şekilde masaya koyunca gizle (yalnız açar) */
 const GZT = { bas: 0, son: 0 };
 window.addEventListener("devicemotion", e => { if(gzOku("tskGzTers", "1") !== "1" || document.visibilityState !== "visible") return; const g = e.accelerationIncludingGravity; if(!g || g.z == null) return; const n = Date.now();
-  const ters = Math.abs(g.z) > 8.6 && Math.abs(g.x) < 2.5 && Math.abs(g.y) < 2.5 && (/iPhone|iPad|iPod/.test(navigator.userAgent) ? g.z > 0 : g.z < 0);
+  const ters = Math.abs(g.z) > 8.6 && Math.abs(g.x) < 2.5 && Math.abs(g.y) < 2.5 && (GZ_IOS ? g.z > 0 : g.z < 0);
   if(!ters){ GZT.bas = 0; return; } if(!GZT.bas) GZT.bas = n; if(n - GZT.bas > 700 && n - GZT.son > 3000 && !gzAcik()){ GZT.son = n; gzAyarla(true, true); } });
 /* ayarlar penceresi */
 function gzAyarAc(){ altPencere("gz-perde", "GİZLİLİK MODU", "Kişisel bilgileri gizle", () => { const s = gzOku("tskGzHas", "m"), sat = (id, ad, alt, on) => `<button type="button" class="ap-sat gz-sat" data-gz="${id}" aria-pressed="${on}"><span class="ap-ad">${ad}<small>${alt}</small></span><i class="gz-anah"></i></button>`;
     return `<p class="gc-not" style="margin:0 0 10px">Açıkken T.C. kimlik no, telefon, IBAN, adres ve manifesto mesajı bulanıklaşır. Kalabalık bir yerde ekranı gösterirken işe yarar.</p><div class="ap-liste">
-      ${sat("ac", "Şimdi gizle", "Üstteki göz simgesiyle de açılıp kapanır", gzAcik())}${sat("salla", "Telefonu sallayınca aç / kapat", "Üç kez kısa ve güçlü salla", gzOku("tskGzSalla", "1") === "1")}${sat("vur", "Arkasına iki kez vurunca aç / kapat", "Parmağınla arkaya iki kez hızlı ve net vur", gzOku("tskGzVur", "1") === "1")}${sat("ters", "Ters çevirince gizle", "Ekranı aşağı bakacak şekilde koyunca gizlenir", gzOku("tskGzTers", "1") === "1")}</div>
+      ${sat("ac", "Şimdi gizle", "Üstteki göz simgesiyle de açılıp kapanır", gzAcik())}${sat("salla", "Telefonu sallayınca aç / kapat", "Üç kez kısa ve güçlü salla", gzOku("tskGzSalla", "1") === "1")}${sat("vur", "Arkasına iki kez vurunca aç / kapat", GZ_TABLET ? "Tablette arkaya iki kez net vur (hassasiyet otomatik artırıldı)" : "Parmağınla arkaya iki kez hızlı ve net vur", gzOku("tskGzVur", "1") === "1")}${sat("ters", "Ters çevirince gizle", "Ekranı aşağı bakacak şekilde koyunca gizlenir", gzOku("tskGzTers", "1") === "1")}</div>
       <div class="gz-durum" id="gz-durum" data-d="bekle"><i></i><span class="gz-d-y">Kontrol ediliyor…</span><button type="button" data-gz-izin hidden>İzin ver</button></div>
       <div class="gz-test" id="gz-test">Telefonu elinde tut, arkasına parmağınla iki kez hızlı vur</div>
       <div class="an-bas" style="margin-top:14px">Vurma hassasiyeti</div><div class="dl-seg gz-has">${[["l", "Düşük"], ["m", "Orta"], ["h", "Yüksek"]].map(([k, a]) => `<button type="button" data-gzh="${k}" aria-pressed="${s === k}">${a}</button>`).join("")}</div>`; },
