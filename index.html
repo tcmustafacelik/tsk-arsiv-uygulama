@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "552";
+  const SURUM = "553";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3926,7 +3926,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 552</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 553</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6267,17 +6267,28 @@ function krtSar(x, t, X, Y, enW, pt, agir, renk, enSatir){ const k = KRT.k; let 
     for(const w of String(t).split(/\s+/)){ const dene = s0 ? s0 + " " + w : w; if(x.measureText(dene).width > enW * k && s0){ L.push(s0); s0 = w; } else s0 = dene; } if(s0) L.push(s0);
     if(L.length <= enSatir) break; f -= 0.3; }
   x.fillStyle = renk; const lh = f * 0.3528 * 1.28; L.forEach((l, i) => x.fillText(l, X * k, (Y + i * lh) * k)); return Y + L.length * lh; }
-function krtAlan(x, et, v, X, Y, W, o = {}){ const k = KRT.k; x.fillStyle = o.z || "#F4F5F7"; krtYuvarlak(x, X * k, Y * k, W * k, 8.4 * k, 1.4 * k); x.fill();
+function krtAlan(x, et, v, X, Y, W, o = {}){ const k = KRT.k; x.fillStyle = o.z || "rgba(238,240,243,0.72)"; krtYuvarlak(x, X * k, Y * k, W * k, 8.4 * k, 1.4 * k); x.fill();
   krtYaz(x, et.toLocaleUpperCase("tr"), X + 1.8, Y + 3.1, W - 3, 4.6, 700, o.e || "#7A808B"); krtYaz(x, v || "—", X + 1.8, Y + 7, W - 3, 7.4, 700, o.r || "#22262E"); }
+/* rütbe sınıfına göre kart renkleri (açık tonlar, mürekkep dostu): [üst bant, çizgi/vurgu, bant yazısı, etiket] */
+const KRT_RENK = { gen: ["#F5EEDC", "#A47B2A", "#5A4214", "General"], ust: ["#E3EAF3", "#2F5582", "#1E3554", "Üst Subay"], subay: ["#E6ECF4", "#3D6491", "#22395A", "Subay"], asb: ["#E5F0E8", "#2E6B45", "#1F4A30", "Astsubay"],
+  uzm: ["#F2E7DE", "#97482F", "#5A2A18", "Uzman Erbaş"], soz: ["#ECEEE0", "#66702F", "#3E4419", "Sözleşmeli Erbaş / Er"], diger: ["#ECEEF1", "#5A6170", "#2B3039", "Personel"] };
+/* ay yıldız filigranı: çok soluk, yalnız süs; kartın resmî kimlik olmadığı alttaki notta yazılı kalır */
+function krtAyYildiz(x, cx, cy, R, renk, alfa){ x.save(); x.globalAlpha = alfa; x.fillStyle = renk;
+  x.beginPath(); x.arc(cx, cy, R, 0, Math.PI * 2); x.arc(cx + R * 0.25, cy, R * 0.8, 0, Math.PI * 2, true); x.fill("evenodd");
+  const sx = cx + R * 1.16, sr = R * 0.5, ic = sr * 0.382; x.beginPath(); for(let i = 0; i < 10; i++){ const a = Math.PI + i * Math.PI / 5, rr = i % 2 ? ic : sr; x.lineTo(sx + rr * Math.cos(a), cy + rr * Math.sin(a)); } x.closePath(); x.fill(); x.restore(); }
 async function krtCiz(p){ const k = KRT.k, W = Math.round(KRT.w * k), H = Math.round(KRT.h * k), tuval = () => { const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); return [c, x]; };
   try { await document.fonts.load(`700 20px Archivo`); await document.fonts.load(`500 20px Archivo`); } catch(e){}
   const [ra, rd] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe), gk = ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim(), kan = String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)").replace(/\s*RH\s*/i, " Rh ");
-  const ust = (x, baslik, sag) => { x.fillStyle = "#ECEEF1"; x.fillRect(0, 0, W, 10.5 * k); x.fillStyle = "#D6A04C"; x.fillRect(0, 10.5 * k, W, 0.6 * k);
-    krtYaz(x, baslik, 4, 4.6, 50, 7.2, 800, "#2B3039"); krtYaz(x, sag, 4, 8.4, KRT.w - 8, 5, 500, "#5F6672"); };
+  const RK = rutbeSimge(p.rutbe, p)[2], KR = KRT_RENK[RK] || KRT_RENK.diger;
+  const ust = (x, baslik, sag) => { x.fillStyle = KR[0]; x.fillRect(0, 0, W, 10.5 * k); x.fillStyle = KR[1]; x.fillRect(0, 10.5 * k, W, 0.7 * k);
+    x.font = `800 ${5.2 * 0.3528 * k}px Archivo, sans-serif`; const ew = x.measureText(KR[3].toLocaleUpperCase("tr")).width / k + 3.6;
+    x.fillStyle = "#FFFFFF"; krtYuvarlak(x, (KRT.w - 4 - ew) * k, 2.2 * k, ew * k, 4.4 * k, 1.1 * k); x.fill(); x.fillStyle = KR[1]; x.fillText(KR[3].toLocaleUpperCase("tr"), (KRT.w - 4 - ew + 1.8) * k, 5.35 * k);
+    krtYaz(x, baslik, 4, 4.6, KRT.w - 12 - ew, 7.2, 800, KR[2]); krtYaz(x, sag, 4, 8.4, KRT.w - 8, 5, 500, "#5F6672"); };
+  const filigran = x => krtAyYildiz(x, (KRT.w * 0.62) * k, (KRT.h * 0.6) * k, 13.5 * k, "#C8102E", 0.055);
   const cerceve = x => { x.strokeStyle = "#C9CDD4"; x.lineWidth = 0.25 * k; krtYuvarlak(x, 0.15 * k, 0.15 * k, W - 0.3 * k, H - 0.3 * k, 3 * k); x.stroke(); };
   const kita = p.kita || String(p.gorev || "").split(/\s+(?=\d+['’]n?[cıiuü]+\s)/)[0] || "";
   /* ön yüz */
-  const [on, x] = tuval(); ust(x, "PERSONEL BİLGİ KARTI", kita);
+  const [on, x] = tuval(); filigran(x); ust(x, "PERSONEL BİLGİ KARTI", kita);
   const fx = 4, fy = 13.6, fw = 21, fh = 27.2;   /* ızgara: sol sütun 4–25 mm (fotoğraf, doğum) · sağ sütun 28–81,6 mm (iki eşit alt sütun) · alt boşluk 3 mm */ x.save(); krtYuvarlak(x, fx * k, fy * k, fw * k, fh * k, 1.6 * k); x.clip();
   const foto = p.foto ? await krtResim("/_blob/" + p.foto) : null;
   if(foto){ const o = Math.max(fw * k / foto.width, fh * k / foto.height), w = foto.width * o, h = foto.height * o; x.drawImage(foto, fx * k + (fw * k - w) / 2, fy * k + (fh * k - h) / 2, w, h); }
@@ -6288,15 +6299,15 @@ async function krtCiz(p){ const k = KRT.k, W = Math.round(KRT.w * k), H = Math.r
   krtYaz(x, ra.split(" · ")[0] || p.rutbe || "", sx + 6.4, 24.2, sw - 6.4, 7.2, 600, "#3A404B");
   { const et = [sn[0] !== "diger" ? sn[1] : "", kurmayMi(p.rutbe) ? "Kurmay" : "", gk].filter(Boolean); let cx = sx; x.font = `700 ${5.6 * 0.3528 * k}px Archivo, sans-serif`;
     et.forEach((t, i) => { const tw = x.measureText(t).width / k + 3.2; if(cx + tw > KRT.w - 4) return; x.fillStyle = i === 0 && sn[0] !== "diger" ? "#FBEFD8" : "#ECEEF1"; krtYuvarlak(x, cx * k, 26.6 * k, tw * k, 4.4 * k, 1.1 * k); x.fill(); x.fillStyle = i === 0 && sn[0] !== "diger" ? "#7A5320" : "#3F4756"; x.fillText(t, (cx + 1.6) * k, 29.8 * k); cx += tw + 1.4; }); }
-  const aw = (sw - 1.6) / 2, y1 = fy + fh - 8.4, y2 = fy + fh + 1.6; krtAlan(x, "Sicil", p.sicil, sx, y1, aw); krtAlan(x, "Kan grubu", kan, sx + aw + 1.6, y1, aw, { z: "#FBEDEA", e: "#A3412F", r: "#8E2F20" });
+  const aw = (sw - 1.6) / 2, y1 = fy + fh - 8.4, y2 = fy + fh + 1.6; krtAlan(x, "Sicil", p.sicil, sx, y1, aw); krtAlan(x, "Kan grubu", kan, sx + aw + 1.6, y1, aw, { z: "rgba(250,232,228,0.8)", e: "#A3412F", r: "#8E2F20" });
   krtAlan(x, "Doğum", p.dogum, fx, y2, fw); krtAlan(x, "Nasbı", p.nasip ? trTarih(p.nasip) || p.nasip : "", sx, y2, aw); krtAlan(x, "Telefon", p.tel, sx + aw + 1.6, y2, aw);
   cerceve(x);
   /* arka yüz */
-  const [ar, y] = tuval(); ust(y, "KADRO GÖREVİ", [p.rutbe, p.ad].filter(Boolean).join(" "));
+  const [ar, y] = tuval(); filigran(y); ust(y, "KADRO GÖREVİ", [p.rutbe, p.ad].filter(Boolean).join(" "));
   let yy = krtSar(y, p.gorev || "Kadro görevi girilmedi", 4, 15.2, KRT.w - 8, 6.6, 600, "#2B3039", 3);
   yy = Math.max(yy + 0.6, 24); const hw = (KRT.w - 8 - 1.6) / 2;
   { const aw2 = (KRT.w - 32) / 2 - 0.8; krtAlan(y, "T.C. kimlik no", p.tc, 4, yy, 21 + 3 + aw2); krtAlan(y, "Baba adı", p.baba, 28 + aw2 + 1.6, yy, aw2); } yy += 10;
-  y.fillStyle = "#F4F5F7"; krtYuvarlak(y, 4 * k, yy * k, (KRT.w - 8) * k, 9.6 * k, 1.4 * k); y.fill(); krtYaz(y, "ACİL DURUMDA", 5.8, yy + 3.1, 40, 4.6, 700, "#A3412F");
+  y.fillStyle = "rgba(238,240,243,0.72)"; krtYuvarlak(y, 4 * k, yy * k, (KRT.w - 8) * k, 9.6 * k, 1.4 * k); y.fill(); krtYaz(y, "ACİL DURUMDA", 5.8, yy + 3.1, 40, 4.6, 700, "#A3412F");
   krtYaz(y, [p.yakinAd, p.yakinTel].filter(Boolean).join(" · ") || "—", 5.8, yy + 7.4, KRT.w - 11, 7, 700, "#22262E"); yy += 11;
   if(p.adres) krtSar(y, "Adres: " + p.adres, 4, yy + 1.6, KRT.w - 8, 5.4, 500, "#4A505B", 2);
   const zm = new Date(), zs = zm.toLocaleDateString("tr-TR") + " " + zm.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
