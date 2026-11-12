@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "556";
+  const SURUM = "557";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3541,6 +3541,8 @@ html.gizli .gz-in:focus{filter:none}
 .gz-sat .gz-anah{flex:none;width:42px;height:24px;border-radius:12px;background:#DADCDF;position:relative;transition:background .2s;font-style:normal} .gz-sat .gz-anah::after{content:"";position:absolute;top:3px;left:3px;width:18px;height:18px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:left .2s}
 .gz-sat[aria-pressed="true"] .gz-anah{background:#585F6E} .gz-sat[aria-pressed="true"] .gz-anah::after{left:21px} .gz-sat .ap-ok{display:none}
 .gz-has{display:grid!important;grid-template-columns:repeat(3,1fr)}
+.gz-durum{display:flex;align-items:center;gap:8px;margin-top:14px;padding:9px 11px;border-radius:9px;background:#F3F5F7;font:600 12.5px var(--f-ui);color:#3D4451} .gz-durum i{flex:none;width:9px;height:9px;border-radius:50%;background:#C9A24A} .gz-durum[data-d="ok"] i{background:#3E9A62} .gz-durum[data-d="hata"] i{background:#C2554B} .gz-durum .gz-d-y{flex:1;min-width:0} .gz-durum button{flex:none;padding:6px 11px;border-radius:7px;border:1px solid var(--sec-k);background:var(--sec-z);color:var(--sec-y);font:700 12px var(--f-ui)} .gz-durum button[hidden]{display:none}
+.gz-test{margin-top:8px;padding:12px;border:1px dashed #C9CED6;border-radius:9px;text-align:center;font:600 12.5px var(--f-ui);color:#5A6170}
 .marka-alt{display:block;font:700 12px var(--f-ui);letter-spacing:.02em;color:#7A5A25;margin-top:1px}
 .tek-sat{display:block;white-space:nowrap;overflow:hidden;min-width:0;max-width:100%} .p-oy .p-alt{font-variant-numeric:tabular-nums}
 .hd-fil{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 10px;margin:0 0 8px;background:#FBEFD8;border:1px solid #E9CF9E;border-radius:8px;font:500 12.5px var(--f-ui);color:#6B4A15} .hd-fil-x{border:0;background:none;padding:0;font:700 12.5px var(--f-ui);color:#585F6E;text-decoration:underline;cursor:pointer}
@@ -3927,7 +3929,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 556</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 557</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5249,7 +5251,19 @@ function gzAyarla(ac, sessiz){ document.documentElement.classList.toggle("gizli"
   if(ac) gzTara(); if(!sessiz) bildir(ac ? "Gizlilik modu açık: kişisel bilgiler gizlendi" : "Bilgiler görünür"); try { if(navigator.vibrate) navigator.vibrate(ac ? [30, 40, 30] : 40); } catch(e){} }
 const gzIk = ac => `<svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>${ac ? '<path d="M4 4l16 16"/>' : ""}</svg>`;
 (() => { let z = 0; new MutationObserver(() => { if(!gzAcik()) return; clearTimeout(z); z = setTimeout(() => gzTara(), 60); }).observe(document.documentElement, { childList: true, subtree: true }); document.addEventListener("input", () => { if(gzAcik()) { clearTimeout(z); z = setTimeout(() => gzTara(), 200); } }); })();
-async function gzIzin(){ try { if(window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") return (await DeviceMotionEvent.requestPermission()) === "granted"; } catch(e){ return false; } return true; }
+async function gzIzin(){ try { if(window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function"){ const ok = (await DeviceMotionEvent.requestPermission()) === "granted"; GZD.izin = ok ? "var" : "yok"; gzDurum(); return ok; } } catch(e){ GZD.izin = "yok"; gzDurum(); return false; } return true; }
+/* sensör durumu: veri geliyor mu, izin var mı (ayar penceresinde canlı gösterilir) */
+const GZD = { veri: 0, izin: "", tepe: 0, vurus: 0, mesaj: "" };
+addEventListener("devicemotion", e => { const a = e.acceleration || e.accelerationIncludingGravity; if(a && a.z != null && !GZD.veri){ GZD.veri = Date.now(); gzDurum(); } else if(a && a.z != null) GZD.veri = Date.now(); }, { passive: true });
+const gzSensorGerek = () => gzOku("tskGzSalla", "1") === "1" || gzOku("tskGzVur", "1") === "1" || gzOku("tskGzTers", "1") === "1";
+(() => { let istendi = false; const iste = () => { if(istendi || !gzSensorGerek()) return; if(!(window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function")){ istendi = true; return; } istendi = true; gzYaz("tskGzIzin", "1"); gzIzin(); };
+  ["touchend", "click"].forEach(t => document.addEventListener(t, iste, { capture: true, passive: true })); })();
+function gzDurum(){ const el = document.getElementById("gz-durum"); if(!el) return; const iosIzin = window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function", canli = GZD.veri && Date.now() - GZD.veri < 2500;
+  let d, c; if(canli){ d = "Hareket sensörü çalışıyor"; c = "ok"; } else if(GZD.izin === "yok"){ d = "Hareket izni verilmedi"; c = "hata"; } else if(!window.DeviceMotionEvent){ d = "Bu cihaz / tarayıcı hareket sensörü vermiyor"; c = "hata"; } else { d = iosIzin ? "Sensör için izin gerekiyor" : "Sensörden veri bekleniyor"; c = "bekle"; }
+  const ac = document.querySelector('#gz-perde [data-gz="ac"]'); if(ac) ac.setAttribute("aria-pressed", gzAcik());
+  el.dataset.d = c; el.querySelector(".gz-d-y").textContent = d; const b = el.querySelector("button"); if(b) b.hidden = c === "ok";
+  const t = document.getElementById("gz-test"); if(t) t.textContent = GZD.mesaj || "Telefonu elinde tut, arkasına parmağınla iki kez hızlı vur"; }
+setInterval(() => { if(document.getElementById("gz-durum")) gzDurum(); }, 1000);
 /* göz simgesine basılı tutunca (bilgisayarda sağ tık) gizlilik ayarları açılır */
 let gzBasZ = 0, gzBasSon = 0;
 document.addEventListener("pointerdown", e => { if(!(e.target.closest && e.target.closest("#ust-goz"))) return; clearTimeout(gzBasZ); gzBasZ = setTimeout(() => { gzBasSon = Date.now(); if(navigator.vibrate) try { navigator.vibrate(12); } catch(x){} gzAyarAc(); }, 520); }, true);
@@ -5263,22 +5277,30 @@ window.addEventListener("devicemotion", e => { if(gzOku("tskGzSalla", "1") !== "
   const p = GZS.once; GZS.once = { x: a.x, y: a.y, z: a.z }; if(!p) return; const d = Math.abs(a.x - p.x) + Math.abs(a.y - p.y) + Math.abs(a.z - p.z), n = Date.now(); if(d < 28) return;
   GZS.t = GZS.t.filter(x => n - x < 800); GZS.t.push(n); if(GZS.t.length < 3 || n - GZS.son < 1500) return; GZS.son = n; GZS.t = []; gzAyarla(!gzAcik()); });
 /* arkasına iki kez vurma: ekrana dik, kısa iki darbe (ekrana dokunurken, yürürken çalışmaz) */
-const GZ_T = { l: 4.5, m: 3, h: 2 }, GZB = { g: null, h: [], k: 0, sonK: 0, son: 0, dok: 0 };
+const GZ_T = { l: 4, m: 2.4, h: 1.5 }, GZB = { g: null, h: [], k: 0, sonK: 0, son: 0, dok: 0, oz: 0 };
 ["touchstart", "pointerdown", "keydown", "wheel"].forEach(t => addEventListener(t, () => { GZB.dok = Date.now(); }, { passive: true, capture: true }));
 window.addEventListener("devicemotion", e => { if(gzOku("tskGzVur", "1") !== "1" || document.visibilityState !== "visible") return; const n = Date.now(); let ax, ay, az; const a = e.acceleration;
   if(a && a.z != null){ ax = a.x || 0; ay = a.y || 0; az = a.z; } else { const g = e.accelerationIncludingGravity; if(!g || g.z == null) return; if(!GZB.g) GZB.g = { x: g.x, y: g.y, z: g.z }; const k = .85; GZB.g = { x: k * GZB.g.x + (1 - k) * g.x, y: k * GZB.g.y + (1 - k) * g.y, z: k * GZB.g.z + (1 - k) * g.z }; ax = g.x - GZB.g.x; ay = g.y - GZB.g.y; az = g.z - GZB.g.z; }
-  const m = Math.abs(ax) + Math.abs(ay) + Math.abs(az), T = GZ_T[gzOku("tskGzHas", "m")] || 3, once = GZB.h.filter(h => n - h[0] > 110 && n - h[0] < 600); GZB.h.push([n, m]); GZB.h = GZB.h.filter(h => n - h[0] < 600);
-  if(Math.abs(az) < T || Math.abs(az) < 1.4 * Math.max(Math.abs(ax), Math.abs(ay))) return; if(n - GZB.sonK < 90) return; GZB.sonK = n; if(n - GZB.dok < 400){ GZB.k = 0; return; }
-  const ikinci = GZB.k && n - GZB.k >= 110 && n - GZB.k <= 550; if(ikinci){ GZB.k = 0; if(n - GZB.son < 1200) return; GZB.son = n; gzAyarla(!gzAcik()); return; }
-  const gurultu = once.length > 2 && once.reduce((s, h) => s + h[1], 0) / once.length > T * .45; GZB.k = gurultu ? 0 : n; });
+  const dz = az - GZB.oz; GZB.oz = az; const z = Math.max(Math.abs(az), Math.abs(dz) * .75);
+  const m = Math.abs(ax) + Math.abs(ay) + Math.abs(az), T = GZ_T[gzOku("tskGzHas", "m")] || 2.4, once = GZB.h.filter(h => n - h[0] > 110 && n - h[0] < 600); GZB.h.push([n, m]); GZB.h = GZB.h.filter(h => n - h[0] < 600);
+  if(z < T || Math.abs(az) < 1.1 * Math.max(Math.abs(ax), Math.abs(ay))) return; if(n - GZB.sonK < 90) return; GZB.sonK = n; if(n - GZB.dok < 350){ GZB.k = 0; return; }
+  const ikinci = GZB.k && n - GZB.k >= 100 && n - GZB.k <= 650; if(ikinci){ GZB.k = 0; if(n - GZB.son < 1200) return; GZB.son = n; GZD.mesaj = "İki vuruş algılandı ✓ Gizlilik " + (gzAcik() ? "kapandı" : "açıldı"); gzAyarla(!gzAcik()); gzDurum(); return; }
+  const gurultu = once.length > 2 && once.reduce((s, h) => s + h[1], 0) / once.length > T * .55; GZB.k = gurultu ? 0 : n; if(!gurultu && document.getElementById("gz-test")){ GZD.mesaj = "1. vuruş algılandı — hemen bir kez daha vur"; gzDurum(); } });
+/* ters çevirme: ekran aşağı bakacak şekilde masaya koyunca gizle (yalnız açar) */
+const GZT = { bas: 0, son: 0 };
+window.addEventListener("devicemotion", e => { if(gzOku("tskGzTers", "1") !== "1" || document.visibilityState !== "visible") return; const g = e.accelerationIncludingGravity; if(!g || g.z == null) return; const n = Date.now();
+  const ters = Math.abs(g.z) > 8.6 && Math.abs(g.x) < 2.5 && Math.abs(g.y) < 2.5 && (/iPhone|iPad|iPod/.test(navigator.userAgent) ? g.z > 0 : g.z < 0);
+  if(!ters){ GZT.bas = 0; return; } if(!GZT.bas) GZT.bas = n; if(n - GZT.bas > 700 && n - GZT.son > 3000 && !gzAcik()){ GZT.son = n; gzAyarla(true, true); } });
 /* ayarlar penceresi */
 function gzAyarAc(){ altPencere("gz-perde", "GİZLİLİK MODU", "Kişisel bilgileri gizle", () => { const s = gzOku("tskGzHas", "m"), sat = (id, ad, alt, on) => `<button type="button" class="ap-sat gz-sat" data-gz="${id}" aria-pressed="${on}"><span class="ap-ad">${ad}<small>${alt}</small></span><i class="gz-anah"></i></button>`;
     return `<p class="gc-not" style="margin:0 0 10px">Açıkken T.C. kimlik no, telefon, IBAN, adres ve manifesto mesajı bulanıklaşır. Kalabalık bir yerde ekranı gösterirken işe yarar.</p><div class="ap-liste">
-      ${sat("ac", "Şimdi gizle", "Üstteki göz simgesiyle de açılıp kapanır", gzAcik())}${sat("salla", "Telefonu sallayınca aç / kapat", "Üç kez kısa ve güçlü salla", gzOku("tskGzSalla", "1") === "1")}${sat("vur", "Arkasına iki kez vurunca aç / kapat", "Parmağınla arkaya iki kez hızlı ve net vur", gzOku("tskGzVur", "1") === "1")}</div>
+      ${sat("ac", "Şimdi gizle", "Üstteki göz simgesiyle de açılıp kapanır", gzAcik())}${sat("salla", "Telefonu sallayınca aç / kapat", "Üç kez kısa ve güçlü salla", gzOku("tskGzSalla", "1") === "1")}${sat("vur", "Arkasına iki kez vurunca aç / kapat", "Parmağınla arkaya iki kez hızlı ve net vur", gzOku("tskGzVur", "1") === "1")}${sat("ters", "Ters çevirince gizle", "Ekranı aşağı bakacak şekilde koyunca gizlenir", gzOku("tskGzTers", "1") === "1")}</div>
+      <div class="gz-durum" id="gz-durum" data-d="bekle"><i></i><span class="gz-d-y">Kontrol ediliyor…</span><button type="button" data-gz-izin hidden>İzin ver</button></div>
+      <div class="gz-test" id="gz-test">Telefonu elinde tut, arkasına parmağınla iki kez hızlı vur</div>
       <div class="an-bas" style="margin-top:14px">Vurma hassasiyeti</div><div class="dl-seg gz-has">${[["l", "Düşük"], ["m", "Orta"], ["h", "Yüksek"]].map(([k, a]) => `<button type="button" data-gzh="${k}" aria-pressed="${s === k}">${a}</button>`).join("")}</div>`; },
-    async b => { if(b.dataset.gzh){ gzYaz("tskGzHas", b.dataset.gzh); b.parentElement.querySelectorAll("[data-gzh]").forEach(x => x.setAttribute("aria-pressed", x === b)); return; }
+    async b => { if(b.hasAttribute("data-gz-izin")){ const ok = await gzIzin(); if(!ok) bildir("İzin verilmedi. Safari ayarlarından Hareket ve Yön erişimini açın"); return; } if(b.dataset.gzh){ gzYaz("tskGzHas", b.dataset.gzh); b.parentElement.querySelectorAll("[data-gzh]").forEach(x => x.setAttribute("aria-pressed", x === b)); return; }
       const g = b.dataset.gz; if(!g) return; if(g === "ac"){ gzAyarla(!gzAcik(), true); b.setAttribute("aria-pressed", gzAcik()); return; }
-      const k = g === "salla" ? "tskGzSalla" : "tskGzVur", yeni = gzOku(k, "1") !== "1"; if(yeni && !(await gzIzin())){ bildir("Hareket algılama izni verilmedi"); return; } gzYaz(k, yeni ? "1" : "0"); b.setAttribute("aria-pressed", yeni); }, { z: "E4EDF7", r: "3F6487" }); }
+      const k = g === "salla" ? "tskGzSalla" : g === "ters" ? "tskGzTers" : "tskGzVur", yeni = gzOku(k, "1") !== "1"; if(yeni && !(await gzIzin())){ bildir("Hareket algılama izni verilmedi"); return; } gzYaz(k, yeni ? "1" : "0"); b.setAttribute("aria-pressed", yeni); }, { z: "E4EDF7", r: "3F6487" }); GZD.mesaj = ""; requestAnimationFrame(gzDurum); }
 document.addEventListener("click", e => { if(e.target.closest && e.target.closest("[data-gz-ayar]")) gzAyarAc(); });
 if(gzOku("tskGizli", "0") === "1") requestAnimationFrame(() => gzAyarla(true, true));
 let anaOnceki = null;
