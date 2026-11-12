@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "531";
+  const SURUM = "532";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3344,10 +3344,12 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .an-seg2 button[aria-selected="true"]{background:#EAF2FA!important;color:#2D5A86!important}
 .an-kart{border-color:#E6ECF2!important;box-shadow:0 1px 6px rgba(30,60,95,.04)!important}
 .an-kart-bas span{background:#EAF2FA!important;color:#3E6E9E!important}
+.an-seg2 button[aria-selected="true"] i{top:-5px!important;right:-3px!important;box-shadow:0 0 0 2px #fff}
+.an-seg2 button{overflow:visible} .an-seg2 button[aria-selected="true"]{gap:6px}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
- header.ust .marka{gap:8px!important;overflow:hidden} header.ust .marka .logo{width:34px!important;height:34px!important}
+ header.ust .marka{gap:8px!important;overflow:visible} header.ust .marka-y{min-width:0;overflow:hidden;padding-right:2px} header.ust .marka .logo{width:34px!important;height:34px!important}
  header.ust .marka-y>span:first-child{font-size:17px!important;letter-spacing:.06em!important;overflow:hidden;text-overflow:clip}
  header.ust .marka-alt{font-size:11px!important}
  #bulut-ikon{width:34px!important;height:34px!important;padding:0!important;border:0!important;background:transparent!important;border-radius:50%!important;justify-content:center;position:relative}
@@ -3760,7 +3762,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 531</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 532</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
