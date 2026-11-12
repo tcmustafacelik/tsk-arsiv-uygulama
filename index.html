@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "565";
+  const SURUM = "566";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3947,7 +3947,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 565</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 566</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4284,10 +4284,16 @@ function degFark(a, b, yol, o){ if(o.length > 5 || JSON.stringify(a) === JSON.st
     for(const x of a) if(!bm.has(id(x))) o.push(`${on}${degEt(x)} silindi`);
     if(o.length === n0) o.push(`${yol || "liste"} sırası değişti`); return o; }
   if(a && b && typeof a === "object" && typeof b === "object"){ for(const k of new Set([...Object.keys(a), ...Object.keys(b)])){ if(JSON.stringify(a[k]) === JSON.stringify(b[k])) continue;
-      const et = DEG_AD[k] ?? degKisi(k) ?? k; if(a[k] && b[k] && typeof a[k] === "object" && typeof b[k] === "object") degFark(a[k], b[k], et ? on + et : yol, o); else o.push(on + (et || k) + degDeger(a[k], b[k])); if(o.length > 5) return o; } return o; }
+      if(yol && /fotoğraf kilidi$/.test(yol) && k !== "on") continue;   // kilit içindeki zaman / asıl kopyalar ayrıca yazılmaz
+      const et = (k === "fotoKilit" ? "fotoğraf kilidi" : k === "on" && /fotoğraf kilidi$/.test(yol || "") ? "" : DEG_AD[k]) ?? degKisi(k) ?? k;
+      if(a[k] && b[k] && typeof a[k] === "object" && typeof b[k] === "object") degFark(a[k], b[k], et ? on + et : yol, o);
+      else if(k === "fotoKilit") o.push(on + "fotoğraf kilidi" + degDeger(!!(a[k] && a[k].on), !!(b[k] && b[k].on), "kilit"));
+      else o.push((et === "" ? on.replace(/ · $/, "") : on + (et || k)) + degDeger(a[k], b[k], /fotoğraf kilidi$/.test(yol || "") ? "kilit" : "")); if(o.length > 5) return o; } return o; }
   o.push(yol || "değer"); return o; }
 /* eski → yeni: kısa değerler olduğu gibi gösterilir; uzun metin ya da liste için yalnız “değişti” denir (yarım kesilmez) */
-const degDeger = (a, b) => { const g = v => v === undefined || v === null || v === "" ? "boş" : typeof v === "object" ? null : `“${String(v)}”`, x = g(a), y = g(b);
+const degDeger = (a, b, tur) => { const ev = v => v === true || v === "true" ? 1 : v === false || v === "false" ? 0 : null;
+  const g = v => ev(v) !== null ? (tur === "kilit" ? (ev(v) ? "kilitli" : "kilit açık") : (ev(v) ? "açık" : "kapalı")) : v === undefined || v === null || v === "" ? "boş" : typeof v === "object" ? null : `“${String(v)}”`;
+  if(tur === "kilit" && (a === undefined || a === null)) a = false; if(tur === "kilit" && (b === undefined || b === null)) b = false; const x = g(a), y = g(b);
   if(x === null || y === null || x.length + y.length > 90) return ""; return `: ${x} → ${y}`; };
 /* “Enes DEMİR · memleket”, “Enes DEMİR · telefon” → “Enes DEMİR: memleket, telefon” */
 const degOzet = F => { const M = new Map(); F.forEach(x => { const i = x.lastIndexOf(" · "), k = i < 0 ? "" : x.slice(0, i), v = i < 0 ? x : x.slice(i + 3); M.set(k, [...(M.get(k) || []), v]); });
