@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "547";
+  const SURUM = "548";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3451,6 +3451,20 @@ html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#232
 .an-kart.kapali .an-oz .oz-st{animation:ozGel .38s cubic-bezier(.3,.8,.3,1) both} .an-kart.kapali .an-oz .oz-st:nth-child(2){animation-delay:.05s} .an-kart.kapali .an-oz .oz-st:nth-child(3){animation-delay:.1s} .an-kart.kapali .an-oz .oz-one{animation:ozGel .42s .14s cubic-bezier(.3,.8,.3,1) both}
 @keyframes ozGel{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.an-oz-kap,.an-oz,.oz-k{transition:none!important;animation:none!important}}
+/* geçmiş sekmesi: sade, ince liste */
+.gc2-not{display:flex;align-items:flex-start;gap:8px;margin:0 0 10px;padding:0 2px;font:500 12px/1.45 var(--f-ui);color:var(--muted)} .gc2-not svg{width:16px;height:16px;flex:none;margin-top:1px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round} .gc2-not b{color:var(--fg)}
+.gc2-is{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:14px}
+.gc2-is button{display:flex;align-items:center;gap:9px;height:48px;padding:0 10px;border:1px solid color-mix(in srgb,var(--c) 15%,var(--line2));border-radius:11px;background:color-mix(in srgb,var(--z) 45%,var(--panel));font:inherit;color:var(--fg);text-align:left;cursor:pointer;min-width:0}
+.gc2-is button>svg{width:30px;height:30px;padding:6px;box-sizing:border-box;border-radius:8px;background:var(--z);color:var(--c);flex:none;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.gc2-is span{display:flex;flex-direction:column;min-width:0} .gc2-is b{font:700 13px var(--f-ui);white-space:nowrap} .gc2-is small{font:500 10.5px var(--f-ui);color:var(--muted);white-space:nowrap}
+.gc2-bas{display:flex;align-items:center;gap:7px;margin:0 2px 8px} .gc2-bas b{font:700 11px var(--f-ui);letter-spacing:.06em;text-transform:uppercase;color:var(--muted)} .gc2-bas em{font:700 10.5px var(--f-ui);font-style:normal;padding:1px 6px;border-radius:6px;background:var(--panel2);color:var(--muted)}
+.gc2-bas label{margin-left:auto;display:flex;align-items:center;gap:5px;height:30px;padding:0 8px;border:1px solid var(--line2);border-radius:8px;background:var(--panel);width:46%;min-width:0} .gc2-bas label svg{width:14px;height:14px;flex:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round}
+.gc2-bas input{border:0;outline:0;background:transparent;font:500 12px var(--f-ui);width:100%;min-width:0;padding:0;color:var(--fg)}
+.gc2-l{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--panel)}
+.gc2-s{position:relative;display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 10px 6px 14px;border:0;border-bottom:1px solid var(--line2);background:transparent;font:inherit;color:var(--fg);text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.gc2-s:last-child{border-bottom:0} .gc2-s[hidden]{display:none} .gc2-s:active{background:var(--panel2)} .gc2-s::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--sr)}
+.gc2-s>span{display:grid;place-items:center;width:26px;height:26px;border-radius:7px;background:color-mix(in srgb,var(--sr) 40%,var(--panel));color:#4A5160;flex:none} .gc2-s>span svg{width:15px;height:15px}
+.gc2-s b{flex:1;min-width:0;font:600 13px/1.28 var(--f-ui)} .gc2-s>i{display:grid;place-items:center;color:var(--muted);flex:none} .gc2-s>i svg{width:16px;height:16px}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3858,7 +3872,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 547</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 548</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5049,6 +5063,7 @@ document.addEventListener("click", e => { const b = e.target.closest && e.target
   const L = anKapali(), kapa = !L.includes(k); try { localStorage.setItem("anKapali", JSON.stringify(kapa ? [...L, k] : L.filter(x => x !== k))); } catch(_){}
   kart.classList.remove("gir-sag", "gir-sol"); kart.classList.toggle("kapali", kapa); b.setAttribute("aria-expanded", !kapa);
   const ik = b.firstElementChild; if(ik){ ik.classList.remove("cevir"); void ik.offsetWidth; ik.classList.add("cevir"); } if(navigator.vibrate) try { navigator.vibrate(8); } catch(_){} });
+document.addEventListener("input", e => { if(!e.target.classList || !e.target.classList.contains("gc2-ara")) return; const q = e.target.value.toLocaleLowerCase("tr").trim(); document.querySelectorAll(".gc2-l .gc2-s").forEach(b => b.hidden = !!q && !b.dataset.ad.includes(q)); });
 function anaCiz(){
   const sa = new Date().getHours(); $("#ana-selam").textContent = sa < 6 ? "İyi geceler" : sa < 12 ? "Günaydın" : sa < 18 ? "İyi günler" : "İyi akşamlar";
   $("#ana-tarih").textContent = new Date().toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
@@ -5105,9 +5120,11 @@ function anaCiz(){
   else if(anaSekme === "klasor"){ ic = mnGruplar().map((c, i) => sat(`data-mn-kat="${esc(c.anah)}"`, i, esc(c.ad), `<small>${c.uyeler.length > 1 ? esc(c.uyeler.map(mnKisa).join(" · ")) + " · " : ""}${c.top ? c.top + " öğe" : "boş"}</small>`, "", c.top ? "" : " soluk")).join(""); }
   else if(anaSekme === "gecmis"){ const B = S.belgeler.filter(d => !d.sablon).slice().sort((a, b) => String(AD[a.tur] || a.ad).localeCompare(String(AD[b.tur] || b.ad), "tr"));
     const SB = [...new Set(sonL.map(o => o.d).filter(Boolean))].map(id => B.find(d => d.id === id)).filter(Boolean).slice(0, 6), bs = (d, i) => sat(`data-gc-belge="${esc(d.id)}"`, i, esc(d.ad), '<small>eski hâlleri ›</small>', PANO_SIMGE[d.tur] || '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>');
-    ic = `<div class="gc-acik"><b>Geçmiş nedir?</b><span>Her <em>Kaydet</em>'e bastığınızda belgenin o anki hâli saklanır. Bir belgede yanlışlık olursa o belgeyi seçip eski hâline dönebilirsiniz.</span></div>
-      <div class="gc-ana2"><button type="button" class="gc-ana-k" data-gc-cop="1">${gcIk("cop", "#F7E6E2", "#A3412F")}<b>Silinenler</b><small>silinen satır ve belgeleri geri getir</small></button><button type="button" class="gc-ana-k" data-gc-temiz="1">${gcIk("supur", "#F3ECDD", "#7A5A25")}<b>Geçmişi temizle</b><small>eski kopyaları sil, yalnız şimdiki kalsın</small></button></div>
-      <details class="gc-tum" open><summary>Belgeler <small>${B.length}</small></summary>${B.map(bs).join("")}</details>`; }
+    const gs = (d, i) => `<button type="button" class="gc2-s" data-gc-belge="${esc(d.id)}" data-ad="${esc(String(d.ad).toLocaleLowerCase("tr"))}" style="--sr:${SIRT[i % SIRT.length]}"><span>${svg(PANO_SIMGE[d.tur] || PANO_SIMGE.belge)}</span><b>${esc(d.ad)}</b><i>${svg(AIK.gecmis)}</i></button>`;
+    ic = `<p class="gc2-not">${svg('<circle cx="12" cy="12" r="8.5"/><path d="M12 11v5M12 8h.01"/>')}<span>Her <b>Kaydet</b>'te belgenin o anki hâli saklanır. Belgeye dokun, eski hâline dön.</span></p>
+      <div class="gc2-is"><button type="button" data-gc-cop="1" style="--z:#F7E6E2;--c:#A3412F">${svg(UZ_IK.sil)}<span><b>Silinenler</b><small>geri getir</small></span></button><button type="button" data-gc-temiz="1" style="--z:#F3ECDD;--c:#7A5A25">${svg('<path d="M14 4l-4 9M6 13h12l-1.5 7h-9z"/>')}<span><b>Temizle</b><small>eski kopyalar</small></span></button></div>
+      <div class="gc2-bas"><b>Belgeler</b><em>${B.length}</em><label>${svg('<circle cx="11" cy="11" r="6"/><path d="M20 20l-4.2-4.2"/>')}<input type="search" class="gc2-ara" placeholder="Belge ara" aria-label="Belge ara"></label></div>
+      <div class="gc2-l">${B.map(gs).join("")}</div>`; }
   else if(anaSekme === "son"){ ic = sonL.length ? sonL.map((o, i) => sat(`data-son-k="${esc(o.k)}" data-son-b="${esc(o.b)}"${o.d ? ` data-son-d="${esc(o.d)}"` : ""} data-hz-k="${esc(o.d ? "d:" + o.d : "b:" + o.k + "|" + o.b)}"`, i, esc(o.ad), `<small>${esc(o.alt)}</small>`, o.tur ? PANO_SIMGE[o.tur] || PANO_SIMGE.belge : `<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/>`, " iki")).join("") : `<div class="an-bos">Henüz açılan belge yok</div>`; }
   else { ic = (dk.length ? dk.map((x, i) => sat(`data-dk="${esc(x.tur)}" data-dk-k="${esc(dkAnah(x))}"`, 3, esc(x.t), `<small>${esc(x.a)}</small><span class="dk-x" role="button" data-dk-yok="${esc(dkAnah(x))}" aria-label="Yoksay" title="Yoksay"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-2.7 3.6M6.4 6.4C3.9 8.1 2.5 12 2.5 12s3.5 7 9.5 7a9.6 9.6 0 0 0 5.6-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></span>`, "", " iki uyari")).join("") : `<div class="an-bos">Gösterilecek uyarı yok</div>`)
       + `<div class="an-not dk-not">Gerekmeyen uyarıyı sağdaki göz simgesiyle ya da basılı tutup <b>Yoksay</b> diyerek kaldırabilirsiniz. Tarihi değişirse yeniden çıkar.</div>`
