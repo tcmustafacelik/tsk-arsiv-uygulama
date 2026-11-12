@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "561";
+  const SURUM = "562";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3521,6 +3521,9 @@ html body .kart.bkk.dsy .ad{overflow-wrap:anywhere!important;word-break:break-wo
 header.ust .ara-kap{border:1px solid var(--line2)!important;box-shadow:none!important;border-radius:12px!important;background:var(--panel)!important}
 .g-zoom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px} .g-zoom[hidden]{display:none} .g-zoom>span{font:600 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .g-zoom .ka-b{flex:0 1 260px;min-width:0} @media (max-width:520px){.g-zoom>span{display:none} .g-zoom .ka-b{flex:1 1 100%}}
 /* S559: ne eksik ne fazla düzeltmeleri */
+html body header.ust .ara-kap{align-items:center;overflow:hidden} html body header.ust .ara-kap input#ara{background:transparent!important;border:0!important;border-radius:0!important;box-shadow:none!important;outline:0!important;height:42px!important;min-height:0!important;align-self:center}
+html body #p-tablo .p-oz .p-kartb{color:#8A6420!important;background:#FBF4E6!important;border-color:#EBDDBE!important} @media (max-width:700px){ html body #p-tablo .p-oz .p-ok{display:none} } #e-personel.p-ayri #p-tablo [data-p-kart]{display:none!important}
+html body #e-personel .arac{display:grid!important;grid-template-columns:repeat(auto-fit,minmax(80px,1fr));gap:8px} html body #e-personel .arac>.btn{width:100%;min-width:0;justify-content:center;white-space:normal;text-align:center;line-height:1.2;padding-left:6px;padding-right:6px;font-size:12.5px;height:auto!important;min-height:44px;align-self:stretch;margin:0!important} html body #e-personel .arac>[hidden]{display:none!important}
 @media (max-width:520px){ html body .es-mbas:has(.ls-not){grid-template-columns:minmax(0,1fr);row-gap:3px} html body .es-mbas:has(.ls-not) .ls-not{grid-column:1;grid-row:auto;margin-top:8px;width:100%;display:grid!important;grid-template-columns:1fr 1fr} html body .es-mbas:has(.ls-not) .ls-not button{justify-content:center} }
 html body .yk-k .sa-ok{width:26px;height:26px;border-radius:50%;background:var(--panel2);position:relative;font-size:0} html body .yk-k.acik .sa-ok::after{transform:rotate(225deg);top:11px}
 html body #e-izinb .izb-sekmeler,html body .tz-sek{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
@@ -3937,7 +3940,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 561</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 562</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -6240,7 +6243,7 @@ TS.sertifika = { ad: "sertifika", kap: "#sr-liste", satir: "[data-sr-id]", id: e
 function personelCiz(){ pLstCiz(); pKisaCiz(); { const pb = $("#p-bas"); if(pb && !odakIcinde("#p-bas")){ pb.innerHTML = basAlanHtml("personel"); otoBoyHepsi(pb); } }
   const tb = $("#p-tablo tbody"); const rows = PL().rows ||= [];
   if(!rows.length){ tb.innerHTML = `<tr><td colspan="7"><div class="bos"><strong>${S.yuklendi.personel ? "Personel listesi boş" : "Yükleniyor…"}</strong>“+ Personel ekle” ile girin.</div></td></tr>`; return; }
-  tb.innerHTML = rows.map((r, i) => `<tr data-id="${esc(r.id)}"${pAcik === r.id ? ' class="acik"' : ""}><td class="sn">${i + 1}</td><td class="p-oz"><button type="button" data-p-ac>${pOzet(r)}<i class="p-ok"></i></button><button type="button" class="p-dosya" data-p-dosya="${esc(r.id)}" aria-label="${esc(r.ad || "Kişi")} dosyası" title="Kişi dosyası">${KD_IK}</button></td>
+  tb.innerHTML = rows.map((r, i) => `<tr data-id="${esc(r.id)}"${pAcik === r.id ? ' class="acik"' : ""}><td class="sn">${i + 1}</td><td class="p-oz"><button type="button" data-p-ac>${pOzet(r)}<i class="p-ok"></i></button><button type="button" class="p-dosya" data-p-dosya="${esc(r.id)}" aria-label="${esc(r.ad || "Kişi")} dosyası" title="Kişi dosyası">${KD_IK}</button>${r.ad ? `<button type="button" class="p-dosya p-kartb" data-p-kart="${esc(r.id)}" aria-label="${esc(r.ad)} kartını bas" title="Kart bas">${KRT_IK}</button>` : ""}</td>
     <td data-et="Rütbesi"><input id="p-${esc(r.id)}-rutbe" data-alan="rutbe" value="${esc(r.rutbe)}" aria-label="Rütbe" style="min-width:130px"></td>
     <td data-et="Adı soyadı"><input id="p-${esc(r.id)}-ad" data-alan="ad" value="${esc(r.ad)}" aria-label="Ad soyad" style="min-width:160px"></td>
     <td class="orta" data-et="Sicili"><input id="p-${esc(r.id)}-sicil" data-alan="sicil" value="${esc(r.sicil)}" aria-label="Sicil" style="min-width:100px"></td>
@@ -6422,18 +6425,19 @@ function krtAyarHtml(){ const A = krtAyar(), Y = krtYerlesim(A);
   const sat = (et, k, L) => `<div class="ka-s"><small>${et}</small><div class="ka-b" style="--n:${L.length}">${L.map(([v, ad, ik]) => `<button type="button" data-ka="${k}:${v}" aria-pressed="${String(A[k]) === String(v)}"><svg viewBox="0 0 24 24">${IK[ik]}</svg><span>${ad}</span></button>`).join("")}</div></div>`;
   return `<div class="ka">${sat("Kâğıt", "kagit", [["A4", "A4", "A4"], ["A5", "A5", "A5"]])}${sat("Yön", "yon", [["dikey", "Dikey", "dikey"], ["yatay", "Yatay", "yatay"]])}${sat("Delgeç", "delgec", [[0, "Yok", "d0"], [1, "Var", "d1"]])}${sat("Kesim işareti", "isaret", [[1, "Var", "i1"], [0, "Yok", "i0"]])}${sat("Yüzler", "yuz", [["ikisi", "Ön + arka", "ikisi"], ["on", "Yalnız ön", "on"], ["arka", "Yalnız arka", "arka"]])}
     <p class="ka-not">Bir sayfaya <b>${Y.sayfa} kişi</b> sığıyor (${Y.sut} sütun × ${Y.sat} satır)${A.delgec ? " · delgeç payı " + (A.yon === "yatay" ? "üstte" : "solda") : ""}.</p></div>`; }
-function kartSec(){ const P = (S.personel.rows || []).filter(p => p.ad), sec = new Set(P.map(p => p.id));
+const KRT_IK = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4.5M14 13h3"/></svg>`;
+function kartSec(tekId){ const tek = typeof tekId === "string" ? (S.personel.rows || []).find(p => p.id === tekId && p.ad) : null; const P = tek ? [tek] : (S.personel.rows || []).filter(p => p.ad), sec = new Set(P.map(p => p.id));
   let tur = krtTurAl();
-  altPencere("krt-perde", "PERSONEL KARTI", "Toplu kart oluştur", () => `<div class="krt-bas">${krtTurSec(tur, "data-krt-tur")}<button type="button" class="btn ana krt-git" data-krt="git"${sec.size ? "" : " disabled"}><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4.5M14 13h3"/></svg>Kart oluştur · ${sec.size} kişi · ${KRT_TUR.find(x => x[0] === tur)[1]}</button></div>
+  altPencere("krt-perde", "PERSONEL KARTI", tek ? tek.ad + " · kart" : "Toplu kart oluştur", () => `<div class="krt-bas">${krtTurSec(tur, "data-krt-tur")}<button type="button" class="btn ana krt-git" data-krt="git"${sec.size ? "" : " disabled"}><svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4.5M14 13h3"/></svg>Kart oluştur · ${tek ? "" : sec.size + " kişi · "}${KRT_TUR.find(x => x[0] === tur)[1]}</button></div>
     ${tur === "pdf" || tur === "word" ? krtAyarHtml() : `<p class="an-not" style="margin:2px 2px 10px">Her kişinin ön ve arka yüzü yan yana çıkar.${tur === "resim" ? " Birden çok kişi ZIP içinde, kişi başına bir resim." : " İkinci sayfada bütün bilgiler tablo olarak."}</p>`}
-    <div class="krt-ust"><button type="button" class="an-alt" data-krt="hepsi">Hepsini seç</button><button type="button" class="an-alt" data-krt="hic">Hiçbiri</button></div>
-    <div class="krt-l">${P.map(p => { const [ra, rd, rk] = rutbeSimge(p.rutbe, p); return `<button type="button" class="krt-k" data-krt-k="${esc(p.id)}" aria-pressed="${sec.has(p.id)}"><span class="kb2-av rs-${rk}"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span><span class="krt-y"><b class="tek-sat">${esc(p.ad)}</b><small class="tek-sat">${esc(p.rutbe || "")}</small></span><i>${sec.has(p.id) ? "✓" : ""}</i></button>`; }).join("")}</div>
+    ${tek ? "" : `<div class="krt-ust"><button type="button" class="an-alt" data-krt="hepsi">Hepsini seç</button><button type="button" class="an-alt" data-krt="hic">Hiçbiri</button></div>`}
+    <div class="krt-l"${tek ? " hidden" : ""}>${P.map(p => { const [ra, rd, rk] = rutbeSimge(p.rutbe, p); return `<button type="button" class="krt-k" data-krt-k="${esc(p.id)}" aria-pressed="${sec.has(p.id)}"><span class="kb2-av rs-${rk}"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span><span class="krt-y"><b class="tek-sat">${esc(p.ad)}</b><small class="tek-sat">${esc(p.rutbe || "")}</small></span><i>${sec.has(p.id) ? "✓" : ""}</i></button>`; }).join("")}</div>
 `,
     (b, kapat, yenile) => { const v = b.dataset.krt, id = b.dataset.krtK; if(b.dataset.krtTur){ tur = b.dataset.krtTur; return yenile(); }
       if(b.dataset.ka){ const [k, d] = b.dataset.ka.split(":"), A = krtAyar(); A[k] = /^\d$/.test(d) ? +d : d; krtAyarYaz(A); return yenile(); } if(id){ sec.has(id) ? sec.delete(id) : sec.add(id); return yenile(); } if(v === "hepsi"){ P.forEach(p => sec.add(p.id)); return yenile(); } if(v === "hic"){ sec.clear(); return yenile(); }
       if(v === "git"){ kapat(); kartCikti(P.filter(p => sec.has(p.id)), tur); } }, { z: "ECEEF1", r: "3F4756" }); }
-document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-kart-tur],#p-kart"); if(!b) return; e.stopPropagation();
-  if(b.id === "p-kart") return kartSec(); const p = (S.personel.rows || []).find(x => x.id === b.dataset.kartP); if(p) kartCikti([p], b.dataset.kartTur); }, true);
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-kart-tur],#p-kart,[data-p-kart]"); if(!b) return; e.stopPropagation();
+  if(b.dataset.pKart) return kartSec(b.dataset.pKart); if(b.id === "p-kart") return kartSec(); const p = (S.personel.rows || []).find(x => x.id === b.dataset.kartP); if(p) kartCikti([p], b.dataset.kartTur); }, true);
 function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === pid); if(!p) return;
   altPencere("kd-perde", "KİŞİ DOSYASI", () => [p.rutbe, p.ad].filter(Boolean).join(" ") || "Adsız", () => { const B = kdTopla(p);
     const [ra, rd, rk] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe), gk = ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim();
