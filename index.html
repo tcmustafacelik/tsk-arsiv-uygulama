@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "535";
+  const SURUM = "536";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -192,7 +192,7 @@
   }
   const cihaz = () => /Android|iPhone|iPad/i.test(navigator.userAgent) ? "telefon" : "bilgisayar";
   /* aynı alan iki cihazda farklı değiştirildiyse: şimdilik bu cihazdaki kalır, kullanıcıya hangisinin kalacağı sorulur */
-  const cakAd = c => { const v = mem[c.k], ad = v && (v.ad || v.baslik) || ({ "bt/personel": "Personel", "bt/izin": "İzin çizelgesi", "bt/yoklama": "Yoklama", "bt/gdhg": "GDHG", "bt/izinb": "İzin belgesi", "bt/hedef": "Hedefler", "bt/yapi": "Klasör düzeni" })[c.k] || c.k;
+  const cakAd = c => { const v = mem[c.k], ad = v && (v.ad || v.baslik) || ({ "bt/personel": "Personel", "bt/izin": "İzin çizelgesi", "bt/yoklama": "Yoklama", "bt/gdhg": "GDHG", "bt/izinb": "İzin belgesi", "bt/hedef": "Hedefler", "bt/yapi": "Klasör düzeni", "bt/tercih": "Kısayollar" })[c.k] || c.k;
     let o = v, ad2 = ""; for(const s of c.p){ if(o == null) break; if(typeof s === "object"){ o = Array.isArray(o) ? o.find(z => z && String(z.id) === s.id) : null; if(o && (o.ad || o.cins)) ad2 = o.ad || o.cins; } else o = o[s]; }
     const son = [...c.p].reverse().find(s => typeof s === "string"); return [ad, ad2, son].filter(Boolean).join(" · "); };
   function cakKoy(c){ if(!c.p.length){ mem[c.k] = kopya(c.u); return; } let o = mem[c.k]; for(let i = 0; i < c.p.length - 1; i++){ const s = c.p[i]; o = typeof s === "object" ? (Array.isArray(o) ? o.find(z => z && String(z.id) === s.id) : null) : o && o[s]; if(o == null) return; }
@@ -227,7 +227,7 @@
   function payBelgeGizli(G, d){ return !!(d && (G["d:" + d.id] || ((d.yerler || []).length && d.yerler.every(y => payYerGizli(G, y.k, y.b))))); }
   function payFiltre(){ const A = payAyar(), G = A.gizli || {}, R = {}, B = Object.keys(mem).filter(p => p.startsWith("belgeler/")).map(p => mem[p]).filter(Boolean);
     const sertGizli = B.some(d => d.tur === "sertifika") && B.filter(d => d.tur === "sertifika").every(d => payBelgeGizli(G, d));
-    for(const [p, v] of Object.entries(mem)){ if(p === "bt/paylasim" || p === "bt/paylasimGor" || p === "bt/cop") continue;
+    for(const [p, v] of Object.entries(mem)){ if(p === "bt/paylasim" || p === "bt/paylasimGor" || p === "bt/cop" || p === "bt/tercih") continue;
       if(p.startsWith("belgeler/") && v && payBelgeGizli(G, v)){ R[p] = { id: v.id, ad: "Gizli belge", tur: v.tur, sira: v.sira, yerler: v.yerler, gizli: 1, ...(v.bt ? { bt: v.bt } : {}) }; continue; }
       if(p.startsWith("arsiv/") && v && (payYerGizli(G, v.klasor, v.bolum) || (v.sert && sertGizli))){ R[p] = { id: v.id, ad: "Gizli dosya", klasor: v.klasor, bolum: v.bolum, tur: "", boyut: 0, tarih: v.tarih, gizli: 1 }; continue; }
       R[p] = p.startsWith("belgeler/") && v && v.notlar ? notGorunur(v) : v; }
@@ -3768,7 +3768,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 535</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 536</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4471,7 +4471,7 @@ function agacCiz0(){
   const el = $("#agac");
   if(!S.yapi.klasorler.length){ el.innerHTML = `<div class="bos"><strong>Klasörler yükleniyor…</strong>Veriler buluttan iniyor; internet yavaşsa biraz sürebilir.</div>`; return; }
   const sec = klasorBul(SECIM.klasor), bs = bolumBul(SECIM.klasor, SECIM.bolum);
-  el.innerHTML = `<button class="btn agac-ac" id="agac-ac" aria-expanded="${!agacKapali}"><span>☰</span><span style="min-width:0;overflow-wrap:anywhere;text-align:left">${bs ? esc(sec.ad) + " · " + esc(bs.ad) : "Menü"}</span><span style="margin-left:auto">${agacKapali ? "▾" : "▴"}</span></button><div class="agac-icerik">
+  el.innerHTML = `<button class="btn agac-ac" id="agac-ac" aria-expanded="${!agacKapali}"><span>☰</span><span style="min-width:0;overflow-wrap:anywhere;text-align:left">${bs ? (sec.ad.toLocaleLowerCase("tr").trim() === bs.ad.toLocaleLowerCase("tr").trim() ? esc(bs.ad) : esc(sec.ad) + " · " + esc(bs.ad)) : "Menü"}</span><span style="margin-left:auto">${agacKapali ? "▾" : "▴"}</span></button><div class="agac-icerik">
     <button class="kok-bas" id="kok-ac" type="button" aria-expanded="${kokAcik}"><b>TSK ARŞİV</b><span class="say">${new Set(S.yapi.klasorler.map(k => k.ust || k.id)).size} kategori</span><span class="kok-ok">${KK_OK}</span></button>
     <div class="kok-ic yeni"${kokAcik ? "" : " hidden"}>` + agacListe() + `</div>` +
     `<button type="button" class="ag-yeni-kat" id="kat-ekle">＋ Yeni kategori</button><button type="button" class="ag-arsiv" id="arsiv-indir"><svg viewBox="0 0 24 24"><path d="M12 4v11m0 0-4-4m4 4 4-4"/><path d="M5 19h14"/></svg><span><b>Bütün arşivi indir</b><small>belgeler PDF, dosyalar olduğu gibi · tek ZIP</small></span></button></div>`;
@@ -4880,7 +4880,7 @@ function sonEkle(o){ try { const L = JSON.parse(localStorage.getItem("sonlar") |
 /* yoksayılan uyarılar (bu cihaza özel): anahtar tarihe bağlı; tarih değişirse uyarı yeniden çıkar */
 const dkAnah = x => [x.tur, x.t, ((x.a || "").match(/\d{2}\.\d{2}\.\d{4}/) || [""])[0]].join("|");
 const dkYok = () => { try { return JSON.parse(localStorage.getItem("dkYok") || "[]"); } catch(e){ return []; } };
-const dkYokYaz = L => { try { localStorage.setItem("dkYok", JSON.stringify(L)); } catch(e){} };
+const dkYokYaz = L => { try { localStorage.setItem("dkYok", JSON.stringify(L)); } catch(e){} tercihGonder(); };
 function dkYoksay(k){ dkYokYaz([...new Set([...dkYok(), k])]); geriAlinabilir("Uyarı yoksayıldı", () => { dkYokYaz(dkYok().filter(x => x !== k)); anaCiz(); }); anaCiz(); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-dk-yok],[data-dk-geri]"); if(!b) return; e.preventDefault(); e.stopPropagation();
   if(b.dataset.dkGeri != null){ dkYokYaz([]); bildir("Yoksayılan uyarılar geri geldi"); return anaCiz(); } dkYoksay(b.dataset.dkYok); }, true);
@@ -4938,7 +4938,12 @@ const hzGizli = () => { try { return JSON.parse(localStorage.getItem("hzGizli") 
 const HZ_TUR = ["personel", "kimlik", "silah", "zimmet", "elsenet", "izin", "gdhg", "izinb", "dilekce", "hedef", "yoklama", "sema", "spor", "baslik", "sertifika"];
 function hzListe(){ let L = null; try { L = JSON.parse(localStorage.getItem("hzSira") || "null"); } catch(e){}
   if(!Array.isArray(L)){ const G = hzGizli(); L = HZ_TUR.filter(t => !G.includes(t)).map(t => "t:" + t); } return L.filter(k => typeof k === "string"); }
-function hzYaz(L){ try { localStorage.setItem("hzSira", JSON.stringify(L)); } catch(e){} }
+function hzYaz(L){ try { localStorage.setItem("hzSira", JSON.stringify(L)); } catch(e){} tercihGonder(); }
+/* kısayollar ve yoksayılan uyarılar bulutta da tutulur (bt/tercih): her cihazda aynı görünür; Kaydet beklemez, hemen yazılır */
+let tercihZ = 0;
+function tercihGonder(){ clearTimeout(tercihZ); tercihZ = setTimeout(() => { if(!db || !yazabilir || saltMi()) return; let hz = null, dy = []; try { hz = JSON.parse(localStorage.getItem("hzSira") || "null"); dy = JSON.parse(localStorage.getItem("dkYok") || "[]"); } catch(e){}
+  db.doc("bt/tercih").set({ hzSira: hz, dkYok: dy, zaman: Date.now() }).catch(() => {}); }, 500); }
+function tercihAl(v){ try { if(Array.isArray(v.hzSira)) localStorage.setItem("hzSira", JSON.stringify(v.hzSira)); if(Array.isArray(v.dkYok)) localStorage.setItem("dkYok", JSON.stringify(v.dkYok)); } catch(e){} try { anaCiz(); } catch(e){} }
 function hzBelgeId(k){ if(k.startsWith("t:")){ const d = S.belgeler.find(x => x.tur === k.slice(2)); return d ? d.id : null; } return k.startsWith("d:") ? k.slice(2) : null; }
 function hzVarMi(k){ const L = hzListe(); if(L.includes(k)) return k; const id = hzBelgeId(k); return id ? L.find(x => hzBelgeId(x) === id) || null : null; }
 function hzEkleCikar(k, sessiz){ const L = hzListe(), v = hzVarMi(k); hzYaz(v ? L.filter(x => x !== v) : [...L, k]); if(!sessiz) bildir(v ? "Kısayollardan çıkarıldı" : "Kısayollara eklendi"); try { anaCiz(); } catch(e){} }
@@ -4965,7 +4970,7 @@ function anaCiz(){
     if(k.startsWith("b:")){ const [kk, bb] = v.split("|"), ku = klasorBul(kk), bl = ku && bolumBul(kk, bb); return bl ? { ad: bl.ad, sag: ku.kisa || ku.ad, simge: KLS_SIM, veri: `data-son-k="${esc(kk)}" data-son-b="${esc(bb)}"` } : null; } return null; };
   /* A tasarımı: dört sayı · ince dönem satırı · sekmeler (Kısayollar / Klasörler / Son / Uyarılar) · sırtlı satırlar */
   const dkHam = dikkatListesi().filter(x => !(bas && son && x.tur === "gdhg" && /dönemi bitiyor/.test(x.t))), dkY = dkYok(), dkHamK = new Set(dkHam.map(dkAnah));
-  { const kalan = dkY.filter(k => dkHamK.has(k)); if(kalan.length !== dkY.length) dkYokYaz(kalan); }   /* geçmişte kalan yoksaymalar temizlenir */
+  if(S.yuklendi && ["personel", "izin", "yoklama", "gdhg"].every(x => S.yuklendi[x])){ const kalan = dkY.filter(k => dkHamK.has(k)); if(kalan.length !== dkY.length) dkYokYaz(kalan); }   /* geçmişte kalan yoksaymalar temizlenir */
   const dk = dkHam.filter(x => !dkY.includes(dkAnah(x))), dkGiz = dkHam.length - dk.length;
   let sonL = []; try { sonL = JSON.parse(localStorage.getItem("sonlar") || "[]"); } catch(e){}
   const gor = new Set(); sonL = sonL.map(o => { const k = klasorBul(o.k), bl = k && bolumBul(o.k, o.b), d = o.d ? S.belgeler.find(x => x.id === o.d) : null; if(!k || !bl || (o.d && !d)) return null;
@@ -4996,14 +5001,13 @@ function anaCiz(){
       const ts = (k, r, i, on) => sat(`data-hz-t="${esc(k)}" aria-pressed="${on}"`, i, esc(r.ad), `<i class="ss-tik">${on ? "✓" : ""}</i>`, r.simge, on ? "" : " gizli");
       ic = `<div class="an-not">Dokunarak ekleyin ya da çıkarın. Sırasını değiştirmek için kısayola basılı tutun.</div>` + HZK.map(([k, r], i) => ts(k, r, i, true)).join("")
         + (aday.length ? `<div class="an-bas">Eklenebilecekler</div>` + aday.map(k => [k, hzCoz(k)]).filter(([, r]) => r).map(([k, r], i) => ts(k, r, i, false)).join("") : ""); }
-    ic += `<div class="an-alt2"><button type="button" class="an-alt" data-hz-duz>${hzDuzen ? "✓ Bitti" : "＋ Kısayol ekle / çıkar"}</button><button type="button" class="an-alt" data-gz-ayar>👁 Gizlilik modu</button></div>`; }
+    ic += `<div class="an-alt2"><button type="button" class="an-alt" data-hz-duz>${hzDuzen ? "✓ Bitti" : "＋ Kısayol ekle / çıkar"}</button></div>`; }
   else if(anaSekme === "klasor"){ ic = mnGruplar().map((c, i) => sat(`data-mn-kat="${esc(c.anah)}"`, i, esc(c.ad), `<small>${c.uyeler.length > 1 ? esc(c.uyeler.map(mnKisa).join(" · ")) + " · " : ""}${c.top ? c.top + " öğe" : "boş"}</small>`, "", c.top ? "" : " soluk")).join(""); }
   else if(anaSekme === "gecmis"){ const B = S.belgeler.filter(d => !d.sablon).slice().sort((a, b) => String(AD[a.tur] || a.ad).localeCompare(String(AD[b.tur] || b.ad), "tr"));
     const SB = [...new Set(sonL.map(o => o.d).filter(Boolean))].map(id => B.find(d => d.id === id)).filter(Boolean).slice(0, 6), bs = (d, i) => sat(`data-gc-belge="${esc(d.id)}"`, i, esc(d.ad), '<small>eski hâlleri ›</small>', PANO_SIMGE[d.tur] || '<circle cx="12" cy="12" r="8"/><path d="M12 7.5V12l3 2"/>');
     ic = `<div class="gc-acik"><b>Geçmiş nedir?</b><span>Her <em>Kaydet</em>'e bastığınızda belgenin o anki hâli saklanır. Bir belgede yanlışlık olursa o belgeyi seçip eski hâline dönebilirsiniz.</span></div>
       <div class="gc-ana2"><button type="button" class="gc-ana-k" data-gc-cop="1">${gcIk("cop", "#F7E6E2", "#A3412F")}<b>Silinenler</b><small>silinen satır ve belgeleri geri getir</small></button><button type="button" class="gc-ana-k" data-gc-temiz="1">${gcIk("supur", "#F3ECDD", "#7A5A25")}<b>Geçmişi temizle</b><small>eski kopyaları sil, yalnız şimdiki kalsın</small></button></div>
-      ${SB.length ? `<div class="an-bas">Son çalıştığınız belgeler</div>` + SB.map(bs).join("") : ""}
-      <details class="gc-tum"><summary>Bütün belgeler <small>${B.length}</small></summary>${B.map(bs).join("")}</details>`; }
+      <details class="gc-tum" open><summary>Belgeler <small>${B.length}</small></summary>${B.map(bs).join("")}</details>`; }
   else if(anaSekme === "son"){ ic = sonL.length ? sonL.map((o, i) => sat(`data-son-k="${esc(o.k)}" data-son-b="${esc(o.b)}"${o.d ? ` data-son-d="${esc(o.d)}"` : ""} data-hz-k="${esc(o.d ? "d:" + o.d : "b:" + o.k + "|" + o.b)}"`, i, esc(o.ad), `<small>${esc(o.alt)}</small>`, o.tur ? PANO_SIMGE[o.tur] || PANO_SIMGE.belge : `<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/>`, " iki")).join("") : `<div class="an-bos">Henüz açılan belge yok</div>`; }
   else { ic = (dk.length ? dk.map((x, i) => sat(`data-dk="${esc(x.tur)}" data-dk-k="${esc(dkAnah(x))}"`, 3, esc(x.t), `<small>${esc(x.a)}</small><span class="dk-x" role="button" data-dk-yok="${esc(dkAnah(x))}" aria-label="Yoksay" title="Yoksay"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-2.7 3.6M6.4 6.4C3.9 8.1 2.5 12 2.5 12s3.5 7 9.5 7a9.6 9.6 0 0 0 5.6-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></span>`, "", " iki uyari")).join("") : `<div class="an-bos">Gösterilecek uyarı yok</div>`)
       + `<div class="an-not dk-not">Gerekmeyen uyarıyı sağdaki göz simgesiyle ya da basılı tutup <b>Yoksay</b> diyerek kaldırabilirsiniz. Tarihi değişirse yeniden çıkar.</div>`
@@ -5044,7 +5048,13 @@ function gzAyarla(ac, sessiz){ document.documentElement.classList.toggle("gizli"
 const gzIk = ac => `<svg viewBox="0 0 24 24"><path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>${ac ? '<path d="M4 4l16 16"/>' : ""}</svg>`;
 (() => { let z = 0; new MutationObserver(() => { if(!gzAcik()) return; clearTimeout(z); z = setTimeout(() => gzTara(), 60); }).observe(document.documentElement, { childList: true, subtree: true }); document.addEventListener("input", () => { if(gzAcik()) { clearTimeout(z); z = setTimeout(() => gzTara(), 200); } }); })();
 async function gzIzin(){ try { if(window.DeviceMotionEvent && typeof DeviceMotionEvent.requestPermission === "function") return (await DeviceMotionEvent.requestPermission()) === "granted"; } catch(e){ return false; } return true; }
-document.addEventListener("click", async e => { const b = e.target.closest && e.target.closest("#ust-goz"); if(!b) return; if(!gzOku("tskGzIzin", "")){ gzYaz("tskGzIzin", "1"); await gzIzin(); } gzAyarla(!gzAcik()); });
+/* göz simgesine basılı tutunca (bilgisayarda sağ tık) gizlilik ayarları açılır */
+let gzBasZ = 0, gzBasSon = 0;
+document.addEventListener("pointerdown", e => { if(!(e.target.closest && e.target.closest("#ust-goz"))) return; clearTimeout(gzBasZ); gzBasZ = setTimeout(() => { gzBasSon = Date.now(); if(navigator.vibrate) try { navigator.vibrate(12); } catch(x){} gzAyarAc(); }, 520); }, true);
+["pointerup", "pointercancel", "pointerleave"].forEach(t => document.addEventListener(t, () => clearTimeout(gzBasZ), true));
+document.addEventListener("contextmenu", e => { if(!(e.target.closest && e.target.closest("#ust-goz"))) return; e.preventDefault(); gzBasSon = Date.now(); gzAyarAc(); }, true);
+document.addEventListener("click", async e => { const b = e.target.closest && e.target.closest("#ust-goz"); if(!b) return; if(Date.now() - gzBasSon < 900) return;
+  if(!gzOku("tskGzIpucu", "")){ gzYaz("tskGzIpucu", "1"); setTimeout(() => bildir("Gizlilik ayarları için göz simgesine basılı tutun"), 400); } if(!gzOku("tskGzIzin", "")){ gzYaz("tskGzIzin", "1"); await gzIzin(); } gzAyarla(!gzAcik()); });
 /* sallama: kısa sürede üç güçlü sarsıntı */
 const GZS = { t: [], son: 0, once: null };
 window.addEventListener("devicemotion", e => { if(gzOku("tskGzSalla", "1") !== "1" || document.visibilityState !== "visible") return; const a = e.accelerationIncludingGravity || e.acceleration; if(!a || a.x == null) return;
@@ -13408,6 +13418,7 @@ function yerGeriYukle(){ if(SECIM.klasor || !OTURUM_DEVAM) return; try { const y
   bt("izinb", () => { if(acikTur() === "izinb" && !odakIcinde("#e-izinb")) izbhCiz(); });
   bt("hedefSet", () => { if(acikTur() === "hedef" && !odakIcinde("#e-hedef")) hdSetCiz(); });
   bt("hedef", () => { if(acikTur() === "hedef" && !odakIcinde("#e-hedef")){ hedefCiz(); hedefAyarCiz(); } });
+  db.doc("bt/tercih").onSnapshot(s => { if(!s.exists){ if(localStorage.getItem("hzSira") || localStorage.getItem("dkYok")) tercihGonder(); return; } tercihAl(s.data() || {}); }, () => {});
   db.collection("belgeler").onSnapshot(s => {
     S.yuklendi.belgeler = true; const yeni = s.docs.map(d => d.data());
     const yerel = S.belgeler.filter(d => kirli["belgeler/" + d.id] && !yeni.some(y => y.id === d.id));   // henüz kaydı dönmemiş yeni belgeler
