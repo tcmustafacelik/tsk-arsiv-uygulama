@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "539";
+  const SURUM = "540";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3393,6 +3393,15 @@ html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#232
 .iz-ek-is{display:flex;gap:8px;flex-wrap:wrap} .iz-ek-is .mini{flex:1 1 0;min-width:0} .iz-sif-k{color:#A3412F!important;border-color:#EBCFC8!important;background:#FBEFEC!important;border-style:solid!important}
 .izs-l{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0 0 12px} .izs-l span{display:flex;justify-content:space-between;gap:6px;padding:7px 10px;border:1px solid var(--line2);border-radius:9px;background:var(--panel2);min-width:0} .izs-l b{font:600 12px var(--f-ui);white-space:nowrap;overflow:hidden;text-overflow:ellipsis} .izs-l small{font:500 11px var(--f-ui);color:var(--muted);flex:none}
 #i-tablo .i-oz small.tek-sat{white-space:nowrap;overflow:hidden}
+/* personel kartı */
+.kd-kart{display:flex;align-items:center;gap:10px;width:100%;margin:2px 0 4px;padding:10px 12px;border:1px solid #EAD9BC;border-radius:12px;background:#FBF5EA;cursor:pointer;font:inherit;text-align:left;color:var(--fg)}
+.kd-kart>span{display:grid;place-items:center;width:34px;height:34px;border-radius:9px;background:#F3E3C4;color:#8A5E1E;flex:none} .kd-kart svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.kd-kart b{font:700 14px var(--f-ui)} .kd-kart small{margin-left:auto;font:500 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .kd-kart i{font-style:normal;color:var(--muted);font-size:18px}
+.krt-ust{display:flex;gap:8px;margin:0 0 8px} .krt-l{display:grid;grid-template-columns:minmax(0,1fr);gap:6px;margin-bottom:12px} @media (min-width:700px){.krt-l{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.krt-k{display:flex;align-items:center;gap:8px;padding:7px 8px;border:1.5px solid var(--line2);border-radius:11px;background:var(--panel);cursor:pointer;font:inherit;text-align:left;min-width:0;color:var(--fg)}
+.krt-k[aria-pressed="true"]{border-color:var(--sec-k);background:var(--sec-z)} .krt-k .kb2-av{flex:none} .krt-y{display:flex;flex-direction:column;min-width:0;flex:1} .krt-y b{font:700 12.5px var(--f-ui)} .krt-y small{font:500 10.5px var(--f-ui);color:var(--muted)}
+.krt-k i{flex:none;width:18px;height:18px;border-radius:5px;border:1.5px solid var(--line);display:grid;place-items:center;font:800 11px var(--f-ui);font-style:normal;color:#fff} .krt-k[aria-pressed="true"] i{background:var(--sec-i);border-color:var(--sec-i)}
+.krt-git{width:100%;height:44px;font-size:14px!important}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3800,7 +3809,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 539</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 540</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -3903,7 +3912,7 @@ html.gizli .gz-in:focus{filter:none}
 
         <!-- PERSONEL -->
         <div id="e-personel" hidden style="display:flex;flex-direction:column;gap:10px"><div id="p-lst"></div><div id="p-bas"></div>
-          <div class="arac"><button class="btn ana" id="p-ekle">+ Personel ekle</button><button class="btn" id="p-al" type="button" hidden>⇣ Listelerden al</button></div><div class="p-kisa" id="p-kisa"></div>
+          <div class="arac"><button class="btn ana" id="p-ekle">+ Personel ekle</button><button class="btn" id="p-al" type="button" hidden>⇣ Listelerden al</button><button class="btn" id="p-kart" type="button">🪪 Toplu kart</button></div><div class="p-kisa" id="p-kisa"></div>
           <div class="tablo-kap"><table class="liste ts-grup" id="p-tablo"><thead><tr><th style="width:52px">S.No</th><th>Rütbesi</th><th>Adı Soyadı</th><th>Sicil</th><th>Doğum</th><th>Katılış</th><th>Görevi</th><th style="width:96px"></th></tr></thead><tbody></tbody></table></div>
         </div>
 
@@ -6098,6 +6107,74 @@ const KD_SIRA = ["yok", "gdhg", "izin", "izinb", "isa", "kimlik", "sert", "kpk",
 function kdTopla(p){ const B = [], gun = bugun(); KD_KAYNAK.forEach(x => { try { x.topla(p, B, gun); } catch(e){} }); const sira = k => { const i = KD_SIRA.indexOf(k); return i < 0 ? 99 : i; }; return B.map((x, i) => [x, i]).sort((a, b) => sira(a[0].k) - sira(b[0].k) || a[1] - b[1]).map(x => x[0]); }
 const KD_KIK = { yok: '<path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="8.5"/>', gdhg: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', kimlik: '<rect x="3" y="6" width="18" height="13" rx="2"/><circle cx="9" cy="12" r="2.3"/><path d="M14 10.5h4M14 13.5h3"/>', sert: '<circle cx="12" cy="9" r="5"/><path d="M9 13.5 8 21l4-2 4 2-1-7.5"/>', teb: '<path d="M5 4h10l4 4v12H5z"/><path d="M8 12h8M8 16h5"/>', spor: '<circle cx="13" cy="5" r="2"/><path d="M8 21l3-6 3 2v4M6 12l4-3 3 1 3 3h3"/>', tz: '<rect x="3" y="6" width="18" height="12" rx="2"/><circle cx="12" cy="12" r="2.5"/>', izin: '<path d="M4 12h12M12 6l6 6-6 6"/>', izinb: '<path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6"/>', isa: '<path d="M6 3h9l3 3v15H6z"/><path d="M9 10h6M9 14h6"/>', dl: '<path d="M6 3h9l3 3v15H6z"/><path d="M9 17c1-1.5 2-1.5 3 0s2 1 3-1"/>', kpk: '<path d="M5 10l2-5 3 3h4l3-3 2 5v5a5 5 0 0 1-5 5h-4a5 5 0 0 1-5-5z"/>' };
 const KD_BOL = Object.fromEntries(KD_KAYNAK.map(x => [x.k, [x.et, x.z, x.c]]));
+
+/* ===== PERSONEL KARTI (85,6 × 54 mm, ön + arka) =====
+   Birlik içi bilgi kartı: fotoğraf, rütbe, sınıf, kimlik bilgileri, kadro görevi, acil durum yakını. Resmî kimlik değildir; amblem/mühür yoktur, basım zamanı gerçek saattir.
+   Kart tuvalde çizilir (300 dpi), PDF'e resim olarak konur: A4'te her satırda bir kişinin önü ve arkası, kesim işaretleriyle; sayfada 4 kişi. */
+const KRT = { w: 85.6, h: 54, k: 1011 / 85.6 };
+async function krtResim(src){ try { const r = await fetch(src); if(!r.ok) return null; return await createImageBitmap(await r.blob()); } catch(e){ return null; } }
+async function krtSvg(ic){ try { const u = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="96" height="96">${ic}</svg>`); const im = new Image(); im.src = u; await im.decode(); return im; } catch(e){ return null; } }
+function krtYuvarlak(x, X, Y, W, H, R){ x.beginPath(); x.moveTo(X + R, Y); x.arcTo(X + W, Y, X + W, Y + H, R); x.arcTo(X + W, Y + H, X, Y + H, R); x.arcTo(X, Y + H, X, Y, R); x.arcTo(X, Y, X + W, Y, R); x.closePath(); }
+function krtYaz(x, t, X, Y, enW, pt, agir, renk, o = {}){ const k = KRT.k, px = v => v * k; let f = pt; const font = () => `${agir} ${f * 0.3528 * k}px Archivo, "Segoe UI", sans-serif`;
+  x.font = font(); while(x.measureText(t).width > px(enW) && f > pt * 0.62){ f -= 0.2; x.font = font(); } x.fillStyle = renk; x.textBaseline = "alphabetic"; x.textAlign = o.ortala ? "center" : "left"; x.fillText(t, px(X), px(Y)); x.textAlign = "left"; return f; }
+function krtSar(x, t, X, Y, enW, pt, agir, renk, enSatir){ const k = KRT.k; let f = pt, L = [];
+  for(let d = 0; d < 12; d++){ x.font = `${agir} ${f * 0.3528 * k}px Archivo, "Segoe UI", sans-serif`; L = []; let s0 = "";
+    for(const w of String(t).split(/\s+/)){ const dene = s0 ? s0 + " " + w : w; if(x.measureText(dene).width > enW * k && s0){ L.push(s0); s0 = w; } else s0 = dene; } if(s0) L.push(s0);
+    if(L.length <= enSatir) break; f -= 0.3; }
+  x.fillStyle = renk; const lh = f * 0.3528 * 1.28; L.forEach((l, i) => x.fillText(l, X * k, (Y + i * lh) * k)); return Y + L.length * lh; }
+function krtAlan(x, et, v, X, Y, W, o = {}){ const k = KRT.k; x.fillStyle = o.z || "#F4F5F7"; krtYuvarlak(x, X * k, Y * k, W * k, 8.4 * k, 1.4 * k); x.fill();
+  krtYaz(x, et.toLocaleUpperCase("tr"), X + 1.8, Y + 3.1, W - 3, 4.6, 700, o.e || "#7A808B"); krtYaz(x, v || "—", X + 1.8, Y + 7, W - 3, 7.4, 700, o.r || "#22262E"); }
+async function krtCiz(p){ const k = KRT.k, W = Math.round(KRT.w * k), H = Math.round(KRT.h * k), tuval = () => { const c = document.createElement("canvas"); c.width = W; c.height = H; const x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); return [c, x]; };
+  try { await document.fonts.load(`700 20px Archivo`); await document.fonts.load(`500 20px Archivo`); } catch(e){}
+  const [ra, rd] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe), gk = ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim(), kan = String(p.kan || "").replace(/\(\s*([+-])\s*\)/, "($1)").replace(/\s*RH\s*/i, " Rh ");
+  const ust = (x, baslik, sag) => { x.fillStyle = "#ECEEF1"; x.fillRect(0, 0, W, 10.5 * k); x.fillStyle = "#D6A04C"; x.fillRect(0, 10.5 * k, W, 0.6 * k);
+    krtYaz(x, baslik, 4, 4.6, 50, 7.2, 800, "#2B3039"); krtYaz(x, sag, 4, 8.4, KRT.w - 8, 5, 500, "#5F6672"); };
+  const cerceve = x => { x.strokeStyle = "#C9CDD4"; x.lineWidth = 0.25 * k; krtYuvarlak(x, 0.15 * k, 0.15 * k, W - 0.3 * k, H - 0.3 * k, 3 * k); x.stroke(); };
+  const kita = p.kita || String(p.gorev || "").split(/\s+(?=\d+['’]n?[cıiuü]+\s)/)[0] || "";
+  /* ön yüz */
+  const [on, x] = tuval(); ust(x, "PERSONEL BİLGİ KARTI", kita);
+  const fx = 4, fy = 13.6, fw = 21, fh = 27; x.save(); krtYuvarlak(x, fx * k, fy * k, fw * k, fh * k, 1.6 * k); x.clip();
+  const foto = p.foto ? await krtResim("/_blob/" + p.foto) : null;
+  if(foto){ const o = Math.max(fw * k / foto.width, fh * k / foto.height), w = foto.width * o, h = foto.height * o; x.drawImage(foto, fx * k + (fw * k - w) / 2, fy * k + (fh * k - h) / 2, w, h); }
+  else { x.fillStyle = "#EEF0F3"; x.fillRect(fx * k, fy * k, fw * k, fh * k); const ri = await krtSvg(rd); if(ri) x.drawImage(ri, (fx + 3.5) * k, (fy + 6.5) * k, 14 * k, 14 * k); }
+  x.restore(); x.strokeStyle = "#D5D9DF"; x.lineWidth = 0.2 * k; krtYuvarlak(x, fx * k, fy * k, fw * k, fh * k, 1.6 * k); x.stroke();
+  const sx = 28.5, sw = KRT.w - sx - 4; krtYaz(x, p.ad || "", sx, 18.2, sw, 11, 800, "#1E2229");
+  const ri = await krtSvg(rd); if(ri) x.drawImage(ri, sx * k, 20.2 * k, 5.2 * k, 5.2 * k);
+  krtYaz(x, ra.split(" · ")[0] || p.rutbe || "", sx + 6.4, 24.2, sw - 6.4, 7.2, 600, "#3A404B");
+  { const et = [sn[0] !== "diger" ? sn[1] : "", kurmayMi(p.rutbe) ? "Kurmay" : "", gk].filter(Boolean); let cx = sx; x.font = `700 ${5.6 * 0.3528 * k}px Archivo, sans-serif`;
+    et.forEach((t, i) => { const tw = x.measureText(t).width / k + 3.2; if(cx + tw > KRT.w - 4) return; x.fillStyle = i === 0 && sn[0] !== "diger" ? "#FBEFD8" : "#ECEEF1"; krtYuvarlak(x, cx * k, 26.6 * k, tw * k, 4.4 * k, 1.1 * k); x.fill(); x.fillStyle = i === 0 && sn[0] !== "diger" ? "#7A5320" : "#3F4756"; x.fillText(t, (cx + 1.6) * k, 29.8 * k); cx += tw + 1.4; }); }
+  const aw = (sw - 1.6) / 2; krtAlan(x, "Sicil", p.sicil, sx, 32.6, aw); krtAlan(x, "Kan grubu", kan, sx + aw + 1.6, 32.6, aw, { z: "#FBEDEA", e: "#A3412F", r: "#8E2F20" });
+  const bw = (KRT.w - 8 - 3.2) / 3; krtAlan(x, "Doğum", p.dogum, 4, 42.6, bw); krtAlan(x, "Nasıp", p.nasip ? trTarih(p.nasip) || p.nasip : "", 4 + bw + 1.6, 42.6, bw); krtAlan(x, "Telefon", p.tel, 4 + 2 * (bw + 1.6), 42.6, bw);
+  cerceve(x);
+  /* arka yüz */
+  const [ar, y] = tuval(); ust(y, "KADRO GÖREVİ", [p.rutbe, p.ad].filter(Boolean).join(" "));
+  let yy = krtSar(y, p.gorev || "Kadro görevi girilmedi", 4, 15.2, KRT.w - 8, 6.6, 600, "#2B3039", 3);
+  yy = Math.max(yy + 0.6, 24); const hw = (KRT.w - 8 - 1.6) / 2;
+  krtAlan(y, "T.C. kimlik no", p.tc, 4, yy, hw); krtAlan(y, "Baba adı", p.baba, 4 + hw + 1.6, yy, hw); yy += 10;
+  y.fillStyle = "#F4F5F7"; krtYuvarlak(y, 4 * k, yy * k, (KRT.w - 8) * k, 9.6 * k, 1.4 * k); y.fill(); krtYaz(y, "ACİL DURUMDA", 5.8, yy + 3.1, 40, 4.6, 700, "#A3412F");
+  krtYaz(y, [p.yakinAd, p.yakinTel].filter(Boolean).join(" · ") || "—", 5.8, yy + 7.4, KRT.w - 11, 7, 700, "#22262E"); yy += 11;
+  if(p.adres) krtSar(y, "Adres: " + p.adres, 4, yy + 1.6, KRT.w - 8, 5.4, 500, "#4A505B", 2);
+  const zm = new Date(), zs = zm.toLocaleDateString("tr-TR") + " " + zm.toLocaleTimeString("tr-TR", { hour: "2-digit", minute: "2-digit" });
+  krtYaz(y, `Basım ${zs} · Birlik içi bilgi kartıdır, resmî kimlik yerine geçmez.`, 4, KRT.h - 2.4, KRT.w - 8, 4.4, 500, "#9095A0");
+  cerceve(y);
+  return { on, ar }; }
+async function kartPdf(P){ if(!P.length) return bildir("Kart için kişi seçin"); bildir(P.length > 1 ? `${P.length} kart hazırlanıyor…` : "Kart hazırlanıyor…");
+  try { const doc = await yeniPdf({ yon: "dikey", kagit: "A4" }), X0 = (210 - (KRT.w * 2 + 8)) / 2, Y0 = 16, ara = 10, isaret = (X, Y) => { doc.setDrawColor(170, 175, 182); doc.setLineWidth(0.15);
+      [[X, Y, -1, -1], [X + KRT.w, Y, 1, -1], [X, Y + KRT.h, -1, 1], [X + KRT.w, Y + KRT.h, 1, 1]].forEach(([a, b, sx, sy]) => { doc.line(a + sx * 1.2, b, a + sx * 4, b); doc.line(a, b + sy * 1.2, a, b + sy * 4); }); };
+    for(let i = 0; i < P.length; i++){ if(i && i % 4 === 0) doc.addPage(); const Y = Y0 + (i % 4) * (KRT.h + ara), { on, ar } = await krtCiz(P[i]);
+      doc.addImage(on.toDataURL("image/jpeg", 0.92), "JPEG", X0, Y, KRT.w, KRT.h); doc.addImage(ar.toDataURL("image/jpeg", 0.92), "JPEG", X0 + KRT.w + 8, Y, KRT.w, KRT.h); isaret(X0, Y); isaret(X0 + KRT.w + 8, Y);
+      doc.setFont("LA", "normal"); doc.setFontSize(6); doc.setTextColor(150, 155, 162); doc.text("ön yüz", X0, Y - 1.6); doc.text("arka yüz", X0 + KRT.w + 8, Y - 1.6); }
+    const ad = P.length === 1 ? `Personel_Karti_${dosyaAdi(P[0].ad || "kisi")}.pdf` : `Personel_Kartlari_${P.length}_kisi.pdf`;
+    return dosyaVer(ad, doc.output("blob")); } catch(e){ uyar("Kart oluşturulamadı: " + (e.message || e), true); } }
+function kartSec(){ const P = (S.personel.rows || []).filter(p => p.ad), sec = new Set(P.map(p => p.id));
+  altPencere("krt-perde", "PERSONEL KARTI", "Toplu kart oluştur", () => `<p class="an-not" style="margin:0 2px 10px">Seçilenlerin kartı tek PDF'te çıkar: her satırda ön ve arka yüz, kesim işaretleriyle, sayfada 4 kişi.</p>
+    <div class="krt-ust"><button type="button" class="an-alt" data-krt="hepsi">Hepsini seç</button><button type="button" class="an-alt" data-krt="hic">Hiçbiri</button></div>
+    <div class="krt-l">${P.map(p => { const [ra, rd, rk] = rutbeSimge(p.rutbe, p); return `<button type="button" class="krt-k" data-krt-k="${esc(p.id)}" aria-pressed="${sec.has(p.id)}"><span class="kb2-av rs-${rk}"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span><span class="krt-y"><b class="tek-sat">${esc(p.ad)}</b><small class="tek-sat">${esc(p.rutbe || "")}</small></span><i>${sec.has(p.id) ? "✓" : ""}</i></button>`; }).join("")}</div>
+    <button type="button" class="btn ana krt-git" data-krt="git"${sec.size ? "" : " disabled"}>🪪 Kart oluştur · ${sec.size} kişi</button>`,
+    (b, kapat, yenile) => { const v = b.dataset.krt, id = b.dataset.krtK; if(id){ sec.has(id) ? sec.delete(id) : sec.add(id); return yenile(); } if(v === "hepsi"){ P.forEach(p => sec.add(p.id)); return yenile(); } if(v === "hic"){ sec.clear(); return yenile(); }
+      if(v === "git"){ kapat(); kartPdf(P.filter(p => sec.has(p.id))); } }, { z: "ECEEF1", r: "3F4756" }); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-kart-bas],#p-kart"); if(!b) return; e.stopPropagation();
+  if(b.id === "p-kart") return kartSec(); const p = (S.personel.rows || []).find(x => x.id === b.dataset.kartBas); if(p) kartPdf([p]); }, true);
 function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === pid); if(!p) return;
   altPencere("kd-perde", "KİŞİ DOSYASI", () => [p.rutbe, p.ad].filter(Boolean).join(" ") || "Adsız", () => { const B = kdTopla(p);
     const [ra, rd, rk] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe), gk = ((String(p.gorev || "").match(/\(([^()]+)\)[^()]*$/) || [])[1] || "").trim();
@@ -6107,6 +6184,7 @@ function kisiDosyasi(pid){ const p = (S.personel.rows || []).find(x => x.id === 
         <div class="kd-cipler">${sn[0] !== "diger" ? `<span class="sn-cip">${sinifIk(p.rutbe)}<span>${esc(sn[1])}</span></span>` : ""}${kurmayMi(p.rutbe) ? '<span class="kd-cip">Kurmay</span>' : ""}${gk ? `<span class="kd-cip gorev">${esc(gk)}</span>` : ""}</div></div></div>
       ${bil.length ? `<div class="kd-bil">${bil.map(([a, v]) => `<div><small>${a}</small><b>${a === "Telefon" ? `<a href="tel:0${esc(String(v).replace(/\D/g, "").replace(/^0/, ""))}">${esc(v)}</a>` : esc(v)}</b></div>`).join("")}</div>` : ""}
       ${p.gorev ? `<div class="kd-gorev">${esc(p.gorev)}</div>` : ""}
+      <button type="button" class="kd-kart" data-kart-bas="${esc(p.id)}"><span><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2.5"/><circle cx="8.5" cy="11" r="2.2"/><path d="M5.5 16c.6-1.6 1.7-2.4 3-2.4s2.4.8 3 2.4M14 10h4.5M14 13h3"/></svg></span><b>Kart oluştur</b><small>ön + arka yüz · PDF</small><i>›</i></button>
       ${B.length ? `<div class="kd-izgara">${B.map((x, i) => { const [et, z, c] = KD_BOL[x.k] || ["", "#EEF2F6", "#4A5868"]; return `<button type="button" class="kd-k ${x.renk}" data-kd="${i}" style="--kz:${z};--kc:${c}" title="${esc(x.ad + (x.alt ? " · " + x.alt : ""))}"><span class="kd-k-ust"><span class="kd-k-et">${KD_KIK[x.k] ? `<svg viewBox="0 0 24 24" aria-hidden="true">${KD_KIK[x.k]}</svg>` : ""}${esc(et)}</span><i>›</i></span><b class="kd-k-d">${esc(x.deger)}</b><small>${esc(x.kisa || "")}</small></button>`; }).join("")}</div>` : `<div class="yk-bos">Bu kişi henüz hiçbir belgede yok</div>`}`; },
     (b, kapat) => { if(b.dataset.kd == null) return; const x = kdTopla(p)[+b.dataset.kd]; if(!x || !x.d) return; kapat(); if(x.k === "gdhg" && x.gk){ gdSecili = x.gk.id; } if(x.git) x.git(); belgeGit(x.d); }, { z: "EFF4FA", r: "3F6487" }); }
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-p-dosya]"); if(!b) return; e.stopPropagation(); kisiDosyasi(b.dataset.pDosya); });
