@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "573";
+  const SURUM = "574";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3351,7 +3351,9 @@ html[data-tema="lacivert"]{--bg:#F1F0EA;--panel:#FFFFFD;--panel2:#F7F6F1;--fg:#1
 html[data-tema="grafit"]{--bg:#EFF0F2;--panel:#FFFFFF;--panel2:#F7F8F9;--fg:#22262E;--muted:#6B717C;--line:#DCDFE4;--line2:#E8EAED;--accent:#3F4756;--accent-soft:#E8EAEE;--accent-ink:#323947;--sec:#DCDFE4;--tz:#EBEDF0;--tk:#4A5263;--th1:#FAFAFB;--th2:#EEF0F3;--tf:#22262E}
 html[data-tema="orman"]{--bg:#EAF2EC;--panel:#FFFFFF;--panel2:#F4F9F5;--fg:#1F3328;--muted:#5F7468;--line:#D3E3D8;--line2:#E1ECE5;--accent:#2A6444;--accent-soft:#DDEEE3;--accent-ink:#215237;--sec:#D3E3D8;--tz:#E1F0E6;--tk:#2E6B4A;--th1:#F6FBF7;--th2:#E4F1E8;--tf:#1F3328}
 html[data-tema="kiremit"]{--bg:#F4EEE9;--panel:#FFFDFB;--panel2:#FAF5F1;--fg:#3B2A22;--muted:#7C6A60;--line:#E6DAD0;--line2:#EFE5DD;--accent:#985237;--accent-soft:#F4E5DB;--accent-ink:#7A402A;--sec:#E6DAD0;--tz:#F6E7DD;--tk:#A0573A;--th1:#FDF8F5;--th2:#F5E8DF;--tf:#3B2A22}
-html[data-tema="celik"]{--bg:#E9EDF0;--panel:#FDFEFE;--panel2:#F3F6F8;--fg:#22303A;--muted:#66737D;--line:#D5DDE3;--line2:#E1E7EB;--accent:#44606F;--accent-soft:#E1E9EE;--accent-ink:#354D5A;--sec:#D5DDE3;--tz:#E3EBF0;--tk:#4A6577;--th1:#F7F9FB;--th2:#E7EDF1;--tf:#22303A}
+html[data-tema="celik"],
+html[data-tema="zeytin"]{--bg:#E9EDF0;--panel:#FDFEFE;--panel2:#F3F6F8;--fg:#22303A;--muted:#66737D;--line:#D5DDE3;--line2:#E1E7EB;--accent:#44606F;--accent-soft:#E1E9EE;--accent-ink:#354D5A;--sec:#D5DDE3;--tz:#E3EBF0;--tk:#4A6577;--th1:#F7F9FB;--th2:#E7EDF1;--tf:#22303A}
+html[data-tema="zeytin"]{--bg:#EEEFE8;--panel:#FFFFFD;--panel2:#F6F7F1;--fg:#262B20;--muted:#6E7266;--line:#DCDFD2;--line2:#E7E9DF;--accent:#4A5A3A;--accent-soft:#E6EBDC;--accent-ink:#3C4A2F;--sec:#DCDFD2;--tz:#E6EAD9;--tk:#556644;--th1:#FAFBF6;--th2:#ECEFE4;--tf:#262B20}
 html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#23263D;--muted:#686C84;--line:#DADDEA;--line2:#E6E8F1;--accent:#4A519A;--accent-soft:#E7E8F6;--accent-ink:#3B4180;--sec:#DADDEA;--tz:#E9EAF7;--tk:#555CA6;--th1:#F8F8FD;--th2:#ECEDF8;--tf:#23263D}
 .an-hero{background:linear-gradient(155deg,var(--th1) 0%,var(--th2) 100%)!important;color:var(--tf)!important;border-color:var(--line2)!important}
 .an-halka{background:radial-gradient(closest-side,var(--th1) 80%,transparent 81% 100%),conic-gradient(var(--tk) calc(var(--p)*1%),var(--line) 0)!important;color:var(--tk)!important}
@@ -3491,11 +3493,11 @@ html body .dl-sat.on b,html body .dl-sat[aria-current="true"] b{color:#3B2A10!im
 /* arama açılınca başlık ile arama kutusu arasında nefes */
 @media (max-width:700px){ header.ust.ara-acik{row-gap:12px!important;padding-bottom:6px!important} header.ust.ara-acik .ara-kap{margin:2px 0 0!important;grid-row:2} header.ust.ara-acik .ara-kap input{height:44px!important;font-size:15px!important} }
 /* tema uyumu: Lacivert ve Çelik'te gri kalan ana düğme / seçili sekme / bilgi kutuları temanın rengine çekilir */
-html[data-tema="lacivert"],html[data-tema="celik"]{--gf-z:var(--tz);--gf-k:var(--tk)}
-html[data-tema="lacivert"] :is(.btn.ana,.krt-git,.ts-ac[aria-pressed="true"]),html[data-tema="celik"] :is(.btn.ana,.krt-git,.ts-ac[aria-pressed="true"]){background:var(--tk)!important;border-color:var(--tk)!important;color:#fff!important}
-html[data-tema="lacivert"] :is(.dl-seg button[aria-pressed="true"],.i-seg button[aria-pressed="true"],.seg button[aria-pressed="true"],.dl-seg button[aria-selected="true"]),html[data-tema="celik"] :is(.dl-seg button[aria-pressed="true"],.i-seg button[aria-pressed="true"],.seg button[aria-pressed="true"],.dl-seg button[aria-selected="true"]){color:var(--tk)!important}
-html[data-tema="lacivert"] :is(.btn:not(.ana):not(.sil),.mini:not(.sil)),html[data-tema="celik"] :is(.btn:not(.ana):not(.sil),.mini:not(.sil)){color:var(--tk)}
-html[data-tema="lacivert"] .ap-bas,html[data-tema="celik"] .ap-bas{--apz:var(--tz)!important;--apr:var(--tk)!important}
+html[data-tema="lacivert"],html[data-tema="celik"],html[data-tema="zeytin"]{--gf-z:var(--tz);--gf-k:var(--tk)}
+html[data-tema="lacivert"] :is(.btn.ana,.krt-git,.ts-ac[aria-pressed="true"]),html[data-tema="celik"] :is(.btn.ana,.krt-git,.ts-ac[aria-pressed="true"]),html[data-tema="zeytin"] :is(.btn.ana,.krt-git,.ts-ac[aria-pressed="true"]){background:var(--tk)!important;border-color:var(--tk)!important;color:#fff!important}
+html[data-tema="lacivert"] :is(.dl-seg button[aria-pressed="true"],.i-seg button[aria-pressed="true"],.seg button[aria-pressed="true"],.dl-seg button[aria-selected="true"]),html[data-tema="celik"] :is(.dl-seg button[aria-pressed="true"],.i-seg button[aria-pressed="true"],.seg button[aria-pressed="true"],.dl-seg button[aria-selected="true"]),html[data-tema="zeytin"] :is(.dl-seg button[aria-pressed="true"],.i-seg button[aria-pressed="true"],.seg button[aria-pressed="true"],.dl-seg button[aria-selected="true"]){color:var(--tk)!important}
+html[data-tema="lacivert"] :is(.btn:not(.ana):not(.sil),.mini:not(.sil)),html[data-tema="celik"] :is(.btn:not(.ana):not(.sil),.mini:not(.sil)),html[data-tema="zeytin"] :is(.btn:not(.ana):not(.sil),.mini:not(.sil)){color:var(--tk)}
+html[data-tema="lacivert"] .ap-bas,html[data-tema="celik"] .ap-bas,html[data-tema="zeytin"] .ap-bas{--apz:var(--tz)!important;--apr:var(--tk)!important}
 /* izin belgesi: kesik çizgili bilgi kutuları düz çerçeve (sistemle aynı) */
 html body .dl-kart.dl-bilgi{border-style:solid!important;border-color:var(--line2)!important} html body details.dl-bilgi:not(.dl-kart){border:0!important;border-top:1px solid var(--line2)!important}
 .dl-seg.mf-yon{grid-template-columns:repeat(3,minmax(0,1fr))!important} .dl-seg.mf-yon button{white-space:nowrap;min-width:0;gap:5px!important}
@@ -3957,7 +3959,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 573</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 574</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5077,7 +5079,7 @@ function sonEkle(o){ try { const L = JSON.parse(localStorage.getItem("sonlar") |
 /* ana sayfa: dikkat edilecekler (izinden dönenler, biten dönem, eksik bilgiler) */
 
 /* ===== TEMALAR: ekran renkleri (çıktılar değişmez) · seçim bulutta tutulur, her cihazda aynı ===== */
-const TEMALAR = [["Grafit", "grafit", "#EFF0F2", "#FFFFFF", "#3F4756", "#4A5263", "#FAFAFB", "#EEF0F3", "#EBEDF0"], ["Lacivert", "lacivert", "#F1F0EA", "#FFFFFD", "#23395B", "#2A4468", "#FBFAF6", "#ECEFF4", "#E6EBF3"], ["Çelik", "celik", "#E9EDF0", "#FDFEFE", "#44606F", "#4A6577", "#F7F9FB", "#E7EDF1", "#E3EBF0"]];
+const TEMALAR = [["Grafit", "grafit", "#EFF0F2", "#FFFFFF", "#3F4756", "#4A5263", "#FAFAFB", "#EEF0F3", "#EBEDF0"], ["Lacivert", "lacivert", "#F1F0EA", "#FFFFFD", "#23395B", "#2A4468", "#FBFAF6", "#ECEFF4", "#E6EBF3"], ["Çelik", "celik", "#E9EDF0", "#FDFEFE", "#44606F", "#4A6577", "#F7F9FB", "#E7EDF1", "#E3EBF0"], ["Zeytin", "zeytin", "#EEEFE8", "#FFFFFD", "#4A5A3A", "#556644", "#FAFBF6", "#ECEFE4", "#E6EAD9"]];
 const temaAl = () => { try { const t = localStorage.getItem("tskTema2"); return TEMALAR.some(x => x[1] === t) ? t : "grafit"; } catch(e){ return "grafit"; } };
 function temaUygula(k, yazma){ if(!TEMALAR.some(t => t[1] === k)) k = "grafit"; document.documentElement.dataset.tema = k;
   const m = document.querySelector('meta[name="theme-color"]'); if(m){ const t = TEMALAR.find(x => x[1] === k); m.setAttribute("content", t[2]); }
