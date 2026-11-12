@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "559";
+  const SURUM = "560";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3521,6 +3521,7 @@ html body .kart.bkk.dsy .ad{overflow-wrap:anywhere!important;word-break:break-wo
 header.ust .ara-kap{border:1px solid var(--line2)!important;box-shadow:none!important;border-radius:12px!important;background:var(--panel)!important}
 .g-zoom{display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 0 8px} .g-zoom[hidden]{display:none} .g-zoom>span{font:600 11.5px var(--f-ui);color:var(--muted);white-space:nowrap} .g-zoom .ka-b{flex:0 1 260px;min-width:0} @media (max-width:520px){.g-zoom>span{display:none} .g-zoom .ka-b{flex:1 1 100%}}
 /* S559: ne eksik ne fazla düzeltmeleri */
+@media (max-width:520px){ html body .es-mbas:has(.ls-not){grid-template-columns:minmax(0,1fr);row-gap:3px} html body .es-mbas:has(.ls-not) .ls-not{grid-column:1;grid-row:auto;margin-top:8px;width:100%;display:grid!important;grid-template-columns:1fr 1fr} html body .es-mbas:has(.ls-not) .ls-not button{justify-content:center} }
 html body .yk-k .sa-ok{width:26px;height:26px;border-radius:50%;background:var(--panel2);position:relative;font-size:0} html body .yk-k.acik .sa-ok::after{transform:rotate(225deg);top:11px}
 html body #e-izinb .izb-sekmeler,html body .tz-sek{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px}
 html body #e-izinb .izb-sekmeler button,html body .tz-sek button{display:flex!important;flex-direction:column;align-items:center;justify-content:center;gap:3px;min-width:0;white-space:normal!important;text-align:center;line-height:1.15;font-size:11.5px!important;padding:7px 2px!important;overflow-wrap:anywhere}
@@ -3936,7 +3937,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 559</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 560</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
