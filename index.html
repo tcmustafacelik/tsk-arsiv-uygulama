@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "576";
+  const SURUM = "577";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3975,7 +3975,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 576</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 577</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -11645,6 +11645,7 @@ function kmAlanH(p, a, t, o){ const v = p[a] || "", bos = KM_ZORUNLU.includes(a)
   return `<label class="${cl}"><span>${t}</span><textarea class="oto-boy" data-tek rows="1" data-km-k="${a}"${/n/.test(o || "") ? ' inputmode="numeric"' : ""} placeholder="${esc(ph)}">${esc(v)}</textarea></label>`; }
 const kmCipY = n => n ? `<b class="km-ey">${n} eksik</b>` : '<b class="km-et">tamam</b>';
 const kmCip = n => n ? `<em class="dl-eksik">${n} eksik</em>` : '<em class="dl-tam">tamam</em>';
+const svgI2 = d => `<span class="sn-ik"><svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg></span>`;
 function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return; const P = (S.personel.rows || []).filter(x => x.ad);
   if(!P.some(p => p.id === kmSecili)){ kmSecili = (P.find(p => kmEksik(p).length) || P[0] || {}).id || null; kmAcikG.clear(); }
   const p = P.find(x => x.id === kmSecili), eksikK = P.filter(x => kmEksik(x).length).length, i = P.indexOf(p);
@@ -11656,7 +11657,7 @@ function kimlikCiz(){ const d = acikBelge(); if(!d || d.tur !== "kimlik") return
     <button type="button" class="km-yeni" data-km-yeni><span>＋</span>Yeni personel ekle<small>listeye eklenir, rütbesi listeden seçilir</small></button>
     ${p ? `
     <section class="dl-kart km-kart">
-      ${(() => { const [rad, rd, rk] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe); return `<div class="km-kim"><span class="kb2-av rs-${rk} rs-buyuk"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span><div class="km-kim-y"><b>${esc(p.ad)}</b><small>${esc(rad)}</small></div><span class="sn-cip">${sinifIk(p.rutbe)}<span>${esc(sn[1])}${kurmayMi(p.rutbe) ? " · Kurmay" : ""}</span></span></div>`; })()}
+      ${(() => { const [rad, rd, rk] = rutbeSimge(p.rutbe, p), sn = sinifBul(p.rutbe); return `<div class="km-kim"><span class="kb2-av rs-${rk} rs-buyuk"><svg viewBox="0 0 24 24" aria-hidden="true">${rd}</svg></span><div class="km-kim-y"><b>${esc(p.ad)}</b><small>${esc(rad)}</small></div>${sn[0] !== "diger" ? `<span class="sn-cip">${sinifIk(p.rutbe)}<span>${esc(sn[1])}${kurmayMi(p.rutbe) ? " · Kurmay" : ""}</span></span>` : rk === "gen" ? `<span class="sn-cip">${svgI2(rd)}<span>General${kurmayMi(p.rutbe) ? " · Kurmay" : ""}</span></span>` : rk === "sivil" || rk === "dr" ? "" : `<span class="sn-cip">${sinifIk(p.rutbe)}<span>${esc(sn[1])}</span></span>`}</div>`; })()}
       ${kmBagHtml(p)}
       <div class="km-fotolar"><div class="km-fust"><b class="km-fb">Fotoğraflar</b><div class="cs-seg mini">${KM_FOTO_K.map(([k, ad]) => `<button type="button" data-km-fkat="${k}" aria-pressed="${k === kmFotoKat}">${ad}</button>`).join("")}</div></div>
         <div class="km-fg">${(KM_FOTO_K.find(x => x[0] === kmFotoKat) || KM_FOTO_K[0])[2].map(([a, ad]) => { const f = p[a], yerine = !f && a !== "foto" && p.foto; return `<div class="km-fk">
