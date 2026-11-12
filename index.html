@@ -30,7 +30,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "534";
+  const SURUM = "535";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3348,6 +3348,10 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .an-seg2 button{overflow:visible} .an-seg2 button[aria-selected="true"]{gap:6px}
 body:has(#v-ana:not([hidden])) #ust-uyari{display:none!important}
 .an-st.t-klasor{--t:#6A5A9E;--z:#EFEBF8}
+.sirt-sat.uyari{padding-right:52px!important}
+.dk-x{position:absolute;right:8px;top:50%;transform:translateY(-50%);display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:#F2F5F8;color:#5B6B7D;cursor:pointer}
+.dk-x svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round} .dk-x:active{background:#E6ECF2}
+.dk-not{margin:10px 2px 2px;text-align:center}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3764,7 +3768,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 534</small></div>
+<div class="ac-kart"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 535</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4873,6 +4877,13 @@ function anaKatBilgi(k){
 /* ana sayfa: son açılanlar + klasör kartları (dokununca bölümleri açılır, bölüme dokununca o bölüme gider) */
 function sonEkle(o){ try { const L = JSON.parse(localStorage.getItem("sonlar") || "[]").filter(x => !(x.k === o.k && x.b === o.b)); if(!o.d){ const eski = JSON.parse(localStorage.getItem("sonlar") || "[]").find(x => x.k === o.k && x.b === o.b && x.d); if(eski) o = eski; } L.unshift(o); localStorage.setItem("sonlar", JSON.stringify(L.slice(0, 8))); } catch(e){} }
 /* ana sayfa: dikkat edilecekler (izinden dönenler, biten dönem, eksik bilgiler) */
+/* yoksayılan uyarılar (bu cihaza özel): anahtar tarihe bağlı; tarih değişirse uyarı yeniden çıkar */
+const dkAnah = x => [x.tur, x.t, ((x.a || "").match(/\d{2}\.\d{2}\.\d{4}/) || [""])[0]].join("|");
+const dkYok = () => { try { return JSON.parse(localStorage.getItem("dkYok") || "[]"); } catch(e){ return []; } };
+const dkYokYaz = L => { try { localStorage.setItem("dkYok", JSON.stringify(L)); } catch(e){} };
+function dkYoksay(k){ dkYokYaz([...new Set([...dkYok(), k])]); geriAlinabilir("Uyarı yoksayıldı", () => { dkYokYaz(dkYok().filter(x => x !== k)); anaCiz(); }); anaCiz(); }
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-dk-yok],[data-dk-geri]"); if(!b) return; e.preventDefault(); e.stopPropagation();
+  if(b.dataset.dkGeri != null){ dkYokYaz([]); bildir("Yoksayılan uyarılar geri geldi"); return anaCiz(); } dkYoksay(b.dataset.dkYok); }, true);
 function dikkatListesi(){
   const L = [], bugun = new Date().toISOString().slice(0, 10), gun = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / 864e5);
   for(const p of (S.personel.rows || [])){ const k = (S.izin.kayit || {})[p.id]; if(!k || !p.ad) continue;
@@ -4953,7 +4964,9 @@ function anaCiz(){
     if(k.startsWith("d:")){ const d = S.belgeler.find(x => x.id === v); if(!d || d.gizli) return null; let sg = ""; try { sg = say[d.tur] ? say[d.tur](d) : ""; } catch(e){} return { ad: d.ad, sag: sg || hzYer(d), simge: PANO_SIMGE[d.tur] || PANO_SIMGE.belge, veri: `data-pano-d="${esc(d.id)}"` }; }
     if(k.startsWith("b:")){ const [kk, bb] = v.split("|"), ku = klasorBul(kk), bl = ku && bolumBul(kk, bb); return bl ? { ad: bl.ad, sag: ku.kisa || ku.ad, simge: KLS_SIM, veri: `data-son-k="${esc(kk)}" data-son-b="${esc(bb)}"` } : null; } return null; };
   /* A tasarımı: dört sayı · ince dönem satırı · sekmeler (Kısayollar / Klasörler / Son / Uyarılar) · sırtlı satırlar */
-  const dk = dikkatListesi().filter(x => !(bas && son && x.tur === "gdhg" && /dönemi bitiyor/.test(x.t)));
+  const dkHam = dikkatListesi().filter(x => !(bas && son && x.tur === "gdhg" && /dönemi bitiyor/.test(x.t))), dkY = dkYok(), dkHamK = new Set(dkHam.map(dkAnah));
+  { const kalan = dkY.filter(k => dkHamK.has(k)); if(kalan.length !== dkY.length) dkYokYaz(kalan); }   /* geçmişte kalan yoksaymalar temizlenir */
+  const dk = dkHam.filter(x => !dkY.includes(dkAnah(x))), dkGiz = dkHam.length - dk.length;
   let sonL = []; try { sonL = JSON.parse(localStorage.getItem("sonlar") || "[]"); } catch(e){}
   const gor = new Set(); sonL = sonL.map(o => { const k = klasorBul(o.k), bl = k && bolumBul(o.k, o.b), d = o.d ? S.belgeler.find(x => x.id === o.d) : null; if(!k || !bl || (o.d && !d)) return null;
     const anahtar = o.d || (o.k + ":" + o.b); if(gor.has(anahtar)) return null; gor.add(anahtar);
@@ -4969,9 +4982,9 @@ function anaCiz(){
     hero = `<button type="button" class="an-hero-ust" data-pano="gdhg"><span class="an-halka" style="--p:${(gec * 100).toFixed(1)}"><b>${kal >= 0 ? kal : 0}</b><small>gün</small></span><span class="an-hy"><small>${esc(selam)} · ${esc(tarihY)}</small><b>${esc(S.gdhg.setAd || "GDHG dönemi")}</b><span>${esc(trTarih(bas)).slice(0, 5)} – ${esc(trTarih(son)).slice(0, 5)} · <em class="${kal < 0 ? "bitti" : kal <= 7 ? "yakin" : ""}">${kal >= 0 ? kal + " gün kaldı" : "dönem bitti"}</em></span></span></button>`; }
   else hero = `<div class="an-hero-ust"><span class="an-hy"><small>${esc(tarihY)}</small><b>${esc(selam)}</b></span></div>`;
   const heroH = `<div class="an-hero">${hero}<div class="an-st-l">${sayi(nP, "Personel", 'data-pano="personel"', "kisi")}${sayi(izinde, "İzinde", 'data-pano="izin"', "izin")}${sayi(nH, "Hedef", 'data-pano="hedef"', "hedef")}${sayi((S.belgeler || []).length, "Belge", 'data-an-sek="klasor"', "klasor")}</div></div>`;
-  const sekmeler = [["kisa", "Kısayollar"], ["klasor", "Klasörler"], ["son", "Son"], ["gecmis", "Geçmiş"], ...(dk.length ? [["uyari", "Uyarılar"]] : [])];
+  const sekmeler = [["kisa", "Kısayollar"], ["klasor", "Klasörler"], ["son", "Son"], ["gecmis", "Geçmiş"], ...(dk.length || dkGiz ? [["uyari", "Uyarılar"]] : [])];
   if(!sekmeler.some(([k]) => k === anaSekme)) anaSekme = "kisa";
-  let h = `<div class="an-seg an-seg2" role="tablist">${sekmeler.map(([k, t]) => `<button type="button" role="tab" data-an-sek="${k}" aria-selected="${anaSekme === k}" aria-label="${t}" title="${t}">${svgI(AIK[k] || AIK.uyari)}<span>${t}</span>${k === "uyari" ? `<i>${dk.length}</i>` : ""}</button>`).join("")}</div>` + (anaSekme === "kisa" ? heroH : "");
+  let h = `<div class="an-seg an-seg2" role="tablist">${sekmeler.map(([k, t]) => `<button type="button" role="tab" data-an-sek="${k}" aria-selected="${anaSekme === k}" aria-label="${t}" title="${t}">${svgI(AIK[k] || AIK.uyari)}<span>${t}</span>${k === "uyari" && dk.length ? `<i>${dk.length}</i>` : ""}</button>`).join("")}</div>` + (anaSekme === "kisa" ? heroH : "");
   const svg = p => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round">${p}</svg>`;
   const sat = (veri, i, ad, sag, simge, sinif = "") => `<button type="button" class="sirt-sat${sinif}" ${veri} style="--sr:${SIRT[i % SIRT.length]}">${simge ? `<span class="ss-s">${svg(simge)}</span>` : ""}<b>${ad}</b>${sag || ""}</button>`;
   let ic = "";
@@ -4992,7 +5005,9 @@ function anaCiz(){
       ${SB.length ? `<div class="an-bas">Son çalıştığınız belgeler</div>` + SB.map(bs).join("") : ""}
       <details class="gc-tum"><summary>Bütün belgeler <small>${B.length}</small></summary>${B.map(bs).join("")}</details>`; }
   else if(anaSekme === "son"){ ic = sonL.length ? sonL.map((o, i) => sat(`data-son-k="${esc(o.k)}" data-son-b="${esc(o.b)}"${o.d ? ` data-son-d="${esc(o.d)}"` : ""} data-hz-k="${esc(o.d ? "d:" + o.d : "b:" + o.k + "|" + o.b)}"`, i, esc(o.ad), `<small>${esc(o.alt)}</small>`, o.tur ? PANO_SIMGE[o.tur] || PANO_SIMGE.belge : `<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/>`, " iki")).join("") : `<div class="an-bos">Henüz açılan belge yok</div>`; }
-  else { ic = dk.map((x, i) => sat(`data-dk="${esc(x.tur)}"`, 3, esc(x.t), `<small>${esc(x.a)}</small>`, "", " iki uyari")).join(""); }
+  else { ic = (dk.length ? dk.map((x, i) => sat(`data-dk="${esc(x.tur)}" data-dk-k="${esc(dkAnah(x))}"`, 3, esc(x.t), `<small>${esc(x.a)}</small><span class="dk-x" role="button" data-dk-yok="${esc(dkAnah(x))}" aria-label="Yoksay" title="Yoksay"><svg viewBox="0 0 24 24"><path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-2.7 3.6M6.4 6.4C3.9 8.1 2.5 12 2.5 12s3.5 7 9.5 7a9.6 9.6 0 0 0 5.6-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/></svg></span>`, "", " iki uyari")).join("") : `<div class="an-bos">Gösterilecek uyarı yok</div>`)
+      + `<div class="an-not dk-not">Gerekmeyen uyarıyı sağdaki göz simgesiyle ya da basılı tutup <b>Yoksay</b> diyerek kaldırabilirsiniz. Tarihi değişirse yeniden çıkar.</div>`
+      + (dkGiz ? `<div class="an-alt2"><button type="button" class="an-alt" data-dk-geri>↺ Yoksayılanları geri getir (${dkGiz})</button></div>` : ""); }
   { const z = document.querySelector("#ust-uyari i"); if(z) z.hidden = !dk.length; }
   const SB2 = { kisa: ["Kısayollar", "sık açtığın belgeler"], klasor: ["Klasörler", "bütün arşiv"], son: ["Son çalışılanlar", "en son açtıkların"], gecmis: ["Geçmiş", "eski hâllere dön"], uyari: ["Dikkat edilecekler", dk.length + " uyarı"] }[anaSekme] || ["", ""];
   const SL = sekmeler.map(x => x[0]), yon = anaOnceki && anaOnceki !== anaSekme ? (SL.indexOf(anaSekme) > SL.indexOf(anaOnceki) ? "sag" : "sol") : "";
@@ -13998,6 +14013,7 @@ uzE({ k: "hz", kap: "#ana-pano .an-ic", satir: ".sirt-sat[data-hz-k]", id: el =>
   if(anaSekme === "kisa" && hzListe().includes(k)){ const tas = y => () => { const L = hzListe(), i = L.indexOf(k), j = y === "ust" ? 0 : y === "alt" ? L.length - 1 : i + y; if(i < 0 || j < 0 || j >= L.length || j === i) return bildir("Zaten en " + (y === "ust" || y < 0 ? "üstte" : "altta")); L.splice(i, 1); L.splice(j, 0, k); hzYaz(L); anaCiz(); bildir(`${j + 1}. sıraya taşındı`); };
     I.push({ ad: "Yukarı taşı", ik: "yuk", f: tas(-1) }, { ad: "Aşağı taşı", ik: "asa", f: tas(1) }, { ad: "En üste taşı", ik: "ust", f: tas("ust") }, { ad: "En alta taşı", ik: "alt", f: tas("alt") }); }
   I.push(hzMenu(k)); return I; } });
+uzE({ k: "dk", kap: "#ana-pano .an-ic", satir: ".sirt-sat[data-dk-k]", id: el => el.dataset.dkK, ad: el => (el.querySelector("b") || el).textContent, ozel: (k, el) => [{ ad: "Aç", ik: "ac", f: () => el.click() }, { ad: "Yoksay", alt: "listeden kalkar · tarihi değişirse yeniden çıkar", ik: "goz", f: () => dkYoksay(k) }] });
 const uzEtiket = (e, el) => { const a = e.ad ? e.ad(el) : ""; if(a) return a.trim(); const b = el.querySelector("b") || el.querySelector(".ad") || el.querySelector("td:nth-child(2)"); return ((b && b.textContent) || el.textContent || "").trim().split("\n")[0].trim() || "Satır"; };
 function uzBul(t){ if(!t || !t.closest || t.closest("input,textarea,select,[contenteditable=true]") || document.documentElement.classList.contains("salt")) return null; const perde = t.closest(".ap-perde,.imz-perde");
   for(const e of UZ){ if(perde && (!e.perde || perde.id !== e.perde)) continue; const el = t.closest(e.satir); if(el && el.closest(e.kap)) return { e, el }; } return null; }
@@ -14012,7 +14028,7 @@ function uzSil(e, id, ad){ let geri;
   else { const L = e.dizi(), i = uzIndeks(e, L, id); if(i < 0) return; const [x] = L.splice(i, 1); e.kaydet(); geri = () => { L.splice(i, 0, x); e.kaydet(); }; }
   (e.ciz || (() => {}))(); geriAlinabilir(`${ad} silindi`, () => { geri && geri(); (e.ciz || (() => {}))(); }); }
 const UZ_IK = { ac: '<path d="M4 20h4L19 9l-4-4L4 16z"/>', yuk: '<path d="M12 19V5M6 11l6-6 6 6"/>', asa: '<path d="M12 5v14M6 13l6 6 6-6"/>', ust: '<path d="M5 4h14M12 20V8M7 13l5-5 5 5"/>', alt: '<path d="M5 20h14M12 4v12M7 11l5 5 5-5"/>',
-  kop: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', tas: '<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>', sec: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/>', sil: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/>', dug: '<circle cx="12" cy="12" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>', yildiz: '<path d="M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/>' };
+  kop: '<rect x="8" y="8" width="12" height="12" rx="2"/><path d="M16 8V5a1 1 0 0 0-1-1H5a1 1 0 0 0-1 1v10a1 1 0 0 0 1 1h3"/>', tas: '<path d="M4 8h13l-3.5-3.5M20 16H7l3.5 3.5"/>', sec: '<rect x="4" y="4" width="16" height="16" rx="3"/><path d="m8 12 3 3 5-6"/>', sil: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/>', dug: '<circle cx="12" cy="12" r="1.6"/><circle cx="6" cy="12" r="1.6"/><circle cx="18" cy="12" r="1.6"/>', goz: '<path d="M3 3l18 18M10.6 5.1A10 10 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-2.7 3.6M6.4 6.4C3.9 8.1 2.5 12 2.5 12s3.5 7 9.5 7a9.6 9.6 0 0 0 5.6-1.6M9.9 9.9a3 3 0 0 0 4.2 4.2"/>', yildiz: '<path d="M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/>' };
 function uzAc({ e, el }){ const id = e.id(el); if(id == null) return; const ad = uzEtiket(e, el), I = [];
   if(e.perde){ const k = window.TSK_KATMAN && window.TSK_KATMAN[e.perde]; if(k) k(); }   /* liste penceresi kapanır, işlemler onun yerine açılır */
   if(e.ozel) I.push(...e.ozel(id, el));
@@ -14026,7 +14042,7 @@ function uzAc({ e, el }){ const id = e.id(el); if(id == null) return; const ad =
     if(e.ts) I.push({ ad: "Seç", alt: "birden çok satırı birlikte silmek ya da işlemek için", ik: "sec", f: () => { for(const x in tsSec) tsSec[x] = null; tsSec[e.ts] = new Set([id]); tsUygula(); } });
     I.push({ ad: "Sil", alt: "yanlışlıkla olursa altta “Geri al” çıkar", ik: "sil", kirmizi: true, f: () => uzSil(e, id, ad) }); }
   if(navigator.vibrate) try { navigator.vibrate(12); } catch(x){}
-  const RK = { ac: ["#E4EDF7", "#3F6487"], yuk: ["#E3EEF0", "#2F6670"], asa: ["#E3EEF0", "#2F6670"], ust: ["#E3EEF0", "#2F6670"], alt: ["#E3EEF0", "#2F6670"], kop: ["#ECE6F4", "#5E4A86"], tas: ["#F3ECDD", "#7A5A25"], sec: ["#E3F1E4", "#2F6B3E"], sil: ["#F7E6E2", "#A3412F"], dug: ["#EEF1F4", "#55636F"], yildiz: ["#FBEFD8", "#B0711F"] };
+  const RK = { ac: ["#E4EDF7", "#3F6487"], yuk: ["#E3EEF0", "#2F6670"], asa: ["#E3EEF0", "#2F6670"], ust: ["#E3EEF0", "#2F6670"], alt: ["#E3EEF0", "#2F6670"], kop: ["#ECE6F4", "#5E4A86"], tas: ["#F3ECDD", "#7A5A25"], sec: ["#E3F1E4", "#2F6B3E"], sil: ["#F7E6E2", "#A3412F"], dug: ["#EEF1F4", "#55636F"], yildiz: ["#FBEFD8", "#B0711F"], goz: ["#EEF1F4", "#55636F"] };
   const ik = x => { const [z, c] = RK[x.ik] || RK.dug; return `<span class="ap-sim uz-ik" style="background:${z};color:${c}"><svg viewBox="0 0 24 24">${UZ_IK[x.ik] || UZ_IK.dug}</svg></span>`; };
   const TS = ["yuk", "asa", "ust", "alt"], KIS = { yuk: "Yukarı", asa: "Aşağı", ust: "En üste", alt: "En alta" }, tas = I.map((x, i) => [x, i]).filter(([x]) => TS.includes(x.ik) && /taşı$/.test(x.ad)), dig = I.map((x, i) => [x, i]).filter(([x]) => !tas.some(([y]) => y === x));
   altPencere("ks-perde", "İŞLEMLER", ad, () => `<div class="ap-liste">${dig.filter(([x]) => x.ik === "ac").map(([x, i]) => apSatir(`data-uz="${i}"`, ik(x), esc(x.ad), "", { alt: x.alt ? esc(x.alt) : "" })).join("")}</div>
