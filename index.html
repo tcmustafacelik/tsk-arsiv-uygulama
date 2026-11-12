@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "551";
+  const SURUM = "552";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3503,6 +3503,22 @@ html[data-tema="lacivert"] .ap-bas,html[data-tema="celik"] .ap-bas{--apz:var(--t
 /* izin belgesi: kesik çizgili bilgi kutuları düz çerçeve (sistemle aynı) */
 html body .dl-kart.dl-bilgi,html body details.dl-bilgi{border-style:solid!important;border-color:var(--line2)!important}
 .dl-seg.mf-yon{grid-template-columns:repeat(3,minmax(0,1fr))!important} .dl-seg.mf-yon button{white-space:nowrap;min-width:0;gap:5px!important}
+/* ===== BELGE / DOSYA KARTLARI: sade satır (tüm klasörlerde) =====
+   ince sol çizgi · küçük simge · ⋮ düğmesi dikeyde ortada, ok işareti yok (çakışma olmaz) · başlık iki satıra kadar */
+html body .kart.bkk{border:1px solid var(--line2)!important;border-left:3px solid color-mix(in srgb,var(--bz,#D8DADD) 70%,#8C96A3)!important;border-radius:11px!important;padding:10px 10px 10px 12px!important;gap:8px!important;box-shadow:none!important}
+html body .kart.bkk .bkk-ust{gap:11px!important;padding-right:44px!important;min-height:40px}
+html body .kart.belge.bkk .bkk-ust::after{content:none!important}
+html body .kart.bkk .bkk-ik{width:36px!important;height:36px!important;border-radius:9px!important} html body .kart.bkk .bkk-ik svg{width:18px!important;height:18px!important}
+html body .kart.bkk .bkk-ik.bk-mini{width:32px!important;height:44px!important}
+html body .kart.bkk .tur{font-size:9px!important;letter-spacing:.07em}
+html body .kart.bkk .ad{font:700 14px/1.28 var(--f-ui)!important;overflow-wrap:normal!important;word-break:normal!important}
+html body .kart.bkk .bilgi{font-size:11.5px!important;-webkit-line-clamp:unset!important;display:block!important;overflow:visible!important;white-space:normal}
+html body .kart.bkk>.uz-dug,html body .kart.bkk>.bk-menu{position:absolute!important;top:10px!important;right:10px!important;transform:none;width:34px!important;height:34px!important;border-radius:9px!important;border:1px solid var(--line2)!important;background:var(--panel)!important;color:var(--muted)!important;font-size:16px!important}
+html body .kart.belge.bkk:active{background:var(--panel2)!important}
+html body .kart.bkk.dsy .ad{overflow-wrap:anywhere!important;word-break:break-word!important} html body .kart.bkk .bkk-sy{min-width:0;flex:1}
+#b-belgeler,#b-dosyalar{gap:8px!important}
+/* arama kutusu: düz, ince çerçeve */
+header.ust .ara-kap{border:1px solid var(--line2)!important;box-shadow:none!important;border-radius:12px!important;background:var(--panel)!important}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3910,7 +3926,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 551</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 552</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
