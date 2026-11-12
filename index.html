@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "560";
+  const SURUM = "561";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3461,8 +3461,8 @@ html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#232
 .gc2-bas label{margin-left:auto;display:flex;align-items:center;gap:5px;height:30px;padding:0 8px;border:1px solid var(--line2);border-radius:8px;background:var(--panel);width:46%;min-width:0} .gc2-bas label svg{width:14px;height:14px;flex:none;fill:none;stroke:var(--muted);stroke-width:2;stroke-linecap:round}
 .gc2-bas input{border:0;outline:0;background:transparent;font:500 12px var(--f-ui);width:100%;min-width:0;padding:0;color:var(--fg)}
 .gc2-l{display:flex;flex-direction:column;border:1px solid var(--line2);border-radius:12px;overflow:hidden;background:var(--panel)}
-.gc2-s{position:relative;display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 10px 6px 14px;border:0;border-bottom:1px solid var(--line2);background:transparent;font:inherit;color:var(--fg);text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
-.gc2-s:last-child{border-bottom:0} .gc2-s[hidden]{display:none} .gc2-s:active{background:var(--panel2)} .gc2-s::before{content:"";position:absolute;left:0;top:9px;bottom:9px;width:3px;border-radius:0 3px 3px 0;background:var(--sr)}
+.gc2-s{position:relative;display:flex;align-items:center;gap:10px;min-height:44px;padding:6px 10px 6px 16px;border:0;border-bottom:1px solid var(--line2);background:transparent;font:inherit;color:var(--fg);text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent}
+.gc2-s:last-child{border-bottom:0} .gc2-s[hidden]{display:none} .gc2-s:active{background:var(--panel2)} .gc2-s::before{content:"";position:absolute;left:5px;top:12px;bottom:12px;width:3px;border-radius:3px;background:var(--sr)}
 .gc2-s>span{display:grid;place-items:center;width:26px;height:26px;border-radius:7px;background:color-mix(in srgb,var(--sr) 40%,var(--panel));color:#4A5160;flex:none} .gc2-s>span svg{width:15px;height:15px}
 .gc2-s b{flex:1;min-width:0;font:600 13px/1.28 var(--f-ui)} .gc2-s>i{display:grid;place-items:center;color:var(--muted);flex:none} .gc2-s>i svg{width:16px;height:16px}
 /* ===== KURUMSAL LİSTE SATIRI (dilekçe, izin belgesi, subay-astsubay izin… tüm sistemde) =====
@@ -3937,7 +3937,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 560</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 561</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
