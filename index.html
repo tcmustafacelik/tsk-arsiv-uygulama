@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "545";
+  const SURUM = "546";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3425,8 +3425,15 @@ html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#232
 @media (prefers-reduced-motion:reduce){.an-ic-kap,.an-ic-kap>.an-ic,.an-kart-bas .an-ok{transition:none!important}}
 /* kapalı kartın özet görünümü: eşit simgeli kutucuklar */
 .an-oz-kap{display:grid;grid-template-rows:0fr;transition:grid-template-rows .42s cubic-bezier(.3,.8,.3,1)}
-.an-oz{min-height:0;overflow:hidden;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));padding:0 1px 1px;gap:8px;opacity:0;transform:translateY(8px);transition:opacity .3s .08s,transform .42s cubic-bezier(.3,.8,.3,1)}
-.an-oz.oz-klasor,.an-oz.oz-son{grid-template-columns:repeat(3,minmax(0,1fr))} .an-oz.oz-gecmis,.an-oz.oz-uyari{grid-template-columns:repeat(2,minmax(0,1fr))}
+.an-oz{min-height:0;overflow:hidden;display:flex;flex-direction:column;gap:8px;padding:0 1px 1px;gap:8px;opacity:0;transform:translateY(8px);transition:opacity .3s .08s,transform .42s cubic-bezier(.3,.8,.3,1)}
+.oz-l{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.oz-st{display:grid;grid-template-columns:26px minmax(0,1fr);grid-template-rows:28px auto;column-gap:7px;row-gap:3px;align-items:center;height:62px;padding:7px 9px;border:1px solid color-mix(in srgb,var(--oc) 14%,var(--line2));border-radius:12px;background:color-mix(in srgb,var(--oz) 55%,var(--panel));font:inherit;color:var(--fg);text-align:left;cursor:default;min-width:0;box-sizing:border-box}
+.oz-st[data-gc-cop],.oz-st[data-gc-temiz]{cursor:pointer} .oz-st>span{grid-row:1;display:grid;place-items:center;width:26px;height:26px;border-radius:9px;background:var(--oz);color:var(--oc)} .oz-st>span svg{width:17px;height:17px}
+.oz-st b{font:800 18px/1 var(--f-ui);color:var(--oc)} .oz-st b:empty{display:none} .oz-st small{grid-column:1/-1;font:600 11px var(--f-ui);color:var(--muted);white-space:nowrap;overflow:hidden} .oz-st b:empty+small{grid-row:2;font-size:12px;font-weight:700;color:var(--oc)} .oz-st:has(b:empty)::after{content:"aç ›";grid-column:2;grid-row:1;font:700 12px var(--f-ui);color:var(--oc)}
+.oz-one{display:flex;align-items:center;gap:10px;width:100%;height:52px;padding:0 12px;border:1px solid color-mix(in srgb,var(--oc) 16%,var(--line2));border-radius:12px;background:linear-gradient(90deg,var(--oz),color-mix(in srgb,var(--oz) 30%,var(--panel)));font:inherit;color:var(--fg);text-align:left;cursor:pointer;box-sizing:border-box}
+.oz-one>span:first-child{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--panel);color:var(--oc);flex:none} .oz-one>span:first-child svg{width:17px;height:17px}
+.oz-one-y{display:flex;flex-direction:column;min-width:0;flex:1} .oz-one-y small{font:600 10.5px var(--f-ui);color:var(--muted);white-space:nowrap;overflow:hidden} .oz-one-y b{font:700 13.5px var(--f-ui);white-space:nowrap;overflow:hidden}
+.oz-one>i{font-style:normal;font-size:18px;color:var(--oc);flex:none}
 .an-kart.kapali .an-oz-kap{grid-template-rows:1fr} .an-kart.kapali .an-oz{opacity:1;transform:none;padding-top:10px}
 .oz-k{position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;gap:5px;min-width:0;padding:10px 4px 8px;border:1px solid var(--line2);border-radius:12px;background:var(--panel);cursor:pointer;font:inherit;color:var(--fg);text-align:center;overflow:hidden;-webkit-tap-highlight-color:transparent;transition:transform .12s}
 .oz-k:active{transform:scale(.95)} .oz-k::before{content:"";position:absolute;left:0;right:0;top:0;height:3px;background:var(--sr)}
@@ -3434,7 +3441,7 @@ html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#232
 .oz-k>span svg{width:18px;height:18px} .oz-k>span .gc-ik{width:32px!important;height:32px!important;margin:0!important}
 .oz-k b{font:600 11.5px/1.22 var(--f-ui);overflow-wrap:normal;word-break:normal;max-width:100%} .oz-k small{font:500 9.5px var(--f-ui);color:var(--muted)}
 .an-oz.oz-gecmis .oz-k b,.an-oz.oz-uyari .oz-k b{font-size:12.5px}
-.an-kart.kapali .an-oz .oz-k{animation:ozGel .38s cubic-bezier(.3,.8,.3,1) both} .an-kart.kapali .an-oz .oz-k:nth-child(n+5){animation-delay:.04s} .an-kart.kapali .an-oz .oz-k:nth-child(n+9){animation-delay:.08s} .an-kart.kapali .an-oz .oz-k:nth-child(n+13){animation-delay:.12s}
+.an-kart.kapali .an-oz .oz-st{animation:ozGel .38s cubic-bezier(.3,.8,.3,1) both} .an-kart.kapali .an-oz .oz-st:nth-child(2){animation-delay:.05s} .an-kart.kapali .an-oz .oz-st:nth-child(3){animation-delay:.1s} .an-kart.kapali .an-oz .oz-one{animation:ozGel .42s .14s cubic-bezier(.3,.8,.3,1) both}
 @keyframes ozGel{from{opacity:0;transform:translateY(6px) scale(.96)}to{opacity:1;transform:none}}
 @media (prefers-reduced-motion:reduce){.an-oz-kap,.an-oz,.oz-k{transition:none!important;animation:none!important}}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
@@ -3844,7 +3851,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 545</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 546</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -5101,14 +5108,22 @@ function anaCiz(){
   { const z = document.querySelector("#ust-uyari i"); if(z) z.hidden = !dk.length; }
   /* kart kapalıyken boş kalmasın: aynı içerik küçük simgeli kutucuklar olarak (özet görünüm) */
   const KLS = '<path d="M3.5 7.5V18a1.5 1.5 0 0 0 1.5 1.5h14a1.5 1.5 0 0 0 1.5-1.5V9.5A1.5 1.5 0 0 0 19 8h-7l-2-2.5H5A1.5 1.5 0 0 0 3.5 7z"/>';
-  const tk = (veri, i, ad, simge, alt) => `<button type="button" class="oz-k" ${veri} style="--sr:${SIRT[i % SIRT.length]}"><span>${svg(simge || PANO_SIMGE.belge)}</span><b>${ad}</b>${alt ? `<small>${alt}</small>` : ""}</button>`;
+  /* özet: üç eşit sayı kutusu + öne çıkan tek satır (dokununca açılır) */
+  const OZR = { mavi: ["#E6EDF5", "#3D5A80"], yesil: ["#E5F1E8", "#2F6B45"], kum: ["#F5ECDB", "#8A6424"], mor: ["#ECE8F5", "#5A4E8C"], kir: ["#F7E7E3", "#A3412F"], gri: ["#ECEEF1", "#4A5160"] };
+  const st = (sayi, et, simge, r, veri = "") => { const [z, c] = OZR[r] || OZR.gri; return `<button type="button" class="oz-st" ${veri} style="--oz:${z};--oc:${c}"${veri ? "" : " tabindex=\"-1\""}><span>${svg(simge)}</span><b>${sayi}</b><small class="tek-sat">${et}</small></button>`; };
+  const one = (veri, simge, et, ad, r) => { const [z, c] = OZR[r] || OZR.gri; return `<button type="button" class="oz-one" ${veri} style="--oz:${z};--oc:${c}"><span>${svg(simge)}</span><span class="oz-one-y"><small>${et}</small><b class="tek-sat">${ad}</b></span><i>›</i></button>`; };
+  const IK = { kisa: AIK.kisa, belge: PANO_SIMGE.belge, kls: KLS, bolum: '<rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M10 10v10"/>', kisi: AIK.kisi, saat: AIK.son, uyari: AIK.uyari, goz: '<path d="M3 3l18 18M6.4 6.4C3.9 8.1 2.5 12 2.5 12s3.5 7 9.5 7a9.6 9.6 0 0 0 5.6-1.6M10.6 5.1A10 10 0 0 1 12 5c6 0 9.5 7 9.5 7a17 17 0 0 1-2.7 3.6"/>', izin: AIK.izin, cop: '<path d="M4 7h16M9 7V4.5h6V7M6.5 7l1 12.5h9l1-12.5"/>', sup: '<path d="M14 4l-4 9M6 13h12l-1.5 7h-9z"/>', yildiz: '<path d="M12 3.8l2.5 5.1 5.6.8-4 3.9.9 5.6-5-2.6-5 2.6.9-5.6-4-3.9 5.6-.8z"/>' };
   let oz = "";
-  if(anaSekme === "kisa"){ oz = hzListe().map(k => [k, (() => { try { return hzCozD(k); } catch(e){ return null; } })()]).filter(([, r]) => r).map(([k, r], i) => tk(r.veri, i, esc(r.ad), r.simge)).join(""); }
-  else if(anaSekme === "klasor") oz = mnGruplar().map((c, i) => tk(`data-mn-kat="${esc(c.anah)}"`, i, esc(c.ad), KLS, c.top ? c.top + " öğe" : "boş")).join("");
-  else if(anaSekme === "son") oz = sonL.map((o, i) => tk(`data-son-k="${esc(o.k)}" data-son-b="${esc(o.b)}"${o.d ? ` data-son-d="${esc(o.d)}"` : ""}`, i, esc(o.ad), o.tur ? PANO_SIMGE[o.tur] || PANO_SIMGE.belge : KLS)).join("");
-  else if(anaSekme === "gecmis") oz = `<button type="button" class="oz-k" data-gc-cop="1" style="--sr:#E9C9C1"><span>${gcIk("cop", "#F7E6E2", "#A3412F")}</span><b>Silinenler</b><small>geri getir</small></button><button type="button" class="oz-k" data-gc-temiz="1" style="--sr:#E6D7B8"><span>${gcIk("supur", "#F3ECDD", "#7A5A25")}</span><b>Geçmişi temizle</b><small>eski kopyalar</small></button>`;
-  else oz = dk.map((x, i) => tk(`data-dk="${esc(x.tur)}"`, 3, esc(x.t), AIK.uyari, esc((x.a || "").split(" · ")[1] || ""))).join("");
-  if(!oz) oz = `<div class="an-bos" style="grid-column:1/-1;padding:10px">Gösterilecek bir şey yok</div>`;
+  const Bel = S.belgeler.filter(d => !d.sablon), G = mnGruplar(), bolumN = S.yapi.klasorler.reduce((t, k) => t + (k.bolumler || []).length, 0), ogeN = G.reduce((t, c) => t + (c.top || 0), 0);
+  if(anaSekme === "kisa"){ const L = hzListe().map(k => [k, (() => { try { return hzCozD(k); } catch(e){ return null; } })()]).filter(([, r]) => r);
+    oz = `<div class="oz-l">${st(L.length, "kısayol", IK.yildiz, "kum")}${st(Bel.length, "belge", IK.belge, "mavi")}${st(nP, "personel", IK.kisi, "yesil")}</div>` + (L[0] ? one(L[0][1].veri, L[0][1].simge || IK.belge, "İlk sıradaki kısayol", esc(L[0][1].ad), "kum") : ""); }
+  else if(anaSekme === "klasor"){ const enD = G.slice().sort((a, b) => (b.top || 0) - (a.top || 0))[0];
+    oz = `<div class="oz-l">${st(G.length, "klasör", IK.kls, "mavi")}${st(bolumN, "bölüm", IK.bolum, "mor")}${st(ogeN, "öğe", IK.belge, "yesil")}</div>` + (enD ? one(`data-mn-kat="${esc(enD.anah)}"`, KLS, `En dolu klasör · ${enD.top || 0} öğe`, esc(enD.ad), "mavi") : ""); }
+  else if(anaSekme === "son"){ const kl = new Set(sonL.map(o => o.k)).size, bn = sonL.filter(o => o.d).length;
+    oz = `<div class="oz-l">${st(sonL.length, "son açılan", IK.saat, "mavi")}${st(bn, "belge", IK.belge, "yesil")}${st(kl, "klasör", IK.kls, "kum")}</div>` + (sonL[0] ? one(`data-son-k="${esc(sonL[0].k)}" data-son-b="${esc(sonL[0].b)}"${sonL[0].d ? ` data-son-d="${esc(sonL[0].d)}"` : ""}`, sonL[0].tur ? PANO_SIMGE[sonL[0].tur] || IK.belge : KLS, "En son açtığın", esc(sonL[0].ad), "mavi") : ""); }
+  else if(anaSekme === "gecmis"){ oz = `<div class="oz-l">${st(Bel.length, "belge", IK.belge, "mavi")}${st("", "silinenler", IK.cop, "kir", 'data-gc-cop="1"')}${st("", "temizle", IK.sup, "kum", 'data-gc-temiz="1"')}</div>` + one('data-an-kapa="gecmis"', AIK.gecmis, "Her Kaydet'te eski hâl saklanır", "Belge seçip eski hâline dön", "gri"); }
+  else { const izn = dk.filter(x => x.tur === "izin").length, ilk = dk[0];
+    oz = `<div class="oz-l">${st(dk.length, "uyarı", IK.uyari, "kir")}${st(izn, "izin", IK.izin, "yesil")}${st(dkGiz, "yoksayılan", IK.goz, "gri")}</div>` + (ilk ? one(`data-dk="${esc(ilk.tur)}"`, IK.uyari, esc(ilk.a || "Uyarı"), esc(ilk.t), "kir") : ""); }
   const SB2 = { kisa: ["Kısayollar", "sık açtığın belgeler"], klasor: ["Klasörler", "bütün arşiv"], son: ["Son çalışılanlar", "son açılan"], gecmis: ["Geçmiş", "eski hâllere dön"], uyari: ["Dikkat edilecekler", dk.length + " uyarı"] }[anaSekme] || ["", ""];
   const SL = sekmeler.map(x => x[0]), yon = anaOnceki && anaOnceki !== anaSekme ? (SL.indexOf(anaSekme) > SL.indexOf(anaOnceki) ? "sag" : "sol") : "";
   $("#ana-pano").innerHTML = h + `<div class="an-kart${yon ? " gir-" + yon : ""}${anKapali().includes(anaSekme) ? " kapali" : ""}"><button type="button" class="an-kart-bas" data-an-kapa="${anaSekme}" aria-expanded="${!anKapali().includes(anaSekme)}"><span>${svgI(AIK[anaSekme] || AIK.uyari)}</span><b>${SB2[0]}</b><small class="tek-sat">${esc(SB2[1])}</small><i class="an-ok" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></svg></i></button><div class="an-ic-kap"><div class="an-ic">${ic}</div></div><div class="an-oz-kap"><div class="an-oz oz-${anaSekme}">${oz}</div></div></div>`;
