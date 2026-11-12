@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "542";
+  const SURUM = "543";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -3402,6 +3402,21 @@ html[data-tema="indigo"]{--bg:#EEF0F6;--panel:#FFFFFF;--panel2:#F6F7FB;--fg:#232
 .krt-k[aria-pressed="true"]{border-color:var(--sec-k);background:var(--sec-z)} .krt-k .kb2-av{flex:none} .krt-y{display:flex;flex-direction:column;min-width:0;flex:1} .krt-y b{font:700 12.5px var(--f-ui)} .krt-y small{font:500 10.5px var(--f-ui);color:var(--muted)}
 .krt-k i{flex:none;width:18px;height:18px;border-radius:5px;border:1.5px solid var(--line);display:grid;place-items:center;font:800 11px var(--f-ui);font-style:normal;color:#fff} .krt-k[aria-pressed="true"] i{background:var(--sec-i);border-color:var(--sec-i)}
 .krt-git{width:100%;height:44px;font-size:14px!important}
+/* açılır-kapanır ana sayfa kartı */
+.an-kart-bas{display:flex!important;align-items:center;gap:10px;width:100%;border:0;background:none;font:inherit;color:inherit;text-align:left;cursor:pointer;-webkit-tap-highlight-color:transparent;border-radius:12px;padding:2px 2px 10px!important;transition:padding .35s cubic-bezier(.3,.8,.3,1)}
+.an-kart.kapali .an-kart-bas{padding-bottom:2px!important} .an-kart-bas>small{margin-left:auto!important;min-width:0}
+.an-kart-bas .an-ok{display:grid;place-items:center;width:28px;height:28px;margin-left:4px;border-radius:8px;background:var(--panel2);color:var(--muted);flex:none;transition:transform .4s cubic-bezier(.3,.8,.3,1),background .3s}
+.an-kart-bas .an-ok svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round}
+.an-kart.kapali .an-kart-bas .an-ok{transform:rotate(-90deg);background:var(--tz);color:var(--tk)}
+.an-kart-bas>span{transition:transform .35s cubic-bezier(.3,.8,.3,1),background .3s,color .3s}
+.an-kart-bas>span.cevir{animation:anCevir .5s cubic-bezier(.3,.8,.3,1)} @keyframes anCevir{0%{transform:scale(1)}35%{transform:scale(.82) rotate(-8deg)}70%{transform:scale(1.08) rotate(3deg)}100%{transform:none}}
+.an-kart.kapali .an-kart-bas>span{background:var(--tk)!important;color:#fff!important}
+.an-kart-bas:active>span{transform:scale(.92)}
+.an-ic-kap{display:grid;grid-template-rows:1fr;transition:grid-template-rows .42s cubic-bezier(.3,.8,.3,1)}
+.an-ic-kap>.an-ic{min-height:0;overflow:hidden;transition:opacity .3s,transform .42s cubic-bezier(.3,.8,.3,1)}
+.an-kart.kapali .an-ic-kap{grid-template-rows:0fr} .an-kart.kapali .an-ic-kap>.an-ic{opacity:0;transform:translateY(-8px) scale(.98)}
+.an-kart{transition:padding .35s} .an-kart.kapali{padding-bottom:10px!important}
+@media (prefers-reduced-motion:reduce){.an-ic-kap,.an-ic-kap>.an-ic,.an-kart-bas .an-ok{transition:none!important}}
 #bulut-ikon svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round;display:block}
 @media (max-width:700px){
  header.ust{grid-template-columns:minmax(0,1fr) auto auto auto auto!important;column-gap:0!important}
@@ -3809,7 +3824,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 542</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 543</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -4994,6 +5009,12 @@ function hzEkleCikar(k, sessiz){ const L = hzListe(), v = hzVarMi(k); hzYaz(v ? 
 const hzMenu = k => { const v = hzVarMi(k); return { ad: v ? "Kısayollardan çıkar" : "Kısayollara ekle", alt: v ? "ana sayfadaki kısayol listesinden kalkar" : "ana sayfada Kısayollar sekmesinde görünür", ik: "yildiz", f: () => hzEkleCikar(k) }; };
 document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-hz-duz],[data-hz-t]"); if(!b) return; e.stopPropagation();
   if(b.dataset.hzDuz != null){ hzDuzen = !hzDuzen; return anaCiz(); } hzEkleCikar(b.dataset.hzT, true); }, true);
+/* ana sayfa kartları: başlığa dokununca içerik yumuşakça kapanır / açılır (sekme başına, bu cihazda hatırlanır) */
+const anKapali = () => { try { return JSON.parse(localStorage.getItem("anKapali") || "[]"); } catch(e){ return []; } };
+document.addEventListener("click", e => { const b = e.target.closest && e.target.closest("[data-an-kapa]"); if(!b) return; const k = b.dataset.anKapa, kart = b.closest(".an-kart"); if(!kart) return;
+  const L = anKapali(), kapa = !L.includes(k); try { localStorage.setItem("anKapali", JSON.stringify(kapa ? [...L, k] : L.filter(x => x !== k))); } catch(_){}
+  kart.classList.remove("gir-sag", "gir-sol"); kart.classList.toggle("kapali", kapa); b.setAttribute("aria-expanded", !kapa);
+  const ik = b.firstElementChild; if(ik){ ik.classList.remove("cevir"); void ik.offsetWidth; ik.classList.add("cevir"); } if(navigator.vibrate) try { navigator.vibrate(8); } catch(_){} });
 function anaCiz(){
   const sa = new Date().getHours(); $("#ana-selam").textContent = sa < 6 ? "İyi geceler" : sa < 12 ? "Günaydın" : sa < 18 ? "İyi günler" : "İyi akşamlar";
   $("#ana-tarih").textContent = new Date().toLocaleDateString("tr-TR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
@@ -5059,7 +5080,7 @@ function anaCiz(){
   { const z = document.querySelector("#ust-uyari i"); if(z) z.hidden = !dk.length; }
   const SB2 = { kisa: ["Kısayollar", "sık açtığın belgeler"], klasor: ["Klasörler", "bütün arşiv"], son: ["Son çalışılanlar", "en son açtıkların"], gecmis: ["Geçmiş", "eski hâllere dön"], uyari: ["Dikkat edilecekler", dk.length + " uyarı"] }[anaSekme] || ["", ""];
   const SL = sekmeler.map(x => x[0]), yon = anaOnceki && anaOnceki !== anaSekme ? (SL.indexOf(anaSekme) > SL.indexOf(anaOnceki) ? "sag" : "sol") : "";
-  $("#ana-pano").innerHTML = h + `<div class="an-kart${yon ? " gir-" + yon : ""}"><div class="an-kart-bas"><span>${svgI(AIK[anaSekme] || AIK.uyari)}</span><b>${SB2[0]}</b><small>${esc(SB2[1])}</small></div><div class="an-ic">${ic}</div></div>`;
+  $("#ana-pano").innerHTML = h + `<div class="an-kart${yon ? " gir-" + yon : ""}${anKapali().includes(anaSekme) ? " kapali" : ""}"><button type="button" class="an-kart-bas" data-an-kapa="${anaSekme}" aria-expanded="${!anKapali().includes(anaSekme)}"><span>${svgI(AIK[anaSekme] || AIK.uyari)}</span><b>${SB2[0]}</b><small>${esc(SB2[1])}</small><i class="an-ok" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6 9.5l6 6 6-6"/></svg></i></button><div class="an-ic-kap"><div class="an-ic">${ic}</div></div></div>`;
   /* sekme geçişi: seçili kutu eski yerinden yenisine kayar (Mizan gibi), içerik o yöne süzülür */
   if(yon){ const B = [...document.querySelectorAll("#ana-pano .an-seg2 button")], es = B.find(b => b.dataset.anSek === anaOnceki), ye = B.find(b => b.dataset.anSek === anaSekme);
     if(es && ye){ es.setAttribute("aria-selected", "true"); ye.setAttribute("aria-selected", "false"); requestAnimationFrame(() => requestAnimationFrame(() => { es.setAttribute("aria-selected", "false"); ye.setAttribute("aria-selected", "true"); })); } }
