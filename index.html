@@ -23,7 +23,7 @@
   "use strict";
   const FONT = {};
   window.TSK_DOSYA_SINIR = { resim: 50, diger: 50, dogrudan: true };   // GitHub: dosya başına 50 MB, bölmeden
-  const SURUM = "571";
+  const SURUM = "572";
   /* uygulama kilidi: PIN konmuşsa sayfa açılır açılmaz içerik gizlenir, PIN girilince görünür */
   const KILIT = "tsk-kilit";
   const kilitOku = () => { try { return JSON.parse(localStorage.getItem(KILIT) || "null"); } catch(e){ return null; } };
@@ -1775,10 +1775,6 @@ button,.btn,.gd-kisi,.btn:active,.gd-kisi:active,::selection{background:color-mi
 
  
   
-.izb-ts-kap{display:flex;flex-direction:column;gap:6px} .izb-ts-et{font-size:11.5px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted)}
-.izb-ts{display:flex;flex-wrap:wrap;gap:6px;align-items:center} .izb-ts input[data-p="on"]{padding:9px 10px;border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);font:600 14px var(--f-ui)} .izb-ts input[type=date]{flex:1;min-width:140px}
-.izb-ts-s{display:inline-flex;align-items:center;gap:3px} .izb-ts-s select{width:auto;min-width:64px} .izb-ts-s b{color:var(--muted)}
-.izb-ts-on{font-size:12px;color:var(--muted)} .izb-ts-on code{font:600 12.5px var(--f-mono);color:var(--fg)}
 /* ===== toplu yazdır ===== */
 .bs-kart{width:min(680px,100%);max-height:min(90vh,820px)}
 @media (min-width:700px){.bs-kart{max-height:min(88vh,820px)}}
@@ -3159,10 +3155,10 @@ html.klavye.kayit-bekliyor body{padding-bottom:0}
 .izb-d2{display:flex;justify-content:space-between;gap:8px;font:600 11.5px var(--f-ui);color:#4A5261;font-variant-numeric:tabular-nums} .izb-d2 span:last-child{color:var(--muted)}
 .izb-d3{display:flex;gap:5px} .izb-d3 span{flex:1;text-align:center;background:#F4F8F2;border:1px solid #DDE9D8;border-radius:8px;padding:3px 2px;font:600 10px var(--f-ui);color:var(--muted)} .izb-d3 b{color:#2F6B47;font-size:12px}
 .isa-yuz .kp-tik{display:grid;grid-template-columns:auto 1fr;column-gap:8px;align-items:center} .isa-yuz .kp-tik small{grid-column:2;margin-top:-2px} .izb-mk{display:flex;flex-direction:column;gap:8px;padding:10px 0 4px;border-top:1px dashed var(--line2)} .izb-mk-b{display:flex;align-items:center;gap:9px} .izb-mk-b b{flex:1;min-width:0;font:700 13px var(--f-ui);color:var(--fg)} .izb-mk .ks-av{width:30px;height:30px;font-size:11px} .izb-mk .isa-tsil{width:32px;height:32px}
-#izb-filigran .izb-ts-s{display:flex;align-items:center;gap:4px;flex-wrap:nowrap} #izb-filigran .izb-ts select{min-width:66px;white-space:nowrap;height:36px} #izb-filigran .izb-ts-s{width:100%} #izb-filigran .izb-ts-s .sec-ac{width:auto!important;min-width:0!important;flex:1 1 0;white-space:nowrap} #izb-filigran .izb-ts-s .sec-ac span{white-space:nowrap} #izb-tasvip .dl-al .sec-ac,#izb-filigran .dl-al .sec-ac{width:100%}
+#izb-tasvip .dl-al .sec-ac,#izb-filigran .dl-al .sec-ac{width:100%}
 #izb-tasvip .dl-al select,#izb-filigran .dl-al select{width:100%;height:36px;border-radius:8px}
 .izb-fnot{font:500 11.5px/1.45 var(--f-ui);color:#5E5487;background:#F3F0F8;border:1px solid #E1DAEE;border-radius:10px;padding:8px 11px}
-.izb-fk.arka{background:#FAFAFC} #izb-filigran .izb-ts{gap:5px} #izb-filigran .izb-ts input[type=date]{min-width:0!important;flex:1}
+.izb-fk.arka{background:#FAFAFC}
 
 .km-kan{display:grid;grid-template-columns:repeat(4,1fr);gap:5px} .km-kan button{border:1px solid var(--line2);background:#fff;border-radius:9px;padding:8px 2px;font:700 12.5px var(--f-ui);color:#2B2E34;cursor:pointer;white-space:nowrap}
 .km-kan button[aria-pressed="true"]{background:#FBEAEA;border-color:#E2B4B4;color:#8E3434;box-shadow:0 0 0 2px #F6DADA}
@@ -3961,7 +3957,7 @@ html.gizli .gz-in:focus{filter:none}
 <div class="ac-ad">TSK ARŞİV</div>
 <div class="ac-alt">BELGE · ÇİZELGE · ARŞİV</div>
 <div class="ac-yol"><i></i></div>
-<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 571</small></div>
+<div class="ac-alt2"><b id="ac-selam"></b><span id="ac-tarih"></span><small>SÜRÜM 572</small></div>
 <script>
 (function(){ var a = document.getElementById("acilis"), n = new Date(), s = n.getHours();
   document.getElementById("ac-selam").textContent = s < 5 ? "İyi geceler" : s < 11 ? "Günaydın" : s < 17 ? "İyi günler" : s < 22 ? "İyi akşamlar" : "İyi geceler";
@@ -8008,12 +8004,6 @@ const IZB_KENAR_RENK = [["E0E0E0", "Açık gri · #E0E0E0 (orijinal)"], ["D0D0D0
 const izbKenar = () => { const k = String(izbG().kenar || "E0E0E0").replace("#", "").toUpperCase(); return /^[0-9A-F]{6}$/.test(k) ? k : "E0E0E0"; };
 const izbRGB = h => [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
 /* filigran yerleşimi (Excel sayfa koordinatı, punto) — orijinal makrodaki değerler */
-const IZB_STD = {
-  on:   { sol: [34,  [[10,140],[270,140],[530,140],[790,140],[10,440],[270,440],[530,440],[790,440],[10,740],[270,740],[530,740],[790,740]]],
-          sag: [-34, [[32,60],[292,60],[552,60],[812,60],[32,360],[292,360],[552,360],[812,360],[32,660],[292,660],[552,660],[812,660]]] },
-  arka: { sol: [34,  [[10,95],[270,95],[530,95],[790,95],[10,395],[270,395],[530,395],[790,395],[10,695],[270,695],[530,695],[790,695]]],
-          sag: [-34, [[10,40],[270,40],[530,40],[790,40],[10,340],[270,340],[530,340],[790,340],[10,640],[270,640],[530,640],[790,640]]] }
-};
 const IZB_EK = {
   on:   { sol: [34, [[10,200],[650,130],[530,555],[0,645]]], sag: [-34, [[0,130],[675,160],[530,610],[0,600]]], boy: 30 },
   arka: { sol: [34, [[10,200],[650,130],[530,550],[0,600]]], sag: [-34, [[0,130],[575,160],[530,610],[10,530]]], boy: 29 }
@@ -8021,18 +8011,17 @@ const IZB_EK = {
 let izbSekme = "belge", izbSecili = null, izbKapsam = "kisi", izbArka = true;
 try { izbKapsam = localStorage.getItem("izbKapsam") || "kisi"; izbArka = localStorage.getItem("izbArka") !== "0"; } catch(e){}
 const izbVarsayilan = () => ({ baslik: "İZİN BELGESİ", etiket: "IzinKagidi_Uzman", kenar: "E0E0E0", kisiler: [], tasvip: [], ilkAmir: "", komutan: "",
-  filigran: { on: { kod: "", alt: "", yon: "sag", ek: "", ekYon: "sag" }, arka: { kod: "", alt: "", yon: "sag", ek: "", ekYon: "sag" }, ayniKod: true, ayniAlt: true, ayniEk: true, koyu: 3, ekKoyu: 35 } });
+  filigran: { on: { ek: "", ekYon: "sag" }, arka: { ek: "", ekYon: "sag" }, ayniEk: true, ekKoyu: 35 } });
 const IZB_SUBAY = /Asb|Astsb|Kd\.?\s*Çvş|Bçvş|Üçvş|Ütğm|Tğm|Yzb|Bnb|Alb|Yb\b|Kur\.|Gnkur|Subay/i;
 const izbKisiBos = () => ({ id: yeniId(), ad: "", kita: "", rutbe: "", sicil: "", foto: "", adres: "", tel: "", silah: "", kan: "", yakinAd: "", yakinTel: "",
   tur: "Yıllık İzin", ayr: "", yilGun: 0, mazGun: 0, yol: false, topYil: 30, topMaz: 15, topYol: 2, onceki: "" });
 /* filigran örnek şablonu: yalnız biçim gösterir; değiştirilmeden çıktı alınamaz */
-const IZB_SABLON_KOD = "BW00000000000", IZB_SABLON_ALT = "PYBS-gg.aa.yyyy ss:dd:sn", IZB_SABLON_EK = "0".repeat(32);   // ek satır: orijinaldeki 32 haneli (0-9, A-F) satır
+const IZB_SABLON_EK = "0".repeat(32);   // ek satır: orijinaldeki 32 haneli (0-9, A-F) satır
 const izbSablonKaldi = () => { const F = izbG().filigran, A = F.arka, O = F.on;   // yalnız gerçekten basılacak değerlere bakılır
-  const ark = [F.ayniKod ? O.kod : A.kod, F.ayniAlt ? O.alt : A.alt, F.ayniEk ? O.ek : A.ek];
-  return [O.kod, O.alt, O.ek, ...ark].some(v => /0{8,}|gg\.aa\.yyyy|ss:dd|:sn\b/.test(String(v || ""))); };
+  return [O.ek, F.ayniEk ? O.ek : A.ek].some(v => /0{8,}/.test(String(v || ""))); };
 function izbDuzelt(){
   const v = izbVarsayilan(); S.izinb = { ...v, ...(S.izinb || {}) };
-  S.izinb.filigran = { ...v.filigran, ...(S.izinb.filigran || {}) }; ["on", "arka"].forEach(y => S.izinb.filigran[y] = { ...v.filigran[y], ...(S.izinb.filigran[y] || {}) }); delete S.izinb.filigran.harf;   // küçük harf seçeneği kaldırıldı
+  S.izinb.filigran = { ...v.filigran, ...(S.izinb.filigran || {}) }; ["on", "arka"].forEach(y => S.izinb.filigran[y] = { ...v.filigran[y], ...(S.izinb.filigran[y] || {}) }); delete S.izinb.filigran.harf; ["ayniKod", "ayniAlt", "koyu"].forEach(x => delete S.izinb.filigran[x]); ["on", "arka"].forEach(y => ["kod", "alt", "yon"].forEach(x => delete S.izinb.filigran[y][x]));   // 12'li filigran kaldırıldı
   S.izinb.kisiler = (S.izinb.kisiler || []).map(k => ({ ...izbKisiBos(), ...k })); S.izinb.tasvip ||= [];
 }
 const izbG = () => { if(!S.izinb) izbDuzelt(); return S.izinb; };
@@ -8059,10 +8048,9 @@ function izbDegerler(k){
 /* filigran: ön/arka için etkin metinler ("ön ve arka aynı" seçiliyse arka yüz ön yüzünkini kullanır) */
 function izbFil(yuz){
   const F = izbG().filigran, o = F.on, a = F.arka;
-  const h = t => String(t || "").toUpperCase();   // filigran her zaman büyük harf (kod ve 32 haneli satır)
-  const r = yuz === "on" ? { kod: o.kod, alt: o.alt, yon: o.yon, ek: o.ek, ekYon: o.ekYon }
-    : { kod: F.ayniKod ? o.kod : a.kod, alt: F.ayniAlt ? o.alt : a.alt, yon: a.yon, ek: F.ayniEk ? o.ek : a.ek, ekYon: a.ekYon };
-  return { ...r, kod: h(r.kod).slice(0, 12), ek: h(r.ek).slice(0, 32) };   // sınır: kod 12, ek satır 32 karakter
+  const h = t => String(t || "").toUpperCase();   // ek satır her zaman büyük harf
+  const r = yuz === "on" ? { ek: o.ek, ekYon: o.ekYon } : { ek: F.ayniEk ? o.ek : a.ek, ekYon: a.ekYon };
+  return { ...r, ek: h(r.ek).slice(0, 32) };   // sınır: 32 karakter
 }
 
 /* ---------- ortak çizim (önizleme tuvali ve PDF aynı kodu kullanır) ---------- */
@@ -8104,14 +8092,9 @@ function izbCiz(c, yuz, V, foto){
   izbFiligranCiz(c, yuz);   // en son: fotoğrafın da üstünde kalsın (orijinal çıktıdaki gibi)
 }
 function izbFiligranCiz(c, yuz){
-  const F = izbG().filigran, f = izbFil(yuz), kod = (f.kod || "").trim(), alt = (f.alt || "").trim(), ek = (f.ek || "").trim();
-  const opS = Math.max(0, Math.min(100, +F.koyu || 0)) / 100, opE = Math.max(0, Math.min(100, +F.ekKoyu || 0)) / 100;
+  const F = izbG().filigran, f = izbFil(yuz), ek = (f.ek || "").trim();
+  const opE = Math.max(0, Math.min(100, +F.ekKoyu || 0)) / 100;
   const dondur = (cx, cy, px, py, a) => { const r = a * Math.PI / 180, dx = px - cx, dy = py - cy; return [cx + dx * Math.cos(r) - dy * Math.sin(r), cy + dx * Math.sin(r) + dy * Math.cos(r)]; };
-  if(kod || alt){
-    const [aci, xy] = IZB_STD[yuz][f.yon === "sol" ? "sol" : "sag"];
-    xy.forEach(([bx, by]) => { const cx = bx + 160, cy = by + 50; let ust = by + 3.6;
-      [[kod, 38], [alt, 22.8]].forEach(([t, fs]) => { if(!t) return; const [px, py] = dondur(cx, cy, bx + 7.2, ust + fs * 0.905, aci); c.text(t, px, py, { fs, aci, op: opS, renk: [0, 0, 0] }); ust += fs * 1.2; }); });
-  }
   if(ek){
     const E = IZB_EK[yuz], [aci, xy] = E[f.ekYon === "sol" ? "sol" : "sag"], fs = E.boy, w = c.tw(ek, fs, false) + 14.4, h = fs * 1.2 + 7.2;
     xy.forEach(([bx, by]) => { const [px, py] = dondur(bx + w / 2, by + h / 2, bx + 7.2, by + 3.6 + fs * 0.905, aci); c.text(ek, px, py, { fs, aci, op: opE, renk: [100, 100, 100] }); });
@@ -8219,7 +8202,7 @@ async function izbExcel(L){
           ws.addImage(id, { tl: { col: 11 + dx + 0.1, row: 1.15 }, ext: { width: foto.w * sc, height: foto.h * sc } }); }
       }
       /* filigran: şeffaf resim olarak sayfanın üstüne (Excel'de metin kutusu yerine) */
-      const fil = izbFil(yuz); if((fil.kod || fil.alt || fil.ek || "").trim()){
+      const fil = izbFil(yuz); if((fil.ek || "").trim()){
         const px = 1.5, cv = document.createElement("canvas"); cv.width = Math.ceil(o.W / 0.75 * px); cv.height = Math.ceil(o.H / 0.75 * px);
         const c = izbTuvalCizici(cv.getContext("2d"), px / 0.75); izbFiligranCiz(c, yuz);
         const id = wb.addImage({ base64: cv.toDataURL("image/png").split(",")[1], extension: "png" }); ws.addImage(id, { tl: { col: 0, row: 0 }, ext: { width: o.W / 0.75, height: o.H / 0.75 } });
@@ -8325,62 +8308,37 @@ function izbTasvipCiz(){
           <label class="dl-al tam"><span>Görevi</span>${izbInp("t-gorev", t.gorev, { i, ad: "Görev" })}</label></div></div>`).join("") || '<div class="yk-bos">Makam eklenmedi</div>'}
       <small class="dl-not">Rütbe boşsa personel listesindeki rütbe kullanılır.</small></section></div>`;
 }
-/* filigran tarih satırı: “ön ek + gün.ay.yıl saat:dakika” parça parça seçilir (tarih için takvim, saat ve dakika için liste) */
-function izbTsCoz(t){ const m = /^(.*?)[\s-]*(\d{2})\.(\d{2})\.(\d{4})(?:\s+(\d{2}|ss):(\d{2}|dd)(?::(\d{2}|sn))?)?\s*$/.exec(String(t || ""));
-  const r = v => /^\d{2}$/.test(v || "") ? v : "";
-  if(m) return { on: m[1].trim(), tarih: `${m[4]}-${m[3]}-${m[2]}`, sa: r(m[5]), dk: r(m[6]), sn: r(m[7]) };
-  const on = String(t || "").replace(/[\s-]*gg\.aa\.yyyy.*$/, "").trim(); return { on: on || "PYBS", tarih: "", sa: "", dk: "", sn: "" }; }
-/* orijinal dosyadaki biçim: PYBS-gg.aa.yyyy ss:dd:sn (ön ekten sonra tire, saat iki nokta üst üste ile, saniyeli) */
-function izbTsYap(p){ const on = (p.on || "").replace(/-+$/, ""), bas = on ? on + "-" : "";
-  if(!p.tarih) return `${bas}gg.aa.yyyy ss:dd:sn`; const [Y, M, D] = p.tarih.split("-");
-  return `${bas}${D}.${M}.${Y} ${p.sa || "ss"}:${p.dk || "dd"}:${p.sn || "sn"}`; }
-function izbTsAlan(y, deger, kapali){
-  const p = izbTsCoz(deger), sec = (ad, n, v, bos) => `<select data-izb-ts="${y}" data-p="${ad}"${kapali ? " disabled" : ""} aria-label="${bos}"><option value="">${bos}</option>${Array.from({ length: n }, (_, i) => String(i).padStart(2, "0")).map(x => `<option${x === v ? " selected" : ""}>${x}</option>`).join("")}</select>`;
-  return `<div class="izb-ts">
-    <input data-izb-ts="${y}" data-p="on" value="${esc(p.on)}" aria-label="Ön ek" style="width:76px"${kapali ? " disabled" : ""}>
-    <input type="date" data-izb-ts="${y}" data-p="tarih" value="${esc(p.tarih)}" aria-label="Tarih"${kapali ? " disabled" : ""}>
-    <span class="izb-ts-s">${sec("sa", 24, p.sa, "saat")}<b>:</b>${sec("dk", 60, p.dk, "dakika")}<b>:</b>${sec("sn", 60, p.sn, "saniye")}</span></div>
-    <div class="izb-ts-on">Basılacak: <code>${esc(izbTsYap(p))}</code></div>`; }
-document.addEventListener("change", e => { const el = e.target.closest("[data-izb-ts]"); if(!el) return;
-  const y = el.dataset.izbTs, G = izbG(), kap = el.closest(".izb-ts-kap"); const deger = a => (kap.querySelector(`[data-p="${a}"]`) || {}).value || "";
-  G.filigran[y].alt = izbTsYap({ on: deger("on"), tarih: deger("tarih"), sa: deger("sa"), dk: deger("dk"), sn: deger("sn") });
-  kaydetBt("izinb"); izbFiligranPanelCiz(); });
 function izbFiligranPanelCiz(){
   const F = izbG().filigran;
   const yon = (y, a, v) => izbSec(`f-${y}-${a}`, v, [["sag", "Sağ çapraz ↗"], ["sol", "Sol çapraz ↘"]], { ad: "Yön" });
   const kutu = y => { const f = F[y], on = y === "on";
     return `<section class="dl-kart izb-fk${on ? "" : " arka"}"><div class="dl-bas">${on ? "Ön yüz" : "Arka yüz"}</div><div class="dl-alanlar">
-      <label class="dl-al tam"><span>Kod · büyük satır (en çok 12)${!on && F.ayniKod ? " <i>ön yüzle aynı</i>" : ""}</span>${izbInp(`f-${y}-kod`, on || !F.ayniKod ? f.kod : F.on.kod, { ad: "Kod", ph: "en çok 12 karakter", dis: !on && F.ayniKod, uz: 12 })}</label>
-      <div class="izb-ts-kap tam"><span class="izb-ts-et">Tarih / alt satır${!on && F.ayniAlt ? " · ön yüzle aynı" : ""}</span>${izbTsAlan(y, on || !F.ayniAlt ? f.alt : F.on.alt, !on && F.ayniAlt)}</div>
-      <label class="dl-al tam"><span>12'li filigran yönü</span>${yon(y, "yon", f.yon)}</label>
       <label class="dl-al tam"><span>Ek satır · 32 haneli (4 adet)${!on && F.ayniEk ? " <i>ön yüzle aynı</i>" : ""}</span>${izbInp(`f-${y}-ek`, on || !F.ayniEk ? f.ek : F.on.ek, { ad: "Ek satır", ph: "isteğe bağlı · 32 karakter", dis: !on && F.ayniEk, uz: 32 })}</label>
       <label class="dl-al tam"><span>Ek satır yönü</span>${yon(y, "ekYon", f.ekYon)}</label></div></section>`; };
   $("#izb-filigran").innerHTML = `<div class="izb-yeni">
-    <div class="izb-fnot">Filigran metinleri elle girilir (ör. PYBS çıktısındaki kod ve tarih). Uygulama kod ya da tarih üretmez. Boş bırakılan filigran basılmaz.</div>
+    <div class="izb-fnot">Ek satır elle girilir (ör. PYBS çıktısındaki satır). Uygulama değer üretmez. Boş bırakılırsa basılmaz.</div>
     <section class="dl-kart"><div class="dl-bas">Genel</div>
-      <label class="kp-tik"><input type="checkbox" data-izb="ayniKod"${F.ayniKod ? " checked" : ""}> Ön ve arka kod aynı</label>
-      <label class="kp-tik"><input type="checkbox" data-izb="ayniAlt"${F.ayniAlt ? " checked" : ""}> Tarih satırı aynı</label>
       <label class="kp-tik"><input type="checkbox" data-izb="ayniEk"${F.ayniEk ? " checked" : ""}> Ek satır aynı</label>
-      <div class="dl-alanlar"><label class="dl-al"><span>12'li koyuluk (%)</span>${izbInp("koyu", F.koyu, { tip: "number", min: 0 })}</label><label class="dl-al"><span>Ek satır koyuluğu (%)</span>${izbInp("ekKoyu", F.ekKoyu, { tip: "number", min: 0 })}</label></div>
-      <div class="dl-is"><button class="mini" type="button" data-izb-is="f-sablon">Örnek şablonu koy</button><button class="mini sil" type="button" data-izb-is="f-temizle">Filigranları temizle</button></div></section>
+      <div class="dl-alanlar"><label class="dl-al"><span>Ek satır koyuluğu (%)</span>${izbInp("ekKoyu", F.ekKoyu, { tip: "number", min: 0 })}</label></div>
+      <div class="dl-is"><button class="mini" type="button" data-izb-is="f-sablon">Örnek şablonu koy</button><button class="mini sil" type="button" data-izb-is="f-temizle">Ek satırı temizle</button></div></section>
     ${kutu("on")}${kutu("arka")}
-    <small class="dl-not">Orijinaldeki gibi: 12'li filigran %3 koyulukta (Excel'de %97 şeffaf), ek satır gri ve %35 koyulukta. Önizleme “Belge” sekmesinde.</small></div>`;
+    <small class="dl-not">Ek satır gri, varsayılan %35 koyulukta, sayfada 4 kez çapraz basılır. Önizleme “Belge” sekmesinde.</small></div>`;
 }
 /* olaylar */
 function izbDegis(el){
   const G = izbG(), a = el.dataset.izb; if(!a) return; const i = el.dataset.i != null ? +el.dataset.i : null; let v = el.type === "checkbox" ? el.checked : el.value;
   const k = i != null && !a.startsWith("t-") ? G.kisiler[i] : izbKisi();
   if(["ilkAmir", "komutan", "baslik", "etiket"].includes(a)) G[a] = v;
-  else if(["ayniKod", "ayniAlt", "ayniEk"].includes(a)) G.filigran[a] = v;
-  else if(a === "koyu" || a === "ekKoyu") G.filigran[a] = Math.max(0, Math.min(100, +v || 0));
-  else if(a.startsWith("f-")){ const [, y, alan] = a.split("-"); const uz = { kod: 12, ek: 32 }[alan]; if(uz && v.length > uz){ v = v.slice(0, uz); el.value = v; bildir(`En çok ${uz} karakter`); } G.filigran[y][alan] = v; }
+  else if(a === "ayniEk") G.filigran[a] = v;
+  else if(a === "ekKoyu") G.filigran[a] = Math.max(0, Math.min(100, +v || 0));
+  else if(a.startsWith("f-")){ const [, y, alan] = a.split("-"); const uz = { ek: 32 }[alan]; if(uz && v.length > uz){ v = v.slice(0, uz); el.value = v; bildir(`En çok ${uz} karakter`); } G.filigran[y][alan] = v; }
   else if(a.startsWith("t-")){ const t = G.tasvip[i]; if(!t) return; t[a.slice(2)] = v; }
   else if(k){ if(a === "yol") v = v === "1"; else if(["yilGun", "mazGun", "topYil", "topMaz", "topYol"].includes(a)) v = Math.max(0, +v || 0); k[a] = v; }
   kaydetBt("izinb");
   return a;
 }
 $("#e-izinb").addEventListener("input", e => { const el = e.target; if(!el.dataset.izb || el.tagName === "SELECT" || el.type === "date" || el.type === "checkbox") return; izbDegis(el);
-  const fm = /^f-on-(kod|alt|ek)$/.exec(el.dataset.izb); if(fm){ const F = izbG().filigran, ayni = { kod: F.ayniKod, alt: F.ayniAlt, ek: F.ayniEk }[fm[1]]; const ar = document.querySelector(`[data-izb="f-arka-${fm[1]}"]`); if(ayni && ar) ar.value = el.value; }
+  const fm = /^f-on-(ek)$/.exec(el.dataset.izb); if(fm){ const F = izbG().filigran, ayni = F.ayniEk; const ar = document.querySelector(`[data-izb="f-arka-${fm[1]}"]`); if(ayni && ar) ar.value = el.value; }
   if(izbSekme === "belge"){ izbOnizle(izbKisi()); if(["ad", "rutbe"].includes(el.dataset.izb)){ const b = document.querySelector(`[data-izb-kisi="${izbKisi().id}"] .gd-k-ad`); if(b && el.dataset.izb === "ad") b.textContent = el.value || "(adsız)"; } } });
 $("#e-izinb").addEventListener("change", e => { const el = e.target;
   if(el.id === "izb-kapsam"){ izbKapsam = el.value; try { localStorage.setItem("izbKapsam", izbKapsam); } catch(x){} return; }
@@ -8417,8 +8375,8 @@ $("#e-izinb").addEventListener("click", e => {
   if(is === "foto-sil"){ const k = izbKisi(); if(k){ k.foto = ""; kaydetBt("izinb"); izbBelgeCiz(); } return; }
   if(is === "t-ekle"){ G.tasvip.push({ ad: "", rutbe: "", sicil: "", gorev: "" }); kaydetBt("izinb"); izbTasvipCiz(); return; }
   if(is === "t-sil"){ G.tasvip.splice(+b.dataset.i, 1); kaydetBt("izinb"); izbTasvipCiz(); return; }
-  if(is === "f-sablon"){ ["on", "arka"].forEach(y => Object.assign(G.filigran[y], { kod: IZB_SABLON_KOD, alt: IZB_SABLON_ALT, ek: IZB_SABLON_EK })); kaydetBt("izinb"); izbFiligranPanelCiz(); bildir("Örnek kondu · rakamları ve tarihi belgedeki gerçek değerlerle değiştir"); setTimeout(() => { const i = document.querySelector(`[data-izb="f-on-kod"]`); if(i){ i.focus(); i.select(); } }, 50); return; }
-  if(is === "f-temizle"){ ["on", "arka"].forEach(y => Object.assign(G.filigran[y], { kod: "", alt: "", ek: "" })); kaydetBt("izinb"); izbFiligranPanelCiz(); bildir("Filigranlar temizlendi"); return; }
+  if(is === "f-sablon"){ ["on", "arka"].forEach(y => Object.assign(G.filigran[y], { ek: IZB_SABLON_EK })); kaydetBt("izinb"); izbFiligranPanelCiz(); bildir("Örnek kondu · belgedeki gerçek değerle değiştir"); setTimeout(() => { const i = document.querySelector(`[data-izb="f-on-ek"]`); if(i){ i.focus(); i.select(); } }, 50); return; }
+  if(is === "f-temizle"){ ["on", "arka"].forEach(y => Object.assign(G.filigran[y], { ek: "" })); kaydetBt("izinb"); izbFiligranPanelCiz(); bildir("Ek satır temizlendi"); return; }
 });
 async function izbFotoYukle(f){
   const k = izbKisi(); if(!k) return; if(!/^image\//.test(f.type)){ uyar("Lütfen bir resim dosyası seçin.", true); return; }
@@ -13745,7 +13703,7 @@ document.querySelectorAll("[data-cikti]").forEach(b => b.addEventListener("click
     const ornekOnay = d.tur === "izinb" && b.dataset.ornek === "1";
     let r0; try { r0 = await ciktiUret(d, SECIM.klasor, tur, sec, ornekOnay ? { ornekOnay: true } : undefined); }
     catch(e){ if(e && e.ornek){ b.dataset.ornek = "1"; clearTimeout(b._oz); b._oz = setTimeout(() => { b.dataset.ornek = ""; }, 8000);
-        uyar("Filigranda örnek değerler (sıfırlar, gg.aa.yyyy) duruyor. Örnek olarak basmak için düğmeye tekrar bas. Gerçek çıktı için Filigran sekmesinde gerçek değerleri gir.", true); return; } throw e; }
+        uyar("Ek satırda örnek değer (sıfırlar) duruyor. Örnek olarak basmak için düğmeye tekrar bas. Gerçek çıktı için Filigran sekmesinde gerçek değeri gir ya da temizle.", true); return; } throw e; }
     if(ornekOnay) b.dataset.ornek = "";
     await dosyaVer(r0.ad, r0.blob);
   } catch(err){ uyar("Çıktı hazırlanamadı: " + (err.message || err), true); }
